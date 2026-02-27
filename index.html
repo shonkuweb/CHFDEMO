@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Botanical Luxury Home - Dark Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .bg-grainy {
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            }
+        }
+    </style>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4a5d4e",
+                        "primary-hover": "#5d7362",
+                        "accent-bronze": "#a68b6a",
+                        "background-dark": "#0d0d0d",
+                        "background-darker": "#080808",
+                        "surface-dark": "#141414",
+                        "ivory": "#e8e4db",
+                        "ivory-dim": "#b5b1a6",
+                        "charcoal": "#121212",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Noto Serif", "serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0rem", "lg": "0rem", "xl": "0rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-dark text-ivory font-display antialiased bg-grainy">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="sticky top-0 z-50 w-full border-b border-white/5 bg-background-dark/80 backdrop-blur-md">
+<div class="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 lg:px-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-bronze text-3xl">potted_plant</span>
+<h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase">Botanical Luxury</h1>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-gold transition-colors duration-300" href="#">Portfolio</a>
+<a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-gold transition-colors duration-300" href="#">Collections</a>
+<a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-gold transition-colors duration-300" href="#">Services</a>
+<a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-gold transition-colors duration-300" href="#">Inquiry</a>
+</nav>
+<div class="hidden md:flex items-center gap-6">
+<button class="material-symbols-outlined text-accent-bronze text-3xl">potted_plant</button>
+</div>
+<button class="md:hidden flex items-center text-ivory">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow">
+<section class="relative w-full h-[90vh] overflow-hidden bg-background-dark flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Minimalist modern living room with large specimen tree in dark setting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDdSB9YiaFS1zzyiLvH74mz4zgQKD7Un2fH3lOn_aMgSGkSioY9jfx4hxZdQEmQ5WNRcTiUeJdPo5COLYeQZ4UblR8lOR_t-DMsq0eK6ldyPUQMlUMcYYId6YHLXD8j3c4jcChFD1gHehCz10VtYv8aS9pNLvOxGFjvkYSe5eIogcVXkHPLFEi8gdU0MWtpYLEmwgi0DNF5_4JSMZpoQH3xMlwd1bgOSsFSoeVQ05GcWidbgP_zi_Zm7ZriomMZU37IgLTBvcp946y1"); filter: brightness(0.6) contrast(1.1) saturate(0.8);'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/40 to-transparent"></div>
+<div class="absolute inset-0 bg-black/30"></div>
+<div class="relative z-10 mx-auto max-w-6xl px-6 text-center text-ivory mt-12">
+<span class="block mb-8 text-accent-bronze text-xs uppercase tracking-[0.4em] font-semibold">Rare Specimen Collection</span>
+<h2 class="mb-8 font-serif text-5xl font-light leading-tight md:text-7xl lg:text-8xl tracking-tight text-white drop-shadow-2xl">
+                        Living Sculptures<br/>
+<span class="italic text-ivory-dim font-thin">for Darkened Spaces</span>
+</h2>
+<p class="mx-auto mb-16 max-w-2xl text-lg font-light text-ivory-dim md:text-xl leading-relaxed tracking-wide">
+                        Curating architectural botanicals that thrive in the shadows. A study in patience, form, and silence.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+<button class="group relative inline-flex items-center justify-center overflow-hidden rounded-none px-10 py-4 text-sm uppercase tracking-widest font-bold text-background-dark transition-all hover:bg-white hover:scale-105 bg-accent-bronze text-background-dark">
+<span class="relative z-10">Explore Portfolio</span>
+</button>
+<button class="group inline-flex items-center justify-center rounded-none border border-white/20 backdrop-blur-sm bg-black/20 px-10 py-4 text-sm uppercase tracking-widest font-medium text-ivory transition-all hover:bg-white/10 hover:border-white/40">
+                            View Collections
+                        </button>
+</div>
+</div>
+</section>
+<section class="bg-background-dark py-32 px-6 md:px-12 lg:px-24 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div class="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+<div class="lg:col-span-5 space-y-10">
+<div class="inline-flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.3em] text-accent-bronze"><span class="h-px w-12 bg-accent-bronze"></span>Slow Luxury</div>
+<h2 class="font-serif text-4xl font-light text-ivory md:text-5xl leading-[1.2]">
+                            The Art of Growth in <br/><span class="italic text-primary">Deep Solitude</span>
+</h2>
+<p class="text-lg text-gray-400 font-light leading-relaxed">
+                            True luxury is never rushed. In our dark nurseries, we cultivate specimens with architectural precision. Each leaf is a deliberate stroke of nature, selected not just for beauty, but for its ability to command the light and shadow of refined interiors.
+                        </p>
+<button class="group flex items-center gap-4 text-ivory hover:text-accent-gold transition-colors border-b border-transparent hover:border-accent-gold pb-1 w-fit">
+<span class="uppercase tracking-widest text-sm font-medium">Discover Our Process</span>
+<span class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+<div class="lg:col-span-7 relative h-[600px] w-full">
+<div class="absolute -inset-4 border border-white/5 z-0 hidden lg:block"></div>
+<div class="absolute inset-0 z-10 overflow-hidden shadow-2xl bg-surface-dark">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105" data-alt="Close up of large green leaf with water droplets in high contrast dark lighting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDleJtDeAzwpU_y6z7eEUGb8plOuPk1e1RC0iRcu1HOF7agXoRRH86jhlPmgL8Biqy_FMXif-2PwAtJBfL-6szZEBmbpONyPHocU1ov9uOKoaRsLlvbkpMq1NCMcFS9SJCWJ28OvVCh6D6q3yy05yUz6C7OIj7G9wXZoyLJ2_jP4ReUDRTsUye6Nzo2n-87Avhlbk03VVB7Ku8yMWYeg3KwWXb7o3kEhwdSioT8wRspjk2wtuqItWdo33N4mZq2fubFycPFsvbEayQU"); filter: grayscale(30%) brightness(0.7) contrast(1.2);'></div>
+<div class="absolute inset-0 bg-gradient-to-tr from-black/60 to-transparent pointer-events-none"></div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-background-darker py-32 px-6 md:px-12 lg:px-24 border-y border-white/5">
+<div class="mx-auto max-w-7xl">
+<div class="mb-20 text-center">
+<span class="text-accent-bronze text-[10px] uppercase tracking-[0.3em] font-bold mb-4 block">Our Expertise</span>
+<h3 class="font-serif text-3xl md:text-4xl text-ivory font-light">Service as an Art Form</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
+<div class="group p-12 bg-background-darker hover:bg-surface-dark transition-all duration-500 flex flex-col items-center text-center">
+<div class="text-accent-bronze text-[10px] uppercase tracking-[0.3em] font-bold mb-4 block">
+<span class="material-symbols-outlined text-3xl font-light text-accent-bronze">spa</span>
+</div>
+<h4 class="mb-4 font-serif text-xl text-ivory tracking-wide">Curated Specimens</h4>
+<p class="text-gray-500 text-sm leading-7 max-w-xs">Hand-selected rare plants sourced from exclusive growers worldwide, ensuring unique character for every project.</p>
+</div>
+<div class="group p-12 bg-background-darker hover:bg-surface-dark transition-all duration-500 flex flex-col items-center text-center">
+<div class="text-accent-bronze text-[10px] uppercase tracking-[0.3em] font-bold mb-4 block">
+<span class="material-symbols-outlined text-3xl font-light text-accent-bronze">architecture</span>
+</div>
+<h4 class="mb-4 font-serif text-xl text-ivory tracking-wide">Architectural Harmony</h4>
+<p class="text-gray-500 text-sm leading-7 max-w-xs">Botanical design that integrates seamlessly with modern architecture, respecting lines, light, and volume.</p>
+</div>
+<div class="group p-12 bg-background-darker hover:bg-surface-dark transition-all duration-500 flex flex-col items-center text-center">
+<div class="text-accent-bronze text-[10px] uppercase tracking-[0.3em] font-bold mb-4 block">
+<span class="material-symbols-outlined text-3xl font-light text-accent-bronze">handshake</span>
+</div>
+<h4 class="mb-4 font-serif text-xl text-ivory tracking-wide">White Glove Service</h4>
+<p class="text-gray-500 text-sm leading-7 max-w-xs">Complete logistical handling, installation, and ongoing horticultural care for your living investments.</p>
+</div>
+</div>
+</div>
+</section><section class="bg-background-dark py-40 px-6 md:px-12 lg:px-24">
+<div class="mx-auto max-w-7xl">
+<div class="mb-24 flex flex-col md:flex-row justify-between items-end gap-8 border-b border-white/5 pb-12">
+<div class="max-w-2xl">
+<span class="text-accent-bronze text-[10px] uppercase tracking-[0.3em] font-bold mb-6 block">The Current Landscape</span>
+<h2 class="font-serif text-4xl md:text-6xl text-ivory font-light leading-tight">Botanical Trends for the <span class="italic">Modern Collector</span></h2>
+</div>
+<p class="text-ivory-dim font-light text-sm max-w-xs leading-relaxed uppercase tracking-wider">An editorial exploration of nature's evolving role in high-end design.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] overflow-hidden mb-8 bg-surface-dark">
+<img alt="Biophilic Workspace" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-g-O8YVclP948YpD89-rM_t17wN-B5r5XN5p_zL-8H1M0f-K-uN_X4XW6X4Y-O5Y_uY_P=s0"/>
+</div>
+<h3 class="font-serif text-2xl text-ivory mb-4">Biophilic Workspace</h3>
+<p class="text-ivory-dim text-sm font-light leading-7 mb-6">Integrating verdant life into the professional sanctuary for cognitive clarity and architectural softness.</p>
+<span class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read Editorial</span>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] overflow-hidden mb-8 bg-surface-dark">
+<img alt="Rare Specimen Sculptures" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1_q-G_P_R-R-X_V_Y_R-P_V_R-P_V_R-P_V_R-P_V_R-P_V_R-P_V_R-P_V_R-P_V_R=s0"/>
+</div>
+<h3 class="font-serif text-2xl text-ivory mb-4">Rare Specimen Sculptures</h3>
+<p class="text-ivory-dim text-sm font-light leading-7 mb-6">Curating singular botanical forms that serve as the focal point of minimalist, high-ceiling environments.</p>
+<span class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read Editorial</span>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] overflow-hidden mb-8 bg-surface-dark">
+<img alt="Living Walls" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9_q-G_P_R-R-X_V_Y_R-P_V_R-P_V_R-P_V_R-P_V_R-P_V_R-P_V_R-P_V_R-P_V_R=s0"/>
+</div>
+<h3 class="font-serif text-2xl text-ivory mb-4">Living Walls</h3>
+<p class="text-ivory-dim text-sm font-light leading-7 mb-6">Vertical ecosystems that redefine internal boundaries, offering a rhythmic pulse to static architecture.</p>
+<span class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read Editorial</span>
+</div>
+</div>
+</div>
+</section>
+<section class="py-32 px-6 md:px-12 bg-surface-dark relative">
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCF67TflAiTxfd8PzuUk7yQk_o7WQDnd6RPGe8orYU9Y6MlDS6jIFpsp-b3Z5HIpqW6jMLxi1831dFl_uX9O3GN1dtDEZb2ogRsvZS_v1YM58nASfeDWIzKJS1ljea3XVJroVNX40LLXvpMffLzipoi2ij7lNzKeEFtn-fBX8zfPrgcmq4foIMPW4ZuWGGKethXyL1gQ_Bz9iJFtt758Vk7JAR1KrrRfnINZb-wFQYvvA7aSeTloF9DgJEsFRmmGoYLXNQKEjyEBJmy');"></div>
+<div class="mx-auto max-w-7xl relative z-10">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6 border-b border-white/5 pb-8">
+<div>
+<span class="text-accent-gold font-bold tracking-[0.2em] text-xs uppercase mb-3 block">Featured Project</span>
+<h3 class="font-serif text-4xl md:text-5xl text-ivory">The Glass House Conservatory</h3>
+</div>
+<a class="text-gray-400 hover:text-white flex items-center gap-2 text-sm uppercase tracking-widest transition-colors mb-2" href="#">
+                            View Case Study <span class="material-symbols-outlined text-sm">arrow_outward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[700px]">
+<div class="md:col-span-7 relative overflow-hidden h-[500px] md:h-full group bg-black">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100" data-alt="Indoor tree in minimalist concrete planter against dark wall" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB8pYJHcGWU3zVQQ_fhDnQ5KQNXgWj0uVuO7Rhxp1EZaJeSQ75RBdR0kqY9lv-RxkIvfwl1DZcebn8mEZ8j-hik0VAY7PIweg5I-8ubdgOlM0-RhAnVFPcuvAgg-ylq9TVWximQqectGEKSm30PKG-elPwKZscwGYiynqdpOLW5Wl_D32KTGmtybKTbnxDi9CkkFhy-nIybC9fG4alfC7EaaarsZd3-O1Ura0N9USuo0CX-5GAtAzzvGAve2zAzT2W554waFa5DuPb1"); filter: contrast(1.1) brightness(0.8);'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60"></div>
+<div class="absolute bottom-8 left-8">
+<p class="text-ivory font-serif text-2xl italic">The Ficus Lyric</p>
+</div>
+</div>
+<div class="md:col-span-5 flex flex-col gap-6 h-full">
+<div class="relative overflow-hidden flex-1 group bg-black">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100" data-alt="Close up texture of large tropical leaf dark theme" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOoE5XlO3oonfaFakFY3cKpcI43_8TS-g2954N2cvJfdZstH56NZk2XcjJtBcdHRDn_4bXMmlzO_HbDirz_ZkBfWJwtxuhskEYEjx6J0CVBlnwDAQdcJMPRoJFjc1hMhCXZT8HqcYk_hFmLCD81JQqtJ4lagMuKnPcxw-RurLbKG8IaHxYKoj7Fie8j9n2VH2sWkPo6V54_1C9OvmgxeCBI1E3tg15VkltLMuz_yAUS7fd19YSztqBgox2DhawWqIUgHaojx75Bpzk"); filter: contrast(1.2) brightness(0.7);'>
+</div>
+</div>
+<div class="relative overflow-hidden flex-1 group bg-black">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100" data-alt="Modern living room with plant decor dark theme" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1qgXIdnIHyha4y7r20Bv-z_1BYvf206BgMbs_a9xe2r0AqUKwg7ZA_WZn9tdgyDqm4ioneZPz0ENIGYBm4-NiIymxKQxW2iDihunqknpnk-VHFtaZXWsbLKzrw8aeQPULO4CQRTyxInei4_S5UqbYYuJpHMzuWh2XkIxf2YhX_mnGVzlY9fp2w488OCTPlDMYLjaEVqpemFNpD3YWjCm0NriAKqSb8wHtepa9MwONlZoqfeQstrOrNFBaxQc6AS52BHwHpuID0C5h"); filter: contrast(1.1) brightness(0.7) saturate(0.8);'>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
+<div class="mx-auto max-w-7xl px-6 lg:px-8">
+<div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
+<div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary text-2xl">potted_plant</span>
+<h2 class="font-serif text-lg font-medium tracking-wide text-ivory">Botanical Luxury</h2>
+</div>
+<p class="text-sm text-gray-500 mb-8 leading-7 font-light">
+                            Elevating spaces through the thoughtful integration of nature and design. We bring the quiet power of the forest into the modern sanctuary.
+                        </p>
+<div class="flex gap-6">
+<a class="text-gray-500 hover:text-accent-gold transition-colors" href="#">
+<span class="sr-only">Instagram</span>
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</a>
+<a class="text-gray-500 hover:text-accent-gold transition-colors" href="#">
+<span class="sr-only">Pinterest</span>
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.399.165-1.487-.69-2.432-2.864-2.432-4.613 0-3.754 2.736-7.262 7.86-7.262 4.107 0 7.304 2.932 7.304 6.792 0 4.058-2.558 7.323-6.111 7.323-1.194 0-2.316-.619-2.7-1.352l-.736 2.802c-.265 1.025-.985 2.308-1.467 3.09C9.769 23.95 10.875 24 12.017 24c6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"></path></svg>
+</a>
+</div>
+</div>
+<div>
+<h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
+<ul class="space-y-4">
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">About Us</a></li>
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Press</a></li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Services</h3>
+<ul class="space-y-4">
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Consultation</a></li>
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Design</a></li>
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Installation</a></li>
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Maintenance</a></li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Legal</h3>
+<ul class="space-y-4">
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-white/5 pt-8 text-center">
+<p class="text-xs text-gray-600">© 2023 The Botanical Luxury Home. All rights reserved.</p>
+</div>
+</div>
+</footer>
+</div>
+</body></html>
