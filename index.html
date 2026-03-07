@@ -201,6 +201,26 @@
                         class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[200vw] h-[200vw] md:w-[150vw] md:h-[150vw] max-w-[2000px] max-h-[2000px] rounded-[50%] bg-black/40 backdrop-blur-xl z-10 pointer-events-none transform translate-y-[calc(100%-25vh)] md:translate-y-[calc(100%-15vh)] shadow-[0_-20px_50px_rgba(0,0,0,0.5)] border-t border-white/5">
                     </div>
 
+                    <!-- Immersive Rotating Scroll Text -->
+                    <div
+                        class="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 w-[100vw] h-[40vh] pointer-events-none flex items-end justify-center overflow-hidden">
+                        <svg class="hero-rotate-scroll w-[200vw] h-[200vw] md:w-[150vw] md:h-[150vw] max-w-[2000px] max-h-[2000px] flex-shrink-0 mb-[-175vw] md:mb-[-135vw] opacity-0"
+                            viewBox="0 0 1000 1000">
+                            <defs>
+                                <path id="curvePath" d="M 0,500 A 500,500 0 1,1 1000,500 A 500,500 0 1,1 0,500" />
+                            </defs>
+                            <text class="fill-ivory/30 uppercase text-[12px] font-bold tracking-[0.8em] font-display">
+                                <textPath href="#curvePath" startOffset="0%">
+                                    • SCROLL TO DISCOVER THE ART OF GROWTH • CHF BOTANICAL LUXURY • SCROLL TO DISCOVER
+                                    THE ART OF GROWTH • CHF BOTANICAL LUXURY • SCROLL TO DISCOVER THE ART OF GROWTH •
+                                    CHF BOTANICAL LUXURY •
+                                </textPath>
+                            </text>
+                        </svg>
+                    </div>
+
+                    <!-- Bottom Tagline on Curve -->
+
                     <!-- Bottom Tagline on Curve -->
                     <div
                         class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-center w-full pointer-events-none">
@@ -705,16 +725,34 @@
             delay: 0.3
         });
 
+        // Reveal Curved Scroll Text
+        heroTl.to('.hero-rotate-scroll', {
+            opacity: 1,
+            duration: 2,
+            ease: "power2.inOut"
+        }, "-=1");
+
         // 2. Parallax and Fade Hero Background
         gsap.to('.hero-bg-parallax', {
             yPercent: 20,
-            opacity: 0.1,
             ease: "none",
             scrollTrigger: {
-                trigger: ".fade-up-section", // Next section coming up
-                start: "top 100%", // Start when next section hits bottom of screen
-                end: "top 0%", // End when next section hits top of screen
+                trigger: ".fade-up-section",
+                start: "top 100%",
+                end: "top 0%",
                 scrub: true
+            }
+        });
+
+        // Rotate Curved Text on Scroll
+        gsap.to('.hero-rotate-scroll', {
+            rotation: 90,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
             }
         });
 
