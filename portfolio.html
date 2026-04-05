@@ -14,55 +14,17 @@
         rel="stylesheet" />
     <style type="text/tailwindcss">
         @layer utilities {
-            .bg-grainy {
-                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            .wireframe-cross {
+                background-image: url('assets/wireframe-placeholder.svg');
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                background-position: center;
             }
         }
     </style>
     <style>
-        /* Lenis Smooth Scroll */
-        html.lenis,
-        html.lenis body {
-            height: auto;
-        }
-
-        .lenis.lenis-smooth {
-            scroll-behavior: auto !important;
-        }
-
-        /* Custom Cursor */
-        @media (min-width: 768px) {
-            body {
-                cursor: none;
-            }
-
-            a,
-            button,
-            .cursor-pointer {
-                cursor: none !important;
-            }
-
-            .custom-cursor {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 15px;
-                height: 15px;
-                border-radius: 50%;
-                background-color: #a68b6a;
-                pointer-events: none;
-                z-index: 99999;
-                transform: translate(-50%, -50%);
-                transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease;
-                mix-blend-mode: difference;
-            }
-
-            .custom-cursor.hovered {
-                width: 60px;
-                height: 60px;
-                background-color: #e8e4db;
-                mix-blend-mode: difference;
-            }
+        html {
+            scroll-behavior: smooth;
         }
     </style>
     <script>
@@ -74,8 +36,8 @@
                         "primary": "#4a5d4e",
                         "primary-hover": "#5d7362",
                         "accent-bronze": "#a68b6a",
-                        "background-dark": "#0d0d0d",
-                        "background-darker": "#080808",
+                        "background-dark": "#000000",
+                        "background-darker": "#000000",
                         "surface-dark": "#141414",
                         "ivory": "#e8e4db",
                         "ivory-dim": "#b5b1a6",
@@ -92,94 +54,117 @@
     </script>
 </head>
 
-<body class="bg-background-dark text-ivory font-display antialiased bg-grainy">
-    <div class="custom-cursor hidden md:block"></div>
+<body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-4 left-1/2 -translate-x-1/2 z-[70] w-[calc(100%-2rem)] max-w-7xl border border-white/10 bg-background-dark/80 backdrop-blur-md rounded-2xl shadow-xl">
-            <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-8">
+            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
+            <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-8 max-w-7xl">
                 <a href="index.html" class="flex items-center gap-3">
-                    <img src="./assets/images/chf_logo.png" alt="CHF Logo"
-                        class="h-10 w-10 object-contain rounded-full border border-white/10" />
+                    <div class="h-10 w-10 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
-                <nav class="hidden lg:flex items-center gap-10">
+                <nav class="hidden lg:flex items-center gap-8">
+                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        href="plant-experience-center.html">Plant Experience Center</a>
+                    
                     <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-accent-bronze transition-colors duration-300"
-                            href="portfolio.html">Portfolio</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-full h-[1px] bg-accent-bronze transition-all duration-300"></span>
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
+                            href="javascript:void(0)">
+                            Collections
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </a>
+                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                            <div class="bg-background-dark border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
+                                <div class="flex flex-col gap-4">
+                                    <a href="full-grown-avenue-trees.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Full Grown Avenue Trees</a>
+                                    <a href="exotic-indoor-plants.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Exotic Indoor Plants</a>
+                                    <a href="bonsai.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Bonsai</a>
+                                    <a href="curated-plants.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Plants</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="collections.html">Collections</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
+                            href="javascript:void(0)">
+                            Services
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </a>
+                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                            <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
+                                <div class="flex flex-col gap-4">
+                                    <a href="architectural-harmony.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Architectural Harmony</a>
+                                    <a href="curated-specimens.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Specimens</a>
+                                    <a href="white-glove-service.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">White Glove Service</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="services.html">Services</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
-                    </div>
-                    <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="inquiry.html">Inquiry</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
-                    </div>
+
+                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        href="about.html">About Us</a>
+                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        href="inquiry.html">Enquiry</a>
                 </nav>
                 <button id="mobile-menu-btn"
                     class="lg:hidden flex items-center text-ivory z-50 p-2 relative w-10 h-10 justify-center">
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform -translate-y-1.5"></span>
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block opacity-100"></span>
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform translate-y-1.5"></span>
+                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform -translate-y-1.5"></span>
+                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 opacity-100"></span>
+                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform translate-y-1.5"></span>
                 </button>
             </div>
         </header>
 
-        <!-- Mobile Menu -->
+        <!-- Mobile Menu Overlay -->
         <div id="mobile-menu"
-            class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500">
-            <nav class="flex flex-col items-center gap-10 text-center">
-                <a class="mobile-link text-3xl font-serif text-accent-bronze transform translate-y-8 opacity-0"
-                    href="portfolio.html">Portfolio</a>
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="collections.html">Collections</a>
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="services.html">Services</a>
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="inquiry.html">Inquiry</a>
+            class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-y-auto pt-20">
+            <nav class="flex flex-col items-center gap-6 text-center p-8 w-full">
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze" href="plant-experience-center.html">Plant Experience Center</a>
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+                <span class="mobile-link text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze">Collections</span>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="full-grown-avenue-trees.html">Avenue Trees</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="exotic-indoor-plants.html">Indoor Plants</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="bonsai.html">Bonsai</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="curated-plants.html">Curated Plants</a>
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+                <span class="mobile-link text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze">Services</span>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="architectural-harmony.html">Architectural Harmony</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="curated-specimens.html">Curated Specimens</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="white-glove-service.html">White Glove Service</a>
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze" href="about.html">About Us</a>
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze" href="inquiry.html">Enquiry</a>
             </nav>
         </div>
 
         <main class="flex-grow pt-32 lg:pt-40">
-            <!-- Hero -->
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 mb-32">
-                <div class="reveal-anim mb-6 flex items-center gap-4">
-                    <span class="h-px w-8 bg-accent-bronze"></span>
-                    <span class="text-accent-bronze text-[10px] uppercase tracking-[0.5em] font-bold">The Archive</span>
-                </div>
-                <h2 class="reveal-anim font-serif text-6xl md:text-8xl lg:text-9xl font-light leading-none text-white tracking-tighter">
-                    Living <span class="italic text-accent-bronze font-light">Art</span>
-                </h2>
-                <div class="mt-12 max-w-xl reveal-anim">
-                    <p class="text-lg text-ivory-dim font-light leading-relaxed">
-                        A curated documentation of spaces transformed by the quiet power of architectural botanicals. Each project is a testament to the harmony between nature and modern design.
-                    </p>
+            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32 overflow-hidden">
+                <div class="flex flex-col md:flex-row justify-between items-end gap-12">
+                    <div class="max-w-3xl">
+                        <div class="flex items-center gap-4 mb-6">
+                            <span class="w-12 h-px bg-accent-bronze/40"></span>
+                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Archives</span>
+                        </div>
+                        <h2 class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8">
+                            Curated <br />
+                            <span class="text-accent-bronze italic font-light drop-shadow-sm">Portfolios</span>
+                        </h2>
+                    </div>
+                    <div class="flex flex-col items-start md:items-end gap-6 max-w-xs mb-4">
+                        <p class="text-gray-400 font-light text-sm leading-relaxed uppercase tracking-[0.15em] text-left md:text-right border-l md:border-l-0 md:border-r border-accent-bronze/30 pl-6 md:pl-0 md:pr-6">
+                            A visual synthesis of botanical life and contemporary living spaces.
+                        </p>
+                    </div>
                 </div>
             </section>
 
-            <!-- Portfolio Grid -->
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-32">
+            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-40">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-32 gap-x-20">
                     <!-- Project 1 -->
-                    <div class="stagger-reveal group cursor-pointer">
+                    <div class="group cursor-pointer">
                         <div class="relative aspect-[4/5] overflow-hidden mb-8 bg-surface-dark">
-                            <img src="assets/images/deskchf.png" alt="CHF London Studio" class="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+                            <div class="w-full h-full transition-transform duration-[1.5s] group-hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-700"></div>
                         </div>
                         <div class="flex justify-between items-end border-b border-white/10 pb-6 transition-colors duration-500 group-hover:border-accent-bronze">
@@ -192,9 +177,9 @@
                     </div>
 
                     <!-- Project 2 -->
-                    <div class="stagger-reveal group cursor-pointer md:mt-40">
+                    <div class="group cursor-pointer md:mt-40">
                         <div class="relative aspect-[4/5] overflow-hidden mb-8 bg-surface-dark">
-                            <img src="assets/images/biophilic_workspace_1772807789949.png" alt="Biophilic Workspace" class="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+                            <div class="w-full h-full transition-transform duration-[1.5s] group-hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-700"></div>
                         </div>
                         <div class="flex justify-between items-end border-b border-white/10 pb-6 transition-colors duration-500 group-hover:border-accent-bronze">
@@ -207,9 +192,9 @@
                     </div>
 
                     <!-- Project 3 -->
-                    <div class="stagger-reveal group cursor-pointer">
+                    <div class="group cursor-pointer">
                         <div class="relative aspect-[4/5] overflow-hidden mb-8 bg-surface-dark">
-                            <img src="assets/images/living_wall_1772807862077.png" alt="Living Wall" class="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+                            <div class="w-full h-full transition-transform duration-[1.5s] group-hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-700"></div>
                         </div>
                         <div class="flex justify-between items-end border-b border-white/10 pb-6 transition-colors duration-500 group-hover:border-accent-bronze">
@@ -222,9 +207,9 @@
                     </div>
 
                     <!-- Project 4 -->
-                    <div class="stagger-reveal group cursor-pointer md:mt-40">
+                    <div class="group cursor-pointer md:mt-40">
                         <div class="relative aspect-[4/5] overflow-hidden mb-8 bg-surface-dark">
-                            <img src="assets/images/conservatory_tree_1772807879244.png" alt="Conservatory Tree" class="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+                            <div class="w-full h-full transition-transform duration-[1.5s] group-hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-700"></div>
                         </div>
                         <div class="flex justify-between items-end border-b border-white/10 pb-6 transition-colors duration-500 group-hover:border-accent-bronze">
@@ -244,8 +229,7 @@
                 <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                     <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
                         <div class="flex items-center gap-3 mb-8">
-                            <img src="./assets/images/chf_logo.png" alt="CHF Logo"
-                                class="h-12 w-12 object-contain rounded-full border border-white/10" />
+                            <div class="h-12 w-12 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
                             <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
                         </div>
                         <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
@@ -256,15 +240,16 @@
                     <div>
                         <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Explore</h3>
                         <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio.html">Portfolio</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="services.html">Services</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Plant Experience</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Collections</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Services</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Enquiry</a></li>
                         </ul>
                     </div>
                     <div>
                         <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
                         <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">About Us</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
                             <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Contact</a></li>
                         </ul>
                     </div>
@@ -284,96 +269,41 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script>
-        // Custom Cursor
-        const cursor = document.querySelector('.custom-cursor');
-        document.addEventListener('mousemove', (e) => {
-            requestAnimationFrame(() => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-            });
-        });
-
-        const hoverElements = document.querySelectorAll('a, button, .cursor-pointer');
-        hoverElements.forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-        });
-
-        // Lenis
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smooth: true,
-        });
-
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-
-        // GSAP
-        gsap.registerPlugin(ScrollTrigger);
-
-        gsap.from('.reveal-anim', {
-            y: 50,
-            opacity: 0,
-            duration: 1.5,
-            stagger: 0.2,
-            ease: "power3.out",
-            delay: 0.2
-        });
-
-        gsap.utils.toArray('.stagger-reveal').forEach((item, i) => {
-            gsap.from(item, {
-                y: 100,
-                opacity: 0,
-                duration: 1.2,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: item,
-                    start: "top 90%",
-                    toggleActions: "play none none reverse"
-                }
-            });
-        });
-
-        // Mobile Menu
+        // Mobile Menu Logic
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
+        const mobileLinks = mobileMenu.querySelectorAll('a');
         const lines = mobileBtn.querySelectorAll('.hamburger-line');
         let isMenuOpen = false;
 
-        const menuTl = gsap.timeline({ paused: true });
-
-        menuTl.to(mobileMenu, { opacity: 1, pointerEvents: 'auto', duration: 0.4 })
-            .to(mobileLinks, { y: 0, opacity: 1, duration: 0.4, stagger: 0.1 }, "-=0.2");
-
-        mobileBtn.addEventListener('click', () => {
+        function toggleMenu() {
             isMenuOpen = !isMenuOpen;
             if (isMenuOpen) {
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
                 lines[0].classList.replace('-translate-y-1.5', 'translate-y-0');
                 lines[0].classList.add('rotate-45');
                 lines[1].classList.add('opacity-0');
                 lines[2].classList.replace('translate-y-1.5', 'translate-y-0');
                 lines[2].classList.add('-rotate-45');
-                lenis.stop();
-                menuTl.play();
+                document.body.style.overflow = 'hidden';
             } else {
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
                 lines[0].classList.replace('translate-y-0', '-translate-y-1.5');
                 lines[0].classList.remove('rotate-45');
                 lines[1].classList.remove('opacity-0');
                 lines[2].classList.replace('translate-y-0', 'translate-y-1.5');
                 lines[2].classList.remove('-rotate-45');
-                lenis.start();
-                menuTl.reverse();
+                document.body.style.overflow = '';
             }
-        });
+        }
+
+        mobileBtn.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', () => {
+            if (isMenuOpen) toggleMenu();
+        }));
     </script>
 </body>
 

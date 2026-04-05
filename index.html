@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>CHF - Botanical Luxury</title>
+    <title>CHF - Botanical Luxury - CHF Botanical Luxury</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap"
@@ -15,9 +15,14 @@
         rel="stylesheet" />
     <style type="text/tailwindcss">
         @layer utilities {
-            .bg-grainy {
-                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            .wireframe-cross {
+                background-image: url('assets/wireframe-placeholder.svg');
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                background-position: center;
             }
+        }
+        @layer utilities {
             .animate-pulse-slow {
                 animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             }
@@ -25,64 +30,18 @@
                 0%, 100% { opacity: 0.3; transform: translateY(0); }
                 50% { opacity: 0.8; transform: translateY(5px); }
             }
+            .animate-spin-slow {
+                animation: spin-slow 12s linear infinite;
+            }
+            @keyframes spin-slow {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
         }
     </style>
     <style>
-        /* Lenis Smooth Scroll */
-        html.lenis,
-        html.lenis body {
-            height: auto;
-        }
-
-        .lenis.lenis-smooth {
-            scroll-behavior: auto !important;
-        }
-
-        .lenis.lenis-smooth [data-lenis-prevent] {
-            overscroll-behavior: contain;
-        }
-
-        .lenis.lenis-stopped {
-            overflow: hidden;
-        }
-
-        .lenis.lenis-smooth iframe {
-            pointer-events: none;
-        }
-
-        /* Custom Cursor */
-        @media (min-width: 768px) {
-            body {
-                cursor: none;
-            }
-
-            a,
-            button,
-            .cursor-pointer {
-                cursor: none !important;
-            }
-
-            .custom-cursor {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 15px;
-                height: 15px;
-                border-radius: 50%;
-                background-color: #a68b6a;
-                pointer-events: none;
-                z-index: 99999;
-                transform: translate(-50%, -50%);
-                transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease;
-                mix-blend-mode: difference;
-            }
-
-            .custom-cursor.hovered {
-                width: 60px;
-                height: 60px;
-                background-color: #e8e4db;
-                mix-blend-mode: difference;
-            }
+        html {
+            scroll-behavior: smooth;
         }
     </style>
     <script>
@@ -94,8 +53,8 @@
                         "primary": "#4a5d4e",
                         "primary-hover": "#5d7362",
                         "accent-bronze": "#a68b6a",
-                        "background-dark": "#0d0d0d",
-                        "background-darker": "#080808",
+                        "background-dark": "#000000",
+                        "background-darker": "#000000",
                         "surface-dark": "#141414",
                         "ivory": "#e8e4db",
                         "ivory-dim": "#b5b1a6",
@@ -112,41 +71,65 @@
     </script>
 </head>
 
-<body class="bg-background-dark text-ivory font-display antialiased bg-grainy">
-    <div class="custom-cursor hidden md:block"></div>
+<body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-4 left-1/2 -translate-x-1/2 z-[70] w-[calc(100%-2rem)] max-w-7xl border border-white/10 bg-background-dark/80 backdrop-blur-md rounded-2xl shadow-xl">
-            <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-8">
-                <div class="flex items-center gap-3">
-                    <img src="./assets/images/chf_logo.png" alt="CHF Logo"
-                        class="h-10 w-10 object-contain rounded-full border border-white/10" />
+            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
+            <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-8 max-w-7xl">
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
-                </div>
-                <nav class="hidden lg:flex items-center gap-10">
+                </a>
+                <nav class="hidden lg:flex items-center gap-8">
                     <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="portfolio.html">Portfolio</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="plant-experience-center.html">Plant Experience Center</a>
+                    </div>
+                    
+                    <!-- Collections Dropdown -->
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
+                            href="javascript:void(0)">
+                            Collections
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </a>
+                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                            <div class="bg-background-dark border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
+                                <div class="flex flex-col gap-4">
+                                    <a href="full-grown-avenue-trees.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Full Grown Avenue Trees</a>
+                                    <a href="exotic-indoor-plants.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Exotic Indoor Plants</a>
+                                    <a href="bonsai.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Bonsai</a>
+                                    <a href="curated-plants.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Plants</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Dropdown -->
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
+                            href="javascript:void(0)">
+                            Services
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </a>
+                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                            <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
+                                <div class="flex flex-col gap-4">
+                                    <a href="architectural-harmony.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Architectural Harmony</a>
+                                    <a href="curated-specimens.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Specimens</a>
+                                    <a href="white-glove-service.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">White Glove Service</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="about.html">About Us</a>
                     </div>
                     <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="collections.html">Collections</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
-                    </div>
-                    <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="services.html">Services</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
-                    </div>
-                    <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="inquiry.html">Inquiry</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="inquiry.html">Enquiry</a>
                     </div>
                 </nav>
                 <button id="mobile-menu-btn"
@@ -159,43 +142,72 @@
                         class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform translate-y-1.5"></span>
                 </button>
             </div>
-
         </header>
 
-        <!-- Mobile Menu Overlay - Moved outside transformed header for full-page coverage -->
+        <!-- Mobile Menu Overlay -->
         <div id="mobile-menu"
-            class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500">
-            <nav class="flex flex-col items-center gap-10 text-center">
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="portfolio.html">Portfolio</a>
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="collections.html">Collections</a>
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="services.html">Services</a>
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="inquiry.html">Inquiry</a>
-            </nav>
-            <!-- Close indicator or extra button could go here, but toggle is handled by hamburger -->
-        </div>
-        <main class="flex-grow">
-            <section
-                class="hero-section relative w-full h-[100vh] overflow-hidden bg-background-dark flex items-center justify-center">
-                <!-- Desktop Background Image -->
-                <div class="hero-bg-parallax absolute inset-0 bg-cover bg-center hidden md:block"
-                    data-alt="CHF Experience Lobby Landscape"
-                    style='background-image: url("assets/images/deskchf.png"); transform: scale(1.05);'>
-                </div>
-                <!-- Mobile Background Image -->
-                <div class="hero-bg-parallax absolute inset-0 bg-cover bg-center block md:hidden"
-                    data-alt="CHF Experience Lobby Portrait"
-                    style='background-image: url("assets/images/chfheromob.png"); transform: scale(1.05); background-position: center bottom;'>
-                </div>
+            class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-y-auto pt-20">
+            <nav class="flex flex-col items-center gap-6 text-center p-8 w-full">
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
+                    href="plant-experience-center.html">Plant Experience Center</a>
+                
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+                
+                <span class="mobile-link text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze">Collections</span>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="javascript:void(0)">All Collections</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="full-grown-avenue-trees.html">Avenue Trees</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="exotic-indoor-plants.html">Indoor Plants</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="bonsai.html">Bonsai</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="curated-plants.html">Curated Plants</a>
 
-                <!-- Curved Overlay (Edge-to-Edge on Desk) -->
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+
+                <span class="mobile-link text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze">Services</span>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="javascript:void(0)">All Services</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="architectural-harmony.html">Architectural Harmony</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="curated-specimens.html">Curated Specimens</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white"
+                    href="white-glove-service.html">White Glove Service</a>
+
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
+                    href="about.html">About Us</a>
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
+                    href="inquiry.html">Enquiry</a>
+            </nav>
+        </div>
+        
+        <main class="flex-grow">
+            <!-- Hero Section -->
+            <section class="hero-section relative h-screen w-full overflow-hidden">
+                <!-- Hero Background Parallax (CSS fallback) -->
+            <div class="absolute inset-0 z-0 overflow-hidden">
+                <div class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
+                    style="background-image: url('assets/images/deskchf.png');">
+                </div>
+                <!-- Premium Overlay for depth and text legibility -->
+                <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 z-10"></div>
+                <!-- Subtle noise overlay for texture -->
+                <div class="absolute inset-0 opacity-[0.03] pointer-events-none z-10" 
+                    style="background-image: url('https://www.transparenttextures.com/patterns/stardust.png');"></div>
+            </div>
+
+            <!-- Hero Text Overlay -->
+            <div class="relative z-20 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-6 text-center text-ivory">
+                <!-- Curved Overlay (Edge-to-Edge) -->
                 <div
                     class="hero-curved-overlay absolute bottom-0 left-1/2 -translate-x-1/2 w-[500vw] h-[500vw] md:w-[450vw] md:h-[450vw] rounded-[50%] bg-black/40 backdrop-blur-2xl z-30 pointer-events-none transform translate-y-[calc(100%-12vh)] md:translate-y-[calc(100%-16vh)] flex flex-col items-center justify-start pt-[4vh] border-none shadow-none">
                     <!-- Scroll text indicator -->
-                    <div class="flex flex-col items-center gap-4 opacity-0 animate-pulse-slow"
+                    <div class="flex flex-col items-center gap-4 animate-pulse-slow"
                         id="hero-scroll-indicator">
                         <span
                             class="text-ivory/60 text-[10px] uppercase tracking-[0.6em] font-medium transition-colors duration-500">Scroll
@@ -204,56 +216,11 @@
                         <div class="h-12 w-px bg-ivory/30 transition-colors duration-500"></div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Bottom Tagline on Curve (Removed Rotating Text) -->
-
-                <!-- Bottom Tagline on Curve -->
-
-                <!-- Bottom Tagline on Curve -->
-                <div
-                    class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-center w-full pointer-events-none hidden">
-                    <span
-                        class="hero-text-anim inline-block text-[10px] md:text-xs uppercase tracking-[0.6em] font-bold text-accent-bronze/80 invisible">
-                        Authentic Botanical Sculptures
-                    </span>
-                </div>
-
-                <!-- Hero Text Overlay (Hidden) -->
-                <div
-                    class="relative z-20 mx-auto max-w-6xl px-6 text-center text-ivory flex-col items-center justify-center h-full pt-20 hidden">
-                    <div class="hero-text-anim mb-6 flex items-center gap-4 invisible">
-                        <span class="h-px w-8 bg-accent-bronze"></span>
-                        <span class="text-accent-bronze text-xs uppercase tracking-[0.5em] font-bold">CHF
-                            Experience</span>
-                        <span class="h-px w-8 bg-accent-bronze"></span>
-                    </div>
-
-                    <h2
-                        class="hero-text-anim mb-8 font-serif text-5xl font-light leading-[1.1] md:text-7xl lg:text-9xl tracking-tight text-white drop-shadow-2xl invisible">
-                        Living <span class="italic font-thin text-ivory-dim">Sculptures</span>
-                    </h2>
-
-                    <p
-                        class="hero-text-anim mx-auto mb-12 max-w-xl text-md font-light text-ivory/80 md:text-lg leading-relaxed tracking-wide invisible uppercase">
-                        Curating architectural botanicals for refined interiors.
-                    </p>
-
-                    <div
-                        class="hero-text-anim flex flex-col sm:flex-row gap-8 justify-center items-center invisible mt-4">
-                        <button
-                            class="group relative inline-flex items-center justify-center overflow-hidden rounded-none px-12 py-4 text-xs uppercase tracking-[0.3em] font-bold text-background-dark transition-all hover:bg-white hover:scale-105 bg-accent-bronze">
-                            <span class="relative z-10">Explore Collection</span>
-                        </button>
-                        <button
-                            class="group inline-flex items-center justify-center rounded-none border-b border-white/30 px-4 py-2 text-xs uppercase tracking-[0.3em] font-medium text-ivory transition-all hover:border-accent-bronze hover:text-accent-bronze">
-                            View Gallery
-                        </button>
-                    </div>
-                </div>
-            </section>
-            </section>
             <section
-                class="fade-up-section invisible bg-[#0d0d0d] py-32 px-6 md:px-12 lg:px-24 relative z-40 overflow-hidden">
+                class="bg-[#0d0d0d] py-32 px-6 md:px-12 lg:px-24 relative z-40 overflow-hidden">
                 <div class="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
                     <div class="lg:col-span-5 space-y-10">
                         <div
@@ -269,19 +236,18 @@
                             for
                             beauty, but for its ability to command the light and shadow of refined interiors.
                         </p>
-                        <button
+                        <a href="process.html"
                             class="group flex items-center gap-4 text-ivory hover:text-accent-gold transition-colors border-b border-transparent hover:border-accent-gold pb-1 w-fit">
                             <span class="uppercase tracking-widest text-sm font-medium">Discover Our Process</span>
                             <span
                                 class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
-                        </button>
+                        </a>
                     </div>
                     <div class="lg:col-span-7 relative h-[600px] w-full">
                         <div class="absolute -inset-4 border border-white/5 z-0 hidden lg:block"></div>
                         <div class="absolute inset-0 z-10 overflow-hidden shadow-2xl bg-surface-dark">
                             <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                data-alt="Rare architectural Monstera specimen in a minimalist moody gallery setting"
-                                style='background-image: url("assets/images/slow_luxury_specimen.png"); filter: brightness(0.8) contrast(1.1);'>
+                                data-alt="Rare architectural Monstera specimen in a minimalist moody gallery setting">
                             </div>
                             <div
                                 class="absolute inset-0 bg-gradient-to-tr from-black/60 to-transparent pointer-events-none">
@@ -291,7 +257,7 @@
                 </div>
             </section>
             <section
-                class="fade-up-section invisible bg-background-darker py-32 md:py-40 px-6 md:px-12 lg:px-24 border-y border-white/5 relative overflow-hidden">
+                class="bg-background-darker py-32 md:py-40 px-6 md:px-12 lg:px-24 border-y border-white/5 relative overflow-hidden">
                 <!-- Aesthetic background elements -->
                 <div
                     class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent-bronze/5 rounded-full blur-[120px] pointer-events-none">
@@ -308,10 +274,11 @@
                         </div>
                     </div>
 
-                    <div
-                        class="stagger-container grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative">
-                        <div
-                            class="service-card group p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10">
+                        
+                        <!-- Curated Specimens Card -->
+                        <a href="curated-specimens.html"
+                            class="service-card group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -336,10 +303,11 @@
                             <div
                                 class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-accent-bronze/0 via-accent-bronze/50 to-accent-bronze/0 transition-all duration-1000 group-hover:w-full">
                             </div>
-                        </div>
+                        </a>
 
-                        <div
-                            class="service-card group p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                        <!-- Architectural Harmony Card -->
+                        <a href="architectural-harmony.html"
+                            class="service-card group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -347,7 +315,7 @@
                             <div
                                 class="transform transition-transform duration-700 group-hover:-translate-y-3 group-hover:scale-110 mb-8 text-accent-bronze block relative">
                                 <div
-                                    class="absolute inset-0 bg-accent-bronze/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 scale-150">
+                                    class="absolute inset-0 bg-accent-bronze/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                                 </div>
                                 <span
                                     class="material-symbols-outlined text-4xl lg:text-5xl font-light relative z-10 transition-colors duration-500 group-hover:text-white">architecture</span>
@@ -364,10 +332,11 @@
                             <div
                                 class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-accent-bronze/0 via-accent-bronze/50 to-accent-bronze/0 transition-all duration-1000 group-hover:w-full">
                             </div>
-                        </div>
+                        </a>
 
-                        <div
-                            class="service-card group p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                        <!-- White Glove Service Card -->
+                        <a href="white-glove-service.html"
+                            class="service-card group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -392,12 +361,11 @@
                             <div
                                 class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-accent-bronze/0 via-accent-bronze/50 to-accent-bronze/0 transition-all duration-1000 group-hover:w-full">
                             </div>
-                        </div>
+                        </a>
                     </div>
-                </div>
             </section>
             <section
-                class="fade-up-section invisible stagger-container bg-background-dark py-40 px-6 md:px-12 lg:px-24">
+                class="bg-background-dark py-40 px-6 md:px-12 lg:px-24">
                 <div class="mx-auto max-w-7xl">
                     <div class="mb-24 flex flex-col md:flex-row justify-between items-end gap-10 relative">
                         <!-- Decorative background element -->
@@ -431,13 +399,11 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                        <div
-                            class="stagger-image group cursor-pointer invisible sticky top-[100px] z-10 bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-transparent md:border-none">
+                        <a href="portfolio.html"
+                            class="group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-transparent md:border-none block">
                             <div
-                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-surface-dark border border-white/5 md:border-none shadow-2xl md:shadow-none">
-                                <img alt="Biophilic Workspace"
-                                    class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-                                    src="assets/images/biophilic_workspace_1772807789949.png" />
+                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] wireframe-cross md:border-none shadow-2xl md:shadow-none">
+                                <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
                                     class="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:hidden">
@@ -456,14 +422,12 @@
                             <span
                                 class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read
                                 Editorial</span>
-                        </div>
-                        <div
-                            class="stagger-image group cursor-pointer invisible sticky top-[125px] z-20 bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none">
+                        </a>
+                        <a href="portfolio.html"
+                            class="group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block">
                             <div
-                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-surface-dark border border-white/5 md:border-none shadow-2xl md:shadow-none">
-                                <img alt="Rare Specimen Sculptures"
-                                    class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-                                    src="assets/images/specimen_sculpture_1772807810076.png" />
+                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] wireframe-cross md:border-none shadow-2xl md:shadow-none">
+                                <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
                                     class="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:hidden">
@@ -481,14 +445,12 @@
                             <span
                                 class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read
                                 Editorial</span>
-                        </div>
-                        <div
-                            class="stagger-image group cursor-pointer invisible sticky top-[150px] z-30 bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none">
+                        </a>
+                        <a href="portfolio.html"
+                            class="group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block">
                             <div
-                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-surface-dark border border-white/5 md:border-none shadow-2xl md:shadow-none">
-                                <img alt="Living Walls"
-                                    class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-                                    src="assets/images/living_wall_1772807862077.png" />
+                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] wireframe-cross md:border-none shadow-2xl md:shadow-none">
+                                <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
                                     class="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:hidden">
@@ -506,71 +468,17 @@
                             <span
                                 class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read
                                 Editorial</span>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </section>
-            <section class="fade-up-section invisible py-32 px-6 md:px-12 bg-surface-dark relative">
-                <div class="absolute inset-0 opacity-5 pointer-events-none"
-                    style="background-image: url('https://images.unsplash.com/photo-1599813589947-2cb3bc00dfaf?q=80&w=1762&auto=format&fit=crop');">
-                </div>
-    </div>
-    <div class="mx-auto max-w-7xl relative z-10">
-        <div class="flex flex-col items-center justify-center text-center mb-16 gap-4 border-b border-white/5 pb-8">
-            <div>
-                <span class="text-accent-gold font-bold tracking-[0.2em] text-xs uppercase mb-3 block mx-auto">Featured
-                    Project</span>
-                <h3 class="font-serif text-4xl md:text-5xl text-ivory">The Glass House Conservatory</h3>
-            </div>
-            <a class="text-gray-400 hover:text-white flex items-center justify-center gap-2 text-sm uppercase tracking-widest transition-colors mb-2"
-                href="#">
-                View Case Study <span class="material-symbols-outlined text-sm">arrow_outward</span>
-            </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[700px]">
-            <div class="md:col-span-7 relative overflow-hidden h-[500px] md:h-full group bg-black z-10 shadow-2xl">
-                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-                    data-alt="Indoor tree in minimalist concrete planter against dark wall"
-                    style='background-image: url("assets/images/conservatory_tree_1772807879244.png"); filter: contrast(1.1) brightness(0.8);'>
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60">
-                </div>
-                <div class="absolute bottom-8 left-8 pr-6">
-                    <p class="text-ivory font-serif text-3xl md:text-2xl italic tracking-wide">The Ficus Lyric
-                    </p>
-                    <p class="text-xs text-ivory-dim uppercase tracking-[0.2em] mt-2 block md:hidden">Living
-                        Sculpture
-                    </p>
-                </div>
-            </div>
-
-            <div class="md:col-span-5 flex flex-col gap-6 h-auto md:h-full relative z-20 mt-6 md:mt-0 px-4 md:px-0">
-                <div
-                    class="relative overflow-hidden flex-1 group bg-black shadow-2xl h-[250px] md:h-auto border border-white/10 md:border-none self-end w-5/6 md:w-full">
-                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-                        data-alt="Rare variegated Monstera leaf macro"
-                        style='background-image: url("assets/images/premium_monstera_leaf_1772893542225.png"); filter: contrast(1.1) brightness(0.9);'>
-                    </div>
-                </div>
-                <div
-                    class="relative overflow-hidden flex-1 group bg-black shadow-2xl h-[300px] md:h-auto border border-white/10 md:border-none self-start w-[90%] md:w-full md:mt-0 z-10 transition-transform duration-700 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-                        data-alt="Luxury architectural plant in ceramic planter"
-                        style='background-image: url("assets/images/luxury_architectural_plant_1772893558967.png"); filter: contrast(1.1) brightness(0.85);'>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </section>
-    </main>
-    <footer class="fade-up-section invisible border-t border-white/10 bg-background-darker pt-24 pb-12">
+        </main>
+    <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                 <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
                     <div class="flex items-center gap-3 mb-8">
-                        <img src="./assets/images/chf_logo.png" alt="CHF Logo"
-                            class="h-12 w-12 object-contain rounded-full border border-white/10" />
+                        <div class="h-12 w-12 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
                         <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
@@ -599,25 +507,18 @@
                 <div>
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">About
-                                Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Careers</a>
-                        </li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Press</a>
-                        </li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Careers</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Press</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Services</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors"
-                                href="#">Consultation</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Design</a>
-                        </li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors"
-                                href="#">Installation</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors"
-                                href="#">Maintenance</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Consultation</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Design</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Installation</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Enquiry</a></li>
                     </ul>
                 </div>
                 <div>
@@ -639,180 +540,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script>
-        // Custom Cursor Logic
-        const cursor = document.querySelector('.custom-cursor');
-        document.addEventListener('mousemove', (e) => {
-            // use requestAnimationFrame for smooth cursor
-            requestAnimationFrame(() => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-            });
-        });
-
-        const hoverElements = document.querySelectorAll('a, button, .cursor-pointer');
-        hoverElements.forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-        });
-
-        // Lenis Smooth Scroll Initialization
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            direction: 'vertical',
-            gestureDirection: 'vertical',
-            smooth: true,
-            mouseMultiplier: 1,
-            smoothTouch: false,
-            touchMultiplier: 2,
-            infinite: false,
-        });
-
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-
-        // GSAP Initialization
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Sync ScrollTrigger with Lenis
-        lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => {
-            lenis.raf(time * 1000);
-        });
-        gsap.ticker.lagSmoothing(0, 0);
-
-        // Animations
-
-        // 1. Hero Text Reveal
-        const heroTl = gsap.timeline({ defaults: { ease: "power4.out" } });
-
-        // remove invisible class before animating
-        gsap.set('.hero-text-anim', { autoAlpha: 1 });
-        heroTl.from('.hero-text-anim', {
-            y: 60,
-            opacity: 0,
-            duration: 1.5,
-            stagger: 0.2,
-            delay: 0.3
-        });
-
-        // Reveal Scroll Indicator
-        heroTl.to('#hero-scroll-indicator', {
-            opacity: 1,
-            duration: 1.5,
-            ease: "power2.out"
-        }, "-=0.5");
-
-        // Reveal Curved Scroll Text
-        heroTl.to('.hero-rotate-scroll', {
-            opacity: 1,
-            duration: 2,
-            ease: "power2.inOut"
-        }, "-=1");
-
-        // 2. Parallax and Fade Hero Background
-        gsap.to('.hero-bg-parallax', {
-            yPercent: 20,
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".fade-up-section",
-                start: "top 100%",
-                end: "top 0%",
-                scrub: true
-            }
-        });
-
-        // Instant Overlay Color Transition
-        ScrollTrigger.create({
-            trigger: ".hero-section",
-            start: "1px top",
-            onEnter: () => {
-                gsap.set('.hero-curved-overlay', {
-                    backgroundColor: "#0d0d0d",
-                    backdropFilter: "none",
-                    webkitBackdropFilter: "none"
-                });
-                gsap.set('#hero-scroll-indicator span', { color: "#bfa37e", opacity: 1 });
-                gsap.set('#hero-scroll-indicator div', { backgroundColor: "#bfa37e" });
-            },
-            onLeaveBack: () => {
-                gsap.set('.hero-curved-overlay', {
-                    backgroundColor: "rgba(0,0,0,0.4)",
-                    backdropFilter: "blur(40px)",
-                    webkitBackdropFilter: "blur(40px)"
-                });
-                gsap.set('#hero-scroll-indicator span', { color: "#ffffff", opacity: 0.6 });
-                gsap.set('#hero-scroll-indicator div', { backgroundColor: "#ffffff" });
-            }
-        });
-
-        // Rotate Curved Text on Scroll
-        gsap.to('.hero-rotate-scroll', {
-            rotation: 90,
-            ease: "none",
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1
-            }
-        });
-
-        gsap.to('.hero-text-anim', {
-            y: -100,
-            opacity: 0,
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".fade-up-section",
-                start: "top 100%",
-                end: "top 20%",
-                scrub: true
-            }
-        });
-
-        // 3. Fade Up Sections
-        gsap.utils.toArray('.fade-up-section').forEach(section => {
-            gsap.to(section, {
-                autoAlpha: 1, // handles invisible
-                y: 0,
-                duration: 1.2,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: section,
-                    start: "top 85%", // trigger when top of section is at 85% of viewport
-                    toggleActions: "play none none reverse"
-                }
-            });
-            // Initial state
-            gsap.set(section, { y: 60 });
-        });
-
-        // 4. Stagger Items
-        gsap.utils.toArray('.stagger-container').forEach(container => {
-            const items = container.querySelectorAll('.stagger-image');
-            gsap.to(items, {
-                autoAlpha: 1,
-                y: 0,
-                duration: 0.8,
-                stagger: 0.15,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: container,
-                    start: "top 75%",
-                    toggleActions: "play none none reverse"
-                }
-            });
-            // Initial state
-            gsap.set(items, { y: 80 });
-        });
-
         // Mobile Menu Logic
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -820,54 +548,33 @@
         const lines = mobileBtn.querySelectorAll('.hamburger-line');
         let isMenuOpen = false;
 
-        const menuTl = gsap.timeline({ paused: true });
-
-        menuTl.to(mobileMenu, {
-            opacity: 1,
-            pointerEvents: 'auto',
-            duration: 0.4,
-            ease: 'power2.out'
-        })
-            .to(mobileLinks, {
-                y: 0,
-                opacity: 1,
-                duration: 0.4,
-                stagger: 0.1,
-                ease: 'power3.out'
-            }, "-=0.2");
-
-        mobileBtn.addEventListener('click', () => {
+        function toggleMenu() {
             isMenuOpen = !isMenuOpen;
-
             if (isMenuOpen) {
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
                 lines[0].classList.replace('-translate-y-1.5', 'translate-y-0');
                 lines[0].classList.add('rotate-45');
                 lines[1].classList.add('opacity-0');
                 lines[2].classList.replace('translate-y-1.5', 'translate-y-0');
                 lines[2].classList.add('-rotate-45');
-
-                // Stop lenis scroll
-                lenis.stop();
-                menuTl.play();
+                document.body.style.overflow = 'hidden';
             } else {
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
                 lines[0].classList.replace('translate-y-0', '-translate-y-1.5');
                 lines[0].classList.remove('rotate-45');
                 lines[1].classList.remove('opacity-0');
                 lines[2].classList.replace('translate-y-0', 'translate-y-1.5');
                 lines[2].classList.remove('-rotate-45');
-
-                // Start lenis scroll
-                lenis.start();
-                menuTl.reverse();
+                document.body.style.overflow = '';
             }
-        });
+        }
 
-        // Close menu on link click
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (isMenuOpen) mobileBtn.click();
-            });
-        });
+        mobileBtn.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', () => {
+            if (isMenuOpen) toggleMenu();
+        }));
     </script>
 </body>
 

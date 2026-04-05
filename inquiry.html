@@ -14,66 +14,17 @@
         rel="stylesheet" />
     <style type="text/tailwindcss">
         @layer utilities {
-            .bg-grainy {
-                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            .wireframe-cross {
+                background-image: url('assets/wireframe-placeholder.svg');
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                background-position: center;
             }
         }
     </style>
     <style>
-        /* Lenis Smooth Scroll */
-        html.lenis,
-        html.lenis body {
-            height: auto;
-        }
-
-        .lenis.lenis-smooth {
-            scroll-behavior: auto !important;
-        }
-
-        .lenis.lenis-smooth [data-lenis-prevent] {
-            overscroll-behavior: contain;
-        }
-
-        .lenis.lenis-stopped {
-            overflow: hidden;
-        }
-
-        /* Custom Cursor */
-        @media (min-width: 768px) {
-            body {
-                cursor: none;
-            }
-
-            a,
-            button,
-            input,
-            textarea,
-            select,
-            .cursor-pointer {
-                cursor: none !important;
-            }
-
-            .custom-cursor {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 15px;
-                height: 15px;
-                border-radius: 50%;
-                background-color: #a68b6a;
-                pointer-events: none;
-                z-index: 99999;
-                transform: translate(-50%, -50%);
-                transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease;
-                mix-blend-mode: difference;
-            }
-
-            .custom-cursor.hovered {
-                width: 60px;
-                height: 60px;
-                background-color: #e8e4db;
-                mix-blend-mode: difference;
-            }
+        html {
+            scroll-behavior: smooth;
         }
 
         input, textarea, select {
@@ -110,8 +61,8 @@
                         "primary": "#4a5d4e",
                         "primary-hover": "#5d7362",
                         "accent-bronze": "#a68b6a",
-                        "background-dark": "#0d0d0d",
-                        "background-darker": "#080808",
+                        "background-dark": "#000000",
+                        "background-darker": "#000000",
                         "surface-dark": "#141414",
                         "ivory": "#e8e4db",
                         "ivory-dim": "#b5b1a6",
@@ -128,99 +79,120 @@
     </script>
 </head>
 
-<body class="bg-background-dark text-ivory font-display antialiased bg-grainy">
-    <div class="custom-cursor hidden md:block"></div>
+<body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-4 left-1/2 -translate-x-1/2 z-[70] w-[calc(100%-2rem)] max-w-7xl border border-white/10 bg-background-dark/80 backdrop-blur-md rounded-2xl shadow-xl">
-            <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-8">
+            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
+            <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-8 max-w-7xl">
                 <a href="index.html" class="flex items-center gap-3">
-                    <img src="./assets/images/chf_logo.png" alt="CHF Logo"
-                        class="h-10 w-10 object-contain rounded-full border border-white/10" />
+                    <div class="h-10 w-10 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
-                <nav class="hidden lg:flex items-center gap-10">
+                <nav class="hidden lg:flex items-center gap-8">
+                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        href="plant-experience-center.html">Plant Experience Center</a>
+                    
                     <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="portfolio.html">Portfolio</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
+                            href="javascript:void(0)">
+                            Collections
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </a>
+                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                            <div class="bg-background-dark border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
+                                <div class="flex flex-col gap-4">
+                                    <a href="full-grown-avenue-trees.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Full Grown Avenue Trees</a>
+                                    <a href="exotic-indoor-plants.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Exotic Indoor Plants</a>
+                                    <a href="bonsai.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Bonsai</a>
+                                    <a href="curated-plants.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Plants</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="collections.html">Collections</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
+                            href="javascript:void(0)">
+                            Services
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </a>
+                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                            <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
+                                <div class="flex flex-col gap-4">
+                                    <a href="architectural-harmony.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Architectural Harmony</a>
+                                    <a href="curated-specimens.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Specimens</a>
+                                    <a href="white-glove-service.html" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">White Glove Service</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="services.html">Services</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-0 h-[1px] bg-accent-bronze transition-all duration-300 group-hover:w-full"></span>
-                    </div>
-                    <div class="relative group">
-                        <a class="text-xs uppercase tracking-widest font-medium text-accent-bronze transition-colors duration-300"
-                            href="inquiry.html">Inquiry</a>
-                        <span
-                            class="absolute -bottom-2 left-0 w-full h-[1px] bg-accent-bronze"></span>
-                    </div>
+
+                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        href="about.html">About Us</a>
+                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        href="inquiry.html">Enquiry</a>
                 </nav>
                 <button id="mobile-menu-btn"
                     class="lg:hidden flex items-center text-ivory z-50 p-2 relative w-10 h-10 justify-center">
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform -translate-y-1.5"></span>
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block opacity-100"></span>
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform translate-y-1.5"></span>
+                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform -translate-y-1.5"></span>
+                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 opacity-100"></span>
+                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform translate-y-1.5"></span>
                 </button>
             </div>
         </header>
 
         <!-- Mobile Menu Overlay -->
         <div id="mobile-menu"
-            class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500">
-            <nav class="flex flex-col items-center gap-10 text-center">
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="portfolio.html">Portfolio</a>
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="collections.html">Collections</a>
-                <a class="mobile-link text-3xl font-serif text-ivory hover:text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="services.html">Services</a>
-                <a class="mobile-link text-3xl font-serif text-accent-bronze transition-colors transform translate-y-8 opacity-0"
-                    href="inquiry.html">Inquiry</a>
+            class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-y-auto pt-20">
+            <nav class="flex flex-col items-center gap-6 text-center p-8 w-full">
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze" href="plant-experience-center.html">Plant Experience Center</a>
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+                <span class="mobile-link text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze">Collections</span>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="full-grown-avenue-trees.html">Avenue Trees</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="exotic-indoor-plants.html">Indoor Plants</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="bonsai.html">Bonsai</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="curated-plants.html">Curated Plants</a>
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+                <span class="mobile-link text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze">Services</span>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="architectural-harmony.html">Architectural Harmony</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="curated-specimens.html">Curated Specimens</a>
+                <a class="mobile-link text-lg font-light text-ivory-dim hover:text-white" href="white-glove-service.html">White Glove Service</a>
+                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze" href="about.html">About Us</a>
+                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze" href="inquiry.html">Enquiry</a>
             </nav>
         </div>
 
-        <main class="flex-grow pt-40 pb-32">
-            <section class="max-w-7xl mx-auto px-6 lg:px-8">
+        <main class="flex-grow pt-32 lg:pt-40">
+            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-20">
-                    <div class="lg:col-span-5 flex flex-col justify-center">
-                        <div class="reveal-anim mb-6 flex items-center gap-4">
-                            <span class="h-px w-8 bg-accent-bronze"></span>
-                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.5em] font-bold">Contact Us</span>
+                    <div class="lg:col-span-5">
+                        <div class="flex items-center gap-4 mb-6">
+                            <span class="w-12 h-px bg-accent-bronze/40"></span>
+                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Contact</span>
                         </div>
-                        <h2 class="reveal-anim font-serif text-5xl md:text-7xl font-light leading-tight text-white mb-8">
-                            Start a <br /><span class="italic text-accent-bronze">Conversation</span>
+                        <h2 class="font-serif text-5xl md:text-7xl text-ivory font-light leading-[1.1] mb-8">
+                            Botanical <br />
+                            <span class="text-accent-bronze italic font-light">Inquiry</span>
                         </h2>
-                        <p class="reveal-anim text-ivory/60 text-lg font-light leading-relaxed mb-12 max-w-sm">
-                            Allow us to curate botanical excellence for your space. Share your vision with us.
+                        <p class="text-ivory-dim text-lg font-light leading-relaxed mb-12">
+                            Request a consultation for your architectural project or private collection. Our curators will assist in selecting the perfect living specimens.
                         </p>
                         
-                        <div class="reveal-anim space-y-8 border-t border-white/10 pt-12">
+                        <div class="space-y-8">
                             <div>
-                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-2">General Inquiries</span>
-                                <a href="mailto:hello@chf.design" class="text-xl font-light hover:text-accent-bronze transition-colors">hello@chf.design</a>
+                                <h4 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold mb-2">Our Sanctuary</h4>
+                                <p class="text-ivory font-light">CHF Botanical Archive, Alipore<br/>Kolkata, West Bengal 700027</p>
                             </div>
                             <div>
-                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-2">Our Studio</span>
-                                <p class="text-xl font-light text-ivory-dim">London | New York | Dubai</p>
+                                <h4 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold mb-2">Private Appointments</h4>
+                                <p class="text-ivory font-light">+91 00000 00000<br/>concierge@chfbotanical.com</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="lg:col-span-7">
-                        <div class="reveal-anim bg-surface-dark/30 backdrop-blur-sm border border-white/5 p-8 md:p-12 lg:p-16 relative overflow-hidden">
+                        <div class="bg-surface-dark/30 backdrop-blur-sm border border-white/5 p-8 md:p-12 lg:p-16 relative overflow-hidden">
                             <form id="inquiry-form" class="relative z-10 space-y-10">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                                     <div class="relative group">
@@ -228,27 +200,22 @@
                                         <input type="text" id="name" name="name" required class="w-full border-b border-white/10 focus:border-accent-bronze transition-all py-3" placeholder="Alexandra Sterling" />
                                     </div>
                                     <div class="relative group">
-                                        <label for="email">Email Address</label>
-                                        <input type="email" id="email" name="email" required class="w-full border-b border-white/10 focus:border-accent-bronze transition-all py-3" placeholder="alexandra@sterling.com" />
+                                        <label for="phone">Phone Number</label>
+                                        <input type="tel" id="phone" name="phone" required class="w-full border-b border-white/10 focus:border-accent-bronze transition-all py-3" placeholder="+91 00000 00000" />
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                                     <div class="relative group">
-                                        <label for="phone">Phone (Optional)</label>
-                                        <input type="tel" id="phone" name="phone" class="w-full border-b border-white/10 focus:border-accent-bronze transition-all py-3" placeholder="+1 234 567 890" />
+                                        <label for="email">Email Address</label>
+                                        <input type="email" id="email" name="email" required class="w-full border-b border-white/10 focus:border-accent-bronze transition-all py-3" placeholder="alexandra@sterling.com" />
                                     </div>
                                     <div class="relative group">
-                                        <label for="subject">Subject</label>
-                                        <select id="subject" name="subject" class="w-full border-b border-white/10 focus:border-accent-bronze transition-all py-3 appearance-none">
-                                            <option value="collection">Collection Inquiry</option>
-                                            <option value="design">Design Consultation</option>
-                                            <option value="press">Press & Media</option>
-                                            <option value="other">Other</option>
-                                        </select>
+                                        <label for="location">Location</label>
+                                        <input type="text" id="location" name="location" required class="w-full border-b border-white/10 focus:border-accent-bronze transition-all py-3" placeholder="Alipore, Kolkata" />
                                     </div>
                                 </div>
                                 <div class="relative group">
-                                    <label for="message">Your Vision</label>
+                                    <label for="message">Message</label>
                                     <textarea id="message" name="message" rows="4" required class="w-full border-b border-white/10 focus:border-accent-bronze transition-all py-3 resize-none" placeholder="How can we help bring botanical luxury to your space?"></textarea>
                                 </div>
                                 
@@ -276,8 +243,7 @@
                 <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                     <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
                         <div class="flex items-center gap-3 mb-8">
-                            <img src="./assets/images/chf_logo.png" alt="CHF Logo"
-                                class="h-12 w-12 object-contain rounded-full border border-white/10" />
+                            <div class="h-12 w-12 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
                             <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
                         </div>
                         <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
@@ -288,7 +254,7 @@
                     <div>
                         <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
                         <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">About Us</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
                             <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Careers</a></li>
                             <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Press</a></li>
                         </ul>
@@ -296,10 +262,10 @@
                     <div>
                         <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Services</h3>
                         <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Consultation</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Design</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Installation</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Maintenance</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Consultation</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Design</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Installation</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Enquiry</a></li>
                         </ul>
                     </div>
                     <div>
@@ -318,112 +284,46 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>
-        // Custom Cursor Logic
-        const cursor = document.querySelector('.custom-cursor');
-        document.addEventListener('mousemove', (e) => {
-            requestAnimationFrame(() => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-            });
-        });
-
-        const hoverElements = document.querySelectorAll('a, button, input, textarea, select, .cursor-pointer');
-        hoverElements.forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-        });
-
-        // Lenis Smooth Scroll
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smooth: true,
-        });
-
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-
-        // GSAP Animations
-        gsap.from('.reveal-anim', {
-            y: 40,
-            opacity: 0,
-            duration: 1.2,
-            stagger: 0.1,
-            ease: "power3.out",
-            delay: 0.2
-        });
-
         // Mobile Menu Logic
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
+        const mobileLinks = mobileMenu.querySelectorAll('a');
         const lines = mobileBtn.querySelectorAll('.hamburger-line');
         let isMenuOpen = false;
 
-        const menuTl = gsap.timeline({ paused: true });
-
-        menuTl.to(mobileMenu, {
-            opacity: 1,
-            pointerEvents: 'auto',
-            duration: 0.4,
-            ease: 'power2.out'
-        })
-            .to(mobileLinks, {
-                y: 0,
-                opacity: 1,
-                duration: 0.4,
-                stagger: 0.1,
-                ease: 'power3.out'
-            }, "-=0.2");
-
-        mobileBtn.addEventListener('click', () => {
+        function toggleMenu() {
             isMenuOpen = !isMenuOpen;
             if (isMenuOpen) {
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
                 lines[0].classList.replace('-translate-y-1.5', 'translate-y-0');
                 lines[0].classList.add('rotate-45');
                 lines[1].classList.add('opacity-0');
                 lines[2].classList.replace('translate-y-1.5', 'translate-y-0');
                 lines[2].classList.add('-rotate-45');
-                lenis.stop();
-                menuTl.play();
+                document.body.style.overflow = 'hidden';
             } else {
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
                 lines[0].classList.replace('translate-y-0', '-translate-y-1.5');
                 lines[0].classList.remove('rotate-45');
                 lines[1].classList.remove('opacity-0');
                 lines[2].classList.replace('translate-y-0', 'translate-y-1.5');
                 lines[2].classList.remove('-rotate-45');
-                lenis.start();
-                menuTl.reverse();
+                document.body.style.overflow = '';
             }
-        });
+        }
 
-        // Form Submission Simulation
-        const form = document.getElementById('inquiry-form');
-        const successMsg = document.getElementById('success-msg');
-        
-        form.addEventListener('submit', (e) => {
+        mobileBtn.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', () => {
+            if (isMenuOpen) toggleMenu();
+        }));
+
+        // Form Submit Logic
+        document.getElementById('inquiry-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            gsap.to(form, {
-                opacity: 0,
-                y: -20,
-                duration: 0.5,
-                ease: "power2.inOut",
-                onComplete: () => {
-                    successMsg.classList.remove('hidden');
-                    gsap.from(successMsg, {
-                        opacity: 0,
-                        scale: 0.95,
-                        duration: 0.6,
-                        ease: "power3.out"
-                    });
-                }
-            });
+            document.getElementById('success-msg').classList.remove('hidden');
         });
     </script>
 </body>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Collections - CHF Botanical Luxury</title>
+    <title>Curated Specimens - CHF Botanical Luxury</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap"
@@ -116,6 +116,37 @@
             </div>
         </header>
 
+        <main class="flex-grow">
+            <!-- Hero Section -->
+            <section class="relative min-h-[60vh] flex items-center pt-32 lg:pt-40 pb-20 px-6 lg:px-24 overflow-hidden bg-background-dark">
+                <!-- Background Decoration -->
+                <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-accent-bronze/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+                
+                <div class="mx-auto max-w-7xl w-full relative z-10">
+                    <div class="flex flex-col gap-8">
+                        <div>
+                            <h2 class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8">
+                                Curated <br />
+                                <span class="text-accent-bronze italic font-light drop-shadow-sm">Specimens</span>
+                            </h2>
+                            <p class="text-ivory-dim text-lg md:text-xl font-light max-w-2xl leading-relaxed">
+                                Hand-selected rare plants sourced from exclusive growers worldwide, ensuring each architectural project possesses a unique botanical signature that evolves with time.
+                            </p>
+                        </div>
+
+                        <!-- Placeholder for High-Fidelity Visual -->
+                        <div class="mt-12 relative aspect-video w-full overflow-hidden border border-white/10 bg-surface-dark group">
+                            <div class="absolute inset-0 wireframe-cross opacity-20"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-accent-bronze/30 text-xs uppercase tracking-[0.5em] font-light">Visual Experience Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
         <!-- Mobile Menu Overlay -->
         <div id="mobile-menu"
             class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-y-auto pt-20">
@@ -138,83 +169,6 @@
             </nav>
         </div>
 
-        <main class="flex-grow pt-32 lg:pt-40">
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32 overflow-hidden">
-                <div class="flex flex-col md:flex-row justify-between items-end gap-12">
-                    <div class="max-w-3xl">
-                        <div class="flex items-center gap-4 mb-6">
-                            <span class="w-12 h-px bg-accent-bronze/40"></span>
-                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Archives</span>
-                        </div>
-                        <h2 class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8">
-                            Botanical <br />
-                            <span class="text-accent-bronze italic font-light drop-shadow-sm">Collections</span>
-                        </h2>
-                    </div>
-                    <div class="flex flex-col items-start md:items-end gap-6 max-w-xs mb-4">
-                        <p class="text-gray-400 font-light text-sm leading-relaxed uppercase tracking-[0.15em] text-left md:text-right border-l md:border-l-0 md:border-r border-accent-bronze/30 pl-6 md:pl-0 md:pr-6">
-                            A curated selection of the world's most exceptional living specimens.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-40">
-                <div class="flex flex-col gap-32">
-                    <!-- Category 1 -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7">
-                            <div class="relative aspect-video overflow-hidden bg-surface-dark">
-                                <div class="w-full h-full transition-transform duration-[2s] hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pl-12">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category I</span>
-                            <h3 class="font-serif text-4xl mb-6">Architectural Forms</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8">
-                                Sculptural botanicals characterized by their geometric precision and structural integrity. These specimens serve as timeless focal points in minimalist environments.
-                            </p>
-                            <a href="inquiry.html" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Request Catalog</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 2 -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7 lg:order-2">
-                            <div class="relative aspect-video overflow-hidden bg-surface-dark">
-                                <div class="w-full h-full transition-transform duration-[2s] hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pr-12 lg:order-1 text-right lg:text-left">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category II</span>
-                            <h3 class="font-serif text-4xl mb-6">Variegated Rarities</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8">
-                                Exceptional specimens featuring unique biological pigments. From albino-patterned leaves to deep emerald hues, these are the crown jewels of our living archive.
-                            </p>
-                            <a href="inquiry.html" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Join Waitlist</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 3 -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7">
-                            <div class="relative aspect-video overflow-hidden bg-surface-dark">
-                                <div class="w-full h-full transition-transform duration-[2s] hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pl-12">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category III</span>
-                            <h3 class="font-serif text-4xl mb-6">Vertical Ecosystems</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8">
-                                Integrated living walls that redefine interior topography. A rhythmic integration of biodiversity that breathes life into static surfaces.
-                            </p>
-                            <a href="inquiry.html" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Consult on Design</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
         <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
@@ -228,32 +182,9 @@
                             power of the forest into the modern sanctuary.
                         </p>
                     </div>
-                    <div>
-                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Explore</h3>
-                        <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Plant Experience</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Collections</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Services</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Enquiry</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
-                        <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Contact</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Legal</h3>
-                        <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Terms of Service</a></li>
-                        </ul>
-                    </div>
                 </div>
-                <div class="border-t border-white/5 pt-8 text-center">
-                    <p class="text-xs text-gray-600">© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb</p>
+                <div class="border-t border-white/5 pt-8 text-center text-xs text-gray-600">
+                    © 2026 CHF. All rights reserved.
                 </div>
             </div>
         </footer>
