@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHF Botanical - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&family=Noto+Serif+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+        body { font-family: 'Manrope', sans-serif; background-color: #0c0c0c; color: #f5f5f0; }
+        h1, h2, h3, .font-serif { font-family: 'Noto Serif Display', serif; }
+        .upload-zone { border: 1px dashed rgba(255,255,255,0.2); transition: all 0.2s; }
+        .upload-zone.dragover { border-color: #A68B6A; background: rgba(166, 139, 106, 0.05); }
+        .toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
+        .toast-enter-from { opacity: 0; transform: translateY(20px); }
+        .toast-leave-to { opacity: 0; transform: translateY(-20px); }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'accent-bronze': '#A68B6A',
+                        'surface-dark': '#111111',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Premium Animations -->
+    <link rel="stylesheet" href="assets/animations.css">
+    <script src="assets/animation-core.js" defer></script>
+</head>
+<body class="min-h-screen flex text-sm">
+    <div id="app" class="flex w-full min-h-screen">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 border-r border-white/5 bg-[#0a0a0a] flex flex-col justify-between overflow-y-auto">
+            <div>
+                <div class="p-8 pb-12">
+                    <h2 class="font-serif text-2xl tracking-wide text-white">CHF <span class="text-accent-bronze italic text-lg">Admin</span></h2>
+                </div>
+                
+                <nav class="px-4 space-y-8">
+                    <!-- Site Management -->
+                    <div>
+                        <span class="px-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-4">Site Architecture</span>
+                        <div class="space-y-1">
+                            <button @click="loadPageContent('global')" 
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                currentSelection === 'global' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Global Settings
+                            </button>
+                            <button @click="loadPageContent('home')" 
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                currentSelection === 'home' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Home Page
+                            </button>
+                            <button @click="loadPageContent('about')" 
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                currentSelection === 'about' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                About Page
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Collections -->
+                    <div>
+                        <span class="px-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-4">Collections</span>
+                        <div class="space-y-1">
+                            <button v-for="col in collections" :key="col.id" 
+                                @click="loadCollection(col.id)"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                currentSelection === col.id ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                {{ col.name }}
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="p-8 border-t border-white/5">
+                <a href="/" class="text-xs uppercase tracking-widest text-gray-500 hover:text-white transition-colors flex items-center gap-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    View Website
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Editor -->
+        <main class="flex-1 overflow-y-auto bg-[#0c0c0c] relative">
+            
+            <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-[#0c0c0c] z-10">
+                <div class="animate-spin w-8 h-8 border-2 border-accent-bronze border-t-transparent rounded-full"></div>
+            </div>
+
+            <div v-else-if="!currentSelection" class="flex items-center justify-center h-full text-gray-500 italic font-serif text-xl">
+                Select a section to edit
+            </div>
+
+            <div v-else class="max-w-4xl mx-auto p-12">
+                <!-- Header Actions -->
+                <div class="flex items-center justify-between mb-12 border-b border-white/5 pb-6">
+                    <div>
+                        <h1 class="font-serif text-4xl mb-2">{{ selectionDisplay }}</h1>
+                        <p class="text-gray-500">{{ selectionSubtext }}</p>
+                    </div>
+                    <button @click="saveAll" :disabled="saving"
+                        class="bg-[#4A5D4E] hover:bg-[#3d4d40] text-white px-8 py-3 text-xs uppercase tracking-[0.2em] font-bold rounded-sm transition-colors flex items-center gap-2 disabled:opacity-50">
+                        <svg v-if="saving" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        {{ saving ? 'Publishing...' : 'Publish Changes' }}
+                    </button>
+                </div>
+
+                <!-- View Mode: Generic Site Content -->
+                <div v-if="viewMode === 'site-content'" class="space-y-12">
+                    <div v-for="(content, path) in currentSiteData" :key="path" class="bg-surface-dark border border-white/5 rounded p-8">
+                        <div class="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
+                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">{{ path.split('/').join(' / ') }}</span>
+                             <span class="text-[9px] text-gray-600 uppercase">{{ content.type }}</span>
+                        </div>
+                        
+                        <!-- Text Input -->
+                        <div v-if="content.type === 'text'">
+                            <input v-model="content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                        </div>
+
+                        <!-- Longtext Input -->
+                        <div v-else-if="content.type === 'longtext'">
+                            <textarea v-model="content.value" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                        </div>
+
+                        <!-- Media Input -->
+                        <div v-else-if="content.type === 'media'" class="flex gap-8">
+                             <div class="w-32 h-32 bg-black rounded overflow-hidden flex-shrink-0 border border-white/5">
+                                 <video v-if="isVideo(content.value)" :src="content.value" class="w-full h-full object-cover"></video>
+                                 <img v-else :src="content.value" class="w-full h-full object-cover">
+                             </div>
+                             <div class="flex-grow flex flex-col justify-center gap-4">
+                                 <input v-model="content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-xs text-white transition-colors" placeholder="Media URL">
+                                 <button @click="triggerGenericUpload(path)" class="w-fit text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-4 py-2 hover:bg-accent-bronze/5 transition-colors">
+                                     Upload New Media
+                                 </button>
+                                 <input type="file" :id="'file_' + path.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, path)" accept="image/*,video/*">
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View Mode: Collections (Legacy) -->
+                <div v-if="viewMode === 'collections'">
+                    <!-- Page Meta Editor -->
+                    <section class="mb-16">
+                        <h3 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold mb-6">Page Metadata</h3>
+                        <div class="bg-surface-dark border border-white/5 rounded p-8 space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-2">Title Line 1</label>
+                                    <input v-model="currentData.page.titleLine1" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-2">Title Line 2 (Italic)</label>
+                                    <input v-model="currentData.page.titleLine2" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-2">Subtitle Synopsis</label>
+                                <textarea v-model="currentData.page.subtitle" rows="2" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Categories Editor -->
+                    <section>
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Category Blocks</h3>
+                        </div>
+                        
+                        <div class="space-y-8">
+                            <div v-for="(cat, idx) in currentData.categories" :key="cat.id" class="bg-surface-dark border border-white/5 rounded p-8">
+                                <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+                                    <span class="font-serif text-xl italic drop-shadow-sm text-accent-bronze">Block {{ idx + 1 }}</span>
+                                    <button @click="removeCategory(idx)" class="text-[10px] uppercase tracking-widest text-red-500/50 hover:text-red-500 font-bold transition-colors flex items-center gap-2">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        Remove Block
+                                    </button>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                                    <!-- Image Upload via Drag Drop -->
+                                    <div class="md:col-span-4">
+                                        <label class="block text-xs text-gray-500 mb-2">Hero Image</label>
+                                        <div 
+                                            @dragover.prevent="dragover = idx"
+                                            @dragleave.prevent="dragover = null"
+                                            @drop.prevent="handleDrop($event, cat, idx)"
+                                            :class="['upload-zone relative aspect-[4/5] rounded overflow-hidden flex flex-col items-center justify-center cursor-pointer', dragover === idx ? 'dragover' : '']"
+                                            @click="triggerFileInput(idx)"
+                                        >
+                                            <template v-if="cat.image">
+                                                <video v-if="isVideo(cat.image)" :src="cat.image" class="absolute inset-0 w-full h-full object-cover" autoplay muted loop></video>
+                                                <img v-else :src="cat.image" class="absolute inset-0 w-full h-full object-cover">
+                                            </template>
+                                            <div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                                <svg class="w-8 h-8 text-white mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                                <span class="text-xs uppercase tracking-widest text-white">Upload</span>
+                                            </div>
+                                            <div v-if="!cat.image" class="text-center p-4">
+                                                <svg class="w-8 h-8 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                <p class="text-xs text-gray-500">Drag high-res photo</p>
+                                            </div>
+                                            <input type="file" :ref="'file_' + idx" class="hidden" @change="handleFileSelect($event, cat, idx)" accept="image/*,video/*">
+                                            <div v-if="uploading === idx" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-20">
+                                                <div class="relative w-24 h-24 flex items-center justify-center">
+                                                    <svg class="w-full h-full transform -rotate-90">
+                                                        <circle cx="48" cy="48" r="44" stroke="currentColor" stroke-width="4" fill="transparent" class="text-white/10" />
+                                                        <circle cx="48" cy="48" r="44" stroke="currentColor" stroke-width="4" fill="transparent" 
+                                                            class="text-accent-bronze transition-all duration-300"
+                                                            stroke-dasharray="276"
+                                                            :stroke-dashoffset="276 - (276 * uploadProgress / 100)" />
+                                                    </svg>
+                                                    <span class="absolute text-[10px] font-bold text-white">{{ uploadProgress }}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="md:col-span-8 space-y-6">
+                                        <div class="grid grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-xs text-gray-500 mb-2">Category Label</label>
+                                                <input v-model="cat.label" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors" placeholder="Category I">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-500 mb-2">Title</label>
+                                                <input v-model="cat.title" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-500 mb-2">Philosophical Description</label>
+                                            <textarea v-model="cat.description" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <button @click="addCategory" class="w-full border border-white/5 border-dashed rounded py-8 flex flex-col items-center justify-center text-gray-500 hover:text-accent-bronze hover:border-accent-bronze/30 hover:bg-accent-bronze/5 transition-all group">
+                                <svg class="w-8 h-8 mb-2 opacity-20 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                <span class="text-xs uppercase tracking-[0.2em] font-bold">Add New Botanical Block</span>
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <!-- Toast Notifications -->
+        <div class="fixed bottom-8 right-8 z-50 flex flex-col gap-2 pointer-events-none">
+            <transition name="toast" v-for="toast in toasts" :key="toast.id">
+                <div class="bg-surface-dark border border-white/10 shadow-2xl rounded p-4 pr-12 relative flex items-center gap-3 overflow-hidden pointer-events-auto">
+                    <div :class="['w-1 h-full absolute left-0 top-0', toast.type === 'error' ? 'bg-red-500' : 'bg-accent-bronze']"></div>
+                    <svg v-if="toast.type !== 'error'" class="w-5 h-5 text-accent-bronze" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <svg v-else class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-sm">{{ toast.message }}</p>
+                </div>
+            </transition>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                const collections = [
+                    { id: 'full-grown-avenue-trees', name: 'Avenue Trees' },
+                    { id: 'exotic-indoor-plants', name: 'Indoor Plants' },
+                    { id: 'bonsai', name: 'Bonsai' },
+                    { id: 'curated-plants', name: 'Curated Plants' }
+                ];
+                
+                const currentSelection = ref(null); // id of page or collection
+                const viewMode = ref(null); // 'collections' or 'site-content'
+                
+                const currentData = ref(null); // Collection data
+                const currentSiteData = ref(null); // Generic site data
+                
+                const loading = ref(false);
+                const saving = ref(false);
+                const dragover = ref(null);
+                const uploading = ref(null);
+                const uploadProgress = ref(0);
+                const toasts = ref([]);
+
+                const selectionDisplay = computed(() => {
+                    if (viewMode.value === 'collections') {
+                        const col = collections.find(c => c.id === currentSelection.value);
+                        return col ? col.name : '';
+                    }
+                    if (currentSelection.value === 'global') return 'Global Settings';
+                    if (currentSelection.value === 'home') return 'Home Page Content';
+                    if (currentSelection.value === 'about') return 'About Page Content';
+                    return '';
+                });
+
+                const selectionSubtext = computed(() => {
+                    if (viewMode.value === 'collections') return 'Edit the dynamic specimen blocks for this collection.';
+                    return 'Edit the static text and media for this specific site section.';
+                });
+
+                const showToast = (message, type = 'success') => {
+                    const id = Date.now();
+                    toasts.value.push({ id, message, type });
+                    setTimeout(() => {
+                        toasts.value = toasts.value.filter(t => t.id !== id);
+                    }, 4000);
+                };
+
+                const loadCollection = async (id) => {
+                    viewMode.value = 'collections';
+                    currentSelection.value = id;
+                    loading.value = true;
+                    try {
+                        const res = await fetch(`/api/data?slug=${id}&t=${Date.now()}`);
+                        if (!res.ok) throw new Error('Data not found');
+                        currentData.value = await res.json();
+                    } catch (e) {
+                        showToast(`Failed to load ${id}`, 'error');
+                        currentData.value = null;
+                    } finally {
+                        loading.value = false;
+                    }
+                };
+
+                const loadPageContent = async (page) => {
+                    viewMode.value = 'site-content';
+                    currentSelection.value = page;
+                    loading.value = true;
+                    try {
+                        const res = await fetch(`/api/site-content?page=${page}&t=${Date.now()}`);
+                        if (!res.ok) throw new Error('CMS data not found');
+                        currentSiteData.value = await res.json();
+                    } catch (e) {
+                        showToast(`Failed to load CMS content for ${page}`, 'error');
+                        currentSiteData.value = null;
+                    } finally {
+                        loading.value = false;
+                    }
+                };
+
+                const saveAll = async () => {
+                    saving.value = true;
+                    try {
+                        if (viewMode.value === 'collections') {
+                            const res = await fetch('/api/save', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    file: currentSelection.value,
+                                    payload: currentData.value
+                                })
+                            });
+                            if (!res.ok) throw new Error('Server error pushing collection');
+                        } else {
+                            const res = await fetch('/api/site-content/save', {
+                                method: 'POST',
+                                body: JSON.stringify(currentSiteData.value)
+                            });
+                            if (!res.ok) throw new Error('Server error pushing CMS content');
+                        }
+                        showToast('Changes published to live site!');
+                    } catch (e) {
+                        showToast(e.message, 'error');
+                    } finally {
+                        saving.value = false;
+                    }
+                };
+
+                const isVideo = (url) => {
+                    if (!url) return false;
+                    const cleanUrl = url.split('?')[0];
+                    const ext = cleanUrl.split('.').pop().toLowerCase();
+                    return ['mp4', 'webm', 'mov', 'ogg'].includes(ext);
+                };
+
+                const uploadMediaChunked = (file, onSuccess, onProgress) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            onProgress(Math.round((e.loaded / e.total) * 100));
+                        }
+                    };
+                    xhr.onload = () => {
+                        if (xhr.status === 200) {
+                            onSuccess(JSON.parse(xhr.responseText).url);
+                        } else {
+                            showToast('Upload failed', 'error');
+                        }
+                    };
+                    xhr.open('POST', '/api/upload');
+                    xhr.setRequestHeader('X-Filename', file.name);
+                    xhr.send(file);
+                };
+
+                // Legacy Collection Upload
+                const uploadMedia = (file, cat, idx) => {
+                    uploading.value = idx;
+                    uploadMediaChunked(file, (url) => {
+                        cat.image = url + '?t=' + Date.now();
+                        showToast('Media uploaded.');
+                        uploading.value = null;
+                    }, (p) => uploadProgress.value = p);
+                };
+
+                // Generic CMS Upload
+                const triggerGenericUpload = (path) => {
+                    const id = 'file_' + path.replace(/\//g, '_');
+                    document.getElementById(id).click();
+                };
+
+                const handleGenericFileSelect = (e, path) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    showToast('Uploading generic media...');
+                    uploadMediaChunked(file, (url) => {
+                        currentSiteData.value[path].value = url + '?t=' + Date.now();
+                        showToast('Media updated.');
+                    }, (p) => {});
+                };
+
+                const handleDrop = (e, cat, idx) => {
+                    dragover.value = null;
+                    const file = e.dataTransfer.files[0];
+                    if (file) uploadMedia(file, cat, idx);
+                };
+
+                const handleFileSelect = (e, cat, idx) => {
+                    const file = e.target.files[0];
+                    if (file) uploadMedia(file, cat, idx);
+                };
+
+                const triggerFileInput = (idx) => {
+                    if (loading.value) return;
+                    // Handled by ref indexing now
+                    const refName = 'file_' + idx;
+                    // Fallback to query if refs are being tricky in loops
+                    const inputs = document.querySelectorAll('.upload-zone input[type="file"]');
+                    if (inputs[idx]) inputs[idx].click();
+                };
+
+                const addCategory = () => {
+                    const newId = `cat-${Math.random().toString(36).substr(2, 9)}`;
+                    currentData.value.categories.push({
+                        id: newId,
+                        label: `New Category`,
+                        title: "Untitled Specimen",
+                        description: "No details provided yet.",
+                        image: "",
+                        ctaText: "Request Info",
+                        ctaLink: "inquiry.html"
+                    });
+                    showToast("New block added.");
+                };
+
+                const removeCategory = (idx) => {
+                    if (confirm("Are you sure?")) {
+                        currentData.value.categories.splice(idx, 1);
+                        showToast("Block removed.");
+                    }
+                };
+
+                return {
+                    collections,
+                    currentSelection,
+                    viewMode,
+                    currentData,
+                    currentSiteData,
+                    selectionDisplay,
+                    selectionSubtext,
+                    loading,
+                    saving,
+                    dragover,
+                    uploading,
+                    uploadProgress,
+                    toasts,
+                    loadCollection,
+                    loadPageContent,
+                    saveAll,
+                    handleDrop,
+                    handleFileSelect,
+                    triggerFileInput,
+                    isVideo,
+                    addCategory,
+                    removeCategory,
+                    triggerGenericUpload,
+                    handleGenericFileSelect
+                }
+            },
+            mounted() {
+                // Attach correct trigger to the DOM dynamically via event delegation
+                document.addEventListener('click', (e) => {
+                    const zone = e.target.closest('.upload-zone');
+                    if (zone) {
+                        const input = zone.querySelector('input[type="file"]');
+                        if (input && e.target !== input) input.click();
+                    }
+                });
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>

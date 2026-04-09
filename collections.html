@@ -52,6 +52,9 @@
             },
         }
     </script>
+    <!-- Premium Animations -->
+    <link rel="stylesheet" href="assets/animations.css">
+    <script src="assets/animation-core.js" defer></script>
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased">
@@ -64,9 +67,12 @@
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="plant-experience-center.html">Plant Experience Center</a>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="plant-experience-center.html">Plant Experience Center</a>
+                    </div>
                     
+                    <!-- Collections Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
                             href="javascript:void(0)">
@@ -85,6 +91,7 @@
                         </div>
                     </div>
 
+                    <!-- Services Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
                             href="javascript:void(0)">
@@ -102,16 +109,23 @@
                         </div>
                     </div>
 
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="about.html">About Us</a>
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="inquiry.html">Enquiry</a>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="about.html">About Us</a>
+                    </div>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="inquiry.html">Enquiry</a>
+                    </div>
                 </nav>
                 <button id="mobile-menu-btn"
                     class="lg:hidden flex items-center text-ivory z-50 p-2 relative w-10 h-10 justify-center">
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform -translate-y-1.5"></span>
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 opacity-100"></span>
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform translate-y-1.5"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform -translate-y-1.5"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block opacity-100"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform translate-y-1.5"></span>
                 </button>
             </div>
         </header>
@@ -268,29 +282,27 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Careers</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Press</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="process.html">Our Process</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center.html">Experience Center</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Services</h3>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Expertise</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Consultation</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Design</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Installation</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="architectural-harmony.html">Architectural Harmony</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="curated-specimens.html">Curated Specimens</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="white-glove-service.html">White Glove Service</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio.html">Portfolio</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
+                    <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Enquiry</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Legal</h3>
-                    <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Privacy
-                                Policy</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Terms of
-                                Service</a></li>
                     </ul>
                 </div>
             </div>
@@ -307,7 +319,7 @@
         // Mobile Menu Logic
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = mobileMenu.querySelectorAll('a');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
         const lines = mobileBtn.querySelectorAll('.hamburger-line');
         let isMenuOpen = false;
 

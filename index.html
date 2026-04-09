@@ -44,6 +44,9 @@
             scroll-behavior: smooth;
         }
     </style>
+    <!-- Premium Animations -->
+    <link rel="stylesheet" href="assets/animations.css">
+    <script src="assets/animation-core.js" defer></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -197,6 +200,7 @@
                 <!-- Hero Background Parallax (CSS fallback) -->
             <div class="absolute inset-0 z-0 overflow-hidden">
                 <div class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
+                    data-cms="home/hero/image"
                     style="background-image: url('assets/images/deskchf.png');">
                 </div>
                 <!-- Premium Overlay for depth and text legibility -->
@@ -232,10 +236,10 @@
                             class="inline-flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.3em] text-accent-bronze">
                             <span class="h-px w-12 bg-accent-bronze"></span>Slow Luxury
                         </div>
-                        <h2 class="font-serif text-4xl font-light text-ivory md:text-5xl leading-[1.2]">
-                            The Art of Growth in <br /><span class="italic text-primary">Deep Solitude</span>
+                        <h2 class="font-serif text-4xl font-light text-ivory md:text-5xl leading-[1.2] reveal reveal-up">
+                            <span data-cms="home/philosophy/title">The Art of Growth in <br /><span class="italic text-primary">Deep Solitude</span></span>
                         </h2>
-                        <p class="text-lg text-gray-400 font-light leading-relaxed">
+                        <p class="text-lg text-gray-400 font-light leading-relaxed reveal reveal-up stagger-1" data-cms="home/philosophy/body">
                             True luxury is never rushed. In our dark nurseries, we cultivate specimens with
                             architectural precision. Each leaf is a deliberate stroke of nature, selected not just
                             for
@@ -283,7 +287,7 @@
                         
                         <!-- Curated Specimens Card -->
                         <a href="curated-specimens.html"
-                            class="service-card group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-1 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -312,7 +316,7 @@
 
                         <!-- Architectural Harmony Card -->
                         <a href="architectural-harmony.html"
-                            class="service-card group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -341,7 +345,7 @@
 
                         <!-- White Glove Service Card -->
                         <a href="white-glove-service.html"
-                            class="service-card group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -405,9 +409,9 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                         <a href="portfolio.html"
-                            class="group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-transparent md:border-none block">
+                            class="reveal reveal-up stagger-1 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-transparent md:border-none block">
                             <div
-                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] wireframe-cross md:border-none shadow-2xl md:shadow-none">
+                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] premium-hover-img wireframe-cross md:border-none shadow-2xl md:shadow-none">
                                 <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
@@ -429,9 +433,9 @@
                                 Editorial</span>
                         </a>
                         <a href="portfolio.html"
-                            class="group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block">
+                            class="reveal reveal-up stagger-2 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block">
                             <div
-                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] wireframe-cross md:border-none shadow-2xl md:shadow-none">
+                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] premium-hover-img wireframe-cross md:border-none shadow-2xl md:shadow-none">
                                 <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
@@ -452,9 +456,9 @@
                                 Editorial</span>
                         </a>
                         <a href="portfolio.html"
-                            class="group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block">
+                            class="reveal reveal-up stagger-3 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block">
                             <div
-                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] wireframe-cross md:border-none shadow-2xl md:shadow-none">
+                                class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] premium-hover-img wireframe-cross md:border-none shadow-2xl md:shadow-none">
                                 <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
@@ -506,29 +510,27 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Careers</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Press</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="process.html">Our Process</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center.html">Experience Center</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Services</h3>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Expertise</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Consultation</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Design</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Installation</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="architectural-harmony.html">Architectural Harmony</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="curated-specimens.html">Curated Specimens</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="white-glove-service.html">White Glove Service</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio.html">Portfolio</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
+                    <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Enquiry</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Legal</h3>
-                    <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Privacy
-                                Policy</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Terms of
-                                Service</a></li>
                     </ul>
                 </div>
             </div>
@@ -577,6 +579,9 @@
             if (isMenuOpen) toggleMenu();
         }));
     </script>
+    
+    <!-- Universal CMS Core -->
+    <script src="assets/cms-core.js"></script>
 </body>
 
 </html>

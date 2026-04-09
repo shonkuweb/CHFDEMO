@@ -1,0 +1,112 @@
+/* 
+ * CHF Premium Animations 
+ * Focus: Slow luxury, cubic-bezier easing, hardware-accelerated transforms
+ */
+
+:root {
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+    --ease-premium: cubic-bezier(0.23, 1, 0.32, 1);
+    --anim-duration: 1.2s;
+}
+
+/* Reveal Bases */
+.reveal {
+    opacity: 0;
+    transition: opacity var(--anim-duration) var(--ease-premium), 
+                transform var(--anim-duration) var(--ease-premium);
+    will-change: opacity, transform;
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) !important;
+}
+
+/* Reveal Directions */
+.reveal-up { transform: translateY(40px); }
+.reveal-down { transform: translateY(-40px); }
+.reveal-left { transform: translateX(40px); }
+.reveal-right { transform: translateX(-40px); }
+.reveal-scale { transform: scale(0.95); }
+
+/* Staggering (via utility glasses or JS) */
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
+.stagger-4 { transition-delay: 0.4s; }
+.stagger-5 { transition-delay: 0.5s; }
+
+/* Interactive States: Premium Hovers */
+.premium-hover-img {
+    overflow: hidden;
+}
+
+.premium-hover-img img,
+.premium-hover-img .wireframe-cross {
+    transition: transform 1.5s var(--ease-out-expo), filter 0.8s var(--ease-out-expo);
+}
+
+.premium-hover-img:hover img,
+.premium-hover-img:hover .wireframe-cross {
+    transform: scale(1.08);
+    filter: brightness(1.1);
+}
+
+/* Service Card Enhancement */
+.service-card {
+    transition: background-color 0.8s var(--ease-premium), transform 0.8s var(--ease-premium);
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+}
+
+/* Text Reveal (Line Reveal) */
+.text-reveal {
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.text-reveal::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #a68b6a; /* accent-bronze */
+    transform: translateX(-101%);
+    z-index: 10;
+}
+
+.text-reveal.revealed::after {
+    animation: reveal-block 1s var(--ease-in-out-expo) forwards;
+}
+
+@keyframes reveal-block {
+    0% { transform: translateX(-101%); }
+    50% { transform: translateX(0); }
+    100% { transform: translateX(101%); }
+}
+
+.text-reveal span {
+    opacity: 0;
+    display: block;
+    transition: opacity 0.1s linear 0.5s;
+}
+
+.text-reveal.revealed span {
+    opacity: 1;
+}
+
+/* Smooth Fade In Global */
+@keyframes premium-fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: premium-fade-in 1s var(--ease-out-expo) forwards;
+}

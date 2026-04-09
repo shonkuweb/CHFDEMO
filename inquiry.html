@@ -77,6 +77,9 @@
             },
         }
     </script>
+    <!-- Premium Animations -->
+    <link rel="stylesheet" href="assets/animations.css">
+    <script src="assets/animation-core.js" defer></script>
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased">
@@ -89,9 +92,12 @@
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="plant-experience-center.html">Plant Experience Center</a>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="plant-experience-center.html">Plant Experience Center</a>
+                    </div>
                     
+                    <!-- Collections Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
                             href="javascript:void(0)">
@@ -110,6 +116,7 @@
                         </div>
                     </div>
 
+                    <!-- Services Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
                             href="javascript:void(0)">
@@ -127,16 +134,23 @@
                         </div>
                     </div>
 
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="about.html">About Us</a>
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="inquiry.html">Enquiry</a>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="about.html">About Us</a>
+                    </div>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="inquiry.html">Enquiry</a>
+                    </div>
                 </nav>
                 <button id="mobile-menu-btn"
                     class="lg:hidden flex items-center text-ivory z-50 p-2 relative w-10 h-10 justify-center">
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform -translate-y-1.5"></span>
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 opacity-100"></span>
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform translate-y-1.5"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform -translate-y-1.5"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block opacity-100"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform translate-y-1.5"></span>
                 </button>
             </div>
         </header>
@@ -193,61 +207,64 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-20">
                     <div class="lg:col-span-5">
                         <div class="flex items-center gap-4 mb-6">
-                            <span class="w-12 h-px bg-accent-bronze/40"></span>
-                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Contact</span>
+                            <span class="text-ivory-dim text-[10px] uppercase tracking-[0.4em] font-bold">Contact</span>
+                            <span class="w-12 h-px bg-white/20"></span>
                         </div>
                         <h2 class="font-serif text-5xl md:text-7xl text-ivory font-light leading-[1.1] mb-8">
                             Botanical <br />
                             <span class="text-accent-bronze italic font-light">Inquiry</span>
                         </h2>
                         <p class="text-ivory-dim text-lg font-light leading-relaxed mb-12">
-                            Request a consultation for your architectural project or private collection. Our curators will assist in selecting the perfect living specimens.
+                            Request a consultation for your architectural project or private collection. Our curators will assist in selecting the perfect living specimens tailored to your environment.
                         </p>
                         
                         <div class="space-y-8">
                             <div>
-                                <h4 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold mb-2">Our Sanctuary</h4>
+                                <h4 class="text-[10px] uppercase tracking-widest text-ivory-dim font-bold mb-2">Our Sanctuary</h4>
                                 <p class="text-ivory font-light">CHF Botanical Archive, Alipore<br/>Kolkata, West Bengal 700027</p>
                             </div>
                             <div>
-                                <h4 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold mb-2">Private Appointments</h4>
-                                <p class="text-ivory font-light">+91 00000 00000<br/>concierge@chfbotanical.com</p>
+                                <h4 class="text-[10px] uppercase tracking-widest text-ivory-dim font-bold mb-2">Private Appointments</h4>
+                                <p class="text-ivory font-light">+91 00000 00000<br/><a href="mailto:concierge@chfbotanical.com" class="border-b border-white/20 hover:border-white/50 transition-colors">concierge@chfbotanical.com</a></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="lg:col-span-7">
-                        <div class="relative overflow-hidden pt-8 lg:p-12">
-                            <form id="inquiry-form" class="relative z-10 space-y-12">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="bg-white/[0.02] border border-white/5 rounded p-8 md:p-12 lg:p-16 relative overflow-hidden">
+                            <form id="inquiry-form" class="relative z-10 space-y-10">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div class="relative group">
-                                        <label for="name" class="block text-[10px] uppercase tracking-widest text-accent-bronze/70 mb-3">Full Name</label>
-                                        <input type="text" id="name" name="name" required class="w-full bg-transparent border-b border-white/10 focus:border-accent-bronze outline-none text-ivory placeholder:text-white/20 transition-all py-3 hover:border-white/30" placeholder="Ananya Sharma" />
+                                        <label for="name" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Full Name</label>
+                                        <input type="text" id="name" name="name" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all h-14 px-4 hover:border-white/20" placeholder="Ananya Sharma" />
                                     </div>
                                     <div class="relative group">
-                                        <label for="phone" class="block text-[10px] uppercase tracking-widest text-accent-bronze/70 mb-3">Phone Number</label>
-                                        <input type="tel" id="phone" name="phone" required class="w-full bg-transparent border-b border-white/10 focus:border-accent-bronze outline-none text-ivory placeholder:text-white/20 transition-all py-3 hover:border-white/30" placeholder="+91 00000 00000" />
+                                        <label for="phone" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Phone Number</label>
+                                        <input type="tel" id="phone" name="phone" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all h-14 px-4 hover:border-white/20" placeholder="+91 00000 00000" />
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div class="relative group">
-                                        <label for="email" class="block text-[10px] uppercase tracking-widest text-accent-bronze/70 mb-3">Email Address</label>
-                                        <input type="email" id="email" name="email" required class="w-full bg-transparent border-b border-white/10 focus:border-accent-bronze outline-none text-ivory placeholder:text-white/20 transition-all py-3 hover:border-white/30" placeholder="ananya@sharma.com" />
+                                        <label for="email" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Email Address</label>
+                                        <input type="email" id="email" name="email" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all h-14 px-4 hover:border-white/20" placeholder="ananya@sharma.com" />
                                     </div>
                                     <div class="relative group">
-                                        <label for="location" class="block text-[10px] uppercase tracking-widest text-accent-bronze/70 mb-3">Location</label>
-                                        <input type="text" id="location" name="location" required class="w-full bg-transparent border-b border-white/10 focus:border-accent-bronze outline-none text-ivory placeholder:text-white/20 transition-all py-3 hover:border-white/30" placeholder="Alipore, Kolkata" />
+                                        <label for="location" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Location</label>
+                                        <input type="text" id="location" name="location" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all h-14 px-4 hover:border-white/20" placeholder="Alipore, Kolkata" />
                                     </div>
                                 </div>
                                 <div class="relative group">
-                                    <label for="message" class="block text-[10px] uppercase tracking-widest text-accent-bronze/70 mb-3">Message</label>
-                                    <textarea id="message" name="message" rows="4" required class="w-full bg-transparent border-b border-white/10 focus:border-accent-bronze outline-none text-ivory placeholder:text-white/20 transition-all py-3 resize-none hover:border-white/30" placeholder="How can we help bring botanical luxury to your space?"></textarea>
+                                    <label for="message" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Message</label>
+                                    <textarea id="message" name="message" rows="5" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all py-4 px-4 resize-none hover:border-white/20" placeholder="How can we help bring botanical luxury to your space?"></textarea>
                                 </div>
                                 
-                                <button type="submit"
-                                    class="group relative w-full inline-flex items-center justify-center overflow-hidden px-12 py-5 text-xs uppercase tracking-[0.3em] font-bold text-background-dark transition-all hover:bg-white bg-accent-bronze">
-                                    <span class="relative z-10">Send Inquiry</span>
-                                </button>
+                                <div class="pt-2">
+                                    <button type="submit"
+                                        class="group relative w-full inline-flex items-center justify-center overflow-hidden px-12 py-5 text-xs uppercase tracking-[0.3em] font-bold text-white transition-all hover:bg-[#3d4d40] bg-[#4A5D4E] rounded-sm shadow-lg">
+                                        <span class="relative z-10">Send Inquiry</span>
+                                    </button>
+                                    <p class="text-center text-[8px] uppercase tracking-[0.2em] text-ivory-dim/60 mt-6">Our curators typically respond within 24 business hours.</p>
+                                </div>
                             </form>
                             
                             <!-- Success Message (Hidden) -->
@@ -291,29 +308,27 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Careers</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Press</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="process.html">Our Process</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center.html">Experience Center</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Services</h3>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Expertise</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Consultation</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Design</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Installation</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="architectural-harmony.html">Architectural Harmony</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="curated-specimens.html">Curated Specimens</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="white-glove-service.html">White Glove Service</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio.html">Portfolio</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
+                    <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Enquiry</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Legal</h3>
-                    <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Privacy
-                                Policy</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Terms of
-                                Service</a></li>
                     </ul>
                 </div>
             </div>
@@ -330,7 +345,7 @@
         // Mobile Menu Logic
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = mobileMenu.querySelectorAll('a');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
         const lines = mobileBtn.querySelectorAll('.hamburger-line');
         let isMenuOpen = false;
 
@@ -361,12 +376,6 @@
         mobileLinks.forEach(link => link.addEventListener('click', () => {
             if (isMenuOpen) toggleMenu();
         }));
-
-        // Form Submit Logic
-        document.getElementById('inquiry-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            document.getElementById('success-msg').classList.remove('hidden');
-        });
     </script>
 </body>
 

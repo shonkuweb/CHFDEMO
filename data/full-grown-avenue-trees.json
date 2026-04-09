@@ -1,0 +1,38 @@
+{
+  "page": {
+    "title": "Full Grown Avenue Trees",
+    "titleLine1": "Full Grown",
+    "titleLine2": "Avenue Trees",
+    "subtitle": "Stately specimens for monumental landscapes and grand entrances.",
+    "breadcrumb": "Collections"
+  },
+  "categories": [
+    {
+      "id": "cat-1",
+      "label": "Category I",
+      "title": "Architectural Forms",
+      "description": "Sculptural botanicals characterized by their geometric precision and structural integrity. These specimens serve as timeless focal points in minimalist environments.",
+      "image": "assets/images/media_3ababce3.mp4?t=1775733657668",
+      "ctaText": "Request Catalog",
+      "ctaLink": "inquiry.html"
+    },
+    {
+      "id": "cat-2",
+      "label": "Category II",
+      "title": "Variegated Rarities",
+      "description": "Exceptional specimens featuring unique biological pigments. From albino-patterned leaves to deep emerald hues, these are the crown jewels of our living archive.",
+      "image": "",
+      "ctaText": "Join Waitlist",
+      "ctaLink": "inquiry.html"
+    },
+    {
+      "id": "cat-3",
+      "label": "Category III",
+      "title": "Vertical Ecosystems",
+      "description": "Integrated living walls that redefine interior topography. A rhythmic integration of biodiversity that breathes life into static surfaces.",
+      "image": "",
+      "ctaText": "Consult on Design",
+      "ctaLink": "inquiry.html"
+    }
+  ]
+}

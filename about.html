@@ -52,6 +52,9 @@
             },
         }
     </script>
+    <!-- Premium Animations -->
+    <link rel="stylesheet" href="assets/animations.css">
+    <script src="assets/animation-core.js" defer></script>
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased">
@@ -64,9 +67,12 @@
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="plant-experience-center.html">Plant Experience Center</a>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="plant-experience-center.html">Plant Experience Center</a>
+                    </div>
                     
+                    <!-- Collections Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
                             href="javascript:void(0)">
@@ -85,6 +91,7 @@
                         </div>
                     </div>
 
+                    <!-- Services Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
                             href="javascript:void(0)">
@@ -102,16 +109,23 @@
                         </div>
                     </div>
 
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 font-bold"
-                        href="about.html">About Us</a>
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="inquiry.html">Enquiry</a>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="about.html">About Us</a>
+                    </div>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="inquiry.html">Enquiry</a>
+                    </div>
                 </nav>
                 <button id="mobile-menu-btn"
                     class="lg:hidden flex items-center text-ivory z-50 p-2 relative w-10 h-10 justify-center">
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform -translate-y-1.5"></span>
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 opacity-100"></span>
-                    <span class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 transform translate-y-1.5"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform -translate-y-1.5"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block opacity-100"></span>
+                    <span
+                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform translate-y-1.5"></span>
                 </button>
             </div>
         </header>
@@ -167,11 +181,11 @@
             <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32">
                 <div class="flex flex-col gap-12">
                     <div>
-                        <h2 class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8">
-                            Botanical <br />
-                            <span class="text-accent-bronze italic font-light drop-shadow-sm">Legacy</span>
+                        <h2 class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8 reveal reveal-up">
+                            <span data-cms="about/story/title-1">Botanical</span> <br />
+                            <span class="text-accent-bronze italic font-light drop-shadow-sm" data-cms="about/story/title-2">Legacy</span>
                         </h2>
-                        <p class="text-ivory-dim text-lg md:text-xl font-light max-w-2xl leading-relaxed">
+                        <p class="text-ivory-dim text-lg md:text-xl font-light max-w-2xl leading-relaxed reveal reveal-up stagger-1" data-cms="about/story/intro">
                             CHF isn't just a nursery; it's a sanctuary where nature meets architectural precision. We curate living artifacts that transform spaces into serene, high-fidelity environments.
                         </p>
                     </div>
@@ -180,17 +194,17 @@
 
             <section class="max-w-7xl mx-auto px-6 lg:px-8 py-32 border-y border-white/10">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
-                    <div>
-                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4">Precision</span>
-                        <p class="text-sm text-ivory-dim leading-relaxed font-light">Every leaf, shadow, and vessel is considered. We bring the accuracy of a studio to the unpredictability of nature.</p>
+                    <div class="reveal reveal-up stagger-1">
+                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4" data-cms="about/philosophy/precision-title">Precision</span>
+                        <p class="text-sm text-ivory-dim leading-relaxed font-light" data-cms="about/philosophy/precision-body">Every leaf, shadow, and vessel is considered. We bring the accuracy of a studio to the unpredictability of nature.</p>
                     </div>
-                    <div>
-                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4">Patience</span>
-                        <p class="text-sm text-ivory-dim leading-relaxed font-light">Nature cannot be rushed. We honor the time it takes for a specimen to reach its architectural peak.</p>
+                    <div class="reveal reveal-up stagger-2">
+                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4" data-cms="about/philosophy/patience-title">Patience</span>
+                        <p class="text-sm text-ivory-dim leading-relaxed font-light" data-cms="about/philosophy/patience-body">Nature cannot be rushed. We honor the time it takes for a specimen to reach its architectural peak.</p>
                     </div>
-                    <div>
-                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4">Presence</span>
-                        <p class="text-sm text-ivory-dim leading-relaxed font-light">Our work creates a silent gravity, demanding presence from those who inhabit the space.</p>
+                    <div class="reveal reveal-up stagger-3">
+                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4" data-cms="about/philosophy/presence-title">Presence</span>
+                        <p class="text-sm text-ivory-dim leading-relaxed font-light" data-cms="about/philosophy/presence-body">Our work creates a silent gravity, demanding presence from those who inhabit the space.</p>
                     </div>
                 </div>
             </section>
@@ -205,15 +219,15 @@
                     <a href="inquiry.html" class="mt-8 md:mt-0 inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Speak with a Curator</a>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div class="group">
-                        <div class="aspect-video overflow-hidden mb-8 bg-surface-dark grayscale group-hover:grayscale-0 transition-all duration-700">
+                    <div class="group reveal reveal-scale stagger-1">
+                        <div class="aspect-video overflow-hidden mb-8 bg-surface-dark grayscale group-hover:grayscale-0 transition-all duration-700 premium-hover-img">
                             <div class="w-full h-full transition-transform duration-[2s] group-hover:scale-105 bg-[#1a1a1a] wireframe-cross"></div>
                         </div>
                         <h4 class="font-serif text-2xl mb-2">The London Studio</h4>
                         <p class="text-sm text-ivory-dim font-light">Focusing on heritage integration and urban verticality.</p>
                     </div>
-                    <div class="group">
-                        <div class="aspect-video overflow-hidden mb-8 bg-surface-dark grayscale group-hover:grayscale-0 transition-all duration-700">
+                    <div class="group reveal reveal-scale stagger-2">
+                        <div class="aspect-video overflow-hidden mb-8 bg-surface-dark grayscale group-hover:grayscale-0 transition-all duration-700 premium-hover-img">
                             <div class="w-full h-full transition-transform duration-[2s] group-hover:scale-105 bg-[#1a1a1a] wireframe-cross"></div>
                         </div>
                         <h4 class="font-serif text-2xl mb-2">Botanical Research</h4>
@@ -251,29 +265,27 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Company</h3>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Careers</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="index.html">Press</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="process.html">Our Process</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center.html">Experience Center</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Services</h3>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Expertise</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Consultation</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Design</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="javascript:void(0)">Installation</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="architectural-harmony.html">Architectural Harmony</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="curated-specimens.html">Curated Specimens</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="white-glove-service.html">White Glove Service</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio.html">Portfolio</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
+                    <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry.html">Enquiry</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Legal</h3>
-                    <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Privacy
-                                Policy</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="#">Terms of
-                                Service</a></li>
                     </ul>
                 </div>
             </div>
@@ -290,7 +302,7 @@
         // Mobile Menu Logic
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = mobileMenu.querySelectorAll('a');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
         const lines = mobileBtn.querySelectorAll('.hamburger-line');
         let isMenuOpen = false;
 
@@ -322,6 +334,9 @@
             if (isMenuOpen) toggleMenu();
         }));
     </script>
+    
+    <!-- Universal CMS Core -->
+    <script src="assets/cms-core.js"></script>
 </body>
 
 </html>
