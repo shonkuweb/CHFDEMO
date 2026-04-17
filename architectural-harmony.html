@@ -20,6 +20,13 @@
                 background-repeat: no-repeat;
                 background-position: center;
             }
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+            .no-scrollbar {
+                -ms-overflow-style: none; /* IE and Edge */
+                scrollbar-width: none; /* Firefox */
+            }
         }
     </style>
     <style>
@@ -63,7 +70,7 @@
             class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
             <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-12 w-full">
                 <a href="index.html" class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
+                    <img src="assets/images/chf_logo.png" alt="CHF Logo" class="h-10 w-10 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
@@ -71,7 +78,7 @@
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
                             href="plant-experience-center.html">Plant Experience Center</a>
                     </div>
-                    
+
                     <!-- Collections Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
@@ -130,34 +137,96 @@
             </div>
         </header>
 
-        <main class="flex-grow">
-            <!-- Hero Section -->
-            <section class="relative min-h-[60vh] flex items-center pt-32 lg:pt-40 pb-20 px-6 lg:px-24 overflow-hidden bg-background-dark">
-                <!-- Background Decoration -->
-                <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-accent-bronze/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
-                <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
-                
-                <div class="mx-auto max-w-7xl w-full relative z-10">
-                    <div class="flex flex-col gap-8">
-                        <div>
-                            <h2 class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8">
-                                Architectural <br />
-                                <span class="text-accent-bronze italic font-light drop-shadow-sm">Harmony</span>
-                            </h2>
-                            <p class="text-ivory-dim text-lg md:text-xl font-light max-w-2xl leading-relaxed">
-                                Botanical design that integrates seamlessly with modern architecture, respecting structural lines, natural light orientation, and spatial volume calculations.
-                            </p>
-                        </div>
+        <main class="flex-grow pt-20">
 
-                        <!-- Placeholder for High-Fidelity Visual -->
-                        <div class="mt-12 relative aspect-video w-full overflow-hidden border border-white/10 bg-surface-dark group">
-                            <div class="absolute inset-0 wireframe-cross opacity-20"></div>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span class="text-accent-bronze/30 text-xs uppercase tracking-[0.5em] font-light">Visual Experience Pending</span>
-                            </div>
-                        </div>
+
+            <!-- Title Section -->
+            <section class="py-24 px-6 lg:px-12 text-center max-w-4xl mx-auto relative">
+                <!-- Abstract ambient glow -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
+                
+                <h1 class="font-serif text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10">
+                    Architectural <span class="text-accent-bronze italic">Harmony</span>
+                </h1>
+                <p class="text-ivory-dim text-sm md:text-base font-bold uppercase tracking-[0.2em] relative z-10">
+                    Design is Instant. Growth is Inevitable. We Plan for Both.
+                </p>
+            </section>
+
+            <!-- Zigzag Content Sections -->
+            <section class="pb-32 px-6 lg:px-24 flex flex-col gap-24 lg:gap-32 w-full max-w-7xl mx-auto">
+
+                <!-- Block 1: Image Left, Text Right -->
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
+                        <img src="assets/arch_zigzag_1.png" alt="A Living Architecture" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">A Living Architecture</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                            In landscape architecture, drawings capture a moment—but gardens don’t stand still. They grow, expand, compete, and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.
+                        </p>
                     </div>
                 </div>
+
+                <!-- Block 2: Text Left, Image Right -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
+                        <img src="assets/arch_zigzag_2.png" alt="Scale and Maturity" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">Scale and Maturity</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                            As consulting horticulturists, we often see thoughtfully designed spaces challenged by plant selections that don’t account for scale or maturity. Fast growers are placed where restraint is essential. Foreground hedges are composed of species that eventually outgrow and obscure the very layers they were meant to frame. What appears harmonious on day one can lose its proportion and clarity with time.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mid-page Quote Center -->
+                <div class="py-8 my-4 border-y border-white/5 text-center relative pointer-events-none">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[100px] bg-primary/10 rounded-full blur-[80px]"></div>
+                    <p class="text-ivory text-xl md:text-2xl italic font-serif relative z-10 text-accent-bronze/90">
+                        "This is where collaboration becomes critical."
+                    </p>
+                </div>
+
+                <!-- Block 3: Image Left, Text Right -->
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
+                        <img src="assets/arch_zigzag_3.png" alt="Intentional Growth" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">Intentional Growth</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                            With the intent to not redefine but strengthen the designs, we as landscape developers work closely with landscape architects—either as consultants during the design phase or as collaborators during execution—to ensure that plant selections are informed, intentional, and future-ready. By bringing horticultural depth into the conversation early, we help align design vision with plant behaviour, site conditions, and long-term growth patterns.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Block 4: Text Left, Image Right -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
+                        <img src="assets/arch_zigzag_4.png" alt="Enduring Vision" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">Enduring Vision</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                            With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony—not just immediate visual appeal. Because a successful landscape is not just about how it looks when installed—it’s about how it evolves.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Concluding Section -->
+            <section class="py-24 bg-[#0a0a0a] border-t border-white/5 text-center mt-8">
+                <p class="font-serif text-2xl md:text-4xl lg:text-5xl text-ivory leading-tight">
+                    We don’t just develop gardens.<br>
+                    <span class="text-accent-bronze italic mt-4 block">We future-proof them.</span>
+                </p>
             </section>
         </main>
 
@@ -167,12 +236,12 @@
             <nav class="flex flex-col items-center gap-6 text-center p-8 w-full">
                 <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
                     href="plant-experience-center.html">Plant Experience Center</a>
-                
+
                 <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
-                
+
                 <details class="w-full text-center group cursor-pointer mobile-link">
                     <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Collections 
+                        Collections
                         <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="flex flex-col gap-6 mt-6">
@@ -188,7 +257,7 @@
 
                 <details class="w-full text-center group cursor-pointer mobile-link">
                     <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Services 
+                        Services
                         <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="flex flex-col gap-6 mt-6">
@@ -207,20 +276,19 @@
                     href="inquiry.html">Enquiry</a>
             </nav>
         </div>
-
-        <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
+<footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                 <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
                     <div class="flex items-center gap-3 mb-8">
-                        <div class="h-12 w-12 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
+                        <img src="assets/images/chf_logo.png" alt="CHF Logo" class="h-12 w-12 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
                         <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
                         Elevating spaces through the thoughtful integration of nature and design. We bring the quiet
                         power of the forest into the modern sanctuary.
                     </p>
-                                                            <div class="flex gap-6">
+                    <div class="flex gap-6">
                         <a class="text-gray-500 hover:text-accent-bronze transition-colors" href="https://www.instagram.com/chf_thegreenscapers/" target="_blank" rel="noopener noreferrer">
                             <span class="sr-only">Instagram</span>
                             <svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
@@ -239,7 +307,6 @@
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="process.html">Our Process</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center.html">Experience Center</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
                     </ul>

@@ -23,33 +23,216 @@
         }
     </style>
     <style>
-        html {
-            scroll-behavior: smooth;
+        html { scroll-behavior: smooth; }
+
+        /* ── Form field wrapper ── */
+        .chf-field {
+            position: relative;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fieldIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .chf-field:nth-child(1) { animation-delay: 0.05s; }
+        .chf-field:nth-child(2) { animation-delay: 0.12s; }
+
+        .chf-field-full {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fieldIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 0.22s;
         }
 
-        input, textarea, select {
-            background-color: transparent !important;
-            border-color: rgba(255, 255, 255, 0.1) !important;
-            color: #e8e4db !important;
-            border-radius: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            font-weight: 300;
+        .chf-field-submit {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fieldIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 0.34s;
         }
 
-        input:focus, textarea:focus, select:focus {
-            border-color: #a68b6a !important;
-            box-shadow: none !important;
-            outline: none !important;
+        @keyframes fieldIn {
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        label {
-            color: rgba(232, 228, 219, 0.5);
-            font-size: 0.75rem;
+        /* ── Label ── */
+        .chf-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(181, 177, 166, 0.7);
+            font-size: 0.65rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-            display: block;
+            letter-spacing: 0.16em;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+        .chf-label .req-dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #a68b6a;
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+
+        /* ── Input / Textarea base ── */
+        .chf-input {
+            width: 100%;
+            background: rgba(255,255,255,0.018) !important;
+            border: none !important;
+            border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+            border-radius: 0 !important;
+            color: #e8e4db !important;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 300;
+            padding: 14px 16px 14px 16px !important;
+            outline: none !important;
+            box-shadow: none !important;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            caret-color: #a68b6a;
+            -webkit-appearance: none;
+        }
+        .chf-input::placeholder {
+            color: rgba(232,228,219,0.18) !important;
+            font-style: italic;
+        }
+
+        /* Animated bottom bar */
+        .chf-input-wrap {
+            position: relative;
+        }
+        .chf-input-wrap::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #a68b6a, transparent);
+            transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1), left 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .chf-input-wrap:focus-within::after {
+            left: 0;
+            width: 100%;
+        }
+        .chf-input-wrap:focus-within .chf-input {
+            background: rgba(166, 139, 106, 0.04) !important;
+            border-bottom-color: transparent !important;
+        }
+        .chf-input-wrap:focus-within .chf-label {
+            color: #a68b6a;
+        }
+
+        /* ── Textarea ── */
+        .chf-textarea {
+            resize: none;
+            min-height: 140px;
+            line-height: 1.7;
+        }
+
+        /* ── Row grid ── */
+        .chf-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 640px) {
+            .chf-row { grid-template-columns: 1fr; }
+        }
+
+        /* ── Submit button ── */
+        .chf-submit {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 18px 40px;
+            background: #4A5D4E;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        .chf-submit::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -75%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.6s ease;
+        }
+        .chf-submit:hover {
+            background: #3d4d40;
+            border-color: rgba(166,139,106,0.3);
+        }
+        .chf-submit:hover::before {
+            left: 150%;
+        }
+        .chf-submit:active {
+            transform: scale(0.99);
+        }
+        .chf-submit-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .chf-submit-arrow {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .chf-submit:hover .chf-submit-arrow {
+            transform: translateX(5px);
+        }
+
+        /* ── Form card ── */
+        .chf-form-card {
+            background: rgba(255,255,255,0.018);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 48px 40px 52px;
+            position: relative;
+            overflow: hidden;
+        }
+        @media (min-width: 768px) {
+            .chf-form-card { padding: 56px 52px 60px; }
+        }
+        .chf-form-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(166,139,106,0.5), transparent);
+        }
+
+        /* ── Section hint strip ── */
+        .chf-section-hint {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+        .chf-section-hint span {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(166,139,106,0.7);
+        }
+        .chf-section-hint::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.07);
         }
     </style>
     <script>
@@ -88,7 +271,7 @@
             class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
             <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-12 w-full">
                 <a href="index.html" class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
+                    <img src="assets/images/chf_logo.png" alt="CHF Logo" class="h-10 w-10 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
@@ -96,7 +279,7 @@
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
                             href="plant-experience-center.html">Plant Experience Center</a>
                     </div>
-                    
+
                     <!-- Collections Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
@@ -161,12 +344,12 @@
             <nav class="flex flex-col items-center gap-6 text-center p-8 w-full">
                 <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
                     href="plant-experience-center.html">Plant Experience Center</a>
-                
+
                 <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
-                
+
                 <details class="w-full text-center group cursor-pointer mobile-link">
                     <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Collections 
+                        Collections
                         <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="flex flex-col gap-6 mt-6">
@@ -182,7 +365,7 @@
 
                 <details class="w-full text-center group cursor-pointer mobile-link">
                     <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Services 
+                        Services
                         <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="flex flex-col gap-6 mt-6">
@@ -201,8 +384,7 @@
                     href="inquiry.html">Enquiry</a>
             </nav>
         </div>
-
-        <main class="flex-grow pt-32 lg:pt-40">
+<main class="flex-grow pt-32 lg:pt-40">
             <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-20">
                     <div class="lg:col-span-5">
@@ -231,42 +413,71 @@
                     </div>
 
                     <div class="lg:col-span-7">
-                        <div class="bg-white/[0.02] border border-white/5 rounded p-8 md:p-12 lg:p-16 relative overflow-hidden">
-                            <form id="inquiry-form" class="relative z-10 space-y-10">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div class="relative group">
-                                        <label for="name" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Full Name</label>
-                                        <input type="text" id="name" name="name" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all h-14 px-4 hover:border-white/20" placeholder="Ananya Sharma" />
+                        <div class="chf-form-card relative">
+                            <form id="inquiry-form" class="relative z-10" style="display:flex;flex-direction:column;gap:32px;">
+
+                                <div class="chf-section-hint"><span>Personal Details</span></div>
+
+                                <!-- Row 1: Name + Phone -->
+                                <div class="chf-row">
+                                    <div class="chf-field chf-input-wrap">
+                                        <label for="name" class="chf-label">
+                                            <span class="req-dot"></span>Full Name
+                                        </label>
+                                        <input type="text" id="name" name="name" required
+                                            class="chf-input" placeholder="Ananya Sharma" />
                                     </div>
-                                    <div class="relative group">
-                                        <label for="phone" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Phone Number</label>
-                                        <input type="tel" id="phone" name="phone" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all h-14 px-4 hover:border-white/20" placeholder="+91 00000 00000" />
+                                    <div class="chf-field chf-input-wrap">
+                                        <label for="phone" class="chf-label">
+                                            <span class="req-dot"></span>Phone Number
+                                        </label>
+                                        <input type="tel" id="phone" name="phone" required
+                                            class="chf-input" placeholder="+91 00000 00000" />
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div class="relative group">
-                                        <label for="email" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Email Address</label>
-                                        <input type="email" id="email" name="email" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all h-14 px-4 hover:border-white/20" placeholder="ananya@sharma.com" />
+
+                                <!-- Row 2: Email + Location -->
+                                <div class="chf-row">
+                                    <div class="chf-field chf-input-wrap">
+                                        <label for="email" class="chf-label">
+                                            <span class="req-dot"></span>Email Address
+                                        </label>
+                                        <input type="email" id="email" name="email" required
+                                            class="chf-input" placeholder="ananya@sharma.com" />
                                     </div>
-                                    <div class="relative group">
-                                        <label for="location" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Location</label>
-                                        <input type="text" id="location" name="location" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all h-14 px-4 hover:border-white/20" placeholder="Alipore, Kolkata" />
+                                    <div class="chf-field chf-input-wrap">
+                                        <label for="location" class="chf-label">
+                                            <span class="req-dot"></span>Location
+                                        </label>
+                                        <input type="text" id="location" name="location" required
+                                            class="chf-input" placeholder="Alipore, Kolkata" />
                                     </div>
                                 </div>
-                                <div class="relative group">
-                                    <label for="message" class="block text-[10px] uppercase tracking-widest text-ivory-dim mb-3">Message</label>
-                                    <textarea id="message" name="message" rows="5" required class="w-full bg-transparent border border-white/10 rounded-sm focus:border-white/30 outline-none text-ivory placeholder:text-white/20 transition-all py-4 px-4 resize-none hover:border-white/20" placeholder="How can we help bring botanical luxury to your space?"></textarea>
+
+                                <!-- Message -->
+                                <div class="chf-field-full chf-input-wrap">
+                                    <label for="message" class="chf-label">
+                                        <span class="req-dot"></span>Message
+                                    </label>
+                                    <textarea id="message" name="message" rows="5" required
+                                        class="chf-input chf-textarea"
+                                        placeholder="How can we help bring botanical luxury to your space?"></textarea>
                                 </div>
-                                
-                                <div class="pt-2">
-                                    <button type="submit"
-                                        class="group relative w-full inline-flex items-center justify-center overflow-hidden px-12 py-5 text-xs uppercase tracking-[0.3em] font-bold text-white transition-all hover:bg-[#3d4d40] bg-[#4A5D4E] rounded-sm shadow-lg">
-                                        <span class="relative z-10">Send Inquiry</span>
+
+                                <!-- Submit -->
+                                <div class="chf-field-submit">
+                                    <button type="submit" class="chf-submit">
+                                        <span class="chf-submit-inner">
+                                            Send Inquiry
+                                            <span class="chf-submit-arrow">&#8594;</span>
+                                        </span>
                                     </button>
-                                    <p class="text-center text-[8px] uppercase tracking-[0.2em] text-ivory-dim/60 mt-6">Our curators typically respond within 24 business hours.</p>
+                                    <p style="text-align:center;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(181,177,166,0.4);margin-top:20px;">
+                                        Our curators typically respond within 24 business hours.
+                                    </p>
                                 </div>
                             </form>
-                            
+
                             <!-- Success Message (Hidden) -->
                             <div id="success-msg" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-12 bg-background-dark/90 backdrop-blur-md z-20">
                                 <span class="material-symbols-outlined text-6xl text-accent-bronze mb-6">check_circle</span>
@@ -285,14 +496,14 @@
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                 <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
                     <div class="flex items-center gap-3 mb-8">
-                        <div class="h-12 w-12 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
+                        <img src="assets/images/chf_logo.png" alt="CHF Logo" class="h-12 w-12 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
                         <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
                         Elevating spaces through the thoughtful integration of nature and design. We bring the quiet
                         power of the forest into the modern sanctuary.
                     </p>
-                                                            <div class="flex gap-6">
+                    <div class="flex gap-6">
                         <a class="text-gray-500 hover:text-accent-bronze transition-colors" href="https://www.instagram.com/chf_thegreenscapers/" target="_blank" rel="noopener noreferrer">
                             <span class="sr-only">Instagram</span>
                             <svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
@@ -311,7 +522,6 @@
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="process.html">Our Process</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center.html">Experience Center</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
                     </ul>

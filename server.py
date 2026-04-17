@@ -7,6 +7,14 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 import urllib.parse
 from functools import lru_cache
 
+# ── Load .env file automatically ─────────────────────────────
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print('[ENV] .env file loaded successfully.')
+except ImportError:
+    print('[ENV] python-dotenv not installed — run: pip install python-dotenv')
+
 # ── Cloudflare R2 Setup (S3-compatible) ──────────────────────
 # Reads credentials from environment variables / .env file.
 # If not set, uploads fall back to local disk automatically.

@@ -63,7 +63,7 @@
             class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
             <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-12 w-full">
                 <a href="index.html" class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
+                    <img src="assets/images/chf_logo.png" alt="CHF Logo" class="h-10 w-10 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
@@ -71,7 +71,7 @@
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
                             href="plant-experience-center.html">Plant Experience Center</a>
                     </div>
-                    
+
                     <!-- Collections Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
@@ -136,12 +136,12 @@
             <nav class="flex flex-col items-center gap-6 text-center p-8 w-full">
                 <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
                     href="plant-experience-center.html">Plant Experience Center</a>
-                
+
                 <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
-                
+
                 <details class="w-full text-center group cursor-pointer mobile-link">
                     <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Collections 
+                        Collections
                         <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="flex flex-col gap-6 mt-6">
@@ -157,7 +157,7 @@
 
                 <details class="w-full text-center group cursor-pointer mobile-link">
                     <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Services 
+                        Services
                         <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="flex flex-col gap-6 mt-6">
@@ -176,65 +176,352 @@
                     href="inquiry.html">Enquiry</a>
             </nav>
         </div>
+<main class="flex-grow pt-20">
 
-        <main class="flex-grow pt-32 lg:pt-40">
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32">
-                <div class="flex flex-col gap-12">
-                    <div>
-                        <h2 class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8 reveal reveal-up">
-                            <span data-cms="about/story/title-1">Botanical</span> <br />
-                            <span class="text-accent-bronze italic font-light drop-shadow-sm" data-cms="about/story/title-2">Legacy</span>
-                        </h2>
-                        <p class="text-ivory-dim text-lg md:text-xl font-light max-w-2xl leading-relaxed reveal reveal-up stagger-1" data-cms="about/story/intro">
-                            CHF isn't just a nursery; it's a sanctuary where nature meets architectural precision. We curate living artifacts that transform spaces into serene, high-fidelity environments.
+            <!-- Title Section -->
+            <section class="py-24 px-6 lg:px-12 text-center max-w-4xl mx-auto relative">
+                <!-- Abstract ambient glow -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
+                
+                <h1 class="font-serif text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10 reveal reveal-up">
+                    Rooted in <span class="text-accent-bronze italic">Legacy</span>,<br>
+                    Designed for the <span class="italic">Future</span>.
+                </h1>
+                <p class="text-ivory-dim text-sm md:text-base font-bold uppercase tracking-[0.2em] relative z-10 reveal reveal-up stagger-1">
+                    Calcutta Horticultural Farm
+                </p>
+            </section>
+
+            <!-- Introduction Section -->
+            <section class="pb-24 px-6 lg:px-12 text-center max-w-3xl mx-auto relative reveal reveal-up stagger-2">
+                 <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                    Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, and a deep respect for nature. We continue to shape greener spaces with intention and expertise—quietly leading a movement where every plant has a purpose, and every space has the potential to grow.
+                </p>
+            </section>
+
+            <!-- Zigzag Content Sections -->
+            <section class="pb-32 px-6 lg:px-24 flex flex-col gap-24 lg:gap-32 w-full max-w-7xl mx-auto">
+
+                <!-- Block 1: The Founding Era -->
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0 reveal reveal-scale">
+                        <img src="aboutus1.png" alt="The Founding Era 1982" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center reveal reveal-up stagger-1">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">The Founding Era (1982)</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base mb-4">
+                            Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.
+                        </p>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                            Our work is guided by an intrinsic understanding of plants—ensuring every space is thoughtfully designed, where aesthetics and ecology come together seamlessly. From bespoke residential landscapes to large-scale corporate environments, each project is created to thrive and evolve over time.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Block 2: The Modern Vision -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0 reveal reveal-scale stagger-1">
+                        <img src="assets/alipore_experience_center.png" alt="Alipore Experience Center" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left reveal reveal-up stagger-2">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">The Modern Vision</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base mb-4">
+                            Today, the legacy is carried forward by Indra Bose and Apurba Bose, expanding the practice into contemporary formats while staying rooted in its core philosophy.
+                        </p>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                            Alongside design and consulting, we offer curated plant solutions, gardening essentials, and a diverse range of products tailored for modern green living. Our plant experience centre in Alipore brings this vision to life—an immersive space where clients can explore, interact, and engage with plants in thoughtfully curated settings.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mid-page Quote Center -->
+                <div class="py-8 my-4 border-y border-white/5 text-center relative pointer-events-none reveal reveal-up">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[100px] bg-primary/10 rounded-full blur-[80px]"></div>
+                    <p class="text-ivory text-xl md:text-2xl italic font-serif relative z-10 text-accent-bronze/90">
+                        "Every space has the potential to grow."
+                    </p>
+                </div>
+
+                <!-- Block 3: The Presence (Nurseries) -->
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0 reveal reveal-scale stagger-1">
+                        <img src="assets/expansive_nursery_muchisha.png" alt="Expansive Nurseries in Alipore and Muchisha" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center reveal reveal-up stagger-2">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">Cultivating Scale</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                            With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, we house a rich collection of indoor, outdoor and exotic plants. Our facilities cultivate bonsais, topiaries, and an extensive selection of architectural plants, ensuring we have the perfect specimen for any scale of project.
                         </p>
                     </div>
                 </div>
             </section>
 
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 py-32 border-y border-white/10">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
-                    <div class="reveal reveal-up stagger-1">
-                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4" data-cms="about/philosophy/precision-title">Precision</span>
-                        <p class="text-sm text-ivory-dim leading-relaxed font-light" data-cms="about/philosophy/precision-body">Every leaf, shadow, and vessel is considered. We bring the accuracy of a studio to the unpredictability of nature.</p>
-                    </div>
-                    <div class="reveal reveal-up stagger-2">
-                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4" data-cms="about/philosophy/patience-title">Patience</span>
-                        <p class="text-sm text-ivory-dim leading-relaxed font-light" data-cms="about/philosophy/patience-body">Nature cannot be rushed. We honor the time it takes for a specimen to reach its architectural peak.</p>
-                    </div>
-                    <div class="reveal reveal-up stagger-3">
-                        <span class="text-accent-bronze font-serif text-2xl italic block mb-4" data-cms="about/philosophy/presence-title">Presence</span>
-                        <p class="text-sm text-ivory-dim leading-relaxed font-light" data-cms="about/philosophy/presence-body">Our work creates a silent gravity, demanding presence from those who inhabit the space.</p>
-                    </div>
+            <!-- Clientele Section -->
+            <section class="py-32 bg-[#0a0a0a] border-t border-white/5 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+                <!-- Header -->
+                <div class="max-w-4xl mx-auto text-center relative z-10 px-6 mb-20">
+                    <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4 reveal reveal-up">The Trust We've Built</span>
+                    <h2 class="font-serif text-4xl mb-8 text-ivory reveal reveal-up stagger-1">Our Clientele</h2>
+                    <p class="text-ivory-dim text-sm md:text-base leading-relaxed font-light reveal reveal-up stagger-2">
+                        Over the decades, we have had the privilege of working with a distinguished range of clients across industries. From corporate institutions to private residences, our work reflects long-standing relationships built on trust, expertise, and a shared vision for meaningful green spaces.
+                    </p>
                 </div>
+
+                <!-- Marquee Container -->
+                <div class="relative w-full overflow-hidden">
+
+                    <!-- Fade masks on left & right -->
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-[#0a0a0a] to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-[#0a0a0a] to-transparent"></div>
+
+                    <!-- ROW 1 — scrolls left -->
+                    <div class="flex gap-6 mb-6 marquee-track marquee-left">
+
+                        <!-- Cards duplicated for seamless loop -->
+                        <div class="marquee-set flex gap-6 flex-shrink-0">
+
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5254.JPG" alt="Client" />
+                                <p class="review">"CHF transformed our corporate campus into a living, breathing environment. Exceptional expertise."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5255.PNG" alt="Client" />
+                                <p class="review">"Every specimen they placed was perfectly scaled and beautifully maintained. Truly a luxury experience."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5256.WEBP" alt="Client" />
+                                <p class="review">"Our lobby has become the most talked-about space in the building. CHF made it happen."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5257.PNG" alt="Client" />
+                                <p class="review">"Decades of relationship and the quality never wavers. CHF is our trusted green partner."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5258.PNG" alt="Client" />
+                                <p class="review">"The bespoke installation at our villa was handled with extraordinary attention to detail."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5259.PNG" alt="Client" />
+                                <p class="review">"Flawless from consultation to aftercare. A team that truly understands botanical luxury."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5260.JPG" alt="Client" />
+                                <p class="review">"Rare plants sourced perfectly for our hospitality spaces. Outstanding service throughout."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5261.JPG" alt="Client" />
+                                <p class="review">"CHF elevated our terrace into a curated outdoor sanctuary. Breathtaking results."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5262.WEBP" alt="Client" />
+                                <p class="review">"Working with CHF is seamless — they handle every detail with professionalism and passion."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5263.JPG" alt="Client" />
+                                <p class="review">"The landscape they designed for our estate has evolved beautifully over the years."</p>
+                            </div>
+
+                        </div>
+                        <!-- Duplicate set for loop -->
+                        <div class="marquee-set flex gap-6 flex-shrink-0" aria-hidden="true">
+
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5254.JPG" alt="Client" />
+                                <p class="review">"CHF transformed our corporate campus into a living, breathing environment. Exceptional expertise."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5255.PNG" alt="Client" />
+                                <p class="review">"Every specimen they placed was perfectly scaled and beautifully maintained. Truly a luxury experience."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5256.WEBP" alt="Client" />
+                                <p class="review">"Our lobby has become the most talked-about space in the building. CHF made it happen."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5257.PNG" alt="Client" />
+                                <p class="review">"Decades of relationship and the quality never wavers. CHF is our trusted green partner."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5258.PNG" alt="Client" />
+                                <p class="review">"The bespoke installation at our villa was handled with extraordinary attention to detail."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5259.PNG" alt="Client" />
+                                <p class="review">"Flawless from consultation to aftercare. A team that truly understands botanical luxury."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5260.JPG" alt="Client" />
+                                <p class="review">"Rare plants sourced perfectly for our hospitality spaces. Outstanding service throughout."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5261.JPG" alt="Client" />
+                                <p class="review">"CHF elevated our terrace into a curated outdoor sanctuary. Breathtaking results."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5262.WEBP" alt="Client" />
+                                <p class="review">"Working with CHF is seamless — they handle every detail with professionalism and passion."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5263.JPG" alt="Client" />
+                                <p class="review">"The landscape they designed for our estate has evolved beautifully over the years."</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ROW 2 — scrolls right -->
+                    <div class="flex gap-6 marquee-track marquee-right">
+
+                        <div class="marquee-set flex gap-6 flex-shrink-0">
+
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5264.WEBP" alt="Client" />
+                                <p class="review">"The tree transplantation project was executed with zero disruption. Remarkable skill."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5265.PNG" alt="Client" />
+                                <p class="review">"Our guests always ask about the plants. CHF gave our space a quiet, unforgettable presence."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5266.WEBP" alt="Client" />
+                                <p class="review">"CHF's understanding of plant ecology is unmatched. They design landscapes that truly thrive."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5267.WEBP" alt="Client" />
+                                <p class="review">"From the nursery selection to the final placement, the entire process was a masterclass."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5269.JPG" alt="Client" />
+                                <p class="review">"Beautiful specimens, delivered on time, installed perfectly. CHF sets the gold standard."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5271.PNG" alt="Client" />
+                                <p class="review">"Our boardroom centrepiece is a conversation starter every single day. Thank you, CHF."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5272.JPG" alt="Client" />
+                                <p class="review">"The soil preparation and care protocols they follow guarantee that every plant flourishes."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5273.WEBP" alt="Client" />
+                                <p class="review">"A partnership built on decades of shared growth. CHF is part of our legacy."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5254.JPG" alt="Client" />
+                                <p class="review">"Precision, patience, and presence — three words that sum up our experience with CHF."</p>
+                            </div>
+
+                        </div>
+                        <!-- Duplicate set for loop -->
+                        <div class="marquee-set flex gap-6 flex-shrink-0" aria-hidden="true">
+
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5264.WEBP" alt="Client" />
+                                <p class="review">"The tree transplantation project was executed with zero disruption. Remarkable skill."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5265.PNG" alt="Client" />
+                                <p class="review">"Our guests always ask about the plants. CHF gave our space a quiet, unforgettable presence."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5266.WEBP" alt="Client" />
+                                <p class="review">"CHF's understanding of plant ecology is unmatched. They design landscapes that truly thrive."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5267.WEBP" alt="Client" />
+                                <p class="review">"From the nursery selection to the final placement, the entire process was a masterclass."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5269.JPG" alt="Client" />
+                                <p class="review">"Beautiful specimens, delivered on time, installed perfectly. CHF sets the gold standard."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5271.PNG" alt="Client" />
+                                <p class="review">"Our boardroom centrepiece is a conversation starter every single day. Thank you, CHF."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5272.JPG" alt="Client" />
+                                <p class="review">"The soil preparation and care protocols they follow guarantee that every plant flourishes."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5273.WEBP" alt="Client" />
+                                <p class="review">"A partnership built on decades of shared growth. CHF is part of our legacy."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="assets/images/clientele/IMG_5254.JPG" alt="Client" />
+                                <p class="review">"Precision, patience, and presence — three words that sum up our experience with CHF."</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div><!-- end marquee container -->
             </section>
 
-            <!-- Team Section -->
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 py-32">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-20">
-                    <div class="max-w-xl">
-                        <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">The Collective</span>
-                        <h2 class="font-serif text-5xl">Curated by Visionaries</h2>
-                    </div>
-                    <a href="inquiry.html" class="mt-8 md:mt-0 inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Speak with a Curator</a>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div class="group reveal reveal-scale stagger-1">
-                        <div class="aspect-video overflow-hidden mb-8 bg-surface-dark grayscale group-hover:grayscale-0 transition-all duration-700 premium-hover-img">
-                            <div class="w-full h-full transition-transform duration-[2s] group-hover:scale-105 bg-[#1a1a1a] wireframe-cross"></div>
-                        </div>
-                        <h4 class="font-serif text-2xl mb-2">The London Studio</h4>
-                        <p class="text-sm text-ivory-dim font-light">Focusing on heritage integration and urban verticality.</p>
-                    </div>
-                    <div class="group reveal reveal-scale stagger-2">
-                        <div class="aspect-video overflow-hidden mb-8 bg-surface-dark grayscale group-hover:grayscale-0 transition-all duration-700 premium-hover-img">
-                            <div class="w-full h-full transition-transform duration-[2s] group-hover:scale-105 bg-[#1a1a1a] wireframe-cross"></div>
-                        </div>
-                        <h4 class="font-serif text-2xl mb-2">Botanical Research</h4>
-                        <p class="text-sm text-ivory-dim font-light">Preserving rare genetics and exploring symbiotic design.</p>
-                    </div>
-                </div>
-            </section>
+            <style>
+                /* ── Marquee animations ── */
+                @keyframes marquee-left {
+                    0%   { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                @keyframes marquee-right {
+                    0%   { transform: translateX(-50%); }
+                    100% { transform: translateX(0); }
+                }
+                .marquee-track {
+                    display: flex;
+                    width: max-content;
+                    will-change: transform;
+                }
+                .marquee-left  { animation: marquee-left  40s linear infinite; }
+                .marquee-right { animation: marquee-right 45s linear infinite; }
+                .marquee-track:hover { animation-play-state: paused; }
+
+                /* ── Client card ── */
+                .client-card {
+                    flex-shrink: 0;
+                    width: 200px;
+                    background: #111;
+                    border: 1px solid rgba(255,255,255,0.07);
+                    padding: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 14px;
+                    transition: border-color 0.3s;
+                }
+                .client-card:hover {
+                    border-color: rgba(166,139,106,0.35);
+                }
+                .client-card img {
+                    width: 120px;
+                    height: 60px;
+                    object-fit: contain;
+                    filter: grayscale(100%) brightness(1.1);
+                    transition: filter 0.4s;
+                }
+                .client-card:hover img {
+                    filter: grayscale(0%) brightness(1);
+                }
+                .client-card .review {
+                    font-family: 'Noto Serif', serif;
+                    font-style: italic;
+                    font-size: 11px;
+                    line-height: 1.6;
+                    color: #7a7671;
+                    text-align: center;
+                    transition: color 0.3s;
+                }
+                .client-card:hover .review {
+                    color: #b5b1a6;
+                }
+            </style>
+
         </main>
 
         <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
@@ -242,14 +529,14 @@
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                 <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
                     <div class="flex items-center gap-3 mb-8">
-                        <div class="h-12 w-12 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
+                        <img src="assets/images/chf_logo.png" alt="CHF Logo" class="h-12 w-12 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
                         <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
                         Elevating spaces through the thoughtful integration of nature and design. We bring the quiet
                         power of the forest into the modern sanctuary.
                     </p>
-                                                            <div class="flex gap-6">
+                    <div class="flex gap-6">
                         <a class="text-gray-500 hover:text-accent-bronze transition-colors" href="https://www.instagram.com/chf_thegreenscapers/" target="_blank" rel="noopener noreferrer">
                             <span class="sr-only">Instagram</span>
                             <svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
@@ -268,7 +555,6 @@
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="process.html">Our Process</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center.html">Experience Center</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
                     </ul>

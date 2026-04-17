@@ -80,7 +80,7 @@
             class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
             <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-12 w-full">
                 <a href="index.html" class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
+                    <img src="assets/images/chf_logo.png" alt="CHF Logo" class="h-10 w-10 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
                     <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
                 </a>
                 <nav class="hidden lg:flex items-center gap-8">
@@ -88,7 +88,7 @@
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
                             href="plant-experience-center.html">Plant Experience Center</a>
                     </div>
-                    
+
                     <!-- Collections Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
@@ -153,12 +153,12 @@
             <nav class="flex flex-col items-center gap-6 text-center p-8 w-full">
                 <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
                     href="plant-experience-center.html">Plant Experience Center</a>
-                
+
                 <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
-                
+
                 <details class="w-full text-center group cursor-pointer mobile-link">
                     <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Collections 
+                        Collections
                         <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="flex flex-col gap-6 mt-6">
@@ -174,7 +174,7 @@
 
                 <details class="w-full text-center group cursor-pointer mobile-link">
                     <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Services 
+                        Services
                         <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="flex flex-col gap-6 mt-6">
@@ -193,15 +193,14 @@
                     href="inquiry.html">Enquiry</a>
             </nav>
         </div>
-        
-        <main class="flex-grow">
+<main class="flex-grow">
             <!-- Hero Section -->
             <section class="hero-section relative h-screen w-full overflow-hidden">
                 <!-- Hero Background Parallax (CSS fallback) -->
             <div class="absolute inset-0 z-0 overflow-hidden">
                 <div class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
                     data-cms="home/hero/image"
-                    style="background-image: url('assets/images/deskchf.png');">
+                    style="background-image: url('assets/images/hero_image_new.jpeg');">
                 </div>
                 <!-- Premium Overlay for depth and text legibility -->
                 <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 z-10"></div>
@@ -234,20 +233,22 @@
                     <div class="lg:col-span-5 space-y-10">
                         <div
                             class="inline-flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.3em] text-accent-bronze">
-                            <span class="h-px w-12 bg-accent-bronze"></span>Slow Luxury
+                            <span class="h-px w-12 bg-accent-bronze"></span>CURATED SPECIMENS
                         </div>
                         <h2 class="font-serif text-4xl font-light text-ivory md:text-5xl leading-[1.2] reveal reveal-up">
-                            <span data-cms="home/philosophy/title">The Art of Growth in <br /><span class="italic text-primary">Deep Solitude</span></span>
+                            <span data-cms="home/philosophy/title">When a Space Begins to <br /><span class="italic text-primary">Feel Alive</span></span>
                         </h2>
-                        <p class="text-lg text-gray-400 font-light leading-relaxed reveal reveal-up stagger-1" data-cms="home/philosophy/body">
-                            True luxury is never rushed. In our dark nurseries, we cultivate specimens with
-                            architectural precision. Each leaf is a deliberate stroke of nature, selected not just
-                            for
-                            beauty, but for its ability to command the light and shadow of refined interiors.
-                        </p>
-                        <a href="process.html"
+                        <h3 class="font-serif text-2xl text-accent-bronze/80 font-light reveal reveal-up stagger-1">
+                            Not added — introduced
+                        </h3>
+                        <div class="text-lg text-gray-400 font-light leading-relaxed reveal reveal-up stagger-2 space-y-4" data-cms="home/philosophy/body">
+                            <p>Some spaces are seen.<br>Others are felt.</p>
+                            <p>A curated specimen has the power to shift that feeling — bringing calm, focus, and a subtle sense of luxury that cannot be replicated through excess.</p>
+                            <p>It’s a quiet transformation, but a lasting one.</p>
+                        </div>
+                        <a href="curated-specimens.html"
                             class="group flex items-center gap-4 text-ivory hover:text-accent-gold transition-colors border-b border-transparent hover:border-accent-gold pb-1 w-fit">
-                            <span class="uppercase tracking-widest text-sm font-medium">Discover Our Process</span>
+                            <span class="uppercase tracking-widest text-sm font-medium">View Our Specimens</span>
                             <span
                                 class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
                         </a>
@@ -255,12 +256,9 @@
                     <div class="lg:col-span-7 relative h-[600px] w-full">
                         <div class="absolute -inset-4 border border-white/5 z-0 hidden lg:block"></div>
                         <div class="absolute inset-0 z-10 overflow-hidden shadow-2xl bg-surface-dark">
-                            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                data-alt="Rare architectural Monstera specimen in a minimalist moody gallery setting">
-                            </div>
-                            <div
-                                class="absolute inset-0 bg-gradient-to-tr from-black/60 to-transparent pointer-events-none">
-                            </div>
+                            <img src="ceintro.png" alt="Rare architectural specimen in a minimalist moody gallery setting"
+                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 hover:scale-105" />
+                            <div class="absolute inset-0 bg-gradient-to-tr from-black/60 to-transparent pointer-events-none"></div>
                         </div>
                     </div>
                 </div>
@@ -487,14 +485,14 @@
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                 <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
                     <div class="flex items-center gap-3 mb-8">
-                        <div class="h-12 w-12 rounded-full border border-white/10 bg-[#1a1a1a] wireframe-cross"></div>
+                        <img src="assets/images/chf_logo.png" alt="CHF Logo" class="h-12 w-12 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
                         <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
                         Elevating spaces through the thoughtful integration of nature and design. We bring the quiet
                         power of the forest into the modern sanctuary.
                     </p>
-                                                            <div class="flex gap-6">
+                    <div class="flex gap-6">
                         <a class="text-gray-500 hover:text-accent-bronze transition-colors" href="https://www.instagram.com/chf_thegreenscapers/" target="_blank" rel="noopener noreferrer">
                             <span class="sr-only">Instagram</span>
                             <svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
@@ -513,7 +511,6 @@
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about.html">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="process.html">Our Process</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center.html">Experience Center</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections.html">Collections</a></li>
                     </ul>
