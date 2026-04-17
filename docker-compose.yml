@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  # ── Main CHF Botanical Site ────────────────────────────────
+  chf-site:
+    build: .
+    container_name: chf_site
+    command: python3 server.py
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist the SQLite database across container restarts
+      - ./chf_archive.db:/app/chf_archive.db
+      # Persist local media (logo etc.)
+      - ./assets/images:/app/assets/images
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  # ── Internal Lead System ──────────────────────────────────
+  chf-admin-api:
+    build: .
+    container_name: chf_admin_api
+    command: python3 admin_api.py
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./chf_archive.db:/app/chf_archive.db
+      - ./assets/images:/app/assets/images
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      - chf-site

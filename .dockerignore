@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dev/migration scripts (already deleted, safety net)
+expand_db.py
+inject_animations.py
+migrate_to_db.py
+sync_*.py
+update_socials.py
+
+# Dev directories
+skills/
+
+# Env files (never bake secrets into image)
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/
+*.swp

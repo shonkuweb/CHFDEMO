@@ -2,9 +2,42 @@ import os
 import json
 import uuid
 import sqlite3
+import io
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import urllib.parse
 from functools import lru_cache
+
+# ── Cloudflare R2 Setup (S3-compatible) ──────────────────────
+# Reads credentials from environment variables / .env file.
+# If not set, uploads fall back to local disk automatically.
+try:
+    import boto3
+    from botocore.config import Config
+    R2_ACCOUNT_ID   = os.environ.get('R2_ACCOUNT_ID')
+    R2_ACCESS_KEY   = os.environ.get('R2_ACCESS_KEY_ID')
+    R2_SECRET_KEY   = os.environ.get('R2_SECRET_ACCESS_KEY')
+    R2_BUCKET       = os.environ.get('R2_BUCKET_NAME', 'chf-media')
+    R2_PUBLIC_URL   = os.environ.get('R2_PUBLIC_URL', '').rstrip('/')
+
+    R2_ENABLED = all([R2_ACCOUNT_ID, R2_ACCESS_KEY, R2_SECRET_KEY])
+
+    if R2_ENABLED:
+        r2_client = boto3.client(
+            's3',
+            endpoint_url=f'https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com',
+            aws_access_key_id=R2_ACCESS_KEY,
+            aws_secret_access_key=R2_SECRET_KEY,
+            config=Config(signature_version='s3v4'),
+            region_name='auto'
+        )
+        print(f'[R2] Cloudflare R2 connected → bucket: {R2_BUCKET}')
+    else:
+        r2_client = None
+        print('[R2] R2 credentials not set — using local disk fallback.')
+except ImportError:
+    R2_ENABLED = False
+    r2_client = None
+    print('[R2] boto3 not installed — using local disk fallback.')
 
 PORT = 8000
 DB_PATH = 'chf_archive.db'
@@ -107,32 +140,56 @@ class AdminHTTPRequestHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers.get('Content-Length', 0))
         
-        # High-Speed Buffered Binary Upload (Ultra-Fast)
+        # ── High-Speed Upload: R2 first, local fallback ─────────
         if self.path == '/api/upload':
             filename_header = self.headers.get('X-Filename', 'uploaded_media.jpg')
-            ext = os.path.splitext(filename_header)[1]
+            ext = os.path.splitext(filename_header)[1].lower()
             if not ext: ext = '.jpg'
-            
+
             unique_name = f"media_{uuid.uuid4().hex[:8]}{ext}"
+
+            # Detect content type for R2
+            mime_map = {
+                '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+                '.png': 'image/png',  '.webp': 'image/webp',
+                '.gif': 'image/gif',  '.svg': 'image/svg+xml',
+                '.mp4': 'video/mp4',  '.webm': 'video/webm',
+                '.mov': 'video/quicktime'
+            }
+            content_type = mime_map.get(ext, 'application/octet-stream')
+
+            # Read entire upload into memory buffer (needed for R2 client)
+            file_data = self.rfile.read(content_length)
+
+            if R2_ENABLED and r2_client:
+                # ── Upload to Cloudflare R2 ──────────────────────
+                try:
+                    r2_client.put_object(
+                        Bucket=R2_BUCKET,
+                        Key=unique_name,
+                        Body=file_data,
+                        ContentType=content_type
+                    )
+                    public_url = f"{R2_PUBLIC_URL}/{unique_name}"
+                    print(f'[R2] Uploaded: {unique_name} → {public_url}')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'url': public_url, 'storage': 'r2'}).encode('utf-8'))
+                    return
+                except Exception as r2_err:
+                    print(f'[R2] Upload failed ({r2_err}), falling back to local disk.')
+
+            # ── Local Disk Fallback ──────────────────────────────
             file_path = os.path.join(UPLOAD_DIR, unique_name)
-            
-            # Stream directly to disk in 64KB chunks (Zero-RAM impact)
-            remaining = content_length
-            chunk_size = 64 * 1024 # 64KB
-            
             with open(file_path, 'wb') as f:
-                while remaining > 0:
-                    read_size = min(remaining, chunk_size)
-                    chunk = self.rfile.read(read_size)
-                    if not chunk:
-                        break
-                    f.write(chunk)
-                    remaining -= len(chunk)
-            
+                f.write(file_data)
+
+            print(f'[LOCAL] Saved: {file_path}')
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps({'url': f'assets/images/{unique_name}'}).encode('utf-8'))
+            self.wfile.write(json.dumps({'url': f'assets/images/{unique_name}', 'storage': 'local'}).encode('utf-8'))
             return
             
         # SQLite Content Saving
