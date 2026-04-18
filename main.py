@@ -188,11 +188,13 @@ async def get_data(slug: str):
     return data
 
 @app.post("/api/upload")
-async def upload_file(request: Request, file: UploadFile = File(...), admin: str = Depends(get_current_admin)):
-    ext = os.path.splitext(file.filename)[1].lower() if file.filename else '.jpg'
+async def upload_file(request: Request, admin: str = Depends(get_current_admin)):
+    filename_header = request.headers.get('X-Filename', 'upload.jpg')
+    ext = os.path.splitext(filename_header)[1].lower()
+    if not ext: ext = '.jpg'
     unique_name = f"media_{uuid.uuid4().hex[:8]}{ext}"
     
-    file_data = await file.read()
+    file_data = await request.body()
     
     if R2_ENABLED and r2_client:
         mime_map = {
