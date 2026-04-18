@@ -8,7 +8,7 @@
 
     // Determine the current page's slug from the filename
     const path = window.location.pathname;
-    const filename = path.split('/').pop().replace('.html', '');
+    const filename = path.split('/').pop().replace('', '');
     
     const VALID_PAGES = [
         'full-grown-avenue-trees',

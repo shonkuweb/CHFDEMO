@@ -8,7 +8,7 @@
     async function initCMS() {
         // 1. Identify current page slug
         const path = window.location.pathname;
-        let page = path.split('/').pop().replace('.html', '');
+        let page = path.split('/').pop().replace('', '');
         if (!page || page === 'index') {
             page = 'home';
         }

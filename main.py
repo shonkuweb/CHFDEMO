@@ -275,19 +275,25 @@ async def serve_static(request: Request, path: str):
     if path.endswith(".py") or path.endswith(".db") or path == ".env" or path.startswith("."):
         raise HTTPException(status_code=403, detail="Forbidden")
         
-    if path == "admin.html":
+    resolved_path = None
+    if os.path.isfile(path):
+        resolved_path = path
+    elif os.path.isfile(path + ".html"):
+        resolved_path = path + ".html"
+        
+    if not resolved_path:
+        raise HTTPException(status_code=404, detail="Not Found")
+        
+    if resolved_path == "admin.html":
         token = request.cookies.get("admin_session")
         if not token:
-            return RedirectResponse("/admin-login.html")
+            return RedirectResponse("/admin-login")
         try:
             jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         except JWTError:
-            return RedirectResponse("/admin-login.html")
+            return RedirectResponse("/admin-login")
             
-    if os.path.isfile(path):
-        return FileResponse(path)
-        
-    raise HTTPException(status_code=404, detail="Not Found")
+    return FileResponse(resolved_path)
 
 if __name__ == "__main__":
     import uvicorn
