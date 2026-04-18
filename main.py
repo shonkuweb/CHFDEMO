@@ -160,12 +160,13 @@ async def login(
     to_encode = {"sub": username, "exp": expire}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     
+    is_https = os.environ.get("HTTPS_ENABLED", "false").lower() == "true"
     response.set_cookie(
         key="admin_session", 
         value=encoded_jwt, 
         httponly=True, 
-        secure=True, 
-        samesite="strict", 
+        secure=is_https, 
+        samesite="lax", 
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
     )
     return {"message": "Success"}
