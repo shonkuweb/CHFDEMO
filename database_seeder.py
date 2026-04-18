@@ -60,11 +60,46 @@ seeds = {
 
 }
 
+def init_schema(cur):
+    """Create all tables if they don't exist yet (safe on fresh VPS)."""
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS pages (
+            slug TEXT PRIMARY KEY,
+            title TEXT, titleLine1 TEXT, titleLine2 TEXT,
+            subtitle TEXT, breadcrumb TEXT
+        )
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS categories (
+            id TEXT PRIMARY KEY,
+            page_slug TEXT,
+            label TEXT, title TEXT, description TEXT,
+            image TEXT, ctaText TEXT, ctaLink TEXT,
+            display_order INTEGER DEFAULT 0
+        )
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS site_content (
+            path TEXT PRIMARY KEY,
+            value TEXT,
+            type TEXT DEFAULT 'text'
+        )
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS admins (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE,
+            password_hash TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
 def seed():
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
+    init_schema(cur)
     for path, data in seeds.items():
-        cur.execute("INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)", 
+        cur.execute("INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
                     (path, data['value'], data['type']))
     conn.commit()
     conn.close()
