@@ -1,34 +1,24 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  # ── Main CHF Botanical Site ────────────────────────────────
-  chf-site:
+  chf-web:
     build: .
-    container_name: chf_site
-    command: python3 server.py
+    container_name: chf-fastapi
+    restart: always
     ports:
       - "8000:8000"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-PRODUCTION_SECRET_KEY_CHANGE_ME}
+      - TURNSTILE_SECRET=${TURNSTILE_SECRET}
+      - R2_ACCOUNT_ID=${R2_ACCOUNT_ID}
+      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
+      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
+      - R2_BUCKET_NAME=${R2_BUCKET_NAME:-chf-media}
+      - R2_PUBLIC_URL=${R2_PUBLIC_URL}
+      - DB_PATH=/app/data/chf_archive.db
+      - UPLOAD_DIR=/app/data/uploads
     volumes:
-      # Persist the SQLite database across container restarts
-      - ./chf_archive.db:/app/chf_archive.db
-      # Persist local media (logo etc.)
-      - ./assets/images:/app/assets/images
-    env_file:
-      - .env
-    restart: unless-stopped
+      - chf_data:/app/data
 
-  # ── Internal Lead System ──────────────────────────────────
-  chf-admin-api:
-    build: .
-    container_name: chf_admin_api
-    command: python3 admin_api.py
-    ports:
-      - "8001:8001"
-    volumes:
-      - ./chf_archive.db:/app/chf_archive.db
-      - ./assets/images:/app/assets/images
-    env_file:
-      - .env
-    restart: unless-stopped
-    depends_on:
-      - chf-site
+volumes:
+  chf_data:

@@ -20,7 +20,7 @@
     if (!VALID_PAGES.includes(filename)) return;
 
     // Fetch and render content from high-performance DB API
-    fetch(`/api/data?slug=${filename}`)
+    fetch(`/api/data?slug=${filename}&t=${Date.now()}`)
         .then(res => {
             if (!res.ok) throw new Error('Not found');
             return res.json();

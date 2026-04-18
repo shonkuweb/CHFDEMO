@@ -8,15 +8,19 @@
     async function initCMS() {
         // 1. Identify current page slug
         const path = window.location.pathname;
-        const page = path.split('/').pop().replace('.html', '') || 'index';
+        let page = path.split('/').pop().replace('.html', '');
+        if (!page || page === 'index') {
+            page = 'home';
+        }
         
         if (DEBUG) console.log(`[CMS] Initializing for page: ${page}`);
 
         try {
             // 2. Fetch page-specific and global content in parallel
+            const t = Date.now();
             const [pageRes, globalRes] = await Promise.all([
-                fetch(`/api/site-content?page=${page}`),
-                fetch(`/api/site-content?page=global`)
+                fetch(`/api/site-content?page=${page}&t=${t}`),
+                fetch(`/api/site-content?page=global&t=${t}`)
             ]);
 
             const pageData = await pageRes.json();

@@ -64,6 +64,40 @@
                                 About Page
                             </button>
                         </div>
+                        </div>
+
+                    <!-- Services -->
+                    <div>
+                        <span class="px-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-4 mt-8">Services</span>
+                        <div class="space-y-1">
+                            <button @click="loadPageContent('arch')" 
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                currentSelection === 'arch' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Architectural Harmony
+                            </button>
+                            <button @click="loadPageContent('curated')" 
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                currentSelection === 'curated' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Curated Specimens
+                            </button>
+                            <button @click="loadPageContent('whiteglove')" 
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                currentSelection === 'whiteglove' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                White Glove Service
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Experience -->
+                    <div>
+                        <span class="px-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-4 mt-8">Experience</span>
+                        <div class="space-y-1">
+                            <button @click="loadPageContent('plant-center')" 
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                currentSelection === 'plant-center' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Plant Exp Center
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Collections -->

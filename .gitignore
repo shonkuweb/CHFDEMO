@@ -10,8 +10,17 @@ __pycache__/
 .DS_Store
 
 # SQLite database — mounted as a Docker volume in production
-# Uncomment below if you want to exclude DB from git too (reset on each deploy)
-# chf_archive.db
+chf_archive.db
+
+# Media uploads and hardcoded assets (Moved to Cloudflare R2)
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.mp4
+*.webm
+assets/images/
+uploads/
 
 # Editor
 .vscode/
