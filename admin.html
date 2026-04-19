@@ -170,7 +170,7 @@
                         <!-- Media Input -->
                         <div v-else-if="content.type === 'media'" class="flex gap-8">
                              <div class="w-32 h-32 bg-black rounded overflow-hidden flex-shrink-0 border border-white/5">
-                                 <video v-if="isVideo(content.value)" :src="content.value" class="w-full h-full object-cover"></video>
+                                 <video v-if="isVideo(content.value)" :src="content.value" class="w-full h-full object-cover" autoplay muted loop></video>
                                  <img v-else :src="content.value" class="w-full h-full object-cover">
                              </div>
                              <div class="flex-grow flex flex-col justify-center gap-4">
