@@ -5,8 +5,8 @@ db_path = os.environ.get("DB_PATH", "chf_archive.db")
 
 home_seeds = {
     "home/hero/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero_image_new.jpeg", "type": "media"},
-    "home/philosophy/title": {"value": "When a Space Begins to <br /><span class='italic text-primary'>Feel Alive</span>", "type": "text"},
-    "home/philosophy/body": {"value": "<p>Some spaces are seen.<br>Others are felt.</p><p>A curated specimen has the power to shift that feeling — bringing calm, focus, and a subtle sense of luxury that cannot be replicated through excess.</p><p>It’s a quiet transformation, but a lasting one.</p>", "type": "longtext"}
+    "home/philosophy/title": {"value": "The Art of Growth <br /><span class='italic text-primary'>with Curated Specimens</span>", "type": "text"},
+    "home/philosophy/body": {"value": "<p>Some spaces are seen.<br>Others are experienced.</p><p>A curated specimen transforms a space in silence —<br>bringing calm, depth, and a quiet sense of luxury<br>that cannot be created through excess.</p><p>It doesn’t demand attention.<br>Yet, it changes everything.</p><p>A subtle transformation —<br>one that stays.</p>", "type": "longtext"}
 }
 
 about_seeds = {

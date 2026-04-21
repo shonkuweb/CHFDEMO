@@ -1,12 +1,12 @@
-version: '3.8'
-
 services:
   chf-web:
     build: .
     container_name: chf-fastapi
     restart: always
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - .env
     environment:
       - JWT_SECRET=${JWT_SECRET:-PRODUCTION_SECRET_KEY_CHANGE_ME}
       - TURNSTILE_SECRET=${TURNSTILE_SECRET}
@@ -17,8 +17,15 @@ services:
       - R2_PUBLIC_URL=${R2_PUBLIC_URL}
       - DB_PATH=/app/data/chf_archive.db
       - UPLOAD_DIR=/app/data/uploads
+      - HTTPS_ENABLED=true
     volumes:
       - chf_data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8000/api/site-content?page=global >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
 
 volumes:
   chf_data:

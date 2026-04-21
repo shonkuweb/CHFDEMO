@@ -8,6 +8,7 @@
     <title>CHF Botanical - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&family=Noto+Serif+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap');
         body { font-family: 'Manrope', sans-serif; background-color: #0c0c0c; color: #f5f5f0; }
@@ -17,6 +18,7 @@
         .toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
         .toast-enter-from { opacity: 0; transform: translateY(20px); }
         .toast-leave-to { opacity: 0; transform: translateY(-20px); }
+        .glass-surface { background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.08); }
     </style>
     <script>
         tailwind.config = {
@@ -36,20 +38,38 @@
     <script src="assets/animation-core.js" defer></script>
 </head>
 <body class="min-h-screen flex text-sm">
-    <div id="app" class="flex w-full min-h-screen">
+    <div id="app" class="w-full min-h-screen">
         
         <!-- Sidebar -->
-        <aside class="w-64 border-r border-white/5 bg-[#0a0a0a] flex flex-col justify-between overflow-y-auto">
+        <aside :class="[
+            'fixed left-0 top-0 z-50 h-screen border-r border-white/5 bg-[#090909] flex flex-col justify-between overflow-y-auto transition-all duration-300',
+            sidebarCollapsed ? 'lg:w-0 lg:-translate-x-full lg:border-r-0' : 'lg:w-72 lg:translate-x-0',
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        ]">
             <div>
-                <div class="p-8 pb-12">
-                    <h2 class="font-serif text-2xl tracking-wide text-white">CHF <span class="text-accent-bronze italic text-lg">Admin</span></h2>
+                <div class="p-6 pb-8">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h2 v-if="!sidebarCollapsed" class="font-serif text-2xl tracking-wide text-white">CHF <span class="text-accent-bronze italic text-lg">Admin</span></h2>
+                            <h2 v-else class="font-serif text-xl tracking-wide text-white text-center">CHF</h2>
+                            <p v-if="!sidebarCollapsed" class="mt-2 text-[10px] uppercase tracking-[0.28em] text-gray-500">Control Console</p>
+                        </div>
+                        <button @click="toggleSidebarCollapse" class="hidden lg:inline-flex text-gray-400 hover:text-accent-bronze transition-colors">
+                            <svg v-if="!sidebarCollapsed" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14V5"></path></svg>
+                            <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5v14"></path></svg>
+                        </button>
+                    </div>
                 </div>
                 
                 <nav class="px-4 space-y-8">
                     <!-- Site Management -->
                     <div>
-                        <span class="px-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-4">Site Architecture</span>
-                        <div class="space-y-1">
+                        <button @click="toggleSection('siteArchitecture')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Site Architecture</span>
+                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.siteArchitecture ? '−' : '+' }}</span>
+                            <span v-else class="text-xs">SA</span>
+                        </button>
+                        <div v-show="openSections.siteArchitecture && !sidebarCollapsed" class="space-y-1">
                             <button @click="loadPageContent('global')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
                                 currentSelection === 'global' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
@@ -70,16 +90,20 @@
 
                     <!-- Services -->
                     <div>
-                        <span class="px-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-4 mt-8">Services</span>
-                        <div class="space-y-1">
+                        <button @click="toggleSection('services')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Services</span>
+                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.services ? '−' : '+' }}</span>
+                            <span v-else class="text-xs">SV</span>
+                        </button>
+                        <div v-show="openSections.services && !sidebarCollapsed" class="space-y-1">
                             <button @click="loadPageContent('arch')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
                                 currentSelection === 'arch' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 Architectural Harmony
                             </button>
-                            <button @click="loadPageContent('curated')" 
+                            <button @click="loadCollection('curated-specimens')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
-                                currentSelection === 'curated' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                currentSelection === 'curated-specimens' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 Curated Specimens
                             </button>
                             <button @click="loadPageContent('whiteglove')" 
@@ -90,10 +114,29 @@
                         </div>
                     </div>
 
+                    <div>
+                        <button @click="toggleSection('deepSolitude')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Deep Solitude</span>
+                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.deepSolitude ? '−' : '+' }}</span>
+                            <span v-else class="text-xs">DS</span>
+                        </button>
+                        <div v-show="openSections.deepSolitude && !sidebarCollapsed" class="space-y-1">
+                            <button @click="loadCollection('deep-solitude')"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                currentSelection === 'deep-solitude' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Manage Deep Solitude
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Experience -->
                     <div>
-                        <span class="px-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-4 mt-8">Experience</span>
-                        <div class="space-y-1">
+                        <button @click="toggleSection('experience')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Experience</span>
+                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.experience ? '−' : '+' }}</span>
+                            <span v-else class="text-xs">EX</span>
+                        </button>
+                        <div v-show="openSections.experience && !sidebarCollapsed" class="space-y-1">
                             <button @click="loadPageContent('plant-center')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
                                 currentSelection === 'plant-center' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
@@ -104,13 +147,36 @@
 
                     <!-- Collections -->
                     <div>
-                        <span class="px-4 text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-4">Collections</span>
-                        <div class="space-y-1">
+                        <button @click="toggleSection('collections')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Collections</span>
+                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.collections ? '−' : '+' }}</span>
+                            <span v-else class="text-xs">CL</span>
+                        </button>
+                        <div v-show="openSections.collections && !sidebarCollapsed" class="space-y-1">
                             <button v-for="col in collections" :key="col.id" 
                                 @click="loadCollection(col.id)"
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
                                 currentSelection === col.id ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 {{ col.name }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button @click="toggleSection('account')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Account</span>
+                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.account ? '−' : '+' }}</span>
+                            <span v-else class="text-xs">AC</span>
+                        </button>
+                        <div v-show="openSections.account && !sidebarCollapsed" class="space-y-1">
+                            <button @click="openSettings"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
+                                viewMode === 'settings' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Settings & Security
+                            </button>
+                            <button @click="logout"
+                                class="w-full text-left px-4 py-2 rounded-sm transition-all text-gray-500 hover:text-red-300 hover:bg-red-500/10">
+                                Logout
                             </button>
                         </div>
                     </div>
@@ -124,8 +190,25 @@
             </div>
         </aside>
 
+        <div v-if="sidebarOpen" @click="closeSidebar" class="fixed inset-0 z-40 bg-black/60 lg:hidden"></div>
+
         <!-- Main Editor -->
-        <main class="flex-1 overflow-y-auto bg-[#0c0c0c] relative">
+        <main :class="['min-h-screen bg-[#0c0c0c] relative transition-all duration-300', sidebarCollapsed ? 'lg:pl-0' : 'lg:pl-72']">
+            <button
+                v-if="sidebarCollapsed"
+                @click="toggleSidebarCollapse"
+                class="hidden lg:inline-flex fixed left-4 top-4 z-40 items-center justify-center w-10 h-10 border border-white/20 bg-[#090909]/90 text-gray-300 hover:text-accent-bronze hover:border-accent-bronze/40 transition-colors"
+                aria-label="Expand sidebar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5v14"></path></svg>
+            </button>
+            <div class="sticky top-0 z-30 lg:hidden border-b border-white/10 bg-[#090909]/95 backdrop-blur px-4 py-3 flex items-center justify-between">
+                <button @click="toggleSidebar" class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-gray-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    Menu
+                </button>
+                <span class="text-[10px] uppercase tracking-[0.2em] text-accent-bronze">CHF Admin</span>
+                <button @click="logout" class="text-[10px] uppercase tracking-[0.2em] text-gray-400">Logout</button>
+            </div>
             
             <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-[#0c0c0c] z-10">
                 <div class="animate-spin w-8 h-8 border-2 border-accent-bronze border-t-transparent rounded-full"></div>
@@ -135,11 +218,20 @@
                 Select a section to edit
             </div>
 
-            <div v-else class="max-w-4xl mx-auto p-12">
+            <div v-else class="max-w-4xl mx-auto p-5 sm:p-8 lg:p-12">
+                <div class="glass-surface mb-8 px-6 py-4 flex items-center justify-between">
+                    <div class="text-[10px] uppercase tracking-[0.25em] text-gray-400">
+                        Signed in as <span class="text-accent-bronze">{{ adminUsername || 'admin' }}</span>
+                    </div>
+                    <button @click="logout" class="text-[10px] uppercase tracking-[0.2em] text-gray-300 hover:text-red-300 transition-colors">
+                        Logout
+                    </button>
+                </div>
+
                 <!-- Header Actions -->
-                <div class="flex items-center justify-between mb-12 border-b border-white/5 pb-6">
+                <div v-if="viewMode !== 'settings'" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12 border-b border-white/5 pb-6">
                     <div>
-                        <h1 class="font-serif text-4xl mb-2">{{ selectionDisplay }}</h1>
+                        <h1 class="font-serif text-3xl sm:text-4xl mb-2">{{ selectionDisplay }}</h1>
                         <p class="text-gray-500">{{ selectionSubtext }}</p>
                     </div>
                     <button @click="saveAll" :disabled="saving"
@@ -149,39 +241,144 @@
                     </button>
                 </div>
 
+                <div v-if="viewMode === 'settings'" class="space-y-8">
+                    <div class="border-b border-white/5 pb-6">
+                        <h1 class="font-serif text-3xl sm:text-4xl mb-2">Settings & Security</h1>
+                        <p class="text-gray-500">Manage your admin session and credentials securely.</p>
+                    </div>
+
+                    <section class="glass-surface p-8 space-y-6">
+                        <div>
+                            <h2 class="font-serif text-2xl text-white">Change Password</h2>
+                            <p class="text-xs text-gray-500 mt-2">Protected by session auth and Cloudflare Turnstile verification.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Current Password</label>
+                                <input v-model="passwordForm.currentPassword" type="password"
+                                    class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors"
+                                    placeholder="Current password">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">New Password</label>
+                                <input v-model="passwordForm.newPassword" type="password"
+                                    class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors"
+                                    placeholder="Minimum 10 characters">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Confirm New Password</label>
+                                <input v-model="passwordForm.confirmPassword" type="password"
+                                    class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors"
+                                    placeholder="Re-enter new password">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Bot Protection</label>
+                                <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-3 pt-2">
+                            <button @click="changePassword" :disabled="changingPassword"
+                                class="bg-[#4A5D4E] hover:bg-[#3d4d40] text-white px-8 py-3 text-xs uppercase tracking-[0.2em] font-bold rounded-sm transition-colors disabled:opacity-50">
+                                {{ changingPassword ? 'Updating...' : 'Update Password' }}
+                            </button>
+                            <button @click="logout"
+                                class="border border-red-300/20 text-red-300 px-6 py-3 text-xs uppercase tracking-[0.2em] font-bold rounded-sm hover:bg-red-500/10 transition-colors">
+                                Logout Everywhere
+                            </button>
+                        </div>
+                    </section>
+                </div>
+
                 <!-- View Mode: Generic Site Content -->
                 <div v-if="viewMode === 'site-content'" class="space-y-12">
-                    <div v-for="(content, path) in currentSiteData" :key="path" class="bg-surface-dark border border-white/5 rounded p-8">
-                        <div class="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
-                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">{{ path.split('/').join(' / ') }}</span>
-                             <span class="text-[9px] text-gray-600 uppercase">{{ content.type }}</span>
-                        </div>
-                        
-                        <!-- Text Input -->
-                        <div v-if="content.type === 'text'">
-                            <input v-model="content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                    <template v-for="(content, path) in currentSiteData" :key="path">
+                        <div v-if="path === 'home/hero/image'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
+                            <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
+                                <div>
+                                    <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block">Home / Hero / Media</span>
+                                    <p class="text-xs text-gray-500 mt-2">Manage hero image or video from one place. Supports image URLs, direct video files, and Cloudflare Stream links.</p>
+                                </div>
+                                <span class="text-[9px] text-gray-500 uppercase">Hero Manager</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                                <div class="lg:col-span-5">
+                                    <div class="relative aspect-[16/9] bg-black rounded overflow-hidden border border-white/10">
+                                        <iframe v-if="isCloudflareVideoUrl(content.value)" :src="getCloudflareEmbedUrl(content.value)" class="absolute inset-0 w-full h-full" frameborder="0" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
+                                        <video v-else-if="isVideo(content.value)" :src="content.value" class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline controls></video>
+                                        <img v-else-if="content.value" :src="content.value" class="absolute inset-0 w-full h-full object-cover">
+                                        <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-gray-600">
+                                            <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m-6 4h4a2 2 0 002-2V8a2 2 0 00-2-2H9a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                            <span class="text-xs uppercase tracking-widest">No hero media</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="lg:col-span-7 space-y-4">
+                                    <label class="block text-xs text-gray-400 uppercase tracking-wider">Hero Media URL</label>
+                                    <input v-model="content.value" @blur="normalizeHeroMediaUrl(content)"
+                                        type="text"
+                                        class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-xs text-white transition-colors"
+                                        placeholder="Paste image URL, video file URL, or Cloudflare Stream URL">
+
+                                    <div class="flex flex-wrap gap-2">
+                                        <button @click="normalizeHeroMediaUrl(content)" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-4 py-2 hover:bg-accent-bronze/5 transition-colors">
+                                            Normalize Video URL
+                                        </button>
+                                        <button @click="triggerGenericUpload(path)" class="text-[10px] uppercase tracking-widest text-white border border-white/20 px-4 py-2 hover:bg-white/5 transition-colors">
+                                            Upload Image/Video
+                                        </button>
+                                        <button @click="content.value=''" class="text-[10px] uppercase tracking-widest text-red-400 border border-red-400/30 px-4 py-2 hover:bg-red-400/5 transition-colors">
+                                            Clear Media
+                                        </button>
+                                    </div>
+
+                                    <div class="text-[11px] text-gray-500 leading-relaxed space-y-1">
+                                        <p><span class="text-accent-bronze">Tip:</span> For Cloudflare Stream, paste either a full iframe URL or stream URL, then use <em>Normalize Video URL</em>.</p>
+                                        <p>Examples:</p>
+                                        <p class="font-mono text-[10px] text-gray-400 break-all">https://iframe.videodelivery.net/VIDEO_ID</p>
+                                        <p class="font-mono text-[10px] text-gray-400 break-all">https://.../hero-image.jpg</p>
+                                    </div>
+
+                                    <input type="file" :id="'file_' + path.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, path)" accept="image/*,video/*">
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Longtext Input -->
-                        <div v-else-if="content.type === 'longtext'">
-                            <textarea v-model="content.value" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
-                        </div>
+                        <div v-else class="bg-surface-dark border border-white/5 rounded p-8">
+                            <div class="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
+                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">{{ path.split('/').join(' / ') }}</span>
+                                <span class="text-[9px] text-gray-600 uppercase">{{ content.type }}</span>
+                            </div>
+                            
+                            <!-- Text Input -->
+                            <div v-if="content.type === 'text'">
+                                <input v-model="content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                            </div>
 
-                        <!-- Media Input -->
-                        <div v-else-if="content.type === 'media'" class="flex gap-8">
-                             <div class="w-32 h-32 bg-black rounded overflow-hidden flex-shrink-0 border border-white/5">
-                                 <video v-if="isVideo(content.value)" :src="content.value" class="w-full h-full object-cover" autoplay muted loop></video>
-                                 <img v-else :src="content.value" class="w-full h-full object-cover">
-                             </div>
-                             <div class="flex-grow flex flex-col justify-center gap-4">
-                                 <input v-model="content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-xs text-white transition-colors" placeholder="Media URL">
-                                 <button @click="triggerGenericUpload(path)" class="w-fit text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-4 py-2 hover:bg-accent-bronze/5 transition-colors">
-                                     Upload New Media
-                                 </button>
-                                 <input type="file" :id="'file_' + path.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, path)" accept="image/*,video/*">
-                             </div>
+                            <!-- Longtext Input -->
+                            <div v-else-if="content.type === 'longtext'">
+                                <textarea v-model="content.value" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                            </div>
+
+                            <!-- Media Input -->
+                            <div v-else-if="content.type === 'media'" class="flex gap-8">
+                                <div class="w-32 h-32 bg-black rounded overflow-hidden flex-shrink-0 border border-white/5">
+                                    <video v-if="isVideo(content.value)" :src="content.value" class="w-full h-full object-cover" autoplay muted loop></video>
+                                    <img v-else :src="content.value" class="w-full h-full object-cover">
+                                </div>
+                                <div class="flex-grow flex flex-col justify-center gap-4">
+                                    <input v-model="content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-xs text-white transition-colors" placeholder="Media URL">
+                                    <button @click="triggerGenericUpload(path)" class="w-fit text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-4 py-2 hover:bg-accent-bronze/5 transition-colors">
+                                        Upload New Media
+                                    </button>
+                                    <input type="file" :id="'file_' + path.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, path)" accept="image/*,video/*">
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </template>
                 </div>
 
                 <!-- View Mode: Collections (Legacy) -->
@@ -217,7 +414,7 @@
                             <div v-for="(cat, idx) in currentData.categories" :key="cat.id" class="bg-surface-dark border border-white/5 rounded p-8">
                                 <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
                                     <span class="font-serif text-xl italic drop-shadow-sm text-accent-bronze">Block {{ idx + 1 }}</span>
-                                    <button @click="removeCategory(idx)" class="text-[10px] uppercase tracking-widest text-red-500/50 hover:text-red-500 font-bold transition-colors flex items-center gap-2">
+                                    <button v-if="!collectionBlocksLocked" @click="removeCategory(idx)" class="text-[10px] uppercase tracking-widest text-red-500/50 hover:text-red-500 font-bold transition-colors flex items-center gap-2">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         Remove Block
                                     </button>
@@ -275,14 +472,18 @@
                                         </div>
                                         <div>
                                             <label class="block text-xs text-gray-500 mb-2">Philosophical Description</label>
-                                            <textarea v-model="cat.description" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                                            <textarea v-model="cat.description" rows="3" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-500 mb-2">Bullet Points (one per line)</label>
+                                            <textarea v-model="cat.features" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none" placeholder="Feature 1\nFeature 2\nFeature 3"></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mt-8">
+                        <div v-if="!collectionBlocksLocked" class="mt-8">
                             <button @click="addCategory" class="w-full border border-white/5 border-dashed rounded py-8 flex flex-col items-center justify-center text-gray-500 hover:text-accent-bronze hover:border-accent-bronze/30 hover:bg-accent-bronze/5 transition-all group">
                                 <svg class="w-8 h-8 mb-2 opacity-20 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                 <span class="text-xs uppercase tracking-[0.2em] font-bold">Add New Botanical Block</span>
@@ -312,12 +513,15 @@
         createApp({
             setup() {
                 const collections = [
+                    { id: 'deep-solitude', name: 'Deep Solitude' },
                     { id: 'full-grown-avenue-trees', name: 'Avenue Trees' },
                     { id: 'exotic-indoor-plants', name: 'Indoor Plants' },
                     { id: 'bonsai', name: 'Bonsai' },
-                    { id: 'curated-plants', name: 'Curated Plants' }
+                    { id: 'curated-plants', name: 'Curated Plants' },
+                    { id: 'curated-specimens', name: 'Curated Specimens' }
                 ];
                 
+                const FIXED_COLLECTION_BLOCKS = 4;
                 const currentSelection = ref(null); // id of page or collection
                 const viewMode = ref(null); // 'collections' or 'site-content'
                 
@@ -326,10 +530,27 @@
                 
                 const loading = ref(false);
                 const saving = ref(false);
+                const changingPassword = ref(false);
+                const sidebarOpen = ref(false);
+                const sidebarCollapsed = ref(false);
+                const openSections = ref({
+                    siteArchitecture: true,
+                    services: false,
+                    deepSolitude: false,
+                    experience: false,
+                    collections: false,
+                    account: false
+                });
                 const dragover = ref(null);
                 const uploading = ref(null);
                 const uploadProgress = ref(0);
                 const toasts = ref([]);
+                const adminUsername = ref('');
+                const passwordForm = ref({
+                    currentPassword: '',
+                    newPassword: '',
+                    confirmPassword: ''
+                });
 
                 const selectionDisplay = computed(() => {
                     if (viewMode.value === 'collections') {
@@ -339,13 +560,41 @@
                     if (currentSelection.value === 'global') return 'Global Settings';
                     if (currentSelection.value === 'home') return 'Home Page Content';
                     if (currentSelection.value === 'about') return 'About Page Content';
+                    if (viewMode.value === 'settings') return 'Settings & Security';
                     return '';
                 });
 
                 const selectionSubtext = computed(() => {
-                    if (viewMode.value === 'collections') return 'Edit the dynamic specimen blocks for this collection.';
+                    if (viewMode.value === 'collections') return 'Edit the four prebuilt collection blocks for this page.';
                     return 'Edit the static text and media for this specific site section.';
                 });
+
+                const collectionBlocksLocked = computed(() => viewMode.value === 'collections');
+
+                const createDefaultCategory = (idx) => ({
+                    id: `cat-${idx + 1}`,
+                    label: `Category ${['I', 'II', 'III', 'IV'][idx] || idx + 1}`,
+                    title: 'Untitled Specimen',
+                    description: 'No details provided yet.',
+                    features: '',
+                    image: '',
+                    ctaText: 'Request Info',
+                    ctaLink: 'inquiry'
+                });
+
+                const normalizeCollectionBlocks = (payload) => {
+                    const normalized = payload && typeof payload === 'object' ? payload : {};
+                    const categories = Array.isArray(normalized.categories) ? normalized.categories.slice(0, FIXED_COLLECTION_BLOCKS) : [];
+                    while (categories.length < FIXED_COLLECTION_BLOCKS) {
+                        categories.push(createDefaultCategory(categories.length));
+                    }
+                    normalized.categories = categories.map((cat, idx) => ({
+                        ...createDefaultCategory(idx),
+                        ...(cat || {}),
+                        id: (cat && cat.id) || `cat-${idx + 1}`
+                    }));
+                    return normalized;
+                };
 
                 const showToast = (message, type = 'success') => {
                     const id = Date.now();
@@ -356,13 +605,14 @@
                 };
 
                 const loadCollection = async (id) => {
+                    sidebarOpen.value = false;
                     viewMode.value = 'collections';
                     currentSelection.value = id;
                     loading.value = true;
                     try {
                         const res = await fetch(`/api/data?slug=${id}&t=${Date.now()}`);
                         if (!res.ok) throw new Error('Data not found');
-                        currentData.value = await res.json();
+                        currentData.value = normalizeCollectionBlocks(await res.json());
                     } catch (e) {
                         showToast(`Failed to load ${id}`, 'error');
                         currentData.value = null;
@@ -372,6 +622,7 @@
                 };
 
                 const loadPageContent = async (page) => {
+                    sidebarOpen.value = false;
                     viewMode.value = 'site-content';
                     currentSelection.value = page;
                     loading.value = true;
@@ -393,20 +644,34 @@
                         if (viewMode.value === 'collections') {
                             const res = await fetch('/api/save', {
                                 method: 'POST',
+                                credentials: 'include',
+                                headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     file: currentSelection.value,
                                     payload: currentData.value
                                 })
                             });
+                            if (res.status === 401) throw new Error('Session expired. Please login again at /admin-login.');
                             if (!res.ok) throw new Error('Server error pushing collection');
                         } else {
                             const res = await fetch('/api/site-content/save', {
                                 method: 'POST',
+                                credentials: 'include',
+                                headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(currentSiteData.value)
                             });
+                            if (res.status === 401) throw new Error('Session expired. Please login again at /admin-login.');
                             if (!res.ok) throw new Error('Server error pushing CMS content');
                         }
                         showToast('Changes published to live site!');
+                        // Notify any open public-site tabs to refresh content immediately.
+                        const syncPayload = JSON.stringify({ ts: Date.now(), source: 'admin-publish' });
+                        localStorage.setItem('chf_content_sync', syncPayload);
+                        if ('BroadcastChannel' in window) {
+                            const syncChannel = new BroadcastChannel('chf-content-sync');
+                            syncChannel.postMessage({ ts: Date.now(), source: 'admin-publish' });
+                            syncChannel.close();
+                        }
                     } catch (e) {
                         showToast(e.message, 'error');
                     } finally {
@@ -414,11 +679,139 @@
                     }
                 };
 
+                const openSettings = () => {
+                    sidebarOpen.value = false;
+                    viewMode.value = 'settings';
+                    currentSelection.value = 'settings';
+                };
+
+                const toggleSidebar = () => {
+                    sidebarOpen.value = !sidebarOpen.value;
+                };
+
+                const closeSidebar = () => {
+                    sidebarOpen.value = false;
+                };
+
+                const toggleSidebarCollapse = () => {
+                    sidebarCollapsed.value = !sidebarCollapsed.value;
+                };
+
+                const toggleSection = (sectionKey) => {
+                    openSections.value[sectionKey] = !openSections.value[sectionKey];
+                };
+
+                const logout = async () => {
+                    try {
+                        await fetch('/api/logout', {
+                            method: 'POST',
+                            credentials: 'include'
+                        });
+                    } catch (_) {
+                        // even if request fails, clear local state and move user out
+                    } finally {
+                        window.location.href = '/admin-login';
+                    }
+                };
+
+                const fetchAdminProfile = async () => {
+                    try {
+                        const res = await fetch('/api/admin/me', { credentials: 'include' });
+                        if (res.status === 401) {
+                            window.location.href = '/admin-login';
+                            return;
+                        }
+                        const data = await res.json();
+                        adminUsername.value = data.username || 'admin';
+                    } catch (_) {
+                        adminUsername.value = 'admin';
+                    }
+                };
+
+                const changePassword = async () => {
+                    if (!passwordForm.value.currentPassword || !passwordForm.value.newPassword || !passwordForm.value.confirmPassword) {
+                        showToast('All password fields are required.', 'error');
+                        return;
+                    }
+                    if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+                        showToast('New password and confirm password do not match.', 'error');
+                        return;
+                    }
+                    if (passwordForm.value.newPassword.length < 10) {
+                        showToast('New password must be at least 10 characters.', 'error');
+                        return;
+                    }
+
+                    const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || '';
+                    changingPassword.value = true;
+                    try {
+                        const res = await fetch('/api/admin/change-password', {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                current_password: passwordForm.value.currentPassword,
+                                new_password: passwordForm.value.newPassword,
+                                cf_turnstile_response: turnstileResponse
+                            })
+                        });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.detail || 'Failed to update password');
+
+                        passwordForm.value.currentPassword = '';
+                        passwordForm.value.newPassword = '';
+                        passwordForm.value.confirmPassword = '';
+                        if (window.turnstile) window.turnstile.reset();
+                        showToast('Password updated successfully.');
+                    } catch (e) {
+                        showToast(e.message || 'Password update failed.', 'error');
+                        if (window.turnstile) window.turnstile.reset();
+                    } finally {
+                        changingPassword.value = false;
+                    }
+                };
+
                 const isVideo = (url) => {
                     if (!url) return false;
+                    if (isCloudflareVideoUrl(url)) return true;
                     const cleanUrl = url.split('?')[0];
                     const ext = cleanUrl.split('.').pop().toLowerCase();
                     return ['mp4', 'webm', 'mov', 'ogg'].includes(ext);
+                };
+
+                const isCloudflareVideoUrl = (url) => {
+                    if (!url) return false;
+                    try {
+                        const parsed = new URL(url, window.location.origin);
+                        const host = parsed.hostname.toLowerCase();
+                        return host.includes('videodelivery.net') || host.includes('cloudflarestream.com');
+                    } catch (_) {
+                        return false;
+                    }
+                };
+
+                const getCloudflareEmbedUrl = (url) => {
+                    if (!url) return url;
+                    try {
+                        const parsed = new URL(url, window.location.origin);
+                        const host = parsed.hostname.toLowerCase();
+                        let videoId = '';
+                        if (host.includes('videodelivery.net')) {
+                            videoId = parsed.pathname.split('/').filter(Boolean)[0] || '';
+                        } else if (host.includes('cloudflarestream.com')) {
+                            videoId = parsed.pathname.split('/').filter(Boolean).pop() || '';
+                        }
+                        if (!videoId) return url;
+                        return `https://iframe.videodelivery.net/${videoId}?autoplay=true&muted=true&loop=true`;
+                    } catch (_) {
+                        return url;
+                    }
+                };
+
+                const normalizeHeroMediaUrl = (content) => {
+                    if (!content || !content.value) return;
+                    if (!isCloudflareVideoUrl(content.value)) return;
+                    content.value = getCloudflareEmbedUrl(content.value);
                 };
 
                 const uploadMediaChunked = (file, onSuccess, onProgress) => {
@@ -453,7 +846,12 @@
                 // Generic CMS Upload
                 const triggerGenericUpload = (path) => {
                     const id = 'file_' + path.replace(/\//g, '_');
-                    document.getElementById(id).click();
+                    // Use a slight timeout to ensure Vue has finished any rendering if needed
+                    setTimeout(() => {
+                        const el = document.getElementById(id);
+                        if (el) el.click();
+                        else console.error('Upload element not found:', id);
+                    }, 50);
                 };
 
                 const handleGenericFileSelect = (e, path) => {
@@ -462,8 +860,11 @@
                     
                     showToast('Uploading generic media...');
                     uploadMediaChunked(file, (url) => {
-                        currentSiteData.value[path].value = url + '?t=' + Date.now();
-                        showToast('Media updated.');
+                        // Ensure reactive update
+                        if (currentSiteData.value[path]) {
+                            currentSiteData.value[path].value = url + '?t=' + Date.now();
+                            showToast('Media updated.');
+                        }
                     }, (p) => {});
                 };
 
@@ -494,6 +895,7 @@
                         label: `New Category`,
                         title: "Untitled Specimen",
                         description: "No details provided yet.",
+                        features: "",
                         image: "",
                         ctaText: "Request Info",
                         ctaLink: "inquiry"
@@ -518,17 +920,35 @@
                     selectionSubtext,
                     loading,
                     saving,
+                    changingPassword,
+                    collectionBlocksLocked,
+                    sidebarOpen,
+                    sidebarCollapsed,
+                    openSections,
                     dragover,
                     uploading,
                     uploadProgress,
                     toasts,
+                    adminUsername,
+                    passwordForm,
                     loadCollection,
                     loadPageContent,
                     saveAll,
+                    openSettings,
+                    toggleSidebar,
+                    closeSidebar,
+                    toggleSidebarCollapse,
+                    toggleSection,
+                    logout,
+                    changePassword,
+                    fetchAdminProfile,
                     handleDrop,
                     handleFileSelect,
                     triggerFileInput,
                     isVideo,
+                    isCloudflareVideoUrl,
+                    getCloudflareEmbedUrl,
+                    normalizeHeroMediaUrl,
                     addCategory,
                     removeCategory,
                     triggerGenericUpload,
@@ -536,6 +956,8 @@
                 }
             },
             mounted() {
+                this.loadPageContent('global');
+                this.fetchAdminProfile();
                 // Attach correct trigger to the DOM dynamically via event delegation
                 document.addEventListener('click', (e) => {
                     const zone = e.target.closest('.upload-zone');

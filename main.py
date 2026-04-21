@@ -3,14 +3,18 @@ import json
 import uuid
 import sqlite3
 import io
+import urllib.parse
+import urllib.request
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, Form, UploadFile, File
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from functools import lru_cache
 from datetime import datetime, timedelta
 from passlib.hash import argon2
 from jose import jwt, JWTError
+from typing import Optional
+import time
 
 try:
     from dotenv import load_dotenv
@@ -110,6 +114,107 @@ def clear_cache():
     fetch_collection_data.cache_clear()
     fetch_site_content.cache_clear()
 
+def ensure_sync_state_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS sync_state (
+            key TEXT PRIMARY KEY,
+            version INTEGER NOT NULL
+        )
+    """)
+    cur.execute("INSERT OR IGNORE INTO sync_state (key, version) VALUES (?, ?)", ("global", int(time.time() * 1000)))
+    conn.commit()
+    conn.close()
+
+def get_sync_version():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT version FROM sync_state WHERE key = ?", ("global",))
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return int(time.time() * 1000)
+    return int(row["version"])
+
+def bump_sync_version():
+    ensure_sync_state_table()
+    version = int(time.time() * 1000)
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE sync_state SET version = ? WHERE key = ?", (version, "global"))
+    conn.commit()
+    conn.close()
+    return version
+
+def purge_cloudflare_cache(urls: list[str] = None):
+    """
+    Optional Cloudflare cache purge for production CDN consistency.
+    Enabled only when CF_API_TOKEN and CF_ZONE_ID are configured.
+    """
+    cf_api_token = os.environ.get("CF_API_TOKEN")
+    cf_zone_id = os.environ.get("CF_ZONE_ID")
+    if not cf_api_token or not cf_zone_id:
+        return
+
+    endpoint = f"https://api.cloudflare.com/client/v4/zones/{cf_zone_id}/purge_cache"
+    payload = {"files": urls} if urls else {"purge_everything": True}
+    body = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        endpoint,
+        data=body,
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {cf_api_token}",
+            "Content-Type": "application/json"
+        }
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as res:
+            response_payload = json.loads(res.read() or b"{}")
+            if not response_payload.get("success"):
+                print(f"[Cloudflare] Purge failed: {response_payload}")
+            else:
+                print("[Cloudflare] Cache purge successful.")
+    except Exception as e:
+        print(f"[Cloudflare] Cache purge error: {e}")
+
+def verify_turnstile_or_raise(turnstile_response: Optional[str]):
+    turnstile_secret = os.environ.get("TURNSTILE_SECRET")
+    # If Turnstile is not configured, allow local/dev flows.
+    if not turnstile_secret:
+        return
+    if not turnstile_response:
+        raise HTTPException(status_code=403, detail="Missing bot protection token")
+    verify_url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+    payload = urllib.parse.urlencode({
+        "secret": turnstile_secret,
+        "response": turnstile_response
+    }).encode("utf-8")
+    try:
+        req = urllib.request.Request(verify_url, data=payload)
+        with urllib.request.urlopen(req) as res:
+            outcome = json.loads(res.read())
+            if not outcome.get("success"):
+                raise HTTPException(status_code=403, detail="Bot protection validation failed")
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=403, detail="Bot protection network error")
+
+@app.middleware("http")
+async def add_api_no_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
+@app.on_event("startup")
+def startup_init_sync_state():
+    ensure_sync_state_table()
+
 # ── Endpoints ───────────────────────────────
 
 @app.post("/api/login")
@@ -119,25 +224,7 @@ async def login(
     password: str = Form(...),
     cf_turnstile_response: str = Form(None)
 ):
-    import urllib.request
-    import urllib.parse
-    
-    # Verify Turnstile
-    TURNSTILE_SECRET = os.environ.get("TURNSTILE_SECRET")
-    if TURNSTILE_SECRET and cf_turnstile_response:
-        url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
-        data = urllib.parse.urlencode({
-            'secret': TURNSTILE_SECRET,
-            'response': cf_turnstile_response
-        }).encode('utf-8')
-        try:
-            req = urllib.request.Request(url, data=data)
-            with urllib.request.urlopen(req) as res:
-                outcome = json.loads(res.read())
-                if not outcome.get("success"):
-                    raise HTTPException(status_code=403, detail="Bot protection validation failed")
-        except Exception:
-            raise HTTPException(status_code=403, detail="Bot protection network error")
+    verify_turnstile_or_raise(cf_turnstile_response)
 
     # Verify credentials
     conn = get_db_connection()
@@ -176,6 +263,53 @@ async def logout(response: Response):
     response.delete_cookie("admin_session")
     return {"message": "Logged out"}
 
+@app.get("/api/admin/me")
+async def admin_me(admin: str = Depends(get_current_admin)):
+    return {"username": admin}
+
+@app.post("/api/admin/change-password")
+async def change_admin_password(
+    request: Request,
+    admin: str = Depends(get_current_admin)
+):
+    body = await request.json()
+    current_password = body.get("current_password", "")
+    new_password = body.get("new_password", "")
+    cf_turnstile_response = body.get("cf_turnstile_response")
+
+    verify_turnstile_or_raise(cf_turnstile_response)
+
+    if not current_password or not new_password:
+        raise HTTPException(status_code=400, detail="Current and new passwords are required")
+    if len(new_password) < 10:
+        raise HTTPException(status_code=400, detail="New password must be at least 10 characters")
+    if new_password == current_password:
+        raise HTTPException(status_code=400, detail="New password must be different from current password")
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT password_hash FROM admins WHERE username = ?", (admin,))
+    row = cur.fetchone()
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Admin account not found")
+
+    try:
+        if not argon2.verify(current_password, row["password_hash"]):
+            conn.close()
+            raise HTTPException(status_code=401, detail="Current password is incorrect")
+    except HTTPException:
+        raise
+    except Exception:
+        conn.close()
+        raise HTTPException(status_code=401, detail="Failed to verify current password")
+
+    new_hash = argon2.hash(new_password)
+    cur.execute("UPDATE admins SET password_hash = ? WHERE username = ?", (new_hash, admin))
+    conn.commit()
+    conn.close()
+    return {"status": "success", "message": "Password updated"}
+
 @app.get("/api/site-content")
 async def get_site_content(page: str = ''):
     return fetch_site_content(page)
@@ -186,6 +320,37 @@ async def get_data(slug: str):
     if not data:
         raise HTTPException(status_code=404, detail="Not found")
     return data
+
+@app.get("/api/sync-version")
+async def get_sync_version_api():
+    return {"version": get_sync_version()}
+
+@app.get("/api/r2-media")
+async def get_r2_media(url: str):
+    """
+    Streams private/public R2 objects through the backend.
+    This keeps Cloudflare-hosted video visible even when direct object access is blocked.
+    """
+    if not R2_ENABLED or not r2_client:
+        raise HTTPException(status_code=503, detail="R2 is not configured")
+
+    parsed = urllib.parse.urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if not host.endswith(".r2.dev"):
+        raise HTTPException(status_code=400, detail="Only r2.dev URLs are supported")
+
+    key = parsed.path.lstrip("/")
+    key = urllib.parse.unquote(key)
+    if not key:
+        raise HTTPException(status_code=400, detail="Invalid R2 object key")
+
+    try:
+        obj = r2_client.get_object(Bucket=R2_BUCKET, Key=key)
+        content_type = obj.get("ContentType") or "application/octet-stream"
+        body = obj["Body"]
+        return StreamingResponse(body, media_type=content_type)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"R2 media not found: {str(e)}")
 
 @app.post("/api/upload")
 async def upload_file(request: Request, admin: str = Depends(get_current_admin)):
@@ -250,7 +415,9 @@ async def save_data(request: Request, admin: str = Depends(get_current_admin)):
     conn.commit()
     conn.close()
     clear_cache()
-    return {"status": "success"}
+    version = bump_sync_version()
+    purge_cloudflare_cache()
+    return {"status": "success", "version": version}
 
 @app.post("/api/site-content/save")
 async def save_site_content(request: Request, admin: str = Depends(get_current_admin)):
@@ -265,7 +432,9 @@ async def save_site_content(request: Request, admin: str = Depends(get_current_a
     conn.commit()
     conn.close()
     clear_cache()
-    return {"status": "success"}
+    version = bump_sync_version()
+    purge_cloudflare_cache()
+    return {"status": "success", "version": version}
 
 @app.get("/{path:path}")
 async def serve_static(request: Request, path: str):
@@ -284,7 +453,7 @@ async def serve_static(request: Request, path: str):
     if not resolved_path:
         raise HTTPException(status_code=404, detail="Not Found")
         
-    if resolved_path == "admin.html":
+    if resolved_path.lower() == "admin.html":
         token = request.cookies.get("admin_session")
         if not token:
             return RedirectResponse("/admin-login")

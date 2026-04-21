@@ -6,7 +6,9 @@ db_path = "chf_archive.db"
 seeds = {
     # ── Architectural Harmony ──
     "arch/hero/title": {"value": "Architectural <span class='text-accent-bronze italic'>Harmony</span>", "type": "text"},
-    "arch/hero/subtitle": {"value": "Design is Instant. Growth is Inevitable. We Plan for Both.", "type": "text"},
+    "home/hero/subtitle": {"value": "Curating nature's rarest architectural wonders for refined spaces.", "type": "text"},
+    "home/hero/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/videos/hero_vid.mp4", "type": "media"},
+    "home/about/title": {"value": "The Botanical Sanctuary", "type": "text"},
     "arch/block1/title": {"value": "A Living Architecture", "type": "text"},
     "arch/block1/body": {"value": "In landscape architecture, drawings capture a moment—but gardens don’t stand still. They grow, expand, compete, and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.", "type": "longtext"},
     "arch/block1/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_1.png", "type": "media"},
@@ -24,6 +26,7 @@ seeds = {
     "plant-center/hero/title": {"value": "Plant <br /> \n<span class='text-accent-bronze italic font-light drop-shadow-sm'>Experience Center</span>", "type": "text"},
     "plant-center/hero/subtitle": {"value": "A curated space where architecture meets biodiversity. Experience the quiet power of nature through our multi-sensory botanical archive.", "type": "longtext"},
     "plant-center/hero/media": {"value": "", "type": "media"}, # Blank for wireframe
+    
     # ── White Glove Service ──
     "whiteglove/hero/title": {"value": "White Glove <br />\n<span class='text-accent-bronze italic font-light drop-shadow-sm'>Service</span>", "type": "text"},
     "whiteglove/hero/subtitle": {"value": "From nursery to installation — precision, care, and craft at every step.", "type": "text"},
@@ -41,24 +44,66 @@ seeds = {
     "whiteglove/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/white_glove_4.png", "type": "media"},
     "whiteglove/closing/title": {"value": "Every detail considered.<br>\n<span class='text-accent-bronze italic mt-4 block'>Every specimen placed with purpose.</span>", "type": "longtext"},
 
-    # ── Curated Specimens ──
-    "curated/hero/title": {"value": "Curated <br />\n<span class='text-accent-bronze italic font-light drop-shadow-sm'>Specimens</span>", "type": "text"},
-    "curated/hero/subtitle": {"value": "Not added — introduced. Every specimen placed with purpose.", "type": "text"},
-    "curated/block1/title": {"value": "Sensory Calm", "type": "text"},
-    "curated/block1/body": {"value": "Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.", "type": "longtext"},
-    "curated/block1/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_1.png", "type": "media"},
-    "curated/block2/title": {"value": "Breathable Living", "type": "text"},
-    "curated/block2/body": {"value": "Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.", "type": "longtext"},
-    "curated/block2/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_2.png", "type": "media"},
-    "curated/block3/title": {"value": "Quietly Premium", "type": "text"},
-    "curated/block3/body": {"value": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.", "type": "longtext"},
-    "curated/block3/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_3.png", "type": "media"},
-    "curated/block4/title": {"value": "Elevated Thinking", "type": "text"},
-    "curated/block4/body": {"value": "Clean lines, controlled light, and a sculptural plant improve cognitive performance and reduce fatigue — bringing clarity, calm, and subtle vitality into a workspace designed for focus, decision-making, and elevated thinking.", "type": "longtext"},
-    "curated/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png", "type": "media"},
-    "curated/closing/title": {"value": "A space that feels alive<br>\n<span class='text-accent-bronze italic mt-4 block'>is a space that inspires.</span>", "type": "longtext"},
-
+    # ── Deep Solitude ──
+    "deep/hero/title": {"value": "Deep <br />\n<span class='text-accent-bronze italic font-light drop-shadow-sm'>Solitude</span>", "type": "text"},
+    "deep/hero/subtitle": {"value": "Bespoke landscapes designed for sensory calm and biophilic balance.", "type": "text"},
+    "deep/block1/title": {"value": "Sensory Calm", "type": "text"},
+    "deep/block1/body": {"value": "Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.", "type": "longtext"},
+    "deep/block1/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_1.png", "type": "media"},
+    "deep/block2/title": {"value": "Breathable Living", "type": "text"},
+    "deep/block2/body": {"value": "Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.", "type": "longtext"},
+    "deep/block2/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_2.png", "type": "media"},
+    "deep/block3/title": {"value": "Quietly Premium", "type": "text"},
+    "deep/block3/body": {"value": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.", "type": "longtext"},
+    "deep/block3/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_3.png", "type": "media"},
+    "deep/block4/title": {"value": "Elevated Thinking", "type": "text"},
+    "deep/block4/body": {"value": "Clean lines, controlled light, and a sculptural plant improve cognitive performance and reduce fatigue — bringing clarity, calm, and subtle vitality into a workspace designed for focus, decision-making, and elevated thinking.", "type": "longtext"},
+    "deep/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png", "type": "media"},
+    "deep/closing/title": {"value": "A space that feels alive<br>\n<span class='text-accent-bronze italic mt-4 block'>is a space that inspires.</span>", "type": "longtext"},
 }
+
+# New Page/Collection style seeds
+pages_seeds = [
+    {
+        "slug": "curated-specimens",
+        "title": "Curated Specimens",
+        "titleLine1": "Curated",
+        "titleLine2": "Specimens",
+        "subtitle": "Not added — introduced. Every specimen placed with purpose.",
+        "breadcrumb": "Services"
+    }
+]
+
+categories_seeds = [
+    {
+        "page_slug": "curated-specimens",
+        "label": "Category I",
+        "title": "Sensory Calm",
+        "description": "Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.",
+        "image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_1.png",
+        "ctaText": "Request Catalog",
+        "ctaLink": "inquiry"
+    },
+    {
+        "page_slug": "curated-specimens",
+        "label": "Category II",
+        "title": "Breathable Living",
+        "description": "Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.",
+        "image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_2.png",
+        "ctaText": "Join Waitlist",
+        "ctaLink": "inquiry"
+    },
+    {
+        "page_slug": "curated-specimens",
+        "label": "Category III",
+        "title": "Quietly Premium",
+        "description": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.",
+        "image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_3.png",
+        "ctaText": "Consult on Design",
+        "ctaLink": "inquiry"
+    }
+]
+
 
 def init_schema(cur):
     """Create all tables if they don't exist yet (safe on fresh VPS)."""
@@ -94,16 +139,33 @@ def init_schema(cur):
         )
     ''')
 
+
 def seed():
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
     init_schema(cur)
+    
+    # Seed Site Content
     for path, data in seeds.items():
         cur.execute("INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
                     (path, data['value'], data['type']))
+    
+    # Seed Pages
+    for page in pages_seeds:
+        cur.execute("INSERT OR REPLACE INTO pages (slug, title, titleLine1, titleLine2, subtitle, breadcrumb) VALUES (?, ?, ?, ?, ?, ?)",
+                    (page['slug'], page['title'], page['titleLine1'], page['titleLine2'], page['subtitle'], page['breadcrumb']))
+    
+    # Seed Categories
+    for cat in categories_seeds:
+        # Generate a semi-stable ID from slug and title
+        cat_id = f"{cat['page_slug']}-{cat['title'].lower().replace(' ', '-')}"
+        cur.execute("INSERT OR REPLACE INTO categories (id, page_slug, label, title, description, image, ctaText, ctaLink) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (cat_id, cat['page_slug'], cat['label'], cat['title'], cat['description'], cat['image'], cat['ctaText'], cat['ctaLink']))
+        
     conn.commit()
     conn.close()
-    print("Database seeded with new core pages.")
+    print("Database seeded with both Deep Solitude (Static) and Curated Specimens (Collection).")
+
 
 if __name__ == "__main__":
     seed()

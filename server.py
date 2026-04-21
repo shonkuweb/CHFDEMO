@@ -111,6 +111,16 @@ class AdminHTTPRequestHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urllib.parse.urlparse(self.path)
         
+        # ── Extension-less HTML routing ────────────────────────────
+        # If path has no extension and isn't a directory, check for .html file
+        local_path = parsed_path.path.lstrip('/')
+        if not os.path.splitext(local_path)[1] and not local_path.endswith('/'):
+            if os.path.exists(local_path + ".html"):
+                # Rewrite path to include .html internally
+                query = ("?" + parsed_path.query) if parsed_path.query else ""
+                self.path = parsed_path.path + ".html" + query
+                parsed_path = urllib.parse.urlparse(self.path)
+
         # API: Site Content Fetching
         if parsed_path.path == '/api/site-content':
             params = urllib.parse.parse_qs(parsed_path.query)
@@ -230,12 +240,13 @@ class AdminHTTPRequestHandler(SimpleHTTPRequestHandler):
                 cursor.execute("DELETE FROM categories WHERE page_slug = ?", (slug,))
                 for idx, cat in enumerate(payload.get('categories', [])):
                     cursor.execute('''
-                        INSERT INTO categories (id, page_slug, label, title, description, image, ctaText, ctaLink, display_order)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO categories (id, page_slug, label, title, description, features, image, ctaText, ctaLink, display_order)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', (
                         cat.get('id', f"{slug}-cat-{idx}"), slug,
                         cat.get('label', ''), cat.get('title', ''), 
-                        cat.get('description', ''), cat.get('image', ''),
+                        cat.get('description', ''), cat.get('features', ''),
+                        cat.get('image', ''),
                         cat.get('ctaText', ''), cat.get('ctaLink', ''), idx
                     ))
                 

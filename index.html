@@ -3,8 +3,8 @@
 <html lang="en">
 
 <head>
-    <link rel="preload" as="image" href="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero_image_new.jpeg">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev" crossorigin>
 
     <meta charset="utf-8" />
@@ -46,6 +46,46 @@
     <style>
         html {
             scroll-behavior: smooth;
+        }
+
+        /* Hero media must always bleed edge-to-edge without letterboxing */
+        .hero-section {
+            height: 100svh;
+            min-height: 100svh;
+        }
+
+        .hero-section [data-cms="home/hero/image"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-section .cms-hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw;
+            min-width: 177.78svh;
+            min-height: 100svh;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        /* Pull curve slightly upward so it overlaps hero cleanly */
+        .hero-curved-overlay {
+            bottom: -1px;
+            transform: translate(-50%, calc(100% - 8vh)) !important;
+        }
+
+        @media (min-width: 768px) {
+            .hero-curved-overlay {
+                transform: translate(-50%, calc(100% - 12vh)) !important;
+            }
         }
     </style>
     <!-- Premium Animations -->
@@ -123,6 +163,7 @@
                             <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
                                 <div class="flex flex-col gap-4">
                                     <a href="architectural-harmony" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Architectural Harmony</a>
+                                    <a href="deep-solitude" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Deep Solitude</a>
                                     <a href="curated-specimens" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Specimens</a>
                                     <a href="white-glove-service" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">White Glove Service</a>
                                 </div>
@@ -184,6 +225,7 @@
                     <div class="flex flex-col gap-6 mt-6">
                         <a class="text-lg font-light text-ivory-dim hover:text-white" href="portfolio">All Services</a>
                         <a class="text-lg font-light text-ivory-dim hover:text-white" href="architectural-harmony">Architectural Harmony</a>
+                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="deep-solitude">Deep Solitude</a>
                         <a class="text-lg font-light text-ivory-dim hover:text-white" href="curated-specimens">Curated Specimens</a>
                         <a class="text-lg font-light text-ivory-dim hover:text-white" href="white-glove-service">White Glove Service</a>
                     </div>
@@ -199,25 +241,27 @@
         </div>
 <main class="flex-grow">
             <!-- Hero Section -->
-            <section class="hero-section relative h-screen w-full overflow-hidden">
-                <!-- Hero Background Parallax (CSS fallback) -->
+            <section class="hero-section relative h-screen w-full overflow-hidden bg-black">
+            <!-- Hero Background Parallax & Video Support -->
             <div class="absolute inset-0 z-0 overflow-hidden">
-                <div class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
-                    data-cms="home/hero/image"
-                    style="background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero_image_new.jpeg');">
+                <div class="absolute inset-0 bg-cover bg-center bg-no-repeat relative overflow-hidden"
+                    data-cms="home/hero/image">
                 </div>
                 <!-- Premium Overlay for depth and text legibility -->
-                <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 z-10"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-[8]"></div>
                 <!-- Subtle noise overlay for texture -->
-                <div class="absolute inset-0 opacity-[0.03] pointer-events-none z-10" 
+                <div class="absolute inset-0 opacity-[0.03] pointer-events-none z-[9]" 
                     style="background-image: url('https://www.transparenttextures.com/patterns/stardust.png');"></div>
             </div>
 
-            <!-- Hero Text Overlay -->
-            <div class="relative z-20 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-6 text-center text-ivory">
+            <!-- Hero Text Overlay (Empty for cinematic feel) -->
+            <div class="relative z-30 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-6 text-center text-ivory pointer-events-none">
+                <!-- Text removed per user request -->
+
+
                 <!-- Curved Overlay (Edge-to-Edge) -->
                 <div
-                    class="hero-curved-overlay absolute bottom-0 left-1/2 -translate-x-1/2 w-[500vw] h-[500vw] md:w-[450vw] md:h-[450vw] rounded-[50%] bg-black/40 backdrop-blur-2xl z-30 pointer-events-none transform translate-y-[calc(100%-12vh)] md:translate-y-[calc(100%-16vh)] flex flex-col items-center justify-start pt-[4vh] border-none shadow-none">
+                    class="hero-curved-overlay absolute bottom-0 left-1/2 -translate-x-1/2 w-[500vw] h-[500vw] md:w-[450vw] md:h-[450vw] rounded-[50%] bg-black/40 backdrop-blur-xl z-30 pointer-events-none transform translate-y-[calc(100%-12vh)] md:translate-y-[calc(100%-16vh)] flex flex-col items-center justify-start pt-[4vh] border-t border-white/5">
                     <!-- Scroll text indicator -->
                     <div class="flex flex-col items-center gap-4 animate-pulse-slow"
                         id="hero-scroll-indicator">
@@ -240,15 +284,16 @@
                             <span class="h-px w-12 bg-accent-bronze"></span>CURATED SPECIMENS
                         </div>
                         <h2 class="font-serif text-4xl font-light text-ivory md:text-5xl leading-[1.2] reveal reveal-up">
-                            <span data-cms="home/philosophy/title">When a Space Begins to <br /><span class="italic text-primary">Feel Alive</span></span>
+                            <span data-cms="home/philosophy/title">The Art of Growth <br /><span class="italic text-primary">with Curated Specimens</span></span>
                         </h2>
                         <h3 class="font-serif text-2xl text-accent-bronze/80 font-light reveal reveal-up stagger-1">
                             Not added — introduced
                         </h3>
                         <div class="text-lg text-gray-400 font-light leading-relaxed reveal reveal-up stagger-2 space-y-4" data-cms="home/philosophy/body">
-                            <p>Some spaces are seen.<br>Others are felt.</p>
-                            <p>A curated specimen has the power to shift that feeling — bringing calm, focus, and a subtle sense of luxury that cannot be replicated through excess.</p>
-                            <p>It’s a quiet transformation, but a lasting one.</p>
+                            <p>Some spaces are seen.<br>Others are experienced.</p>
+                            <p>A curated specimen transforms a space in silence —<br>bringing calm, depth, and a quiet sense of luxury<br>that cannot be created through excess.</p>
+                            <p>It doesn’t demand attention.<br>Yet, it changes everything.</p>
+                            <p>A subtle transformation —<br>one that stays.</p>
                         </div>
                         <a href="curated-specimens"
                             class="group flex items-center gap-4 text-ivory hover:text-accent-gold transition-colors border-b border-transparent hover:border-accent-gold pb-1 w-fit">
@@ -285,11 +330,11 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10">
-                        
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium">
+
                         <!-- Curated Specimens Card -->
                         <a href="curated-specimens"
-                            class="service-card reveal reveal-up stagger-1 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -308,8 +353,7 @@
                                 Curated Specimens</h4>
                             <p
                                 class="text-gray-500 text-sm leading-relaxed max-w-xs transition-colors duration-500 group-hover:text-ivory-dim font-light">
-                                Hand-selected rare plants sourced from
-                                exclusive growers worldwide, ensuring unique character for every project.</p>
+                                Hand-selected rare botanical assets for monumental environments.</p>
 
                             <div
                                 class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-accent-bronze/0 via-accent-bronze/50 to-accent-bronze/0 transition-all duration-1000 group-hover:w-full">
@@ -318,7 +362,7 @@
 
                         <!-- Architectural Harmony Card -->
                         <a href="architectural-harmony"
-                            class="service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -347,7 +391,7 @@
 
                         <!-- White Glove Service Card -->
                         <a href="white-glove-service"
-                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-4 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -523,6 +567,7 @@
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Expertise</h3>
                     <ul class="space-y-4">
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="architectural-harmony">Architectural Harmony</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="deep-solitude">Deep Solitude</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="curated-specimens">Curated Specimens</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="white-glove-service">White Glove Service</a></li>
                         <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio">Portfolio</a></li>
@@ -581,8 +626,8 @@
         }));
     </script>
     
-    <!-- Universal CMS Core -->
-    <script src="assets/cms-core.js"></script>
+    <!-- Universal CMS Core (v2 with cache busting) -->
+    <script src="assets/cms-core.js?v=2.1"></script>
 </body>
 
 </html>
