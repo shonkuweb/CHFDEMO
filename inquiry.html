@@ -600,7 +600,7 @@
     </div>
 
     <!-- Scripts -->
-        <script>
+    <script>
         // ── Mobile Sidebar Logic ──────────────────────────────────────────
         const mobileBtn      = document.getElementById('mobile-menu-btn');
         const mobileCloseBtn = document.getElementById('mobile-close-btn');
@@ -658,6 +658,46 @@
                     chevron.style.transform = 'rotate(180deg)';
                 }
             });
+        });
+
+        // ── Inquiry Form → WhatsApp ───────────────────────────────────────
+        const CHF_WHATSAPP = '917980783108'; // India +91 79807 83108
+
+        document.getElementById('inquiry-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name     = document.getElementById('name').value.trim();
+            const phone    = document.getElementById('phone').value.trim();
+            const email    = document.getElementById('email').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const message  = document.getElementById('message').value.trim();
+
+            // Build a premium formatted WhatsApp message
+            const text = [
+                '🌿 *New Inquiry — CHF Botanical Luxury*',
+                '─────────────────────────',
+                `👤 *Name:* ${name}`,
+                `📞 *Phone:* ${phone}`,
+                `✉️ *Email:* ${email}`,
+                `📍 *Location:* ${location}`,
+                '─────────────────────────',
+                `💬 *Message:*\n${message}`,
+                '─────────────────────────',
+                '_Sent via chfbotanical.com_'
+            ].join('\n');
+
+            const waURL = `https://wa.me/${CHF_WHATSAPP}?text=${encodeURIComponent(text)}`;
+
+            // Open WhatsApp in a new tab
+            window.open(waURL, '_blank');
+
+            // Show success panel after a short delay
+            setTimeout(() => {
+                document.getElementById('inquiry-form').style.display = 'none';
+                const successMsg = document.getElementById('success-msg');
+                successMsg.classList.remove('hidden');
+                successMsg.classList.add('flex');
+            }, 400);
         });
     </script>
 </body>
