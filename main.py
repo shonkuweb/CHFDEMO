@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from functools import lru_cache
 from datetime import datetime, timedelta
 from passlib.hash import argon2
+import hashlib
 from jose import jwt, JWTError
 from typing import Optional
 import time
@@ -217,6 +218,34 @@ def startup_init_sync_state():
 
 # ── Endpoints ───────────────────────────────
 
+def verify_password(plain_password: str, stored_hash: str) -> bool:
+    """Verify password against Argon2 or SHA256 fallback hash."""
+    if stored_hash.startswith("$argon2"):
+        return argon2.verify(plain_password, stored_hash)
+    elif stored_hash.startswith("sha256$"):
+        # Fallback format: sha256$<salt>$<hex_digest>
+        parts = stored_hash.split("$")
+        if len(parts) == 3:
+            salt = parts[1]
+            expected_hex = parts[2]
+            computed = hashlib.sha256((salt + plain_password).encode()).hexdigest()
+            return computed == expected_hex
+    return False
+
+def upgrade_hash_if_needed(username: str, plain_password: str, stored_hash: str):
+    """Auto-upgrade SHA256 hashes to Argon2 on successful login."""
+    if not stored_hash.startswith("$argon2"):
+        try:
+            new_hash = argon2.hash(plain_password)
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("UPDATE admins SET password_hash = ? WHERE username = ?", (new_hash, username))
+            conn.commit()
+            conn.close()
+            print(f"[AUTH] Upgraded password hash to Argon2 for user: {username}")
+        except Exception as e:
+            print(f"[AUTH] Hash upgrade failed (non-critical): {e}")
+
 @app.post("/api/login")
 async def login(
     response: Response, 
@@ -236,11 +265,12 @@ async def login(
     if not row:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    try:
-        if not argon2.verify(password, row["password_hash"]):
-            raise HTTPException(status_code=401, detail="Invalid credentials")
-    except Exception:
-        raise HTTPException(status_code=401, detail="Error verifying credential")
+    stored_hash = row["password_hash"]
+    if not verify_password(password, stored_hash):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    # Auto-upgrade old SHA256 hashes to Argon2
+    upgrade_hash_if_needed(username, password, stored_hash)
         
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.utcnow() + access_token_expires
@@ -294,15 +324,9 @@ async def change_admin_password(
         conn.close()
         raise HTTPException(status_code=404, detail="Admin account not found")
 
-    try:
-        if not argon2.verify(current_password, row["password_hash"]):
-            conn.close()
-            raise HTTPException(status_code=401, detail="Current password is incorrect")
-    except HTTPException:
-        raise
-    except Exception:
+    if not verify_password(current_password, row["password_hash"]):
         conn.close()
-        raise HTTPException(status_code=401, detail="Failed to verify current password")
+        raise HTTPException(status_code=401, detail="Current password is incorrect")
 
     new_hash = argon2.hash(new_password)
     cur.execute("UPDATE admins SET password_hash = ? WHERE username = ?", (new_hash, admin))
