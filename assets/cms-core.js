@@ -62,19 +62,50 @@
         }
     }
 
+    function resolvePageSlug() {
+        const rawPath = window.location.pathname || '/';
+        const normalized = rawPath.replace(/\/+$/, '');
+        const segments = normalized.split('/').filter(Boolean);
+        
+        if (segments.length === 0) return 'home';
+
+        let candidate = segments[segments.length - 1].replace(/\.html$/i, '');
+        if (candidate.toLowerCase() === 'index') {
+            return segments.length > 1 
+                ? segments[segments.length - 2].replace(/\.html$/i, '') 
+                : 'home';
+        }
+        return candidate;
+    }
+
+    const PAGE_PREFIX_MAP = {
+        'home': 'home',
+        'index': 'home',
+        'architectural-harmony': 'arch',
+        'plant-experience-center': 'plant-center',
+        'white-glove-service': 'whiteglove',
+        'deep-solitude': 'deep',
+        'curated-specimens': 'specimens',
+        'bonsai': 'bonsai',
+        'full-grown-avenue-trees': 'avenue',
+        'exotic-indoor-plants': 'indoor',
+        'curated-plants': 'curated',
+        'about': 'about'
+    };
+
     async function initCMS() {
         if (isSyncInFlight) return;
         isSyncInFlight = true;
-        const path = window.location.pathname;
-        let page = path.split('/').pop().replace(/\.html$/, '');
-        if (!page || page === 'index') page = 'home';
+        
+        const slug = resolvePageSlug();
+        const prefix = PAGE_PREFIX_MAP[slug] || slug;
 
-        if (DEBUG) console.log(`[CMS] Initializing for page: ${page}`);
+        if (DEBUG) console.log(`[CMS] Initializing for slug: ${slug}, using prefix: ${prefix}`);
 
         try {
             const t = Date.now();
             const [pageRes, globalRes] = await Promise.all([
-                fetch(`/api/site-content?page=${page}&t=${t}`, { cache: 'no-store' }),
+                fetch(`/api/site-content?page=${prefix}&t=${t}`, { cache: 'no-store' }),
                 fetch(`/api/site-content?page=global&t=${t}`, { cache: 'no-store' })
             ]);
 
@@ -84,7 +115,7 @@
             const cmsData = { ...globalData, ...pageData };
             const signature = JSON.stringify(cmsData);
 
-            if (DEBUG) console.log(`[CMS] Content loaded:`, cmsData);
+            if (DEBUG) console.log(`[CMS] Content loaded for prefix "${prefix}":`, cmsData);
             if (signature !== lastCmsSignature) {
                 applyContent(cmsData);
                 lastCmsSignature = signature;
