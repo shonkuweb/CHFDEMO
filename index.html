@@ -244,8 +244,13 @@
             <section class="hero-section relative h-screen w-full overflow-hidden bg-black">
             <!-- Hero Background Parallax & Video Support -->
             <div class="absolute inset-0 z-0 overflow-hidden">
-                <div class="absolute inset-0 bg-cover bg-center bg-no-repeat relative overflow-hidden"
+                <!-- Desktop hero: CMS-managed image/video (hidden on mobile) -->
+                <div class="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat overflow-hidden"
                     data-cms="home/hero/image">
+                </div>
+                <!-- Mobile hero: fixed image (shown only on mobile) -->
+                <div class="md:hidden absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style="background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20mobile.png');">
                 </div>
                 <!-- Premium Overlay for depth and text legibility -->
                 <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-[8]"></div>
