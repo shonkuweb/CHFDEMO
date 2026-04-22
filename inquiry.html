@@ -329,64 +329,108 @@
                             href="inquiry">Enquiry</a>
                     </div>
                 </nav>
-                <button id="mobile-menu-btn"
-                    class="lg:hidden flex items-center text-ivory z-50 p-2 relative w-10 h-10 justify-center">
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform -translate-y-1.5"></span>
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block opacity-100"></span>
-                    <span
-                        class="hamburger-line absolute h-0.5 w-6 bg-ivory transition-all duration-300 block transform translate-y-1.5"></span>
+                                <button id="mobile-menu-btn"
+                    class="lg:hidden flex items-center text-ivory z-[80] p-2 relative w-10 h-10 justify-center">
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform -translate-y-[7px] origin-center"></span>
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block opacity-100 origin-center"></span>
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform translate-y-[7px] origin-center"></span>
                 </button>
             </div>
         </header>
 
-        <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu"
-            class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-y-auto pt-20">
-            <nav class="flex flex-col items-center gap-6 text-center p-8 w-full">
-                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
-                    href="plant-experience-center">Plant Experience Center</a>
+        
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="mobile-backdrop"
+            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
 
-                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+        <!-- Mobile Sidebar Drawer -->
+        <div id="mobile-sidebar"
+            class="fixed top-0 right-0 h-full w-[82vw] max-w-[340px] bg-[#0a0a0a] z-[70] lg:hidden flex flex-col translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] border-l border-white/[0.07] shadow-[-40px_0_80px_rgba(0,0,0,0.6)] overflow-y-auto"
+            style="will-change: transform;">
 
-                <details class="w-full text-center group cursor-pointer mobile-link">
-                    <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Collections
-                        <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </summary>
-                    <div class="flex flex-col gap-6 mt-6">
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="collections">All Collections</a>
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="full-grown-avenue-trees">Avenue Trees</a>
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="exotic-indoor-plants">Indoor Plants</a>
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="bonsai">Bonsai</a>
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="curated-plants">Curated Plants</a>
+            <!-- Sidebar Header -->
+            <div class="flex items-center justify-between px-7 pt-7 pb-6 border-b border-white/[0.06] flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF" class="h-8 w-8 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
+                    <span class="font-serif text-base tracking-widest text-ivory uppercase">CHF</span>
+                </div>
+                <button id="mobile-close-btn" class="w-8 h-8 flex items-center justify-center text-ivory/50 hover:text-ivory transition-colors duration-300 rounded-full border border-white/10 hover:border-white/30">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Bronze accent line -->
+            <div class="h-px bg-gradient-to-r from-transparent via-accent-bronze/40 to-transparent mx-7 flex-shrink-0"></div>
+
+            <!-- Nav Links -->
+            <nav class="flex flex-col flex-1 px-7 py-8 gap-1" id="sidebar-nav">
+
+                <!-- Plant Experience Center -->
+                <a href="plant-experience-center" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
+                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Plant Experience Center</span>
+                    <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
+                </a>
+
+                <!-- Collections Accordion -->
+                <div class="border-b border-white/[0.05]">
+                    <button class="sidebar-accordion w-full flex items-center justify-between py-4 group" data-target="collections-panel">
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-bold text-accent-bronze/80 group-hover:text-accent-bronze transition-colors duration-300">Collections</span>
+                        <svg class="sidebar-chevron w-3 h-3 text-white/30 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="collections-panel" class="sidebar-panel overflow-hidden" style="max-height: 0; transition: max-height 0.4s cubic-bezier(0.76,0,0.24,1);">
+                        <div class="flex flex-col pb-4 pl-3 gap-0.5">
+                            <a href="collections" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>All Collections</a>
+                            <a href="full-grown-avenue-trees" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Full Grown Avenue Trees</a>
+                            <a href="exotic-indoor-plants" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Exotic Indoor Plants</a>
+                            <a href="bonsai" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Bonsai</a>
+                            <a href="curated-plants" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Curated Plants</a>
+                        </div>
                     </div>
-                </details>
+                </div>
 
-                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
-
-                <details class="w-full text-center group cursor-pointer mobile-link">
-                    <summary class="list-none outline-none text-xs uppercase tracking-[0.3em] font-bold text-accent-bronze flex items-center justify-center gap-2">
-                        Services
-                        <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </summary>
-                    <div class="flex flex-col gap-6 mt-6">
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="portfolio">All Services</a>
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="architectural-harmony">Architectural Harmony</a>
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="deep-solitude">Deep Solitude</a>
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="curated-specimens">Curated Specimens</a>
-                        <a class="text-lg font-light text-ivory-dim hover:text-white" href="white-glove-service">White Glove Service</a>
+                <!-- Services Accordion -->
+                <div class="border-b border-white/[0.05]">
+                    <button class="sidebar-accordion w-full flex items-center justify-between py-4 group" data-target="services-panel">
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-bold text-accent-bronze/80 group-hover:text-accent-bronze transition-colors duration-300">Services</span>
+                        <svg class="sidebar-chevron w-3 h-3 text-white/30 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="services-panel" class="sidebar-panel overflow-hidden" style="max-height: 0; transition: max-height 0.4s cubic-bezier(0.76,0,0.24,1);">
+                        <div class="flex flex-col pb-4 pl-3 gap-0.5">
+                            <a href="portfolio" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>All Services</a>
+                            <a href="architectural-harmony" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Architectural Harmony</a>
+                            <a href="deep-solitude" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Deep Solitude</a>
+                            <a href="curated-specimens" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Curated Specimens</a>
+                            <a href="white-glove-service" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>White Glove Service</a>
+                        </div>
                     </div>
-                </details>
+                </div>
 
-                <div class="h-px w-12 bg-white/10 my-2 mobile-link"></div>
+                <!-- About Us -->
+                <a href="about" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
+                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">About Us</span>
+                    <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
+                </a>
 
-                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
-                    href="about">About Us</a>
-                <a class="mobile-link text-xl font-serif text-ivory hover:text-accent-bronze"
-                    href="inquiry">Enquiry</a>
+                <!-- Enquiry CTA -->
+                <div class="mt-6 flex-shrink-0">
+                    <a href="inquiry" class="mobile-link block w-full py-3.5 text-center text-[11px] uppercase tracking-[0.25em] font-bold text-black bg-accent-bronze hover:bg-[#b8966e] transition-colors duration-300">
+                        Make an Enquiry
+                    </a>
+                </div>
             </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="px-7 py-6 border-t border-white/[0.06] flex-shrink-0">
+                <div class="flex items-center gap-4 mb-5">
+                    <a class="text-white/30 hover:text-accent-bronze transition-colors duration-300" href="https://www.instagram.com/chf_thegreenscapers/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+                    </a>
+                    <a class="text-white/30 hover:text-accent-bronze transition-colors duration-300" href="https://www.facebook.com/CalcuttaHorticulturalFarm/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"></path></svg>
+                    </a>
+                </div>
+                <p class="text-[10px] text-white/15 uppercase tracking-widest">© 2026 CHF Botanical Luxury</p>
+            </div>
         </div>
 <main class="flex-grow pt-32 lg:pt-40">
             <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32">
@@ -556,41 +600,65 @@
     </div>
 
     <!-- Scripts -->
-    <script>
-        // Mobile Menu Logic
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-        const lines = mobileBtn.querySelectorAll('.hamburger-line');
-        let isMenuOpen = false;
+        <script>
+        // ── Mobile Sidebar Logic ──────────────────────────────────────────
+        const mobileBtn      = document.getElementById('mobile-menu-btn');
+        const mobileCloseBtn = document.getElementById('mobile-close-btn');
+        const sidebar        = document.getElementById('mobile-sidebar');
+        const backdrop       = document.getElementById('mobile-backdrop');
+        const mobileLinks    = document.querySelectorAll('.mobile-link');
+        const lines          = mobileBtn.querySelectorAll('.hamburger-line');
+        let isOpen = false;
 
-        function toggleMenu() {
-            isMenuOpen = !isMenuOpen;
-            if (isMenuOpen) {
-                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
-                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
-                lines[0].classList.replace('-translate-y-1.5', 'translate-y-0');
-                lines[0].classList.add('rotate-45');
-                lines[1].classList.add('opacity-0');
-                lines[2].classList.replace('translate-y-1.5', 'translate-y-0');
-                lines[2].classList.add('-rotate-45');
-                document.body.style.overflow = 'hidden';
-            } else {
-                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
-                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
-                lines[0].classList.replace('translate-y-0', '-translate-y-1.5');
-                lines[0].classList.remove('rotate-45');
-                lines[1].classList.remove('opacity-0');
-                lines[2].classList.replace('translate-y-0', 'translate-y-1.5');
-                lines[2].classList.remove('-rotate-45');
-                document.body.style.overflow = '';
-            }
+        function openSidebar() {
+            isOpen = true;
+            sidebar.classList.remove('translate-x-full');
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            backdrop.classList.add('opacity-100', 'pointer-events-auto');
+            lines[0].style.transform = 'translateY(0) rotate(45deg)';
+            lines[1].style.opacity   = '0';
+            lines[2].style.transform = 'translateY(0) rotate(-45deg)';
+            document.body.style.overflow = 'hidden';
         }
 
-        mobileBtn.addEventListener('click', toggleMenu);
-        mobileLinks.forEach(link => link.addEventListener('click', () => {
-            if (isMenuOpen) toggleMenu();
-        }));
+        function closeSidebar() {
+            isOpen = false;
+            sidebar.classList.add('translate-x-full');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            lines[0].style.transform = 'translateY(-7px) rotate(0deg)';
+            lines[1].style.opacity   = '1';
+            lines[2].style.transform = 'translateY(7px) rotate(0deg)';
+            document.body.style.overflow = '';
+        }
+
+        mobileBtn.addEventListener('click', () => isOpen ? closeSidebar() : openSidebar());
+        mobileCloseBtn.addEventListener('click', closeSidebar);
+        backdrop.addEventListener('click', closeSidebar);
+
+        mobileLinks.forEach(link => {
+            if (link.tagName === 'A') {
+                link.addEventListener('click', closeSidebar);
+            }
+        });
+
+        // ── Accordion Logic ───────────────────────────────────────────────
+        document.querySelectorAll('.sidebar-accordion').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const panelId = btn.getAttribute('data-target');
+                const panel   = document.getElementById(panelId);
+                const chevron = btn.querySelector('.sidebar-chevron');
+                const isExpanded = panel.style.maxHeight && panel.style.maxHeight !== '0px';
+
+                document.querySelectorAll('.sidebar-panel').forEach(p => p.style.maxHeight = '0px');
+                document.querySelectorAll('.sidebar-chevron').forEach(c => c.style.transform = 'rotate(0deg)');
+
+                if (!isExpanded) {
+                    panel.style.maxHeight  = panel.scrollHeight + 'px';
+                    chevron.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
     </script>
 </body>
 
