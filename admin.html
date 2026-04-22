@@ -101,9 +101,9 @@
                                 currentSelection === 'arch' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 Architectural Harmony
                             </button>
-                            <button @click="loadCollection('curated-specimens')" 
+                            <button @click="loadPageContent('specimens')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
-                                currentSelection === 'curated-specimens' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                currentSelection === 'specimens' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 Curated Specimens
                             </button>
                             <button @click="loadPageContent('whiteglove')" 
@@ -566,6 +566,7 @@
                     if (currentSelection.value === 'indoor') return 'Exotic Indoor Plants';
                     if (currentSelection.value === 'bonsai') return 'Bonsai';
                     if (currentSelection.value === 'curated') return 'Curated Plants';
+                    if (currentSelection.value === 'specimens') return 'Curated Specimens';
                     if (viewMode.value === 'settings') return 'Settings & Security';
                     return '';
                 });
