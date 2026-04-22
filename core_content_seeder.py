@@ -20,8 +20,8 @@ about_seeds = {
 }
 
 global_seeds = {
-    "global/contact/email": {"value": "info@chfbotanical.com", "type": "text"},
-    "global/contact/phone": {"value": "+91 98310 98310", "type": "text"}
+    "global/contact/email": {"value": "calcuttahorticulturalfarm@gmail.com", "type": "text"},
+    "global/contact/phone": {"value": "+91 79807 83108", "type": "text"}
 }
 
 plant_center_seeds = {
