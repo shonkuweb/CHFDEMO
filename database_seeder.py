@@ -144,50 +144,30 @@ seeds = {
     "global/footer/copyright": {"value": "© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb", "type": "text"},
     "global/contact/email": {"value": "enquiry@chfbotanical.com", "type": "text"},
     "global/contact/phone": {"value": "+91 98300 98300", "type": "text"},
+    # ── Curated Specimens ──
+    "specimens/hero/title": {"value": "Curated <br />\n<span class='text-accent-bronze italic font-light drop-shadow-sm'>Specimens</span>", "type": "text"},
+    "specimens/hero/subtitle": {"value": "Not added — introduced. Every specimen placed with purpose.", "type": "text"},
+    "specimens/block1/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_1.png", "type": "media"},
+    "specimens/block1/title": {"value": "Sensory Calm", "type": "text"},
+    "specimens/block1/body": {"value": "Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.", "type": "longtext"},
+    "specimens/block2/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_2.png", "type": "media"},
+    "specimens/block2/title": {"value": "Breathable Living", "type": "text"},
+    "specimens/block2/body": {"value": "Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.", "type": "longtext"},
+    "specimens/block3/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_3.png", "type": "media"},
+    "specimens/block3/title": {"value": "Quietly Premium", "type": "text"},
+    "specimens/block3/body": {"value": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.", "type": "longtext"},
+    "specimens/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png", "type": "media"},
+    "specimens/block4/title": {"value": "Collector's Edition", "type": "text"},
+    "specimens/block4/body": {"value": "Singular botanical expressions reserved for spaces that demand rarity, permanence, and cultivated visual restraint.", "type": "longtext"},
+    "specimens/closing/title": {"value": "Not just added.<br>\n<span class='text-accent-bronze italic font-light'>Introduced.</span>", "type": "text"},
 
 }
 
 # New Page/Collection style seeds
 pages_seeds = [
-    {
-        "slug": "curated-specimens",
-        "title": "Curated Specimens",
-        "titleLine1": "Curated",
-        "titleLine2": "Specimens",
-        "subtitle": "Not added — introduced. Every specimen placed with purpose.",
-        "breadcrumb": "Services"
-    }
 ]
 
-categories_seeds = [
-    {
-        "page_slug": "curated-specimens",
-        "label": "Category I",
-        "title": "Sensory Calm",
-        "description": "Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.",
-        "image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_1.png",
-        "ctaText": "Request Catalog",
-        "ctaLink": "inquiry"
-    },
-    {
-        "page_slug": "curated-specimens",
-        "label": "Category II",
-        "title": "Breathable Living",
-        "description": "Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.",
-        "image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_2.png",
-        "ctaText": "Join Waitlist",
-        "ctaLink": "inquiry"
-    },
-    {
-        "page_slug": "curated-specimens",
-        "label": "Category III",
-        "title": "Quietly Premium",
-        "description": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.",
-        "image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_3.png",
-        "ctaText": "Consult on Design",
-        "ctaLink": "inquiry"
-    }
-]
+categories_seeds = []
 
 
 def init_schema(cur):
