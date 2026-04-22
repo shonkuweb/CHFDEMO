@@ -248,6 +248,7 @@ def upgrade_hash_if_needed(username: str, plain_password: str, stored_hash: str)
 
 @app.post("/api/login")
 async def login(
+    request: Request,
     response: Response, 
     username: str = Form(...), 
     password: str = Form(...),
@@ -277,12 +278,16 @@ async def login(
     to_encode = {"sub": username, "exp": expire}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     
-    is_https = os.environ.get("HTTPS_ENABLED", "false").lower() == "true"
+    # Detect HTTPS from nginx X-Forwarded-Proto header, fall back to env var
+    forwarded_proto = request.headers.get("x-forwarded-proto", "")
+    is_https = forwarded_proto == "https" or os.environ.get("HTTPS_ENABLED", "false").lower() == "true"
+    # Only set Secure flag if the end-user is actually on HTTPS
+    use_secure = forwarded_proto == "https" if forwarded_proto else is_https
     response.set_cookie(
         key="admin_session", 
         value=encoded_jwt, 
         httponly=True, 
-        secure=is_https, 
+        secure=use_secure, 
         samesite="lax", 
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
     )
