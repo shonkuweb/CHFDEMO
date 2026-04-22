@@ -54,6 +54,15 @@
             min-height: 100svh;
         }
 
+        /* Mobile: hero starts below the 80px navbar */
+        @media (max-width: 767px) {
+            .hero-section {
+                height: calc(100svh - 5rem);
+                min-height: calc(100svh - 5rem);
+                margin-top: 5rem;
+            }
+        }
+
         .hero-section [data-cms="home/hero/image"] {
             position: absolute;
             inset: 0;
@@ -121,7 +130,7 @@
 <body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
+            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-black md:bg-background-dark/80 md:backdrop-blur-md shadow-xl">
             <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-12 w-full">
                 <a href="/" class="flex items-center gap-3">
                     <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF Logo" class="h-10 w-10 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
