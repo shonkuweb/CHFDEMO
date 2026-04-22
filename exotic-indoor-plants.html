@@ -22,6 +22,13 @@
                 background-repeat: no-repeat;
                 background-position: center;
             }
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+            .no-scrollbar {
+                -ms-overflow-style: none; /* IE and Edge */
+                scrollbar-width: none; /* Firefox */
+            }
         }
     </style>
     <style>
@@ -133,6 +140,99 @@
             </div>
         </header>
 
+        <main class="flex-grow pt-20">
+
+
+            <!-- Title Section -->
+            <section class="py-24 px-6 lg:px-12 text-center max-w-4xl mx-auto relative">
+                <!-- Abstract ambient glow -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
+                
+                <h1 class="font-serif text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10" data-cms="indoor/hero/title">
+                    Architectural <span class="text-accent-bronze italic">Harmony</span>
+                </h1>
+                <p class="text-ivory-dim text-sm md:text-base font-bold uppercase tracking-[0.2em] relative z-10" data-cms="indoor/hero/subtitle">
+                    Design is Instant. Growth is Inevitable. We Plan for Both.
+                </p>
+            </section>
+
+            <!-- Zigzag Content Sections -->
+            <section class="pb-32 px-6 lg:px-24 flex flex-col gap-24 lg:gap-32 w-full max-w-7xl mx-auto">
+
+                <!-- Block 1: Image Left, Text Right -->
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_1.png" alt="A Living Architecture" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="indoor/block1/image" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="indoor/block1/title">A Living Architecture</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="indoor/block1/body">
+                            In landscape architecture, drawings capture a moment—but gardens don’t stand still. They grow, expand, compete, and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Block 2: Text Left, Image Right -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_2.png" alt="Scale and Maturity" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="indoor/block2/image" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="indoor/block2/title">Scale and Maturity</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="indoor/block2/body">
+                            As consulting horticulturists, we often see thoughtfully designed spaces challenged by plant selections that don’t account for scale or maturity. Fast growers are placed where restraint is essential. Foreground hedges are composed of species that eventually outgrow and obscure the very layers they were meant to frame. What appears harmonious on day one can lose its proportion and clarity with time.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mid-page Quote Center -->
+                <div class="py-8 my-4 border-y border-white/5 text-center relative pointer-events-none">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[100px] bg-primary/10 rounded-full blur-[80px]"></div>
+                    <p class="text-ivory text-xl md:text-2xl italic font-serif relative z-10 text-accent-bronze/90">
+                        "This is where collaboration becomes critical."
+                    </p>
+                </div>
+
+                <!-- Block 3: Image Left, Text Right -->
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_3.png" alt="Intentional Growth" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="indoor/block3/image" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="indoor/block3/title">Intentional Growth</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="indoor/block3/body">
+                            With the intent to not redefine but strengthen the designs, we as landscape developers work closely with landscape architects—either as consultants during the design phase or as collaborators during execution—to ensure that plant selections are informed, intentional, and future-ready. By bringing horticultural depth into the conversation early, we help align design vision with plant behaviour, site conditions, and long-term growth patterns.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Block 4: Text Left, Image Right -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_4.png" alt="Enduring Vision" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="indoor/block4/image" />
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="indoor/block4/title">Enduring Vision</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="indoor/block4/body">
+                            With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony—not just immediate visual appeal. Because a successful landscape is not just about how it looks when installed—it’s about how it evolves.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Concluding Section -->
+            <section class="py-24 bg-[#0a0a0a] border-t border-white/5 text-center mt-8">
+                <p class="font-serif text-2xl md:text-4xl lg:text-5xl text-ivory leading-tight" data-cms="indoor/closing/title">
+                    We don’t just develop gardens.<br>
+                    <span class="text-accent-bronze italic mt-4 block">We future-proof them.</span>
+                </p>
+            </section>
+        </main>
+
         <!-- Mobile Menu Overlay -->
         <div id="mobile-menu"
             class="fixed inset-0 bg-background-dark/98 backdrop-blur-2xl z-[60] lg:hidden flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-y-auto pt-20">
@@ -180,88 +280,7 @@
                     href="inquiry">Enquiry</a>
             </nav>
         </div>
-<main class="flex-grow pt-32 lg:pt-48">
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32 overflow-hidden">
-                <div class="flex flex-col md:flex-row justify-between items-end gap-16 relative">
-                    <!-- Decorative Background Element -->
-                    <div class="absolute -top-24 -left-20 w-64 h-64 bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
-                    
-                    <div class="max-w-4xl relative z-10">
-                        <div class="flex items-center gap-4 mb-8 reveal reveal-up stagger-1">
-                            <span class="w-12 h-px bg-accent-bronze/40"></span>
-                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.5em] font-bold">Collections</span>
-                        </div>
-                        <h2 class="font-serif text-5xl md:text-8xl lg:text-9xl text-ivory font-light leading-[1.05] tracking-tight mb-10 reveal reveal-up stagger-2">
-                            Exotic <br />
-                            <span class="text-accent-bronze italic font-light drop-shadow-sm">Indoor Plants</span>
-                        </h2>
-                    </div>
-                    <div class="flex flex-col items-start md:items-end gap-8 max-w-xs mb-6 reveal reveal-up stagger-3">
-                        <p class="text-gray-400 font-light text-sm leading-relaxed uppercase tracking-[0.2em] text-left md:text-right border-l md:border-l-0 md:border-r border-accent-bronze/30 pl-8 md:pl-0 md:pr-8">
-                            Rare botanical life curated for the refined modern sanctuary.
-                        </p>
-                        <div class="h-px w-20 bg-gradient-to-r md:bg-gradient-to-l from-accent-bronze/60 to-transparent"></div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-40">
-                <div class="flex flex-col gap-32">
-                    <!-- Category 1 -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7">
-                            <div class="relative aspect-[9/16] overflow-hidden bg-surface-dark">
-                                <div class="w-full h-full transition-transform duration-[2s] hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pl-12">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category I</span>
-                            <h3 class="font-serif text-4xl mb-6">Architectural Forms</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8">
-                                Sculptural botanicals characterized by their geometric precision and structural integrity. These specimens serve as timeless focal points in minimalist environments.
-                            </p>
-                            <a href="inquiry" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Request Catalog</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 2 -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7 lg:order-2">
-                            <div class="relative aspect-[9/16] overflow-hidden bg-surface-dark">
-                                <div class="w-full h-full transition-transform duration-[2s] hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pr-12 lg:order-1 text-right lg:text-left">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category II</span>
-                            <h3 class="font-serif text-4xl mb-6">Variegated Rarities</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8">
-                                Exceptional specimens featuring unique biological pigments. From albino-patterned leaves to deep emerald hues, these are the crown jewels of our living archive.
-                            </p>
-                            <a href="inquiry" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Join Waitlist</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 3 -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7">
-                            <div class="relative aspect-[9/16] overflow-hidden bg-surface-dark">
-                                <div class="w-full h-full transition-transform duration-[2s] hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pl-12">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category III</span>
-                            <h3 class="font-serif text-4xl mb-6">Vertical Ecosystems</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8">
-                                Integrated living walls that redefine interior topography. A rhythmic integration of biodiversity that breathes life into static surfaces.
-                            </p>
-                            <a href="inquiry" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Consult on Design</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
+<footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                 <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
@@ -314,15 +333,12 @@
                 </div>
             </div>
             <div class="border-t border-white/5 pt-8 text-center">
-                <p class="text-xs text-gray-600">© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb</p>
+                <p class="text-xs text-gray-600" data-cms="global/footer/copyright">© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb</p>
             </div>
         </div>
         </div>
     </footer>
     </div>
-
-    <!-- Content Loader -->
-    <script src="assets/content-loader.js"></script>
 
     <!-- Scripts -->
     <script>
@@ -361,6 +377,7 @@
             if (isMenuOpen) toggleMenu();
         }));
     </script>
+    <script src="assets/cms-core.js"></script>
 </body>
 
 </html>

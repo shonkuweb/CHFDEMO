@@ -203,7 +203,7 @@
         const currentSrcObj = videoEl.querySelector('source') ? videoEl.querySelector('source').src : videoEl.src;
         
         const playableUrl = getPlayableVideoUrl(videoUrl);
-        if (currentSrcObj && !currentSrcObj.endsWith(playableUrl.split('/').pop()) && playableUrl) {
+        if ((!currentSrcObj || !currentSrcObj.endsWith(playableUrl.split('/').pop())) && playableUrl) {
             if (DEBUG) console.log(`[CMS] Updating video source to ${playableUrl}`);
             const sourceEl = videoEl.querySelector('source');
             if (sourceEl) {
