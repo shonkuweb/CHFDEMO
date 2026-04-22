@@ -101,9 +101,9 @@
                                 currentSelection === 'arch' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 Architectural Harmony
                             </button>
-                            <button @click="loadCollection('curated-specimens')" 
+                            <button @click="loadPageContent('specimens')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
-                                currentSelection === 'curated-specimens' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                currentSelection === 'specimens' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 Curated Specimens
                             </button>
                             <button @click="loadPageContent('whiteglove')" 
@@ -153,10 +153,10 @@
                             <span v-else class="text-xs">CL</span>
                         </button>
                         <div v-show="openSections.collections && !sidebarCollapsed" class="space-y-1">
-                            <button @click="loadCollection('full-grown-avenue-trees')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'full-grown-avenue-trees' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Full Grown Avenue Trees</button>
-                            <button @click="loadCollection('exotic-indoor-plants')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'exotic-indoor-plants' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Exotic Indoor Plants</button>
-                            <button @click="loadCollection('bonsai')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'bonsai' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Bonsai</button>
-                            <button @click="loadCollection('curated-plants')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'curated-plants' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Curated Plants</button>
+                            <button @click="loadPageContent('avenue')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'avenue' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Full Grown Avenue Trees</button>
+                            <button @click="loadPageContent('indoor')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'indoor' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Exotic Indoor Plants</button>
+                            <button @click="loadPageContent('bonsai')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'bonsai' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Bonsai</button>
+                            <button @click="loadPageContent('curated')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'curated' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Curated Plants</button>
                         </div>
                     </div>
 
@@ -564,9 +564,9 @@
                     if (currentSelection.value === 'plant-center') return 'Plant Experience Center';
                     if (currentSelection.value === 'avenue') return 'Full Grown Avenue Trees';
                     if (currentSelection.value === 'indoor') return 'Exotic Indoor Plants';
-                    if (currentSelection.value === 'bonsai') return 'Bonsai';
-                    if (currentSelection.value === 'plant-center') return 'Plant Experience Center';
-                    if (currentSelection.value === 'curated-specimens') return 'Curated Specimens';
+                    if (currentSelection.value === 'bonsai') return 'Bonsai Collections';
+                    if (currentSelection.value === 'curated') return 'Curated Plants';
+                    if (currentSelection.value === 'specimens') return 'Curated Specimens';
                     if (viewMode.value === 'settings') return 'Settings & Security';
                     return '';
                 });
