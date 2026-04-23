@@ -62,6 +62,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 1 Day
 DB_PATH = os.environ.get("DB_PATH", "chf_archive.db")
 UPLOAD_DIR = os.environ.get("UPLOAD_DIR", os.path.join("assets", "images"))
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_MB", "80")) * 1024 * 1024
 
 # Mount both the core assets and the uploads directory (if they differ)
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
@@ -117,6 +118,42 @@ def clear_cache():
     fetch_site_content.cache_clear()
 
 SITE_CONTENT_DEFAULTS = {
+    "home/trends/card1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimens.png",
+        "type": "media",
+    },
+    "home/trends/card1/title": {
+        "value": "Biophilic Workspace",
+        "type": "text",
+    },
+    "home/trends/card1/body": {
+        "value": "Integrating verdant life into the professional sanctuary for cognitive clarity and architectural softness.",
+        "type": "longtext",
+    },
+    "home/trends/card2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/architectural_harmony.png",
+        "type": "media",
+    },
+    "home/trends/card2/title": {
+        "value": "Rare Specimen Sculptures",
+        "type": "text",
+    },
+    "home/trends/card2/body": {
+        "value": "Curating singular botanical forms that serve as the focal point of minimalist, high-ceiling environments.",
+        "type": "longtext",
+    },
+    "home/trends/card3/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/about/aboutus_legacy.png",
+        "type": "media",
+    },
+    "home/trends/card3/title": {
+        "value": "Living Walls",
+        "type": "text",
+    },
+    "home/trends/card3/body": {
+        "value": "Vertical ecosystems that redefine internal boundaries, offering a rhythmic pulse to static architecture.",
+        "type": "longtext",
+    },
     "plant-center/hero/video": {
         "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_video_placeholder.mp4",
         "type": "media",
@@ -535,6 +572,8 @@ async def upload_file(request: Request, admin: str = Depends(get_current_admin))
     unique_name = f"media_{uuid.uuid4().hex[:8]}{ext}"
     
     file_data = await request.body()
+    if len(file_data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail=f"File too large. Max {MAX_UPLOAD_BYTES // (1024 * 1024)}MB")
     if old_url_header:
         delete_old_media_if_needed(old_url_header)
     

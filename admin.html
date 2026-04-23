@@ -307,7 +307,7 @@
                                     <input v-model="content.value" @blur="normalizeHeroMediaUrl(content)"
                                         type="text"
                                         class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-xs text-white transition-colors"
-                                        placeholder="Paste image URL, video file URL, or Cloudflare Stream URL">
+                                        placeholder="Paste image/video URL or upload local file (max 80MB)">
 
                                     <div class="flex flex-wrap gap-2">
                                         <button @click="normalizeHeroMediaUrl(content)" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-4 py-2 hover:bg-accent-bronze/5 transition-colors">
@@ -322,6 +322,7 @@
                                     </div>
 
                                     <div class="text-[11px] text-gray-500 leading-relaxed space-y-1">
+                                        <p><span class="text-accent-bronze">Media limits:</span> {{ MEDIA_LIMIT_NOTE }}</p>
                                         <p><span class="text-accent-bronze">Tip:</span> For Cloudflare Stream, paste either a full iframe URL or stream URL, then use <em>Normalize Video URL</em>.</p>
                                         <p>Examples:</p>
                                         <p class="font-mono text-[10px] text-gray-400 break-all">https://iframe.videodelivery.net/VIDEO_ID</p>
@@ -341,12 +342,14 @@
                             
                             <!-- Text Input -->
                             <div v-if="content.type === 'text'">
-                                <input v-model="content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                                <input v-model="content.value" @input="enforceTextLimit(content)" :maxlength="TEXT_LIMITS.text" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors" :placeholder="`Max ${TEXT_LIMITS.text} characters`">
+                                <p class="mt-2 text-[10px] text-gray-500">Max {{ TEXT_LIMITS.text }} characters.</p>
                             </div>
 
                             <!-- Longtext Input -->
                             <div v-else-if="content.type === 'longtext'">
-                                <textarea v-model="content.value" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                                <textarea v-model="content.value" @input="enforceTextLimit(content)" :maxlength="TEXT_LIMITS.longtext" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none" :placeholder="`Max ${TEXT_LIMITS.longtext} characters`"></textarea>
+                                <p class="mt-2 text-[10px] text-gray-500">Max {{ TEXT_LIMITS.longtext }} characters.</p>
                             </div>
 
                             <!-- Media Input -->
@@ -360,6 +363,7 @@
                                     <button @click="triggerGenericUpload(path)" class="w-fit text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-4 py-2 hover:bg-accent-bronze/5 transition-colors">
                                         Upload New Media
                                     </button>
+                                    <p class="text-[10px] text-gray-500">{{ MEDIA_LIMIT_NOTE }}</p>
                                     <input type="file" :id="'file_' + path.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, path)" accept="image/*,video/*">
                                 </div>
                             </div>
@@ -427,7 +431,7 @@
                                             </div>
                                             <div v-if="!cat.image" class="text-center p-4">
                                                 <svg class="w-8 h-8 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                                <p class="text-xs text-gray-500">Drag high-res photo</p>
+                                                <p class="text-xs text-gray-500">Drag image/video (max 80MB)</p>
                                             </div>
                                             <input type="file" :ref="'file_' + idx" class="hidden" @change="handleFileSelect($event, cat, idx)" accept="image/*,video/*">
                                             <div v-if="uploading === idx" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-20">
@@ -443,22 +447,24 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <p class="mt-2 text-[10px] text-gray-500">{{ MEDIA_LIMIT_NOTE }}</p>
                                     </div>
 
                                     <div class="md:col-span-8 space-y-6">
                                         <div class="grid grid-cols-2 gap-6">
                                             <div>
                                                 <label class="block text-xs text-gray-500 mb-2">Category Label</label>
-                                                <input v-model="cat.label" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors" placeholder="Category I">
+                                                <input v-model="cat.label" @input="limitCategoryField(cat, 'label', TEXT_LIMITS.categoryLabel)" :maxlength="TEXT_LIMITS.categoryLabel" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors" placeholder="Category I (max 40 chars)">
                                             </div>
                                             <div>
                                                 <label class="block text-xs text-gray-500 mb-2">Title</label>
-                                                <input v-model="cat.title" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                                                <input v-model="cat.title" @input="limitCategoryField(cat, 'title', TEXT_LIMITS.categoryTitle)" :maxlength="TEXT_LIMITS.categoryTitle" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors" placeholder="Max 80 characters">
                                             </div>
                                         </div>
                                         <div>
                                             <label class="block text-xs text-gray-500 mb-2">Philosophical Description</label>
-                                            <textarea v-model="cat.description" rows="3" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                                            <textarea v-model="cat.description" @input="limitCategoryField(cat, 'description', TEXT_LIMITS.categoryDescription)" :maxlength="TEXT_LIMITS.categoryDescription" rows="3" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none" placeholder="Max 420 characters"></textarea>
+                                            <p class="mt-2 text-[10px] text-gray-500">Max {{ TEXT_LIMITS.categoryDescription }} characters.</p>
                                         </div>
                                         <div>
                                             <label class="block text-xs text-gray-500 mb-2">Bullet Points (one per line)</label>
@@ -508,6 +514,14 @@
                 ];
                 
                 const FIXED_COLLECTION_BLOCKS = 4;
+                const TEXT_LIMITS = {
+                    text: 120,
+                    longtext: 1200,
+                    categoryTitle: 80,
+                    categoryLabel: 40,
+                    categoryDescription: 420
+                };
+                const MEDIA_LIMIT_NOTE = 'Accepted: JPG, PNG, WEBP, GIF, MP4, WEBM, MOV (max 80MB). Recommended image: 1920x1080 or 1200x1500.';
                 const currentSelection = ref(null); // id of page or collection
                 const viewMode = ref(null); // 'collections' or 'site-content'
                 
@@ -602,6 +616,17 @@
                     setTimeout(() => {
                         toasts.value = toasts.value.filter(t => t.id !== id);
                     }, 4000);
+                };
+
+                const enforceTextLimit = (content) => {
+                    if (!content || typeof content.value !== 'string') return;
+                    const max = content.type === 'longtext' ? TEXT_LIMITS.longtext : TEXT_LIMITS.text;
+                    if (content.value.length > max) content.value = content.value.slice(0, max);
+                };
+
+                const limitCategoryField = (cat, field, max) => {
+                    if (!cat || typeof cat[field] !== 'string') return;
+                    if (cat[field].length > max) cat[field] = cat[field].slice(0, max);
                 };
 
                 const loadCollection = async (id) => {
@@ -838,12 +863,45 @@
                     xhr.send(file);
                 };
 
+                const persistUploadedChange = async () => {
+                    try {
+                        if (viewMode.value === 'collections') {
+                            await fetch('/api/save', {
+                                method: 'POST',
+                                credentials: 'include',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    file: currentSelection.value,
+                                    payload: currentData.value
+                                })
+                            });
+                        } else if (viewMode.value === 'site-content') {
+                            await fetch('/api/site-content/save', {
+                                method: 'POST',
+                                credentials: 'include',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(currentSiteData.value)
+                            });
+                        }
+                        const syncPayload = JSON.stringify({ ts: Date.now(), source: 'admin-upload' });
+                        localStorage.setItem('chf_content_sync', syncPayload);
+                        if ('BroadcastChannel' in window) {
+                            const syncChannel = new BroadcastChannel('chf-content-sync');
+                            syncChannel.postMessage({ ts: Date.now(), source: 'admin-upload' });
+                            syncChannel.close();
+                        }
+                    } catch (_) {
+                        // keep manual Save Changes fallback if auto-persist fails
+                    }
+                };
+
                 // Legacy Collection Upload
                 const uploadMedia = (file, cat, idx) => {
                     uploading.value = idx;
                     uploadMediaChunked(file, cat.image, (url) => {
                         cat.image = url + '?t=' + Date.now();
-                        showToast('Media uploaded.');
+                        persistUploadedChange();
+                        showToast('Media uploaded and synced.');
                         uploading.value = null;
                     }, (p) => uploadProgress.value = p);
                 };
@@ -862,6 +920,11 @@
                 const handleGenericFileSelect = (e, path) => {
                     const file = e.target.files[0];
                     if (!file) return;
+                    if (file.size > 80 * 1024 * 1024) {
+                        showToast('File too large. Max 80MB.', 'error');
+                        e.target.value = '';
+                        return;
+                    }
                     const oldUrl = currentSiteData.value?.[path]?.value || '';
                     
                     showToast('Uploading generic media...');
@@ -869,7 +932,8 @@
                         // Ensure reactive update
                         if (currentSiteData.value[path]) {
                             currentSiteData.value[path].value = url + '?t=' + Date.now();
-                            showToast('Media updated.');
+                            persistUploadedChange();
+                            showToast('Media updated and synced.');
                         }
                     }, (p) => {});
                 };
@@ -877,11 +941,20 @@
                 const handleDrop = (e, cat, idx) => {
                     dragover.value = null;
                     const file = e.dataTransfer.files[0];
+                    if (file && file.size > 80 * 1024 * 1024) {
+                        showToast('File too large. Max 80MB.', 'error');
+                        return;
+                    }
                     if (file) uploadMedia(file, cat, idx);
                 };
 
                 const handleFileSelect = (e, cat, idx) => {
                     const file = e.target.files[0];
+                    if (file && file.size > 80 * 1024 * 1024) {
+                        showToast('File too large. Max 80MB.', 'error');
+                        e.target.value = '';
+                        return;
+                    }
                     if (file) uploadMedia(file, cat, idx);
                 };
 
@@ -956,6 +1029,10 @@
                     isCloudflareVideoUrl,
                     getCloudflareEmbedUrl,
                     normalizeHeroMediaUrl,
+                    enforceTextLimit,
+                    limitCategoryField,
+                    TEXT_LIMITS,
+                    MEDIA_LIMIT_NOTE,
                     addCategory,
                     removeCategory,
                     triggerGenericUpload,

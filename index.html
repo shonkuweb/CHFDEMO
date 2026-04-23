@@ -189,7 +189,6 @@
                     </button>
                     <div id="collections-panel" class="sidebar-panel overflow-hidden" style="max-height: 0; transition: max-height 0.4s cubic-bezier(0.76,0,0.24,1);">
                         <div class="flex flex-col pb-4 pl-3 gap-0.5">
-                            <a href="collections" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>All Collections</a>
                             <a href="full-grown-avenue-trees" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Full Grown Avenue Trees</a>
                             <a href="exotic-indoor-plants" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Exotic Indoor Plants</a>
                             <a href="bonsai" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Bonsai</a>
@@ -206,7 +205,6 @@
                     </button>
                     <div id="services-panel" class="sidebar-panel overflow-hidden" style="max-height: 0; transition: max-height 0.4s cubic-bezier(0.76,0,0.24,1);">
                         <div class="flex flex-col pb-4 pl-3 gap-0.5">
-                            <a href="portfolio" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>All Services</a>
                             <a href="architectural-harmony" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Architectural Harmony</a>
                             <a href="deep-solitude" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Deep Solitude</a>
                             <a href="curated-specimens" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Curated Specimens</a>
@@ -474,76 +472,61 @@
                             </div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 gap-6 md:gap-12 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                         <a href="portfolio"
-                            class="reveal reveal-up stagger-1 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-transparent md:border-none block">
+                            class="reveal reveal-up stagger-1 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-transparent md:border-none block min-w-[86vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] premium-hover-img wireframe-cross md:border-none shadow-2xl md:shadow-none">
-                                <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
+                                <div data-cms="home/trends/card1/image" class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross bg-cover bg-center bg-no-repeat"></div>
                                 <!-- Mobile Overlay -->
                                 <div
                                     class="absolute inset-0 flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent md:hidden">
                                     <span class="w-8 h-[1px] bg-accent-bronze/60 mb-4 block"></span>
-                                    <h3 class="font-serif text-balance text-3xl text-ivory mb-2">Biophilic Workspace</h3>
-                                    <p class="text-ivory-dim text-[13px] font-light leading-relaxed">Integrating verdant
-                                        life
-                                        into the professional sanctuary for cognitive clarity and architectural
-                                        softness.</p>
+                                    <h3 data-cms="home/trends/card1/title" class="font-serif text-balance text-3xl text-ivory mb-2">Biophilic Workspace</h3>
+                                    <p data-cms="home/trends/card1/body" class="text-ivory-dim text-[13px] font-light leading-relaxed">Integrating verdant life into the professional sanctuary for cognitive clarity and architectural softness.</p>
                                 </div>
                             </div>
-                            <h3 class="font-serif text-2xl text-ivory mb-4 hidden md:block">Biophilic Workspace</h3>
-                            <p class="text-ivory-dim text-sm font-light leading-7 mb-6 hidden md:block">Integrating
-                                verdant life
-                                into
-                                the professional sanctuary for cognitive clarity and architectural softness.</p>
+                            <h3 data-cms="home/trends/card1/title" class="font-serif text-2xl text-ivory mb-4 hidden md:block">Biophilic Workspace</h3>
+                            <p data-cms="home/trends/card1/body" class="text-ivory-dim text-sm font-light leading-7 mb-6 hidden md:block">Integrating verdant life into the professional sanctuary for cognitive clarity and architectural softness.</p>
                             <span
                                 class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read
                                 Editorial</span>
                         </a>
                         <a href="portfolio"
-                            class="reveal reveal-up stagger-2 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block">
+                            class="reveal reveal-up stagger-2 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block min-w-[86vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] premium-hover-img wireframe-cross md:border-none shadow-2xl md:shadow-none">
-                                <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
+                                <div data-cms="home/trends/card2/image" class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross bg-cover bg-center bg-no-repeat"></div>
                                 <!-- Mobile Overlay -->
                                 <div
                                     class="absolute inset-0 flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent md:hidden">
                                     <span class="w-8 h-[1px] bg-accent-bronze/60 mb-4 block"></span>
-                                    <h3 class="font-serif text-balance text-3xl text-ivory mb-2">Rare Specimen Sculptures</h3>
-                                    <p class="text-ivory-dim text-[13px] font-light leading-relaxed">Curating singular
-                                        botanical forms that serve as the focal point of minimalist, high-ceiling
-                                        environments.</p>
+                                    <h3 data-cms="home/trends/card2/title" class="font-serif text-balance text-3xl text-ivory mb-2">Rare Specimen Sculptures</h3>
+                                    <p data-cms="home/trends/card2/body" class="text-ivory-dim text-[13px] font-light leading-relaxed">Curating singular botanical forms that serve as the focal point of minimalist, high-ceiling environments.</p>
                                 </div>
                             </div>
-                            <h3 class="font-serif text-2xl text-ivory mb-4 hidden md:block">Rare Specimen Sculptures
+                            <h3 data-cms="home/trends/card2/title" class="font-serif text-2xl text-ivory mb-4 hidden md:block">Rare Specimen Sculptures
                             </h3>
-                            <p class="text-ivory-dim text-sm font-light leading-7 mb-6 hidden md:block">Curating
-                                singular botanical
-                                forms that serve as the focal point of minimalist, high-ceiling environments.</p>
+                            <p data-cms="home/trends/card2/body" class="text-ivory-dim text-sm font-light leading-7 mb-6 hidden md:block">Curating singular botanical forms that serve as the focal point of minimalist, high-ceiling environments.</p>
                             <span
                                 class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read
                                 Editorial</span>
                         </a>
                         <a href="portfolio"
-                            class="reveal reveal-up stagger-3 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block">
+                            class="reveal reveal-up stagger-3 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block min-w-[86vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] premium-hover-img wireframe-cross md:border-none shadow-2xl md:shadow-none">
-                                <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
+                                <div data-cms="home/trends/card3/image" class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross bg-cover bg-center bg-no-repeat"></div>
                                 <!-- Mobile Overlay -->
                                 <div
                                     class="absolute inset-0 flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent md:hidden">
                                     <span class="w-8 h-[1px] bg-accent-bronze/60 mb-4 block"></span>
-                                    <h3 class="font-serif text-balance text-3xl text-ivory mb-2">Living Walls</h3>
-                                    <p class="text-ivory-dim text-[13px] font-light leading-relaxed">Vertical ecosystems
-                                        that
-                                        redefine internal boundaries, offering a rhythmic pulse to static
-                                        architecture.</p>
+                                    <h3 data-cms="home/trends/card3/title" class="font-serif text-balance text-3xl text-ivory mb-2">Living Walls</h3>
+                                    <p data-cms="home/trends/card3/body" class="text-ivory-dim text-[13px] font-light leading-relaxed">Vertical ecosystems that redefine internal boundaries, offering a rhythmic pulse to static architecture.</p>
                                 </div>
                             </div>
-                            <h3 class="font-serif text-2xl text-ivory mb-4 hidden md:block">Living Walls</h3>
-                            <p class="text-ivory-dim text-sm font-light leading-7 mb-6 hidden md:block">Vertical
-                                ecosystems that
-                                redefine internal boundaries, offering a rhythmic pulse to static architecture.</p>
+                            <h3 data-cms="home/trends/card3/title" class="font-serif text-2xl text-ivory mb-4 hidden md:block">Living Walls</h3>
+                            <p data-cms="home/trends/card3/body" class="text-ivory-dim text-sm font-light leading-7 mb-6 hidden md:block">Vertical ecosystems that redefine internal boundaries, offering a rhythmic pulse to static architecture.</p>
                             <span
                                 class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read
                                 Editorial</span>
@@ -636,7 +619,6 @@
             isOpen = true;
             sidebar.classList.remove('translate-x-full');
             sidebar.classList.add('menu-open');
-            sidebar.classList.add('menu-open');
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
             backdrop.classList.add('opacity-100', 'pointer-events-auto');
             // Hamburger → X
@@ -649,7 +631,6 @@
         function closeSidebar() {
             isOpen = false;
             sidebar.classList.add('translate-x-full');
-            sidebar.classList.remove('menu-open');
             sidebar.classList.remove('menu-open');
             backdrop.classList.add('opacity-0', 'pointer-events-none');
             backdrop.classList.remove('opacity-100', 'pointer-events-auto');
