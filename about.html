@@ -7,53 +7,20 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>About - CHF Botanical Luxury</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="assets/tailwind.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .wireframe-cross {
-                background-image: url('assets/wireframe-placeholder.svg');
-                background-size: 100% 100%;
-                background-repeat: no-repeat;
-                background-position: center;
-            }
-        }
-    </style>
+    
     <style>
         html {
             scroll-behavior: smooth;
         }
     </style>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#4a5d4e",
-                        "primary-hover": "#5d7362",
-                        "accent-bronze": "#a68b6a",
-                        "background-dark": "#000000",
-                        "background-darker": "#000000",
-                        "surface-dark": "#141414",
-                        "ivory": "#e8e4db",
-                        "ivory-dim": "#b5b1a6",
-                        "charcoal": "#121212",
-                    },
-                    fontFamily: {
-                        "display": ["Manrope", "sans-serif"],
-                        "serif": ["Noto Serif", "serif"],
-                    },
-                    borderRadius: { "DEFAULT": "0rem", "lg": "0rem", "xl": "0rem", "full": "9999px" },
-                },
-            },
-        }
-    </script>
+    
     <!-- Premium Animations -->
     <link rel="stylesheet" href="assets/animations.css">
     <script src="assets/animation-core.js" defer></script>
@@ -133,11 +100,11 @@
         
         <!-- Mobile Sidebar Backdrop -->
         <div id="mobile-backdrop"
-            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
+            class="fixed inset-0 bg-black/50 backdrop-blur-md z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
 
         <!-- Mobile Sidebar Drawer -->
         <div id="mobile-sidebar"
-            class="fixed top-0 right-0 h-full w-[82vw] max-w-[340px] bg-[#0a0a0a] z-[70] lg:hidden flex flex-col translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] border-l border-white/[0.07] shadow-[-40px_0_80px_rgba(0,0,0,0.6)] overflow-y-auto"
+            class="fixed top-0 right-0 h-full w-full bg-[#0a0a0a]/95 backdrop-blur-3xl z-[100] lg:hidden flex flex-col translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] overflow-y-auto"
             style="will-change: transform;">
 
             <!-- Sidebar Header -->
@@ -243,7 +210,7 @@
                 <!-- Abstract ambient glow -->
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
                 
-                <h1 class="font-serif text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10 reveal reveal-up">
+                <h1 class="font-serif text-balance text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10 reveal reveal-up">
                     Rooted in <span class="text-accent-bronze italic">Legacy</span>,<br>
                     Designed for the <span class="italic">Future</span>.
                 </h1>
@@ -326,7 +293,7 @@
                 <!-- Header -->
                 <div class="max-w-4xl mx-auto text-center relative z-10 px-6 mb-20">
                     <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4 reveal reveal-up">The Trust We've Built</span>
-                    <h2 class="font-serif text-4xl mb-8 text-ivory reveal reveal-up stagger-1">Our Clientele</h2>
+                    <h2 class="font-serif text-balance text-4xl mb-8 text-ivory reveal reveal-up stagger-1">Our Clientele</h2>
                     <p class="text-ivory-dim text-sm md:text-base leading-relaxed font-light reveal reveal-up stagger-2">
                         Over the decades, we have had the privilege of working with a distinguished range of clients across industries. From corporate institutions to private residences, our work reflects long-standing relationships built on trust, expertise, and a shared vision for meaningful green spaces.
                     </p>
@@ -640,6 +607,7 @@
                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Phone</span>
                             <a class="text-sm text-gray-500 hover:text-primary transition-colors" href="tel:+917980783108" data-cms="global/contact/phone">+91 79807 83108</a>
                         </li>
+                        <li><a class="text-[10px] uppercase tracking-widest text-gray-800 hover:text-accent-bronze transition-colors mt-8 block" href="admin-login">Admin Login</a></li>
                     </ul>
                 </div>
             </div>
@@ -665,6 +633,8 @@
         function openSidebar() {
             isOpen = true;
             sidebar.classList.remove('translate-x-full');
+            sidebar.classList.add('menu-open');
+            sidebar.classList.add('menu-open');
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
             backdrop.classList.add('opacity-100', 'pointer-events-auto');
             lines[0].style.transform = 'translateY(0) rotate(45deg)';
@@ -676,6 +646,8 @@
         function closeSidebar() {
             isOpen = false;
             sidebar.classList.add('translate-x-full');
+            sidebar.classList.remove('menu-open');
+            sidebar.classList.remove('menu-open');
             backdrop.classList.add('opacity-0', 'pointer-events-none');
             backdrop.classList.remove('opacity-100', 'pointer-events-auto');
             lines[0].style.transform = 'translateY(-7px) rotate(0deg)';

@@ -10,39 +10,14 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>CHF - Botanical Luxury - CHF Botanical Luxury</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="assets/tailwind.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .wireframe-cross {
-                background-image: url('assets/wireframe-placeholder.svg');
-                background-size: 100% 100%;
-                background-repeat: no-repeat;
-                background-position: center;
-            }
-        }
-        @layer utilities {
-            .animate-pulse-slow {
-                animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-            }
-            @keyframes pulse-slow {
-                0%, 100% { opacity: 0.3; transform: translateY(0); }
-                50% { opacity: 0.8; transform: translateY(5px); }
-            }
-            .animate-spin-slow {
-                animation: spin-slow 12s linear infinite;
-            }
-            @keyframes spin-slow {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-        }
-    </style>
+    
     <style>
         html {
             scroll-behavior: smooth;
@@ -100,37 +75,13 @@
     <!-- Premium Animations -->
     <link rel="stylesheet" href="assets/animations.css">
     <script src="assets/animation-core.js" defer></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#4a5d4e",
-                        "primary-hover": "#5d7362",
-                        "accent-bronze": "#a68b6a",
-                        "background-dark": "#000000",
-                        "background-darker": "#000000",
-                        "surface-dark": "#141414",
-                        "ivory": "#e8e4db",
-                        "ivory-dim": "#b5b1a6",
-                        "charcoal": "#121212",
-                    },
-                    fontFamily: {
-                        "display": ["Manrope", "sans-serif"],
-                        "serif": ["Noto Serif", "serif"],
-                    },
-                    borderRadius: { "DEFAULT": "0rem", "lg": "0rem", "xl": "0rem", "full": "9999px" },
-                },
-            },
-        }
-    </script>
+    
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-black md:bg-background-dark/80 md:backdrop-blur-md shadow-xl">
+            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
             <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-12 w-full">
                 <a href="/" class="flex items-center gap-3">
                     <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF Logo" class="h-10 w-10 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
@@ -200,11 +151,11 @@
 
         <!-- Mobile Sidebar Backdrop -->
         <div id="mobile-backdrop"
-            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
+            class="fixed inset-0 bg-black/50 backdrop-blur-md z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
 
         <!-- Mobile Sidebar Drawer -->
         <div id="mobile-sidebar"
-            class="fixed top-0 right-0 h-full w-[82vw] max-w-[340px] bg-[#0a0a0a] z-[70] lg:hidden flex flex-col translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] border-l border-white/[0.07] shadow-[-40px_0_80px_rgba(0,0,0,0.6)] overflow-y-auto"
+            class="fixed top-0 right-0 h-full w-full bg-[#0a0a0a]/95 backdrop-blur-3xl z-[100] lg:hidden flex flex-col translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] overflow-y-auto"
             style="will-change: transform;">
 
             <!-- Sidebar Header -->
@@ -345,14 +296,14 @@
         </section>
 
             <section
-                class="bg-[#0d0d0d] py-32 px-6 md:px-12 lg:px-24 relative z-40 overflow-hidden">
+                class="bg-[#0d0d0d] py-24 md:py-32 px-5 md:px-12 lg:px-24 relative z-40 overflow-hidden">
                 <div class="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
                     <div class="lg:col-span-5 space-y-10">
                         <div
                             class="inline-flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.3em] text-accent-bronze">
                             <span class="h-px w-12 bg-accent-bronze"></span>DEEP SOLITUDE
                         </div>
-                        <h2 class="font-serif text-4xl font-light text-ivory md:text-5xl leading-[1.2] reveal reveal-up">
+                        <h2 class="font-serif text-balance text-4xl font-light text-ivory md:text-5xl leading-[1.2] reveal reveal-up">
                             <span data-cms="home/philosophy/title">The Art of Growth <br /><span class="italic text-primary">in Deep Solitude</span></span>
                         </h2>
                         <h3 class="font-serif text-2xl text-accent-bronze/80 font-light reveal reveal-up stagger-1" data-cms="home/philosophy/subtitle">
@@ -372,7 +323,7 @@
                                 class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
                         </a>
                     </div>
-                    <div class="lg:col-span-7 relative h-[600px] w-full">
+                    <div class="lg:col-span-7 relative h-[60vh] min-h-[450px] md:h-[600px] w-full">
                         <div class="absolute -inset-4 border border-white/5 z-0 hidden lg:block"></div>
                         <div class="absolute inset-0 z-10 overflow-hidden shadow-2xl bg-surface-dark">
                             <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_intro.png" alt="Rare architectural specimen in a minimalist moody gallery setting"
@@ -383,7 +334,7 @@
                 </div>
             </section>
             <section
-                class="bg-background-darker py-32 md:py-40 px-6 md:px-12 lg:px-24 border-y border-white/5 relative overflow-hidden">
+                class="bg-background-darker py-24 md:py-40 px-6 md:px-12 lg:px-24 border-y border-white/5 relative overflow-hidden">
                 <!-- Aesthetic background elements -->
                 <div
                     class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent-bronze/5 rounded-full blur-[120px] pointer-events-none">
@@ -394,17 +345,17 @@
                         <span
                             class="inline-block text-accent-bronze text-[10px] uppercase tracking-[0.3em] font-bold mb-6">Our
                             Expertise</span>
-                        <h3 class="font-serif text-4xl md:text-5xl lg:text-6xl text-ivory font-light drop-shadow-xl">
+                        <h3 class="font-serif text-balance text-4xl md:text-5xl lg:text-6xl text-ivory font-light drop-shadow-xl">
                             Service as an <span class="italic text-accent-bronze">Art Form</span></h3>
                         <div class="w-px h-16 bg-gradient-to-b from-accent-bronze/50 to-transparent mx-auto mt-12">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium">
+                    <div class="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
 
                         <!-- Curated Specimens Card -->
                         <a href="curated-specimens"
-                            class="service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -432,7 +383,7 @@
 
                         <!-- Architectural Harmony Card -->
                         <a href="architectural-harmony"
-                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -461,7 +412,7 @@
 
                         <!-- White Glove Service Card -->
                         <a href="white-glove-service"
-                            class="service-card reveal reveal-up stagger-4 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate">
+                            class="service-card reveal reveal-up stagger-4 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -505,7 +456,7 @@
                                     Current Landscape</span>
                             </div>
                             <h2
-                                class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight">
+                                class="font-serif text-balance text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight">
                                 Botanical <br />
                                 <span class="text-accent-bronze italic font-light drop-shadow-sm">Trends</span>
                                 <span class="text-ivory-dim font-thin">for the</span> <br />
@@ -531,9 +482,10 @@
                                 <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
-                                    class="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:hidden">
-                                    <h3 class="font-serif text-3xl text-ivory mb-3">Biophilic Workspace</h3>
-                                    <p class="text-ivory-dim text-sm font-light leading-relaxed">Integrating verdant
+                                    class="absolute inset-0 flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent md:hidden">
+                                    <span class="w-8 h-[1px] bg-accent-bronze/60 mb-4 block"></span>
+                                    <h3 class="font-serif text-balance text-3xl text-ivory mb-2">Biophilic Workspace</h3>
+                                    <p class="text-ivory-dim text-[13px] font-light leading-relaxed">Integrating verdant
                                         life
                                         into the professional sanctuary for cognitive clarity and architectural
                                         softness.</p>
@@ -555,9 +507,10 @@
                                 <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
-                                    class="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:hidden">
-                                    <h3 class="font-serif text-3xl text-ivory mb-3">Rare Specimen Sculptures</h3>
-                                    <p class="text-ivory-dim text-sm font-light leading-relaxed">Curating singular
+                                    class="absolute inset-0 flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent md:hidden">
+                                    <span class="w-8 h-[1px] bg-accent-bronze/60 mb-4 block"></span>
+                                    <h3 class="font-serif text-balance text-3xl text-ivory mb-2">Rare Specimen Sculptures</h3>
+                                    <p class="text-ivory-dim text-[13px] font-light leading-relaxed">Curating singular
                                         botanical forms that serve as the focal point of minimalist, high-ceiling
                                         environments.</p>
                                 </div>
@@ -578,9 +531,10 @@
                                 <div class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross"></div>
                                 <!-- Mobile Overlay -->
                                 <div
-                                    class="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:hidden">
-                                    <h3 class="font-serif text-3xl text-ivory mb-3">Living Walls</h3>
-                                    <p class="text-ivory-dim text-sm font-light leading-relaxed">Vertical ecosystems
+                                    class="absolute inset-0 flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent md:hidden">
+                                    <span class="w-8 h-[1px] bg-accent-bronze/60 mb-4 block"></span>
+                                    <h3 class="font-serif text-balance text-3xl text-ivory mb-2">Living Walls</h3>
+                                    <p class="text-ivory-dim text-[13px] font-light leading-relaxed">Vertical ecosystems
                                         that
                                         redefine internal boundaries, offering a rhythmic pulse to static
                                         architecture.</p>
@@ -681,6 +635,8 @@
         function openSidebar() {
             isOpen = true;
             sidebar.classList.remove('translate-x-full');
+            sidebar.classList.add('menu-open');
+            sidebar.classList.add('menu-open');
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
             backdrop.classList.add('opacity-100', 'pointer-events-auto');
             // Hamburger → X
@@ -693,6 +649,8 @@
         function closeSidebar() {
             isOpen = false;
             sidebar.classList.add('translate-x-full');
+            sidebar.classList.remove('menu-open');
+            sidebar.classList.remove('menu-open');
             backdrop.classList.add('opacity-0', 'pointer-events-none');
             backdrop.classList.remove('opacity-100', 'pointer-events-auto');
             // X → Hamburger

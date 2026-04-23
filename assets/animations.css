@@ -15,13 +15,16 @@
 /* Reveal Bases */
 .reveal {
     opacity: 0;
+    filter: blur(8px);
     transition: opacity var(--anim-duration) var(--ease-premium), 
-                transform var(--anim-duration) var(--ease-premium);
-    will-change: opacity, transform;
+                transform var(--anim-duration) var(--ease-premium),
+                filter var(--anim-duration) var(--ease-premium);
+    will-change: opacity, transform, filter;
 }
 
 .reveal.revealed {
     opacity: 1 !important;
+    filter: blur(0) !important;
     transform: translate(0, 0) scale(1) !important;
 }
 
@@ -299,35 +302,25 @@ summary:focus-visible {
     outline-offset: 3px;
 }
 
-#mobile-menu {
-    padding-top: max(5rem, env(safe-area-inset-top));
-    padding-bottom: max(1.75rem, env(safe-area-inset-bottom));
-}
-
-#mobile-menu nav {
-    width: min(92vw, 28rem);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(10, 10, 10, 0.7);
-    backdrop-filter: blur(18px);
-}
-
-#mobile-menu .mobile-link,
-#mobile-menu details {
+#mobile-sidebar .mobile-link,
+#mobile-sidebar details {
     opacity: 0;
     transform: translateY(12px);
+    transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
 }
 
-#mobile-menu.menu-open .mobile-link,
-#mobile-menu.menu-open details {
+#mobile-sidebar.menu-open .mobile-link,
+#mobile-sidebar.menu-open details {
     opacity: 1;
     transform: translateY(0);
 }
 
-#mobile-menu.menu-open .mobile-link:nth-child(1) { transition-delay: 70ms; }
-#mobile-menu.menu-open .mobile-link:nth-child(2) { transition-delay: 110ms; }
-#mobile-menu.menu-open .mobile-link:nth-child(3) { transition-delay: 150ms; }
-#mobile-menu.menu-open .mobile-link:nth-child(4) { transition-delay: 190ms; }
-#mobile-menu.menu-open .mobile-link:nth-child(5) { transition-delay: 230ms; }
+#mobile-sidebar.menu-open .mobile-link:nth-child(1) { transition-delay: 150ms; }
+#mobile-sidebar.menu-open .mobile-link:nth-child(2) { transition-delay: 200ms; }
+#mobile-sidebar.menu-open .mobile-link:nth-child(3) { transition-delay: 250ms; }
+#mobile-sidebar.menu-open .mobile-link:nth-child(4) { transition-delay: 300ms; }
+#mobile-sidebar.menu-open .mobile-link:nth-child(5) { transition-delay: 350ms; }
+#mobile-sidebar.menu-open .sidebar-item { transition-delay: 150ms; }
 
 @media (max-width: 1023.98px) {
     header > div,

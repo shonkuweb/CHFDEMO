@@ -8,7 +8,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Admin Login - CHF Botanical Luxury</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="assets/tailwind.css" />
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Serif:wght@300..700&display=swap" rel="stylesheet" />
     <!-- Icons -->
@@ -18,27 +18,7 @@
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#4a5d4e",
-                        "accent-bronze": "#a68b6a",
-                        "background-dark": "#0a0a0a",
-                        "surface-dark": "#141414",
-                        "ivory": "#e8e4db",
-                        "ivory-dim": "#b5b1a6",
-                    },
-                    fontFamily: {
-                        "display": ["Manrope", "sans-serif"],
-                        "serif": ["Noto Serif", "serif"],
-                    },
-                },
-            },
-        }
-    </script>
+    
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased min-h-screen flex items-center justify-center p-6 relative overflow-hidden" id="app">

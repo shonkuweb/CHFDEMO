@@ -7,53 +7,20 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Collections - CHF Botanical Luxury</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="assets/tailwind.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .wireframe-cross {
-                background-image: url('assets/wireframe-placeholder.svg');
-                background-size: 100% 100%;
-                background-repeat: no-repeat;
-                background-position: center;
-            }
-        }
-    </style>
+    
     <style>
         html {
             scroll-behavior: smooth;
         }
     </style>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#4a5d4e",
-                        "primary-hover": "#5d7362",
-                        "accent-bronze": "#a68b6a",
-                        "background-dark": "#000000",
-                        "background-darker": "#000000",
-                        "surface-dark": "#141414",
-                        "ivory": "#e8e4db",
-                        "ivory-dim": "#b5b1a6",
-                        "charcoal": "#121212",
-                    },
-                    fontFamily: {
-                        "display": ["Manrope", "sans-serif"],
-                        "serif": ["Noto Serif", "serif"],
-                    },
-                    borderRadius: { "DEFAULT": "0rem", "lg": "0rem", "xl": "0rem", "full": "9999px" },
-                },
-            },
-        }
-    </script>
+    
     <!-- Premium Animations -->
     <link rel="stylesheet" href="assets/animations.css">
     <script src="assets/animation-core.js" defer></script>
@@ -133,11 +100,11 @@
         
         <!-- Mobile Sidebar Backdrop -->
         <div id="mobile-backdrop"
-            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
+            class="fixed inset-0 bg-black/50 backdrop-blur-md z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
 
         <!-- Mobile Sidebar Drawer -->
         <div id="mobile-sidebar"
-            class="fixed top-0 right-0 h-full w-[82vw] max-w-[340px] bg-[#0a0a0a] z-[70] lg:hidden flex flex-col translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] border-l border-white/[0.07] shadow-[-40px_0_80px_rgba(0,0,0,0.6)] overflow-y-auto"
+            class="fixed top-0 right-0 h-full w-full bg-[#0a0a0a]/95 backdrop-blur-3xl z-[100] lg:hidden flex flex-col translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] overflow-y-auto"
             style="will-change: transform;">
 
             <!-- Sidebar Header -->
@@ -244,7 +211,7 @@
                             <span class="w-12 h-px bg-accent-bronze/40"></span>
                             <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Archives</span>
                         </div>
-                        <h2 class="font-serif text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8">
+                        <h2 class="font-serif text-balance text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8">
                             Botanical <br />
                             <span class="text-accent-bronze italic font-light drop-shadow-sm">Collections</span>
                         </h2>
@@ -268,7 +235,7 @@
                         </div>
                         <div class="lg:col-span-5 lg:pl-12">
                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category I</span>
-                            <h3 class="font-serif text-4xl mb-6">Architectural Forms</h3>
+                            <h3 class="font-serif text-balance text-4xl mb-6">Architectural Forms</h3>
                             <p class="text-ivory-dim font-light leading-relaxed mb-8">
                                 Sculptural botanicals characterized by their geometric precision and structural integrity. These specimens serve as timeless focal points in minimalist environments.
                             </p>
@@ -285,7 +252,7 @@
                         </div>
                         <div class="lg:col-span-5 lg:pr-12 lg:order-1 text-right lg:text-left">
                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category II</span>
-                            <h3 class="font-serif text-4xl mb-6">Variegated Rarities</h3>
+                            <h3 class="font-serif text-balance text-4xl mb-6">Variegated Rarities</h3>
                             <p class="text-ivory-dim font-light leading-relaxed mb-8">
                                 Exceptional specimens featuring unique biological pigments. From albino-patterned leaves to deep emerald hues, these are the crown jewels of our living archive.
                             </p>
@@ -302,7 +269,7 @@
                         </div>
                         <div class="lg:col-span-5 lg:pl-12">
                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Category III</span>
-                            <h3 class="font-serif text-4xl mb-6">Vertical Ecosystems</h3>
+                            <h3 class="font-serif text-balance text-4xl mb-6">Vertical Ecosystems</h3>
                             <p class="text-ivory-dim font-light leading-relaxed mb-8">
                                 Integrated living walls that redefine interior topography. A rhythmic integration of biodiversity that breathes life into static surfaces.
                             </p>
@@ -370,6 +337,7 @@
                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Phone</span>
                             <a class="text-sm text-gray-500 hover:text-primary transition-colors" href="tel:+917980783108" data-cms="global/contact/phone">+91 79807 83108</a>
                         </li>
+                        <li><a class="text-[10px] uppercase tracking-widest text-gray-800 hover:text-accent-bronze transition-colors mt-8 block" href="admin-login">Admin Login</a></li>
                     </ul>
                 </div>
             </div>
@@ -395,6 +363,8 @@
         function openSidebar() {
             isOpen = true;
             sidebar.classList.remove('translate-x-full');
+            sidebar.classList.add('menu-open');
+            sidebar.classList.add('menu-open');
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
             backdrop.classList.add('opacity-100', 'pointer-events-auto');
             lines[0].style.transform = 'translateY(0) rotate(45deg)';
@@ -406,6 +376,8 @@
         function closeSidebar() {
             isOpen = false;
             sidebar.classList.add('translate-x-full');
+            sidebar.classList.remove('menu-open');
+            sidebar.classList.remove('menu-open');
             backdrop.classList.add('opacity-0', 'pointer-events-none');
             backdrop.classList.remove('opacity-100', 'pointer-events-auto');
             lines[0].style.transform = 'translateY(-7px) rotate(0deg)';
