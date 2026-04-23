@@ -638,8 +638,33 @@ async def save_data(request: Request, admin: str = Depends(get_current_admin)):
 @app.post("/api/site-content/save")
 async def save_site_content(request: Request, admin: str = Depends(get_current_admin)):
     updates = await request.json()
+    if not isinstance(updates, dict):
+        raise HTTPException(status_code=400, detail="Invalid payload")
+
+    # Determine which page prefixes are being edited in this save payload.
+    # Example paths: avenue/block1/title, global/contact/email
+    edited_prefixes = set()
+    for path in updates.keys():
+        if not isinstance(path, str) or "/" not in path:
+            continue
+        edited_prefixes.add(path.split("/", 1)[0])
+
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    # Remove stale keys for the edited page prefix(es) so UI deletions
+    # (e.g. removing avenue/blockN/*) are persisted in DB.
+    for prefix in edited_prefixes:
+        keep_paths = [path for path in updates.keys() if isinstance(path, str) and path.startswith(f"{prefix}/")]
+        if keep_paths:
+            placeholders = ",".join(["?"] * len(keep_paths))
+            cursor.execute(
+                f"DELETE FROM site_content WHERE path LIKE ? AND path NOT IN ({placeholders})",
+                [f"{prefix}/%"] + keep_paths
+            )
+        else:
+            cursor.execute("DELETE FROM site_content WHERE path LIKE ?", (f"{prefix}/%",))
+
     for path, data in updates.items():
         cursor.execute('''
             INSERT OR REPLACE INTO site_content (path, value, type)

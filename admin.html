@@ -279,6 +279,28 @@
 
                 <!-- View Mode: Generic Site Content -->
                 <div v-if="viewMode === 'site-content'" class="space-y-12">
+                    <section v-if="currentSelection === 'avenue'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <h3 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Avenue Repeatable Blocks</h3>
+                                <p class="text-xs text-gray-500 mt-2">Add or remove the same block structure used in the collection page body.</p>
+                            </div>
+                            <button @click="addStructuredBlock('avenue')" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/40 px-4 py-2 hover:bg-accent-bronze/5 transition-colors w-fit">
+                                Add New Block
+                            </button>
+                        </div>
+                        <div class="mt-6 flex flex-wrap gap-2">
+                            <button
+                                v-for="idx in getStructuredBlockIndices('avenue')"
+                                :key="'avenue-remove-' + idx"
+                                @click="removeStructuredBlock('avenue', idx)"
+                                class="text-[10px] uppercase tracking-widest text-red-400 border border-red-400/30 px-3 py-2 hover:bg-red-400/5 transition-colors"
+                            >
+                                Remove Block {{ idx }}
+                            </button>
+                        </div>
+                    </section>
+
                     <template v-for="[path, content] in sortedSiteEntries" :key="path">
                         <div v-if="path === 'home/hero/image'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
                             <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
@@ -574,7 +596,10 @@
                 });
 
                 const selectionSubtext = computed(() => {
-                    if (viewMode.value === 'collections') return 'Edit the four prebuilt collection blocks for this page.';
+                    if (viewMode.value === 'collections') return 'Edit the collection blocks for this page.';
+                    if (viewMode.value === 'site-content' && currentSelection.value === 'avenue') {
+                        return 'Add or remove repeatable avenue blocks; each block syncs to the live page.';
+                    }
                     return 'Edit the static text and media for this specific site section.';
                 });
 
@@ -627,6 +652,46 @@
                 const limitCategoryField = (cat, field, max) => {
                     if (!cat || typeof cat[field] !== 'string') return;
                     if (cat[field].length > max) cat[field] = cat[field].slice(0, max);
+                };
+
+                const getStructuredBlockIndices = (prefix) => {
+                    const data = currentSiteData.value || {};
+                    const seen = new Set();
+                    const re = new RegExp(`^${prefix}\\/block(\\d+)\\/(image|title|body)$`);
+                    Object.keys(data).forEach((path) => {
+                        const match = path.match(re);
+                        if (match) seen.add(Number(match[1]));
+                    });
+                    return Array.from(seen).sort((a, b) => a - b);
+                };
+
+                const addStructuredBlock = (prefix) => {
+                    if (!currentSiteData.value) return;
+                    const existing = getStructuredBlockIndices(prefix);
+                    const nextIndex = existing.length ? Math.max(...existing) + 1 : 1;
+                    const imageSeed = ((nextIndex - 1) % 4) + 1;
+                    currentSiteData.value[`${prefix}/block${nextIndex}/image`] = {
+                        value: `https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_${imageSeed}.png`,
+                        type: 'media'
+                    };
+                    currentSiteData.value[`${prefix}/block${nextIndex}/title`] = {
+                        value: `New Block ${nextIndex}`,
+                        type: 'text'
+                    };
+                    currentSiteData.value[`${prefix}/block${nextIndex}/body`] = {
+                        value: 'Add description for this block.',
+                        type: 'longtext'
+                    };
+                    showToast(`Block ${nextIndex} added. Save changes to publish.`);
+                };
+
+                const removeStructuredBlock = (prefix, idx) => {
+                    if (!currentSiteData.value) return;
+                    if (!confirm(`Remove Block ${idx}?`)) return;
+                    delete currentSiteData.value[`${prefix}/block${idx}/image`];
+                    delete currentSiteData.value[`${prefix}/block${idx}/title`];
+                    delete currentSiteData.value[`${prefix}/block${idx}/body`];
+                    showToast(`Block ${idx} removed. Save changes to publish.`);
                 };
 
                 const loadCollection = async (id) => {
@@ -1035,6 +1100,9 @@
                     MEDIA_LIMIT_NOTE,
                     addCategory,
                     removeCategory,
+                    getStructuredBlockIndices,
+                    addStructuredBlock,
+                    removeStructuredBlock,
                     triggerGenericUpload,
                     handleGenericFileSelect
                 }
