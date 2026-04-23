@@ -157,6 +157,10 @@
             const val  = content.value;
             const type = content.type;
             if (type === 'media') {
+                if (val == null || !String(val).trim()) {
+                    if (DEBUG) console.warn(`[CMS] Empty media for path: ${path} — skip (hero stays unset)`);
+                    return;
+                }
                 if (el.tagName === 'IMG') {
                     el.src = val;
                 } else if (el.tagName === 'VIDEO') {

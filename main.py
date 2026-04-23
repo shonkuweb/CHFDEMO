@@ -115,6 +115,73 @@ def clear_cache():
     fetch_collection_data.cache_clear()
     fetch_site_content.cache_clear()
 
+SITE_CONTENT_DEFAULTS = {
+    "plant-center/hero/video": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_video_placeholder.mp4",
+        "type": "media",
+    },
+    "plant-center/intro/title": {
+        "value": "An Immersive <br/>Botanical Archive",
+        "type": "text",
+    },
+    "plant-center/intro/body": {
+        "value": "Far beyond a traditional nursery, the Alipore Experience Center is designed as a living gallery. We invite architects, interior designers, and collectors to walk through staggered glasshouses, bonsai viewing decks, and rare specimen yards to visualize the scale, texture, and character of the plants in their ideal environment.",
+        "type": "longtext",
+    },
+    "plant-center/gallery/img1": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimens.png",
+        "type": "media",
+    },
+    "plant-center/gallery/img2": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/about/aboutus_legacy.png",
+        "type": "media",
+    },
+    "plant-center/gallery/img3": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/architectural_harmony.png",
+        "type": "media",
+    },
+    "arch/hero/subtitle": {
+        "value": "Design is Instant. Growth is Inevitable. We Plan for Both.",
+        "type": "text",
+    },
+    "arch/closing/title": {
+        "value": "We don\u2019t just develop gardens.<br><span class=\"text-accent-bronze italic mt-4 block\">We future-proof them.</span>",
+        "type": "text",
+    },
+}
+
+def migrate_legacy_site_content_keys():
+    """
+    Keeps DB paths aligned with data-cms keys used by live templates.
+    This prevents admin updates from writing to orphaned keys.
+    """
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT value, type FROM site_content WHERE path = ?", ("plant-center/hero/media",))
+    legacy_row = cur.fetchone()
+    cur.execute("SELECT 1 FROM site_content WHERE path = ?", ("plant-center/hero/video",))
+    has_new_video_key = cur.fetchone() is not None
+
+    if legacy_row and not has_new_video_key:
+        cur.execute(
+            "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
+            ("plant-center/hero/video", legacy_row["value"], legacy_row["type"] or "media"),
+        )
+    if legacy_row:
+        cur.execute("DELETE FROM site_content WHERE path = ?", ("plant-center/hero/media",))
+
+    for path, payload in SITE_CONTENT_DEFAULTS.items():
+        cur.execute("SELECT 1 FROM site_content WHERE path = ?", (path,))
+        if cur.fetchone() is None:
+            cur.execute(
+                "INSERT INTO site_content (path, value, type) VALUES (?, ?, ?)",
+                (path, payload["value"], payload["type"]),
+            )
+
+    conn.commit()
+    conn.close()
+
 def ensure_sync_state_table():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -214,6 +281,7 @@ async def add_api_no_cache_headers(request: Request, call_next):
 
 @app.on_event("startup")
 def startup_init_sync_state():
+    migrate_legacy_site_content_keys()
     ensure_sync_state_table()
 
 # ── Endpoints ───────────────────────────────
