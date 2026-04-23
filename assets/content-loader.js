@@ -96,8 +96,8 @@
             })
             .catch((err) => {
                 if (err && err.name === 'AbortError') return;
-                // Silently fail — hardcoded HTML remains
-                console.log('[CHF] Using static content (JSON not available)');
+                // Keep current render when API is temporarily unavailable.
+                console.log('[CHF] Collection sync unavailable');
             })
             .finally(() => {
                 isCollectionSyncInFlight = false;
@@ -176,24 +176,20 @@
 
         // Update breadcrumb if it exists
         const breadcrumb = heroSection.querySelector('.flex.items-center.gap-4 span.text-accent-bronze');
-        if (breadcrumb && page.breadcrumb) {
-            breadcrumb.textContent = page.breadcrumb;
-        }
+        if (breadcrumb) breadcrumb.textContent = page.breadcrumb || '';
 
         // Update title
         const h2 = heroSection.querySelector('h2');
         if (h2) {
             h2.innerHTML = `
-                ${escHtml(page.titleLine1)} <br />
-                <span class="text-accent-bronze italic font-light drop-shadow-sm">${escHtml(page.titleLine2)}</span>
+                ${escHtml(page.titleLine1 || '')} <br />
+                <span class="text-accent-bronze italic font-light drop-shadow-sm">${escHtml(page.titleLine2 || '')}</span>
             `;
         }
 
         // Update subtitle
         const subtitle = heroSection.querySelector('.text-gray-400');
-        if (subtitle && page.subtitle) {
-            subtitle.textContent = page.subtitle;
-        }
+        if (subtitle) subtitle.textContent = page.subtitle || '';
     }
 
     function renderCategories(categories) {
@@ -214,11 +210,7 @@
         container.classList.add('feature-block-stack');
 
         if (!Array.isArray(categories) || categories.length === 0) {
-            container.innerHTML = `
-                <div class="border border-white/10 bg-surface-dark/40 px-6 py-12 md:px-10 text-center">
-                    <p class="text-ivory-dim text-xs md:text-sm uppercase tracking-[0.22em]">No blocks published yet</p>
-                </div>
-            `;
+            container.innerHTML = '';
             return;
         }
 
@@ -239,7 +231,7 @@
             `).join('') : '';
 
             return `
-                <!-- ${safeCat.label || 'Block'} -->
+                <!-- ${safeCat.label || ''} -->
                 <div class="feature-block-row ${isReversed ? 'is-reversed' : ''} group">
                     <!-- Media Column -->
                     <div class="feature-block-media-wrap reveal reveal-up stagger-1">
@@ -249,8 +241,8 @@
                                     ? (isCloudflareVideo
                                         ? `<iframe src="${getCloudflareEmbedUrl(mediaUrl)}" class="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105" frameborder="0" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>`
                                         : `<video src="${getPlayableVideoUrl(mediaUrl)}" class="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105" autoplay muted loop playsinline></video>`)
-                                : `<img src="${mediaUrl}" alt="${escHtml(safeCat.title || 'Specimen block image')}" class="w-full h-full object-cover transition-transform duration-[2.2s] group-hover:scale-105" loading="lazy" decoding="async" />`)
-                                : `<div class="w-full h-full bg-[#1a1a1a] wireframe-cross opacity-30"></div>`
+                                : `<img src="${mediaUrl}" alt="${escHtml(safeCat.title || '')}" class="w-full h-full object-cover transition-transform duration-[2.2s] group-hover:scale-105" loading="lazy" decoding="async" />`)
+                                : ``
                             }
                             <!-- Decorative overlay -->
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
@@ -260,15 +252,15 @@
                     <!-- Text Column -->
                     <div class="feature-block-content ${isReversed ? 'text-right lg:text-left' : ''} reveal reveal-up stagger-2">
                         <div class="space-y-3">
-                            <span class="feature-block-label">${escHtml(safeCat.label || 'Untitled')}</span>
+                            <span class="feature-block-label">${escHtml(safeCat.label || '')}</span>
                             <h3 class="font-serif text-2xl md:text-4xl text-ivory leading-tight">
-                                ${escHtml(safeCat.title || 'Untitled Specimen')}
+                                ${escHtml(safeCat.title || '')}
                             </h3>
                         </div>
 
                         <div class="space-y-3">
                             <p class="feature-block-copy mb-0">
-                                ${escHtml(safeCat.description || 'No description available yet.')}
+                                ${escHtml(safeCat.description || '')}
                             </p>
 
                             <!-- Features / Bullet Points -->
@@ -280,9 +272,9 @@
                         </div>
 
                         <div class="pt-3">
-                            <a href="${escHtml(safeCat.ctaLink || 'inquiry')}" 
+                            <a href="${escHtml(safeCat.ctaLink || '#')}" 
                                 class="feature-block-cta hover:text-accent-bronze transition-all group/btn">
-                                <span>${escHtml(safeCat.ctaText || 'Request Info')}</span>
+                                <span>${escHtml(safeCat.ctaText || '')}</span>
                                 <span class="w-6 h-px bg-accent-bronze group-hover/btn:w-10 transition-all"></span>
                             </a>
                         </div>
@@ -310,16 +302,16 @@
             const copyEl = block.querySelector('p');
             const ctaEl = block.querySelector('a[href]');
 
-            if (labelEl) labelEl.textContent = safeCat.label || `Category ${['I', 'II', 'III', 'IV'][index] || index + 1}`;
-            if (titleEl) titleEl.textContent = safeCat.title || 'Untitled Specimen';
-            if (copyEl) copyEl.textContent = safeCat.description || 'No description available yet.';
+            if (labelEl) labelEl.textContent = safeCat.label || '';
+            if (titleEl) titleEl.textContent = safeCat.title || '';
+            if (copyEl) copyEl.textContent = safeCat.description || '';
             if (ctaEl) {
-                ctaEl.textContent = safeCat.ctaText || 'Request Info';
-                ctaEl.setAttribute('href', safeCat.ctaLink || 'inquiry');
+                ctaEl.textContent = safeCat.ctaText || '';
+                ctaEl.setAttribute('href', safeCat.ctaLink || '#');
             }
 
             if (!mediaFrame) return;
-            hydrateBlockMedia(mediaFrame, mediaUrl, safeCat.title || 'Specimen block image', index);
+            hydrateBlockMedia(mediaFrame, mediaUrl, safeCat.title || '', index);
         });
     }
 
@@ -355,7 +347,7 @@
 
     function buildStaticBlockMedia(mediaUrl, altText) {
         if (!mediaUrl) {
-            return '<div class="w-full h-full transition-transform duration-[2s] hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>';
+            return '';
         }
 
         if (isCloudflareVideoUrl(mediaUrl)) {

@@ -123,6 +123,7 @@
     async function initCMS() {
         if (isSyncInFlight) return;
         isSyncInFlight = true;
+        clearAllCmsPlaceholders();
         
         const slug = resolvePageSlug();
         const prefix = PAGE_PREFIX_MAP[slug] || slug;
@@ -185,7 +186,8 @@
             const content = data[path];
 
             if (!content) {
-                if (DEBUG) console.warn(`[CMS] No data found for path: ${path}`);
+                clearCmsElement(el);
+                if (DEBUG) console.warn(`[CMS] No data found for path: ${path}, fallback cleared`);
                 return;
             }
 
@@ -193,7 +195,8 @@
             const type = content.type;
             if (type === 'media') {
                 if (val == null || !String(val).trim()) {
-                    if (DEBUG) console.warn(`[CMS] Empty media for path: ${path} — skip (hero stays unset)`);
+                    clearCmsElement(el);
+                    if (DEBUG) console.warn(`[CMS] Empty media for path: ${path}, cleared`);
                     return;
                 }
                 if (el.tagName === 'IMG') {
@@ -222,6 +225,30 @@
                 // Text / longtext / HTML injection
                 el.innerHTML = val;
             }
+        });
+    }
+
+    function clearCmsElement(el) {
+        if (!el) return;
+
+        if (el.tagName === 'IMG' || el.tagName === 'VIDEO') {
+            el.removeAttribute('src');
+            return;
+        }
+
+        // Container elements can hold hero background media.
+        const oldVideo = el.querySelector('video.cms-hero-video');
+        if (oldVideo) oldVideo.remove();
+        const oldIframe = el.querySelector('iframe.cms-hero-video');
+        if (oldIframe) oldIframe.remove();
+
+        el.style.backgroundImage = 'none';
+        el.innerHTML = '';
+    }
+
+    function clearAllCmsPlaceholders() {
+        document.querySelectorAll('[data-cms]').forEach((el) => {
+            clearCmsElement(el);
         });
     }
 
