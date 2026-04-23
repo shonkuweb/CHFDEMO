@@ -107,7 +107,7 @@ def fetch_collection_data(slug):
 def fetch_site_content(prefix):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT path, value, type FROM site_content WHERE path LIKE ?", (f"{prefix}%",))
+    cursor.execute("SELECT path, value, type FROM site_content WHERE path LIKE ? ORDER BY path ASC", (f"{prefix}%",))
     rows = cursor.fetchall()
     conn.close()
     return {row['path']: {'value': row['value'], 'type': row['type']} for row in rows}
@@ -150,6 +150,31 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
 }
+
+AVENUE_EXTRA_BLOCKS = [
+    ("Canopy Continuity", "From boulevard medians to estate driveways, consistent canopy rhythm gives movement and coherence to long linear spaces. Each alignment is selected for mature spread, branching behaviour, and maintenance practicality."),
+    ("Root-Zone Intelligence", "Avenue trees fail early when underground conditions are ignored. We map soil depth, drainage, and hardscape pressure before planting, so root systems establish with long-term structural stability."),
+    ("Seasonal Character", "A layered avenue should evolve gracefully across seasons. We curate flowering cycles, leaf texture, and tonal contrast so streetscapes retain visual depth beyond a single blooming window."),
+    ("Wind and Exposure Planning", "Large-form trees must withstand corridor winds and reflected heat. Species choices are calibrated to site exposure, reducing failure risk while preserving the intended architectural silhouette."),
+    ("Maintenance by Design", "Pruning regimes, irrigation access, and replacement strategies are considered at planning stage. This keeps the avenue visually disciplined while reducing operational surprises over time."),
+    ("Arrival Experience", "The first 30 seconds of arrival define perception. We use tree sequencing and spacing to create a composed procession that feels both grand and grounded."),
+    ("Legacy-Scale Outcomes", "A successful avenue is measured in decades, not months. Our approach combines horticultural foresight and execution discipline so the landscape matures with clarity and intent."),
+]
+
+for idx, (title, body) in enumerate(AVENUE_EXTRA_BLOCKS, start=5):
+    image_seed = ((idx - 1) % 4) + 1
+    SITE_CONTENT_DEFAULTS[f"avenue/block{idx}/image"] = {
+        "value": f"https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_{image_seed}.png",
+        "type": "media",
+    }
+    SITE_CONTENT_DEFAULTS[f"avenue/block{idx}/title"] = {
+        "value": title,
+        "type": "text",
+    }
+    SITE_CONTENT_DEFAULTS[f"avenue/block{idx}/body"] = {
+        "value": body,
+        "type": "longtext",
+    }
 
 def migrate_legacy_site_content_keys():
     """
