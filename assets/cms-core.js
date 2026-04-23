@@ -93,6 +93,33 @@
         'about': 'about'
     };
 
+    function getCmsCacheKey(prefix) {
+        return `chf_cms_cache_v1_${prefix}`;
+    }
+
+    function readCachedCms(prefix) {
+        try {
+            const raw = sessionStorage.getItem(getCmsCacheKey(prefix));
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            if (!parsed || typeof parsed !== 'object' || !parsed.data) return null;
+            return parsed.data;
+        } catch (_) {
+            return null;
+        }
+    }
+
+    function writeCachedCms(prefix, data) {
+        try {
+            sessionStorage.setItem(getCmsCacheKey(prefix), JSON.stringify({
+                savedAt: Date.now(),
+                data
+            }));
+        } catch (_) {
+            // Ignore storage limits/private mode failures.
+        }
+    }
+
     async function initCMS() {
         if (isSyncInFlight) return;
         isSyncInFlight = true;
@@ -101,6 +128,13 @@
         const prefix = PAGE_PREFIX_MAP[slug] || slug;
 
         if (DEBUG) console.log(`[CMS] Initializing for slug: ${slug}, using prefix: ${prefix}`);
+        const cachedData = readCachedCms(prefix);
+        if (cachedData) {
+            const cachedSignature = JSON.stringify(cachedData);
+            applyContent(cachedData);
+            lastCmsSignature = cachedSignature;
+            if (DEBUG) console.log('[CMS] Applied cached content immediately');
+        }
 
         try {
             const t = Date.now();
@@ -113,6 +147,7 @@
             const globalData = await globalRes.json();
             // Merge: page content overrides global
             const cmsData = { ...globalData, ...pageData };
+            writeCachedCms(prefix, cmsData);
             const signature = JSON.stringify(cmsData);
 
             if (DEBUG) console.log(`[CMS] Content loaded for prefix "${prefix}":`, cmsData);

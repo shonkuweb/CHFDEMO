@@ -3,6 +3,7 @@ import json
 import uuid
 import sqlite3
 import io
+import re
 import urllib.parse
 import urllib.request
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, Form, UploadFile, File
@@ -247,6 +248,57 @@ def purge_cloudflare_cache(urls: list[str] = None):
     except Exception as e:
         print(f"[Cloudflare] Cache purge error: {e}")
 
+MANAGED_MEDIA_FILENAME_RE = re.compile(r"^media_[a-f0-9]{8}\.[a-z0-9]+$", re.IGNORECASE)
+
+def _sanitize_media_reference(raw_url: str) -> str:
+    if not raw_url:
+        return ""
+    cleaned = str(raw_url).strip().split("?", 1)[0].split("#", 1)[0].strip()
+    if not cleaned:
+        return ""
+    parsed = urllib.parse.urlparse(cleaned)
+    if parsed.scheme in ("http", "https"):
+        return parsed.path.lstrip("/")
+    return cleaned.lstrip("/")
+
+def _is_managed_media_filename(path: str) -> bool:
+    return bool(path) and bool(MANAGED_MEDIA_FILENAME_RE.match(os.path.basename(path)))
+
+def delete_old_media_if_needed(old_url: str):
+    """
+    Deletes previously uploaded managed media before replacing it.
+    Only auto-generated media_<id>.* objects are eligible for deletion.
+    """
+    path = _sanitize_media_reference(old_url)
+    if not _is_managed_media_filename(path):
+        return
+
+    # R2-managed upload URLs
+    if R2_ENABLED and r2_client and R2_PUBLIC_URL:
+        absolute_base = R2_PUBLIC_URL.rstrip("/") + "/"
+        if str(old_url).startswith(absolute_base):
+            try:
+                r2_client.delete_object(Bucket=R2_BUCKET, Key=path)
+                print(f"[R2] Deleted replaced media: {path}")
+            except Exception as e:
+                print(f"[R2] Failed deleting old media {path}: {e}")
+            return
+
+    # Local managed upload URLs
+    local_file_path = None
+    if path.startswith("assets/images/"):
+        local_file_path = path
+    elif path.startswith("uploads/"):
+        local_file_path = os.path.join(UPLOAD_DIR, path[len("uploads/"):])
+
+    if local_file_path:
+        try:
+            if os.path.isfile(local_file_path):
+                os.remove(local_file_path)
+                print(f"[LOCAL] Deleted replaced media: {local_file_path}")
+        except Exception as e:
+            print(f"[LOCAL] Failed deleting old media {local_file_path}: {e}")
+
 def verify_turnstile_or_raise(turnstile_response: Optional[str]):
     turnstile_secret = os.environ.get("TURNSTILE_SECRET")
     # If Turnstile is not configured, allow local/dev flows.
@@ -452,11 +504,14 @@ async def get_r2_media(url: str):
 @app.post("/api/upload")
 async def upload_file(request: Request, admin: str = Depends(get_current_admin)):
     filename_header = request.headers.get('X-Filename', 'upload.jpg')
+    old_url_header = request.headers.get('X-Old-Url', '').strip()
     ext = os.path.splitext(filename_header)[1].lower()
     if not ext: ext = '.jpg'
     unique_name = f"media_{uuid.uuid4().hex[:8]}{ext}"
     
     file_data = await request.body()
+    if old_url_header:
+        delete_old_media_if_needed(old_url_header)
     
     if R2_ENABLED and r2_client:
         mime_map = {
@@ -558,8 +613,14 @@ async def serve_static(request: Request, path: str):
             jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         except JWTError:
             return RedirectResponse("/admin-login")
-            
-    return FileResponse(resolved_path)
+
+    response = FileResponse(resolved_path)
+    # Keep HTML always fresh to avoid stale shell flashes after publish.
+    if resolved_path.lower().endswith(".html"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 if __name__ == "__main__":
     import uvicorn

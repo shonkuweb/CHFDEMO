@@ -821,7 +821,7 @@
                     content.value = getCloudflareEmbedUrl(content.value);
                 };
 
-                const uploadMediaChunked = (file, onSuccess, onProgress) => {
+                const uploadMediaChunked = (file, oldUrl, onSuccess, onProgress) => {
                     const xhr = new XMLHttpRequest();
                     xhr.withCredentials = true;
                     xhr.upload.onprogress = (e) => {
@@ -841,13 +841,14 @@
                     };
                     xhr.open('POST', '/api/upload');
                     xhr.setRequestHeader('X-Filename', file.name);
+                    if (oldUrl) xhr.setRequestHeader('X-Old-Url', oldUrl);
                     xhr.send(file);
                 };
 
                 // Legacy Collection Upload
                 const uploadMedia = (file, cat, idx) => {
                     uploading.value = idx;
-                    uploadMediaChunked(file, (url) => {
+                    uploadMediaChunked(file, cat.image, (url) => {
                         cat.image = url + '?t=' + Date.now();
                         showToast('Media uploaded.');
                         uploading.value = null;
@@ -868,9 +869,10 @@
                 const handleGenericFileSelect = (e, path) => {
                     const file = e.target.files[0];
                     if (!file) return;
+                    const oldUrl = currentSiteData.value?.[path]?.value || '';
                     
                     showToast('Uploading generic media...');
-                    uploadMediaChunked(file, (url) => {
+                    uploadMediaChunked(file, oldUrl, (url) => {
                         // Ensure reactive update
                         if (currentSiteData.value[path]) {
                             currentSiteData.value[path].value = url + '?t=' + Date.now();

@@ -42,6 +42,33 @@
 
     if (!VALID_PAGES.includes(filename)) return;
 
+    function getCollectionCacheKey(slug) {
+        return `chf_collection_cache_v1_${slug}`;
+    }
+
+    function readCachedCollection(slug) {
+        try {
+            const raw = sessionStorage.getItem(getCollectionCacheKey(slug));
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            if (!parsed || typeof parsed !== 'object' || !parsed.data) return null;
+            return parsed.data;
+        } catch (_) {
+            return null;
+        }
+    }
+
+    function writeCachedCollection(slug, data) {
+        try {
+            sessionStorage.setItem(getCollectionCacheKey(slug), JSON.stringify({
+                savedAt: Date.now(),
+                data
+            }));
+        } catch (_) {
+            // Ignore storage quota/private mode failures.
+        }
+    }
+
     function syncCollectionContent() {
         if (isCollectionSyncInFlight) return;
         isCollectionSyncInFlight = true;
@@ -60,6 +87,7 @@
             .then(data => {
                 // Ignore stale responses if a newer sync started.
                 if (requestId !== collectionRequestSeq) return;
+                writeCachedCollection(filename, data);
                 const signature = JSON.stringify(data);
                 if (signature === lastCollectionSignature) return;
                 safeRenderCollection(data);
@@ -115,6 +143,11 @@
     }
 
     // Initial sync + near-instant active-tab sync
+    const cachedCollection = readCachedCollection(filename);
+    if (cachedCollection) {
+        safeRenderCollection(cachedCollection);
+        lastCollectionSignature = JSON.stringify(cachedCollection);
+    }
     syncCollectionContent();
     scheduleCollectionSync();
     document.addEventListener('visibilitychange', () => {
