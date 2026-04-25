@@ -186,6 +186,42 @@ SITE_CONTENT_DEFAULTS = {
         "value": "We don\u2019t just develop gardens.<br><span class=\"text-accent-bronze italic mt-4 block\">We future-proof them.</span>",
         "type": "text",
     },
+    "landscaping-design/hero/title": {
+        "value": "Landscaping Design <span class=\"text-accent-bronze italic\">&amp; Development</span>",
+        "type": "text",
+    },
+    "landscaping-design/hero/subtitle": {
+        "value": "Conceptual precision translated into enduring green environments.",
+        "type": "text",
+    },
+    "landscaping-design/closing/title": {
+        "value": "From concept to completion,<br><span class=\"text-accent-bronze italic mt-4 block\">we build landscapes that mature with intent.</span>",
+        "type": "text",
+    },
+    "plant-supply/hero/title": {
+        "value": "Plant <span class=\"text-accent-bronze italic\">Supply</span>",
+        "type": "text",
+    },
+    "plant-supply/hero/subtitle": {
+        "value": "Sourcing resilient plant material for premium landscapes.",
+        "type": "text",
+    },
+    "plant-supply/closing/title": {
+        "value": "Strong landscapes begin with strong stock.<br><span class=\"text-accent-bronze italic mt-4 block\">Supply quality defines long-term success.</span>",
+        "type": "text",
+    },
+    "garden-maintenance/hero/title": {
+        "value": "Garden <span class=\"text-accent-bronze italic\">Maintenance</span>",
+        "type": "text",
+    },
+    "garden-maintenance/hero/subtitle": {
+        "value": "Disciplined care routines that protect design intent year-round.",
+        "type": "text",
+    },
+    "garden-maintenance/closing/title": {
+        "value": "A completed garden is only the beginning.<br><span class=\"text-accent-bronze italic mt-4 block\">Maintenance keeps beauty intentional.</span>",
+        "type": "text",
+    },
 }
 
 AVENUE_EXTRA_BLOCKS = [
@@ -213,6 +249,69 @@ for idx, (title, body) in enumerate(AVENUE_EXTRA_BLOCKS, start=5):
         "type": "longtext",
     }
 
+LANDSCAPING_BLOCKS = [
+    ("Site-Led Concept Planning", "Every project begins with reading the land: light, soil, circulation, and architectural language. We shape planting intent and hardscape rhythm so aesthetics and environmental logic align from day one.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg"),
+    ("Material and Plant Integration", "Our design-development workflow unifies botanical palettes, grading, stone, and built edges into one coherent system. This avoids disconnected execution and preserves spatial clarity.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg"),
+    ("Execution-Level Detailing", "From planting density to irrigation zoning, details are developed for real-world buildability. The result is a landscape that performs as elegantly as it appears.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg"),
+    ("Post-Completion Evolution", "We design for years ahead, not just launch day. Growth behavior, replacement strategy, and seasonal transitions are considered upfront to keep the landscape refined over time.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_post_completion.jpg"),
+]
+
+PLANT_SUPPLY_BLOCKS = [
+    ("Curated Plant Procurement", "We source healthy, structurally sound plant material from trusted growers, with species calibrated to project context, climate, and desired visual maturity.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_procurement.jpg"),
+    ("Nursery Quality Audit", "Before dispatch, every batch is evaluated for root health, branch structure, pest status, and moisture condition to reduce replacement risk on site.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_quality_audit.jpg"),
+    ("Climate-Matched Selection", "Species are shortlisted based on exposure, local humidity, soil profile, and irrigation capacity so delivered plants establish quickly and reliably.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_climate_matched.jpg"),
+    ("Logistics and Staging Control", "Transit sequencing, loading method, and staging windows are planned to preserve plant vitality between nursery pickup and final placement.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_logistics_control.jpg"),
+]
+
+GARDEN_MAINTENANCE_BLOCKS = [
+    ("Seasonal Maintenance Programming", "Care calendars are tuned to growth cycles, weather shifts, and flowering behavior so each zone receives intervention at the right moment.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_seasonal_programming.jpg"),
+    ("Pruning and Canopy Discipline", "Formative pruning, thinning, and canopy balancing maintain proportion, sightlines, and plant health without compromising architectural composition.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_canopy_discipline.jpg"),
+    ("Nutrition and Soil Vitality", "Targeted nutrient plans and soil-conditioning routines restore vigor, support root stability, and keep ornamental quality consistently high.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_soil_vitality.jpg"),
+    ("Preventive Plant Health Monitoring", "Routine scouting identifies stress signals early, enabling low-impact corrective action before issues spread across the landscape.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_health_monitoring.jpg"),
+]
+
+for idx, (title, body, image_url) in enumerate(LANDSCAPING_BLOCKS, start=1):
+    SITE_CONTENT_DEFAULTS[f"landscaping-design/block{idx}/image"] = {
+        "value": image_url,
+        "type": "media",
+    }
+    SITE_CONTENT_DEFAULTS[f"landscaping-design/block{idx}/title"] = {
+        "value": title,
+        "type": "text",
+    }
+    SITE_CONTENT_DEFAULTS[f"landscaping-design/block{idx}/body"] = {
+        "value": body,
+        "type": "longtext",
+    }
+
+for idx, (title, body, image_url) in enumerate(PLANT_SUPPLY_BLOCKS, start=1):
+    SITE_CONTENT_DEFAULTS[f"plant-supply/block{idx}/image"] = {
+        "value": image_url,
+        "type": "media",
+    }
+    SITE_CONTENT_DEFAULTS[f"plant-supply/block{idx}/title"] = {
+        "value": title,
+        "type": "text",
+    }
+    SITE_CONTENT_DEFAULTS[f"plant-supply/block{idx}/body"] = {
+        "value": body,
+        "type": "longtext",
+    }
+
+for idx, (title, body, image_url) in enumerate(GARDEN_MAINTENANCE_BLOCKS, start=1):
+    SITE_CONTENT_DEFAULTS[f"garden-maintenance/block{idx}/image"] = {
+        "value": image_url,
+        "type": "media",
+    }
+    SITE_CONTENT_DEFAULTS[f"garden-maintenance/block{idx}/title"] = {
+        "value": title,
+        "type": "text",
+    }
+    SITE_CONTENT_DEFAULTS[f"garden-maintenance/block{idx}/body"] = {
+        "value": body,
+        "type": "longtext",
+    }
+
 def migrate_legacy_site_content_keys():
     """
     Keeps DB paths aligned with data-cms keys used by live templates.
@@ -233,6 +332,26 @@ def migrate_legacy_site_content_keys():
         )
     if legacy_row:
         cur.execute("DELETE FROM site_content WHERE path = ?", ("plant-center/hero/media",))
+
+    # Curated Planters rename migration:
+    # - site_content path prefix curated/* -> curated-planters/*
+    # - page slug curated-plants -> curated-planters
+    # - categories page_slug curated-plants -> curated-planters
+    cur.execute(
+        """
+        UPDATE site_content
+        SET path = REPLACE(path, 'curated/', 'curated-planters/')
+        WHERE path LIKE 'curated/%'
+        """
+    )
+    cur.execute(
+        "UPDATE pages SET slug = ?, breadcrumb = REPLACE(breadcrumb, 'Curated Plants', 'Curated Planters') WHERE slug = ?",
+        ("curated-planters", "curated-plants")
+    )
+    cur.execute(
+        "UPDATE categories SET page_slug = ? WHERE page_slug = ?",
+        ("curated-planters", "curated-plants")
+    )
 
     for path, payload in SITE_CONTENT_DEFAULTS.items():
         cur.execute("SELECT 1 FROM site_content WHERE path = ?", (path,))

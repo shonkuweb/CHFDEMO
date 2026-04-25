@@ -30,8 +30,8 @@ PAGES = [
         "breadcrumb": "Collections"
     },
     {
-        "slug": "curated-plants",
-        "title": "Curated Plants",
+        "slug": "curated-planters",
+        "title": "Curated Planters",
         "titleLine1": "Curated",
         "titleLine2": "Plants",
         "subtitle": "A thoughtful selection of specimens chosen for their architectural merit and rarity.",

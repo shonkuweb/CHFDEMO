@@ -12,7 +12,7 @@ def migrate():
         ('bonsai', 'Bonsai Collections', 'Bonsai', 'Collections', 'Curating nature\'s rarest botanical wonders for refined spaces.', 'Home / Collections / Bonsai'),
         ('full-grown-avenue-trees', 'Full Grown Avenue Trees', 'Full Grown', 'Avenue Trees', 'Curating nature\'s rarest botanical wonders for refined spaces.', 'Home / Collections / Avenue Trees'),
         ('exotic-indoor-plants', 'Exotic Indoor Plants', 'Exotic', 'Indoor Plants', 'Curating nature\'s rarest botanical wonders for refined spaces.', 'Home / Collections / Indoor Plants'),
-        ('curated-plants', 'Curated Plants', 'Curated', 'Plants', 'Curating nature\'s rarest botanical wonders for refined spaces.', 'Home / Collections / Curated Plants'),
+        ('curated-planters', 'Curated Planters', 'Curated', 'Plants', 'Curating nature\'s rarest botanical wonders for refined spaces.', 'Home / Collections / Curated Planters'),
         ('curated-specimens', 'Curated Specimens', 'Curated', 'Specimens', 'Not added — introduced. Every specimen placed with purpose.', 'Home / Services / Curated Specimens')
     ]
 

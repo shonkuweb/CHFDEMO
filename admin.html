@@ -84,35 +84,50 @@
                             <span v-else class="text-xs">SV</span>
                         </button>
                         <div v-show="openSections.services && !sidebarCollapsed" class="space-y-1">
-                            <button @click="loadPageContent('arch')" 
+                            <button @click="loadPageContent('landscaping-design')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
-                                currentSelection === 'arch' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
-                                Architectural Harmony
+                                currentSelection === 'landscaping-design' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Landscaping Design &amp; Development
                             </button>
-                            <button @click="loadPageContent('specimens')" 
+                            <button @click="loadPageContent('plant-supply')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
-                                currentSelection === 'specimens' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
-                                Curated Specimens
+                                currentSelection === 'plant-supply' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Plant Supply
                             </button>
-                            <button @click="loadPageContent('whiteglove')" 
+                            <button @click="loadPageContent('garden-maintenance')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
-                                currentSelection === 'whiteglove' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
-                                White Glove Service
+                                currentSelection === 'garden-maintenance' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Garden Maintenance
                             </button>
                         </div>
                     </div>
 
                     <div>
-                        <button @click="toggleSection('deepSolitude')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
-                            <span v-if="!sidebarCollapsed">Deep Solitude</span>
-                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.deepSolitude ? '−' : '+' }}</span>
-                            <span v-else class="text-xs">DS</span>
+                        <button @click="toggleSection('standaloneServices')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Standalone Service Pages</span>
+                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.standaloneServices ? '−' : '+' }}</span>
+                            <span v-else class="text-xs">SP</span>
                         </button>
-                        <div v-show="openSections.deepSolitude && !sidebarCollapsed" class="space-y-1">
+                        <div v-show="openSections.standaloneServices && !sidebarCollapsed" class="space-y-1">
                             <button @click="loadPageContent('deep')"
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
                                 currentSelection === 'deep' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
-                                Manage Deep Solitude
+                                Deep Solitude
+                            </button>
+                            <button @click="loadPageContent('arch')"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                currentSelection === 'arch' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Architectural Harmony
+                            </button>
+                            <button @click="loadPageContent('specimens')"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                currentSelection === 'specimens' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Curated Specimens
+                            </button>
+                            <button @click="loadPageContent('whiteglove')"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                currentSelection === 'whiteglove' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                White Glove Service
                             </button>
                         </div>
                     </div>
@@ -144,7 +159,7 @@
                             <button @click="loadPageContent('avenue')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'avenue' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Full Grown Avenue Trees</button>
                             <button @click="loadPageContent('indoor')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'indoor' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Exotic Indoor Plants</button>
                             <button @click="loadPageContent('bonsai')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'bonsai' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Bonsai</button>
-                            <button @click="loadPageContent('curated')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'curated' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Curated Plants</button>
+                            <button @click="loadPageContent('curated-planters')" :class="['w-full text-left px-4 py-2 rounded-sm transition-all', currentSelection === 'curated-planters' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">Curated Planters</button>
                         </div>
                     </div>
 
@@ -279,21 +294,21 @@
 
                 <!-- View Mode: Generic Site Content -->
                 <div v-if="viewMode === 'site-content'" class="space-y-12">
-                    <section v-if="currentSelection === 'avenue'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8">
+                    <section v-if="isStructuredBlocksPage" class="bg-surface-dark border border-accent-bronze/30 rounded p-8">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
-                                <h3 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Avenue Repeatable Blocks</h3>
+                                <h3 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">{{ structuredBlocksHeading }}</h3>
                                 <p class="text-xs text-gray-500 mt-2">Add or remove the same block structure used in the collection page body.</p>
                             </div>
-                            <button @click="addStructuredBlock('avenue')" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/40 px-4 py-2 hover:bg-accent-bronze/5 transition-colors w-fit">
+                            <button @click="addStructuredBlock(currentSelection)" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/40 px-4 py-2 hover:bg-accent-bronze/5 transition-colors w-fit">
                                 Add New Block
                             </button>
                         </div>
                         <div class="mt-6 flex flex-wrap gap-2">
                             <button
-                                v-for="idx in getStructuredBlockIndices('avenue')"
-                                :key="'avenue-remove-' + idx"
-                                @click="removeStructuredBlock('avenue', idx)"
+                                v-for="idx in getStructuredBlockIndices(currentSelection)"
+                                :key="currentSelection + '-remove-' + idx"
+                                @click="removeStructuredBlock(currentSelection, idx)"
                                 class="text-[10px] uppercase tracking-widest text-red-400 border border-red-400/30 px-3 py-2 hover:bg-red-400/5 transition-colors"
                             >
                                 Remove Block {{ idx }}
@@ -302,10 +317,10 @@
                     </section>
 
                     <template v-for="[path, content] in sortedSiteEntries" :key="path">
-                        <div v-if="path === 'home/hero/image'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
+                        <div v-if="path === 'home/hero/image' || path === 'plant-center/hero/video'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
                             <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
                                 <div>
-                                    <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block">Home / Hero / Media</span>
+                                    <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block">{{ path.split('/').join(' / ') }}</span>
                                     <p class="text-xs text-gray-500 mt-2">Manage hero image or video from one place. Supports image URLs, direct video files, and Cloudflare Stream links.</p>
                                 </div>
                                 <span class="text-[9px] text-gray-500 uppercase">Hero Manager</span>
@@ -531,7 +546,7 @@
                     { id: 'full-grown-avenue-trees', name: 'Avenue Trees' },
                     { id: 'exotic-indoor-plants', name: 'Indoor Plants' },
                     { id: 'bonsai', name: 'Bonsai' },
-                    { id: 'curated-plants', name: 'Curated Plants' },
+                    { id: 'curated-planters', name: 'Curated Planters' },
                     { id: 'curated-specimens', name: 'Curated Specimens' }
                 ];
                 
@@ -558,7 +573,7 @@
                 const openSections = ref({
                     siteArchitecture: true,
                     services: false,
-                    deepSolitude: false,
+                    standaloneServices: false,
                     experience: false,
                     collections: false,
                     account: false
@@ -582,6 +597,9 @@
                     if (currentSelection.value === 'global') return 'Global Settings';
                     if (currentSelection.value === 'home') return 'Home Page Content';
                     if (currentSelection.value === 'about') return 'About Page Content';
+                    if (currentSelection.value === 'landscaping-design') return 'Landscaping Design & Development';
+                    if (currentSelection.value === 'plant-supply') return 'Plant Supply';
+                    if (currentSelection.value === 'garden-maintenance') return 'Garden Maintenance';
                     if (currentSelection.value === 'arch') return 'Architectural Harmony';
                     if (currentSelection.value === 'deep') return 'Deep Solitude';
                     if (currentSelection.value === 'whiteglove') return 'White Glove Service';
@@ -589,7 +607,7 @@
                     if (currentSelection.value === 'avenue') return 'Full Grown Avenue Trees';
                     if (currentSelection.value === 'indoor') return 'Exotic Indoor Plants';
                     if (currentSelection.value === 'bonsai') return 'Bonsai Collections';
-                    if (currentSelection.value === 'curated') return 'Curated Plants';
+                    if (currentSelection.value === 'curated-planters') return 'Curated Planters';
                     if (currentSelection.value === 'specimens') return 'Curated Specimens';
                     if (viewMode.value === 'settings') return 'Settings & Security';
                     return '';
@@ -597,11 +615,24 @@
 
                 const selectionSubtext = computed(() => {
                     if (viewMode.value === 'collections') return 'Edit the collection blocks for this page.';
-                    if (viewMode.value === 'site-content' && currentSelection.value === 'avenue') {
-                        return 'Add or remove repeatable avenue blocks; each block syncs to the live page.';
+                    if (viewMode.value === 'site-content' && ['avenue', 'indoor', 'bonsai', 'curated-planters'].includes(currentSelection.value)) {
+                        return 'Add or remove repeatable content blocks; each block syncs to the live page.';
                     }
                     return 'Edit the static text and media for this specific site section.';
                 });
+
+                const structuredBlocksPageTitles = {
+                    avenue: 'Avenue Repeatable Blocks',
+                    indoor: 'Indoor Repeatable Blocks',
+                    bonsai: 'Bonsai Repeatable Blocks',
+                    'curated-planters': 'Curated Planters Repeatable Blocks'
+                };
+                const isStructuredBlocksPage = computed(() => (
+                    viewMode.value === 'site-content' && Object.prototype.hasOwnProperty.call(structuredBlocksPageTitles, currentSelection.value)
+                ));
+                const structuredBlocksHeading = computed(() => (
+                    structuredBlocksPageTitles[currentSelection.value] || 'Repeatable Blocks'
+                ));
 
                 const sortedSiteEntries = computed(() => {
                     const entries = Object.entries(currentSiteData.value || {});
@@ -1063,6 +1094,8 @@
                     sortedSiteEntries,
                     selectionDisplay,
                     selectionSubtext,
+                    isStructuredBlocksPage,
+                    structuredBlocksHeading,
                     loading,
                     saving,
                     changingPassword,

@@ -35,7 +35,7 @@
         'full-grown-avenue-trees',
         'exotic-indoor-plants',
         'bonsai',
-        'curated-plants',
+        'curated-planters',
         'curated-specimens',
         'deep-solitude'
     ];

@@ -113,8 +113,8 @@ admin = admin.replace("currentSelection === 'curated-specimens'", "currentSelect
 
 if "currentSelection.value === 'specimens'" not in admin:
     admin = admin.replace(
-        "if (currentSelection.value === 'curated') return 'Curated Plants';",
-        "if (currentSelection.value === 'curated') return 'Curated Plants';\n                    if (currentSelection.value === 'specimens') return 'Curated Specimens';"
+        "if (currentSelection.value === 'curated-planters') return 'Curated Planters';",
+        "if (currentSelection.value === 'curated-planters') return 'Curated Planters';\n                    if (currentSelection.value === 'specimens') return 'Curated Specimens';"
     )
 
 with open('admin.html', 'w') as f:

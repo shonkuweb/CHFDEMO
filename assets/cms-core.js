@@ -82,6 +82,9 @@
         'home': 'home',
         'index': 'home',
         'architectural-harmony': 'arch',
+        'landscaping-design-development': 'landscaping-design',
+        'plant-supply': 'plant-supply',
+        'garden-maintenance': 'garden-maintenance',
         'plant-experience-center': 'plant-center',
         'white-glove-service': 'whiteglove',
         'deep-solitude': 'deep',
@@ -89,7 +92,7 @@
         'bonsai': 'bonsai',
         'full-grown-avenue-trees': 'avenue',
         'exotic-indoor-plants': 'indoor',
-        'curated-plants': 'curated',
+        'curated-planters': 'curated-planters',
         'about': 'about'
     };
 
