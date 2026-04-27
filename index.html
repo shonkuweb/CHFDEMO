@@ -348,7 +348,7 @@
                         </div>
                     </div>
 
-                    <div class="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                    <div id="services-cards-track" class="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
 
                         <!-- Curated Specimens Card -->
                         <a href="curated-specimens"
@@ -435,6 +435,11 @@
                                 class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-accent-bronze/0 via-accent-bronze/50 to-accent-bronze/0 transition-all duration-1000 group-hover:w-full">
                             </div>
                         </a>
+                    </div>
+                    <div id="services-mobile-dots" class="mt-8 flex items-center justify-center gap-3 md:hidden">
+                        <button type="button" class="service-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="0" aria-label="Service slide 1"></button>
+                        <button type="button" class="service-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="1" aria-label="Service slide 2"></button>
+                        <button type="button" class="service-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="2" aria-label="Service slide 3"></button>
                     </div>
             </section>
             <section
@@ -668,6 +673,59 @@
                 }
             });
         });
+
+        // ── Mobile Services Dots ────────────────────────────────────────────
+        (function initMobileServiceDots() {
+            const track = document.getElementById('services-cards-track');
+            const dotsWrap = document.getElementById('services-mobile-dots');
+            if (!track || !dotsWrap) return;
+
+            const dots = Array.from(dotsWrap.querySelectorAll('.service-dot'));
+            const cards = Array.from(track.querySelectorAll('.service-card'));
+            if (!dots.length || !cards.length) return;
+
+            const setActiveDot = (idx) => {
+                dots.forEach((dot, i) => {
+                    const active = i === idx;
+                    dot.classList.toggle('bg-accent-bronze', active);
+                    dot.classList.toggle('shadow-[0_0_14px_rgba(166,139,106,0.9)]', active);
+                    dot.classList.toggle('scale-110', active);
+                    dot.classList.toggle('bg-white/25', !active);
+                });
+            };
+
+            const getClosestCardIndex = () => {
+                const trackCenter = track.getBoundingClientRect().left + (track.clientWidth / 2);
+                let closestIndex = 0;
+                let closestDistance = Infinity;
+                cards.forEach((card, idx) => {
+                    const cardCenter = card.getBoundingClientRect().left + (card.clientWidth / 2);
+                    const dist = Math.abs(cardCenter - trackCenter);
+                    if (dist < closestDistance) {
+                        closestDistance = dist;
+                        closestIndex = idx;
+                    }
+                });
+                return closestIndex;
+            };
+
+            let rafId = null;
+            const onScroll = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => setActiveDot(getClosestCardIndex()));
+            };
+
+            dots.forEach((dot, idx) => {
+                dot.addEventListener('click', () => {
+                    cards[idx]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    setActiveDot(idx);
+                });
+            });
+
+            track.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            setActiveDot(0);
+        })();
     </script>
     
     <!-- Universal CMS Core (v2 with cache busting) -->
