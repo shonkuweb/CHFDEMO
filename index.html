@@ -38,7 +38,8 @@
             }
         }
 
-        .hero-section [data-cms="home/hero/image"] {
+        .hero-section [data-cms="home/hero/image"],
+        .hero-section [data-cms="home/hero/mobile_media"] {
             position: absolute;
             inset: 0;
             width: 100%;
@@ -261,7 +262,7 @@
                 </div>
                 <!-- Mobile hero: fixed image (shown only on mobile) -->
                 <div class="md:hidden absolute inset-0 bg-cover bg-center bg-no-repeat"
-                    style="background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20mobile.png');">
+                    data-cms="home/hero/mobile_media">
                 </div>
                 <!-- Premium Overlay for depth and text legibility -->
                 <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-[8]"></div>

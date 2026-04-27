@@ -118,6 +118,14 @@ def clear_cache():
     fetch_site_content.cache_clear()
 
 SITE_CONTENT_DEFAULTS = {
+    "home/hero/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/videos/hero_vid.mp4",
+        "type": "media",
+    },
+    "home/hero/mobile_media": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/videos/hero_vid.mp4",
+        "type": "media",
+    },
     "home/trends/card1/image": {
         "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimens.png",
         "type": "media",

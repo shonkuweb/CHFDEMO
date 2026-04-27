@@ -8,6 +8,7 @@ seeds = {
     "arch/hero/title": {"value": "Architectural <span class='text-accent-bronze italic'>Harmony</span>", "type": "text"},
     "home/hero/subtitle": {"value": "Curating nature's rarest architectural wonders for refined spaces.", "type": "text"},
     "home/hero/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/videos/hero_vid.mp4", "type": "media"},
+    "home/hero/mobile_media": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/videos/hero_vid.mp4", "type": "media"},
     "home/about/title": {"value": "The Botanical Sanctuary", "type": "text"},
     "home/philosophy/title": {"value": "The Art of Growth <br /><span class='italic text-primary'>in Deep Solitude</span>", "type": "text"},
     "home/philosophy/subtitle": {"value": "Not placed — revealed", "type": "text"},

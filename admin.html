@@ -353,11 +353,11 @@
                     </section>
 
                     <template v-for="[path, content] in sortedSiteEntries" :key="path">
-                        <div v-if="path === 'home/hero/image' || path === 'plant-center/hero/video'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
+                        <div v-if="path === 'home/hero/image' || path === 'home/hero/mobile_media' || path === 'plant-center/hero/video'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
                             <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
                                 <div>
                                     <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block">{{ path.split('/').join(' / ') }}</span>
-                                    <p class="text-xs text-gray-500 mt-2">Manage hero image or video from one place. Supports image URLs, direct video files, and Cloudflare Stream links.</p>
+                                    <p class="text-xs text-gray-500 mt-2">Manage desktop/mobile hero image or video. Supports image URLs, direct video files, and Cloudflare Stream links.</p>
                                 </div>
                                 <span class="text-[9px] text-gray-500 uppercase">Hero Manager</span>
                             </div>
