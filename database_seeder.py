@@ -206,6 +206,18 @@ def init_schema(cur):
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS home_trends_section (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            badge_label TEXT NOT NULL DEFAULT '',
+            title_line1 TEXT NOT NULL DEFAULT '',
+            title_highlight TEXT NOT NULL DEFAULT '',
+            title_connector TEXT NOT NULL DEFAULT '',
+            title_line3 TEXT NOT NULL DEFAULT '',
+            description TEXT NOT NULL DEFAULT '',
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
 
 
 def seed():
@@ -217,6 +229,20 @@ def seed():
     for path, data in seeds.items():
         cur.execute("INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
                     (path, data['value'], data['type']))
+
+    cur.execute('''
+        INSERT OR IGNORE INTO home_trends_section
+        (id, badge_label, title_line1, title_highlight, title_connector, title_line3, description)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (
+        1,
+        'The Current Landscape',
+        'Botanical',
+        'Trends',
+        'for the',
+        'Modern Collector',
+        "An editorial exploration of nature's evolving role in high-end design."
+    ))
     
     # Seed Pages
     for page in pages_seeds:

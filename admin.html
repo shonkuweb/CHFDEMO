@@ -294,6 +294,42 @@
 
                 <!-- View Mode: Generic Site Content -->
                 <div v-if="viewMode === 'site-content'" class="space-y-12">
+                    <section v-if="currentSelection === 'home'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
+                        <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
+                            <div>
+                                <h3 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Home Trends Heading</h3>
+                                <p class="text-xs text-gray-500 mt-2">Controls the "Botanical Trends for the Modern Collector" heading section on the homepage.</p>
+                            </div>
+                            <span class="text-[9px] text-gray-500 uppercase">Dedicated Table</span>
+                        </div>
+                        <div v-if="homeTrendsData" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-2">Badge Label</label>
+                                <input v-model="homeTrendsData.badge_label" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-2">Title Line 1</label>
+                                <input v-model="homeTrendsData.title_line1" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-2">Highlighted Word</label>
+                                <input v-model="homeTrendsData.title_highlight" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-2">Connector Text</label>
+                                <input v-model="homeTrendsData.title_connector" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs text-gray-500 mb-2">Title Line 3</label>
+                                <input v-model="homeTrendsData.title_line3" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs text-gray-500 mb-2">Description</label>
+                                <textarea v-model="homeTrendsData.description" rows="3" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
                     <section v-if="isStructuredBlocksPage" class="bg-surface-dark border border-accent-bronze/30 rounded p-8">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
@@ -564,6 +600,7 @@
                 
                 const currentData = ref(null); // Collection data
                 const currentSiteData = ref(null); // Generic site data
+                const homeTrendsData = ref(null); // Dedicated home trends heading table
                 
                 const loading = ref(false);
                 const saving = ref(false);
@@ -748,12 +785,24 @@
                     currentSelection.value = page;
                     loading.value = true;
                     try {
-                        const res = await fetch(`/api/site-content?page=${page}&t=${Date.now()}`);
-                        if (!res.ok) throw new Error('CMS data not found');
-                        currentSiteData.value = await res.json();
+                        const requests = [
+                            fetch(`/api/site-content?page=${page}&t=${Date.now()}`)
+                        ];
+                        if (page === 'home') {
+                            requests.push(fetch(`/api/home-trends-section?t=${Date.now()}`));
+                        }
+                        const [siteRes, homeTrendsRes] = await Promise.all(requests);
+                        if (!siteRes.ok) throw new Error('CMS data not found');
+                        currentSiteData.value = await siteRes.json();
+                        if (page === 'home' && homeTrendsRes && homeTrendsRes.ok) {
+                            homeTrendsData.value = await homeTrendsRes.json();
+                        } else {
+                            homeTrendsData.value = null;
+                        }
                     } catch (e) {
                         showToast(`Failed to load CMS content for ${page}`, 'error');
                         currentSiteData.value = null;
+                        homeTrendsData.value = null;
                     } finally {
                         loading.value = false;
                     }
@@ -775,6 +824,16 @@
                             if (res.status === 401) throw new Error('Session expired. Please login again at /admin-login.');
                             if (!res.ok) throw new Error('Server error pushing collection');
                         } else {
+                            if (currentSelection.value === 'home' && homeTrendsData.value) {
+                                const homeTrendsRes = await fetch('/api/home-trends-section/save', {
+                                    method: 'POST',
+                                    credentials: 'include',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(homeTrendsData.value)
+                                });
+                                if (homeTrendsRes.status === 401) throw new Error('Session expired. Please login again at /admin-login.');
+                                if (!homeTrendsRes.ok) throw new Error('Server error updating home trends section');
+                            }
                             const res = await fetch('/api/site-content/save', {
                                 method: 'POST',
                                 credentials: 'include',
@@ -1091,6 +1150,7 @@
                     viewMode,
                     currentData,
                     currentSiteData,
+                    homeTrendsData,
                     sortedSiteEntries,
                     selectionDisplay,
                     selectionSubtext,

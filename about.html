@@ -508,39 +508,33 @@
                 /* ── Client card ── */
                 .client-card {
                     flex-shrink: 0;
-                    width: 200px;
-                    background: #111;
+                    width: 220px;
+                    background: #ffffff;
                     border: 1px solid rgba(255,255,255,0.07);
                     padding: 20px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    gap: 14px;
+                    justify-content: center;
+                    min-height: 120px;
                     transition: border-color 0.3s;
                 }
                 .client-card:hover {
                     border-color: rgba(166,139,106,0.35);
                 }
                 .client-card img {
-                    width: 120px;
-                    height: 60px;
+                    width: 195px;
+                    height: 104px;
                     object-fit: contain;
-                    transition: transform 0.4s;
+                    filter: brightness(1.2) contrast(1.15) saturate(1.05);
+                    transition: transform 0.4s, filter 0.3s;
                 }
                 .client-card:hover img {
                     transform: scale(1.05);
+                    filter: brightness(1.28) contrast(1.2) saturate(1.08);
                 }
                 .client-card .review {
-                    font-family: 'Noto Serif', serif;
-                    font-style: italic;
-                    font-size: 11px;
-                    line-height: 1.6;
-                    color: #7a7671;
-                    text-align: center;
-                    transition: color 0.3s;
-                }
-                .client-card:hover .review {
-                    color: #b5b1a6;
+                    display: none;
                 }
             </style>
 
@@ -680,6 +674,10 @@
     
     <!-- Universal CMS Core -->
     <script src="assets/cms-core.js"></script>
+    <script>
+        // Ensure no legacy testimonial/review copy is rendered in clientele cards.
+        document.querySelectorAll('.client-card .review').forEach((el) => el.remove());
+    </script>
 </body>
 
 </html>

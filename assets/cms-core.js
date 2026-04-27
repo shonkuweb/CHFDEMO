@@ -157,14 +157,33 @@
             if (DEBUG) console.log(`[CMS] Content loaded for prefix "${prefix}":`, cmsData);
             if (signature !== lastCmsSignature) {
                 applyContent(cmsData);
+                await applyHomeTrendsSection();
                 lastCmsSignature = signature;
                 if (DEBUG) console.log('[CMS] Live sync applied');
             }
 
         } catch (err) {
             console.error('[CMS] Failed to initialize:', err);
+            await applyHomeTrendsSection();
         } finally {
             isSyncInFlight = false;
+        }
+    }
+
+    async function applyHomeTrendsSection() {
+        const targets = document.querySelectorAll('[data-home-trends]');
+        if (!targets.length) return;
+        try {
+            const res = await fetch(`/api/home-trends-section?t=${Date.now()}`, { cache: 'no-store' });
+            if (!res.ok) return;
+            const payload = await res.json();
+            targets.forEach((el) => {
+                const key = el.getAttribute('data-home-trends');
+                if (!key || !(key in payload)) return;
+                el.textContent = payload[key] || '';
+            });
+        } catch (_) {
+            // Keep inline fallback copy when API is unavailable.
         }
     }
 

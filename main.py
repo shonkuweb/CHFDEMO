@@ -224,6 +224,15 @@ SITE_CONTENT_DEFAULTS = {
     },
 }
 
+HOME_TRENDS_DEFAULTS = {
+    "badge_label": "The Current Landscape",
+    "title_line1": "Botanical",
+    "title_highlight": "Trends",
+    "title_connector": "for the",
+    "title_line3": "Modern Collector",
+    "description": "An editorial exploration of nature's evolving role in high-end design.",
+}
+
 AVENUE_EXTRA_BLOCKS = [
     ("Canopy Continuity", "From boulevard medians to estate driveways, consistent canopy rhythm gives movement and coherence to long linear spaces. Each alignment is selected for mature spread, branching behaviour, and maintenance practicality."),
     ("Root-Zone Intelligence", "Avenue trees fail early when underground conditions are ignored. We map soil depth, drainage, and hardscape pressure before planting, so root systems establish with long-term structural stability."),
@@ -377,6 +386,64 @@ def ensure_sync_state_table():
     conn.commit()
     conn.close()
 
+def ensure_home_trends_section_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS home_trends_section (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            badge_label TEXT NOT NULL DEFAULT '',
+            title_line1 TEXT NOT NULL DEFAULT '',
+            title_highlight TEXT NOT NULL DEFAULT '',
+            title_connector TEXT NOT NULL DEFAULT '',
+            title_line3 TEXT NOT NULL DEFAULT '',
+            description TEXT NOT NULL DEFAULT '',
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    cur.execute(
+        """
+        INSERT OR IGNORE INTO home_trends_section
+            (id, badge_label, title_line1, title_highlight, title_connector, title_line3, description)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            1,
+            HOME_TRENDS_DEFAULTS["badge_label"],
+            HOME_TRENDS_DEFAULTS["title_line1"],
+            HOME_TRENDS_DEFAULTS["title_highlight"],
+            HOME_TRENDS_DEFAULTS["title_connector"],
+            HOME_TRENDS_DEFAULTS["title_line3"],
+            HOME_TRENDS_DEFAULTS["description"],
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+def fetch_home_trends_section():
+    ensure_home_trends_section_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT badge_label, title_line1, title_highlight, title_connector, title_line3, description
+        FROM home_trends_section
+        WHERE id = 1
+        """
+    )
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return HOME_TRENDS_DEFAULTS.copy()
+    return {
+        "badge_label": row["badge_label"],
+        "title_line1": row["title_line1"],
+        "title_highlight": row["title_highlight"],
+        "title_connector": row["title_connector"],
+        "title_line3": row["title_line3"],
+        "description": row["description"],
+    }
+
 def get_sync_version():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -516,6 +583,7 @@ async def add_api_no_cache_headers(request: Request, call_next):
 def startup_init_sync_state():
     migrate_legacy_site_content_keys()
     ensure_sync_state_table()
+    ensure_home_trends_section_table()
 
 # ── Endpoints ───────────────────────────────
 
@@ -655,6 +723,10 @@ async def get_data(slug: str):
 async def get_sync_version_api():
     return {"version": get_sync_version()}
 
+@app.get("/api/home-trends-section")
+async def get_home_trends_section_api():
+    return fetch_home_trends_section()
+
 @app.get("/api/r2-media")
 async def get_r2_media(url: str):
     """
@@ -791,6 +863,54 @@ async def save_site_content(request: Request, admin: str = Depends(get_current_a
         ''', (path, data.get('value'), data.get('type')))
     conn.commit()
     conn.close()
+    clear_cache()
+    version = bump_sync_version()
+    purge_cloudflare_cache()
+    return {"status": "success", "version": version}
+
+@app.post("/api/home-trends-section/save")
+async def save_home_trends_section(request: Request, admin: str = Depends(get_current_admin)):
+    payload = await request.json()
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=400, detail="Invalid payload")
+
+    normalized = {
+        "badge_label": str(payload.get("badge_label", "")).strip(),
+        "title_line1": str(payload.get("title_line1", "")).strip(),
+        "title_highlight": str(payload.get("title_highlight", "")).strip(),
+        "title_connector": str(payload.get("title_connector", "")).strip(),
+        "title_line3": str(payload.get("title_line3", "")).strip(),
+        "description": str(payload.get("description", "")).strip(),
+    }
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO home_trends_section
+            (id, badge_label, title_line1, title_highlight, title_connector, title_line3, description, updated_at)
+        VALUES (1, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(id) DO UPDATE SET
+            badge_label = excluded.badge_label,
+            title_line1 = excluded.title_line1,
+            title_highlight = excluded.title_highlight,
+            title_connector = excluded.title_connector,
+            title_line3 = excluded.title_line3,
+            description = excluded.description,
+            updated_at = CURRENT_TIMESTAMP
+        """,
+        (
+            normalized["badge_label"],
+            normalized["title_line1"],
+            normalized["title_highlight"],
+            normalized["title_connector"],
+            normalized["title_line3"],
+            normalized["description"],
+        ),
+    )
+    conn.commit()
+    conn.close()
+
     clear_cache()
     version = bump_sync_version()
     purge_cloudflare_cache()
