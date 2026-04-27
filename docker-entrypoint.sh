@@ -35,7 +35,7 @@ if os.path.exists(db):
     cur.execute('''INSERT OR IGNORE INTO home_trends_section
         (id, badge_label, title_line1, title_highlight, title_connector, title_line3, description)
         VALUES (1, 'The Current Landscape', 'Botanical', 'Trends', 'for the', 'Modern Collector',
-        'An editorial exploration of nature'"'"'s evolving role in high-end design.')
+        'An editorial exploration of nature and design in premium spaces.')
     ''')
     cur.execute('SELECT COUNT(*) FROM admins')
     if cur.fetchone()[0] == 0:
