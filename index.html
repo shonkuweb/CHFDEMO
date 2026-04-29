@@ -348,7 +348,7 @@
                         </div>
                     </div>
 
-                    <div id="services-cards-track" class="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                    <div id="services-cards-track" class="w-full max-w-full flex overflow-x-auto overscroll-x-contain touch-pan-x snap-x snap-mandatory md:grid md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
 
                         <!-- Curated Specimens Card -->
                         <a href="curated-specimens"
@@ -440,6 +440,10 @@
                         <button type="button" class="service-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="0" aria-label="Service slide 1"></button>
                         <button type="button" class="service-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="1" aria-label="Service slide 2"></button>
                         <button type="button" class="service-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="2" aria-label="Service slide 3"></button>
+                    </div>
+                    <div id="services-mobile-arrow" class="mt-4 mb-2 flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.22em] text-accent-bronze/90 md:hidden select-none">
+                        <span id="services-mobile-arrow-icon" class="text-sm leading-none">→</span>
+                        <span id="services-mobile-arrow-label">Swipe</span>
                     </div>
             </section>
             <section
@@ -678,6 +682,8 @@
         (function initMobileServiceDots() {
             const track = document.getElementById('services-cards-track');
             const dotsWrap = document.getElementById('services-mobile-dots');
+            const arrowIcon = document.getElementById('services-mobile-arrow-icon');
+            const arrowLabel = document.getElementById('services-mobile-arrow-label');
             if (!track || !dotsWrap) return;
 
             const dots = Array.from(dotsWrap.querySelectorAll('.service-dot'));
@@ -692,6 +698,18 @@
                     dot.classList.toggle('scale-110', active);
                     dot.classList.toggle('bg-white/25', !active);
                 });
+
+                if (!arrowIcon || !arrowLabel) return;
+                if (idx <= 0) {
+                    arrowIcon.textContent = '→';
+                    arrowLabel.textContent = 'Swipe Right';
+                } else if (idx >= cards.length - 1) {
+                    arrowIcon.textContent = '←';
+                    arrowLabel.textContent = 'Swipe Left';
+                } else {
+                    arrowIcon.textContent = '↔';
+                    arrowLabel.textContent = 'Swipe';
+                }
             };
 
             const getClosestCardIndex = () => {
