@@ -162,6 +162,10 @@ SITE_CONTENT_DEFAULTS = {
         "value": "Vertical ecosystems that redefine internal boundaries, offering a rhythmic pulse to static architecture.",
         "type": "longtext",
     },
+    "home/philosophy/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/deepsolitudehero.png",
+        "type": "media",
+    },
     "plant-center/hero/video": {
         "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_video_placeholder.mp4",
         "type": "media",
