@@ -132,6 +132,31 @@
                         </div>
                     </div>
 
+                    <div>
+                        <button @click="toggleSection('trendsPages')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Botanical Trend Pages</span>
+                            <span v-if="!sidebarCollapsed" class="text-xs">{{ openSections.trendsPages ? '−' : '+' }}</span>
+                            <span v-else class="text-xs">BT</span>
+                        </button>
+                        <div v-show="openSections.trendsPages && !sidebarCollapsed" class="space-y-1">
+                            <button @click="loadPageContent('biophilic-workspace')"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                currentSelection === 'biophilic-workspace' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Biophilic Workspace
+                            </button>
+                            <button @click="loadPageContent('rare-specimen-sculptures')"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                currentSelection === 'rare-specimen-sculptures' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Rare Specimen Sculptures
+                            </button>
+                            <button @click="loadPageContent('living-walls')"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                currentSelection === 'living-walls' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Living Walls
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Experience -->
                     <div>
                         <button @click="toggleSection('experience')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
@@ -352,7 +377,32 @@
                         </div>
                     </section>
 
-                    <template v-for="[path, content] in sortedSiteEntries" :key="path">
+                    <section v-if="currentSelection === 'home'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
+                        <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
+                            <div>
+                                <h3 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Botanical Trends Cards</h3>
+                                <p class="text-xs text-gray-500 mt-2">Control card image, title, and text shown on the homepage trends section.</p>
+                            </div>
+                            <span class="text-[9px] text-gray-500 uppercase">Home Trends</span>
+                        </div>
+                        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                            <div v-for="card in homeTrendCardsForAdmin" :key="'home-trends-card-' + card.idx" class="border border-white/10 rounded p-4 space-y-4">
+                                <p class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Card {{ card.idx }}</p>
+                                <div class="aspect-video bg-black/40 border border-white/10 overflow-hidden rounded">
+                                    <img v-if="card.image.value && !isVideo(card.image.value)" :src="card.image.value" class="w-full h-full object-cover">
+                                    <video v-else-if="card.image.value && isVideo(card.image.value)" :src="card.image.value" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
+                                    <div v-else class="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-widest text-gray-600">No media</div>
+                                </div>
+                                <input v-model="card.image.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-3 py-2 text-xs text-white transition-colors" placeholder="Image URL">
+                                <button @click="triggerGenericUpload(card.imagePath)" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-3 py-2 hover:bg-accent-bronze/5 transition-colors">Upload Image</button>
+                                <input v-model="card.title.value" @input="enforceTextLimit(card.title)" :maxlength="TEXT_LIMITS.text" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-3 py-2 text-sm text-white transition-colors" placeholder="Card title">
+                                <textarea v-model="card.body.value" @input="enforceTextLimit(card.body)" :maxlength="TEXT_LIMITS.longtext" rows="4" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-3 py-2 text-sm text-white transition-colors resize-none" placeholder="Card body"></textarea>
+                                <input type="file" :id="'file_' + card.imagePath.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, card.imagePath)" accept="image/*,video/*">
+                            </div>
+                        </div>
+                    </section>
+
+                    <template v-for="[path, content] in filteredSiteEntries" :key="path">
                         <div v-if="path === 'home/hero/image' || path === 'home/hero/mobile_media' || path === 'plant-center/hero/video'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
                             <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
                                 <div>
@@ -594,6 +644,11 @@
                     categoryLabel: 40,
                     categoryDescription: 420
                 };
+                const HOME_TRENDS_CARD_PATHS = [
+                    'home/trends/card1/image', 'home/trends/card1/title', 'home/trends/card1/body',
+                    'home/trends/card2/image', 'home/trends/card2/title', 'home/trends/card2/body',
+                    'home/trends/card3/image', 'home/trends/card3/title', 'home/trends/card3/body'
+                ];
                 const MEDIA_LIMIT_NOTE = 'Accepted: JPG, PNG, WEBP, GIF, MP4, WEBM, MOV (max 80MB). Recommended image: 1920x1080 or 1200x1500.';
                 const currentSelection = ref(null); // id of page or collection
                 const viewMode = ref(null); // 'collections' or 'site-content'
@@ -611,6 +666,7 @@
                     siteArchitecture: true,
                     services: false,
                     standaloneServices: false,
+                    trendsPages: false,
                     experience: false,
                     collections: false,
                     account: false
@@ -637,6 +693,9 @@
                     if (currentSelection.value === 'landscaping-design') return 'Landscaping Design & Development';
                     if (currentSelection.value === 'plant-supply') return 'Plant Supply';
                     if (currentSelection.value === 'garden-maintenance') return 'Garden Maintenance';
+                    if (currentSelection.value === 'biophilic-workspace') return 'Biophilic Workspace';
+                    if (currentSelection.value === 'rare-specimen-sculptures') return 'Rare Specimen Sculptures';
+                    if (currentSelection.value === 'living-walls') return 'Living Walls';
                     if (currentSelection.value === 'arch') return 'Architectural Harmony';
                     if (currentSelection.value === 'deep') return 'Deep Solitude';
                     if (currentSelection.value === 'whiteglove') return 'White Glove Service';
@@ -674,6 +733,24 @@
                 const sortedSiteEntries = computed(() => {
                     const entries = Object.entries(currentSiteData.value || {});
                     return entries.sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+                });
+                const filteredSiteEntries = computed(() => (
+                    sortedSiteEntries.value.filter(([path]) => !HOME_TRENDS_CARD_PATHS.includes(path))
+                ));
+                const homeTrendCardsForAdmin = computed(() => {
+                    if (currentSelection.value !== 'home' || !currentSiteData.value) return [];
+                    return [1, 2, 3].map((idx) => {
+                        const base = `home/trends/card${idx}`;
+                        return {
+                            idx,
+                            imagePath: `${base}/image`,
+                            titlePath: `${base}/title`,
+                            bodyPath: `${base}/body`,
+                            image: currentSiteData.value[`${base}/image`] || { value: '', type: 'media' },
+                            title: currentSiteData.value[`${base}/title`] || { value: '', type: 'text' },
+                            body: currentSiteData.value[`${base}/body`] || { value: '', type: 'longtext' }
+                        };
+                    });
                 });
 
                 const collectionBlocksLocked = computed(() => viewMode.value === 'collections');
@@ -1152,6 +1229,8 @@
                     currentSiteData,
                     homeTrendsData,
                     sortedSiteEntries,
+                    filteredSiteEntries,
+                    homeTrendCardsForAdmin,
                     selectionDisplay,
                     selectionSubtext,
                     isStructuredBlocksPage,

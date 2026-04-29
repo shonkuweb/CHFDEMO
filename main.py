@@ -230,6 +230,114 @@ SITE_CONTENT_DEFAULTS = {
         "value": "A completed garden is only the beginning.<br><span class=\"text-accent-bronze italic mt-4 block\">Maintenance keeps beauty intentional.</span>",
         "type": "text",
     },
+    "biophilic-workspace/hero/title": {
+        "value": "Biophilic <span class=\"text-accent-bronze italic\">Workspace</span>",
+        "type": "text",
+    },
+    "biophilic-workspace/hero/subtitle": {
+        "value": "Integrating verdant life into professional sanctuaries for clarity, composure, and spatial softness.",
+        "type": "text",
+    },
+    "biophilic-workspace/block1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_1.png",
+        "type": "media",
+    },
+    "biophilic-workspace/block1/title": {
+        "value": "Focused Work Zones",
+        "type": "text",
+    },
+    "biophilic-workspace/block1/body": {
+        "value": "Strategic greenery near desks and transition corridors reduces visual fatigue and helps teams sustain deeper focus throughout long work cycles.",
+        "type": "longtext",
+    },
+    "biophilic-workspace/block2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_2.png",
+        "type": "media",
+    },
+    "biophilic-workspace/block2/title": {
+        "value": "Air and Acoustic Balance",
+        "type": "text",
+    },
+    "biophilic-workspace/block2/body": {
+        "value": "Plant-led layering softens hard interiors, improves perceived air quality, and contributes to calmer acoustics across open-plan environments.",
+        "type": "longtext",
+    },
+    "biophilic-workspace/closing/title": {
+        "value": "Workspaces perform better when they feel alive.<br><span class=\"text-accent-bronze italic mt-4 block\">Nature turns routine into renewal.</span>",
+        "type": "text",
+    },
+    "rare-specimen-sculptures/hero/title": {
+        "value": "Rare Specimen <span class=\"text-accent-bronze italic\">Sculptures</span>",
+        "type": "text",
+    },
+    "rare-specimen-sculptures/hero/subtitle": {
+        "value": "Singular botanical forms curated as statement pieces for refined residential and hospitality architecture.",
+        "type": "text",
+    },
+    "rare-specimen-sculptures/block1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_3.png",
+        "type": "media",
+    },
+    "rare-specimen-sculptures/block1/title": {
+        "value": "Architectural Presence",
+        "type": "text",
+    },
+    "rare-specimen-sculptures/block1/body": {
+        "value": "Each specimen is selected for maturity, silhouette, and sculptural character to anchor space with botanical authority.",
+        "type": "longtext",
+    },
+    "rare-specimen-sculptures/block2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png",
+        "type": "media",
+    },
+    "rare-specimen-sculptures/block2/title": {
+        "value": "Collector-Led Curation",
+        "type": "text",
+    },
+    "rare-specimen-sculptures/block2/body": {
+        "value": "We align plant provenance, form, and long-term care protocols with each collector's design intent and lifestyle rhythm.",
+        "type": "longtext",
+    },
+    "rare-specimen-sculptures/closing/title": {
+        "value": "A rare specimen is more than decor.<br><span class=\"text-accent-bronze italic mt-4 block\">It becomes the identity of the room.</span>",
+        "type": "text",
+    },
+    "living-walls/hero/title": {
+        "value": "Living <span class=\"text-accent-bronze italic\">Walls</span>",
+        "type": "text",
+    },
+    "living-walls/hero/subtitle": {
+        "value": "Vertical ecosystems that transform boundaries into breathing surfaces with lasting visual rhythm.",
+        "type": "text",
+    },
+    "living-walls/block1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/architectural_harmony.png",
+        "type": "media",
+    },
+    "living-walls/block1/title": {
+        "value": "Engineered Vertical Ecology",
+        "type": "text",
+    },
+    "living-walls/block1/body": {
+        "value": "We design irrigation, species layering, and maintenance access as one integrated system so the wall remains healthy and visually composed over time.",
+        "type": "longtext",
+    },
+    "living-walls/block2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/about/aboutus_legacy.png",
+        "type": "media",
+    },
+    "living-walls/block2/title": {
+        "value": "Spatial Softening",
+        "type": "text",
+    },
+    "living-walls/block2/body": {
+        "value": "Living walls soften rigid architecture, improve ambience, and create an immersive natural experience in high-value interior environments.",
+        "type": "longtext",
+    },
+    "living-walls/closing/title": {
+        "value": "When walls begin to grow, spaces begin to breathe.<br><span class=\"text-accent-bronze italic mt-4 block\">Nature becomes architecture.</span>",
+        "type": "text",
+    },
 }
 
 HOME_TRENDS_DEFAULTS = {

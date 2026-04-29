@@ -81,6 +81,9 @@
     const PAGE_PREFIX_MAP = {
         'home': 'home',
         'index': 'home',
+        'biophilic-workspace': 'biophilic-workspace',
+        'rare-specimen-sculptures': 'rare-specimen-sculptures',
+        'living-walls': 'living-walls',
         'architectural-harmony': 'arch',
         'landscaping-design-development': 'landscaping-design',
         'plant-supply': 'plant-supply',
