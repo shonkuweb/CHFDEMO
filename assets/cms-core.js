@@ -133,7 +133,10 @@
         if (slug === 'home' || slug === 'index' || sharedShellSynced) return;
 
         try {
-            const res = await fetch(`/?shell=${Date.now()}`, { cache: 'no-store' });
+            // Resolve `index.html` from the current page so subdirectory deploys (e.g. /chf/...) fetch the site homepage, not domain root.
+            const shellUrl = new URL('index.html', window.location.href);
+            shellUrl.searchParams.set('shell', String(Date.now()));
+            const res = await fetch(shellUrl.href, { cache: 'no-store' });
             if (!res.ok) throw new Error('Home shell unavailable');
             const sourceDoc = new DOMParser().parseFromString(await res.text(), 'text/html');
 
@@ -148,9 +151,9 @@
                 currentHeader.replaceWith(sourceHeader.cloneNode(true));
             }
 
-            document.querySelectorAll('#mobile-backdrop, #mobile-sidebar').forEach((el) => el.remove());
             const insertedHeader = document.querySelector('header');
             if (sourceBackdrop && sourceSidebar && insertedHeader) {
+                document.querySelectorAll('#mobile-backdrop, #mobile-sidebar').forEach((el) => el.remove());
                 const backdrop = sourceBackdrop.cloneNode(true);
                 const sidebar = sourceSidebar.cloneNode(true);
                 insertedHeader.insertAdjacentElement('afterend', backdrop);
@@ -391,6 +394,8 @@
 
     function clearAllCmsPlaceholders() {
         document.querySelectorAll('[data-cms]').forEach((el) => {
+            // Shell clones match the homepage; skip clearing nodes inside the drawer so nav links never disappear if hydration order shifts.
+            if (el.closest('#mobile-sidebar')) return;
             clearCmsElement(el);
         });
     }
