@@ -61,6 +61,127 @@
             object-fit: cover;
         }
 
+        .hero-home-copy {
+            position: absolute;
+            z-index: 40;
+            top: 50%;
+            left: clamp(1rem, 6vw, 6rem);
+            width: min(56rem, calc(100% - 2rem));
+            transform: translateY(-50%);
+            text-align: left;
+        }
+
+        .hero-home-title {
+            font-family: "Noto Serif", serif;
+            font-size: clamp(4.5rem, 9vw, 8rem);
+            line-height: 0.95;
+            font-weight: 300;
+            letter-spacing: -0.025em;
+            text-shadow: 0 18px 42px rgba(0, 0, 0, 0.55);
+        }
+
+        .hero-home-rule {
+            width: clamp(4rem, 8vw, 6rem);
+            height: 0.25rem;
+            margin-top: clamp(1rem, 2vw, 1.5rem);
+            background: #799644;
+        }
+
+        .hero-home-subtitle {
+            max-width: 29rem;
+            margin-top: clamp(1rem, 2vw, 1.5rem);
+            font-size: clamp(1.25rem, 2.4vw, 2rem);
+            line-height: 1.15;
+            font-weight: 300;
+            text-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-home-cta {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-top: clamp(1.25rem, 2.5vw, 2rem);
+            padding: clamp(0.9rem, 1.6vw, 1.25rem) clamp(1.4rem, 3vw, 2rem);
+            background: #799644;
+            color: #e8e4db;
+            font-size: clamp(0.75rem, 1.1vw, 0.875rem);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: background-color 0.2s ease;
+        }
+
+        .hero-home-cta:hover {
+            background: #8aa84d;
+        }
+
+        .hero-home-features {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+            max-width: 42rem;
+            margin-top: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .hero-home-feature {
+            padding-right: clamp(0.75rem, 2vw, 1.5rem);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-home-feature:last-child {
+            border-right: 0;
+            padding-right: 0;
+        }
+
+        .hero-home-feature .material-symbols-outlined {
+            margin-bottom: 0.65rem;
+            color: #799644;
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+        }
+
+        .hero-home-feature-title {
+            font-size: clamp(0.65rem, 1vw, 0.875rem);
+            line-height: 1.15;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .hero-home-feature-text {
+            margin-top: 0.3rem;
+            font-size: clamp(0.65rem, 1vw, 0.875rem);
+            line-height: 1.25;
+            font-weight: 300;
+        }
+
+        @media (max-width: 767px) {
+            .hero-home-copy {
+                top: 45%;
+                left: 1rem;
+                width: calc(100% - 2rem);
+            }
+
+            .hero-home-title {
+                font-size: clamp(3rem, 15vw, 4.25rem);
+            }
+
+            .hero-home-subtitle {
+                max-width: 20rem;
+                font-size: clamp(1rem, 5vw, 1.35rem);
+            }
+
+            .hero-home-features {
+                gap: 0.5rem;
+                max-width: 100%;
+                margin-top: 1.25rem;
+            }
+
+            .hero-home-feature {
+                padding-right: 0.5rem;
+            }
+        }
+
         /* Pull curve slightly upward so it overlaps hero cleanly */
         .hero-curved-overlay {
             bottom: -1px;
@@ -271,10 +392,40 @@
                     style="background-image: url('https://www.transparenttextures.com/patterns/stardust.png');"></div>
             </div>
 
-            <!-- Hero Text Overlay (Empty for cinematic feel) -->
-            <div class="relative z-30 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-6 text-center text-ivory pointer-events-none">
-                <!-- Text removed per user request -->
-
+            <!-- Hero Text Overlay -->
+            <div class="relative z-30 h-full w-full text-ivory pointer-events-none">
+                <div class="hero-home-copy">
+                    <h1 class="hero-home-title">
+                        Bring<br>
+                        Nature Home
+                    </h1>
+                    <div class="hero-home-rule"></div>
+                    <p class="hero-home-subtitle">
+                        Transform your space into a<br class="hidden sm:block">
+                        living, breathing sanctuary.
+                    </p>
+                    <a href="inquiry" class="hero-home-cta">
+                        ENQUIRY NOW
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                    <div class="hero-home-features">
+                        <div class="hero-home-feature">
+                            <span class="material-symbols-outlined">eco</span>
+                            <p class="hero-home-feature-title">Wide Variety</p>
+                            <p class="hero-home-feature-text">Indoor, Outdoor<br>&amp; Rare Plants</p>
+                        </div>
+                        <div class="hero-home-feature">
+                            <span class="material-symbols-outlined">potted_plant</span>
+                            <p class="hero-home-feature-title">Expert Guidance</p>
+                            <p class="hero-home-feature-text">Personalized care<br>for every plant</p>
+                        </div>
+                        <div class="hero-home-feature">
+                            <span class="material-symbols-outlined">local_shipping</span>
+                            <p class="hero-home-feature-title">Safe Delivery</p>
+                            <p class="hero-home-feature-text">delivery<br>at your doorstep</p>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Curved Overlay (Edge-to-Edge) -->
                 <div
