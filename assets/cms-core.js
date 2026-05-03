@@ -14,6 +14,7 @@
     let lastCmsSignature = '';
     let lastSeenSyncVersion = 0;
     let cmsSyncTimer = null;
+    let sharedShellSynced = false;
 
     function isVideoUrl(url) {
         if (!url) return false;
@@ -126,13 +127,130 @@
         }
     }
 
+    async function syncSharedShell(slug) {
+        // The homepage is the canonical source for the public navbar,
+        // mobile sidebar, and footer. Other public pages clone that shell.
+        if (slug === 'home' || slug === 'index' || sharedShellSynced) return;
+
+        try {
+            const res = await fetch(`/?shell=${Date.now()}`, { cache: 'no-store' });
+            if (!res.ok) throw new Error('Home shell unavailable');
+            const sourceDoc = new DOMParser().parseFromString(await res.text(), 'text/html');
+
+            const sourceHeader = sourceDoc.querySelector('header');
+            const sourceBackdrop = sourceDoc.querySelector('#mobile-backdrop');
+            const sourceSidebar = sourceDoc.querySelector('#mobile-sidebar');
+            const sourceFooter = sourceDoc.querySelector('footer');
+            const currentHeader = document.querySelector('header');
+            const currentFooter = document.querySelector('footer');
+
+            if (sourceHeader && currentHeader) {
+                currentHeader.replaceWith(sourceHeader.cloneNode(true));
+            }
+
+            document.querySelectorAll('#mobile-backdrop, #mobile-sidebar').forEach((el) => el.remove());
+            const insertedHeader = document.querySelector('header');
+            if (sourceBackdrop && sourceSidebar && insertedHeader) {
+                const backdrop = sourceBackdrop.cloneNode(true);
+                const sidebar = sourceSidebar.cloneNode(true);
+                insertedHeader.insertAdjacentElement('afterend', backdrop);
+                backdrop.insertAdjacentElement('afterend', sidebar);
+            }
+
+            if (sourceFooter) {
+                if (currentFooter) {
+                    currentFooter.replaceWith(sourceFooter.cloneNode(true));
+                } else {
+                    const shellRoot = document.querySelector('body > .relative.flex.min-h-screen') || document.body;
+                    shellRoot.appendChild(sourceFooter.cloneNode(true));
+                }
+            }
+
+            sharedShellSynced = true;
+            bindSharedShellInteractions();
+        } catch (err) {
+            console.warn('[CMS] Shared shell sync failed; using inline page shell', err);
+            bindSharedShellInteractions();
+        }
+    }
+
+    function bindSharedShellInteractions() {
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileCloseBtn = document.getElementById('mobile-close-btn');
+        const sidebar = document.getElementById('mobile-sidebar');
+        const backdrop = document.getElementById('mobile-backdrop');
+        if (!mobileBtn || !mobileCloseBtn || !sidebar || !backdrop || mobileBtn.dataset.shellBound === 'true') {
+            return;
+        }
+
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        const lines = mobileBtn.querySelectorAll('.hamburger-line');
+        let isOpen = false;
+
+        function openSidebar() {
+            isOpen = true;
+            sidebar.classList.remove('translate-x-full');
+            sidebar.classList.add('menu-open');
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            backdrop.classList.add('opacity-100', 'pointer-events-auto');
+            if (lines.length >= 3) {
+                lines[0].style.transform = 'translateY(0) rotate(45deg)';
+                lines[1].style.opacity = '0';
+                lines[2].style.transform = 'translateY(0) rotate(-45deg)';
+            }
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            isOpen = false;
+            sidebar.classList.add('translate-x-full');
+            sidebar.classList.remove('menu-open');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            if (lines.length >= 3) {
+                lines[0].style.transform = 'translateY(-7px) rotate(0deg)';
+                lines[1].style.opacity = '1';
+                lines[2].style.transform = 'translateY(7px) rotate(0deg)';
+            }
+            document.body.style.overflow = '';
+        }
+
+        mobileBtn.dataset.shellBound = 'true';
+        mobileBtn.addEventListener('click', () => (isOpen ? closeSidebar() : openSidebar()));
+        mobileCloseBtn.addEventListener('click', closeSidebar);
+        backdrop.addEventListener('click', closeSidebar);
+        mobileLinks.forEach((link) => {
+            if (link.tagName === 'A') link.addEventListener('click', closeSidebar);
+        });
+
+        document.querySelectorAll('.sidebar-accordion').forEach((btn) => {
+            if (btn.dataset.shellBound === 'true') return;
+            btn.dataset.shellBound = 'true';
+            btn.addEventListener('click', () => {
+                const panel = document.getElementById(btn.getAttribute('data-target'));
+                const chevron = btn.querySelector('.sidebar-chevron');
+                if (!panel) return;
+                const isExpanded = panel.style.maxHeight && panel.style.maxHeight !== '0px';
+
+                document.querySelectorAll('.sidebar-panel').forEach((p) => { p.style.maxHeight = '0px'; });
+                document.querySelectorAll('.sidebar-chevron').forEach((c) => { c.style.transform = 'rotate(0deg)'; });
+
+                if (!isExpanded) {
+                    panel.style.maxHeight = `${panel.scrollHeight}px`;
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+    }
+
     async function initCMS() {
         if (isSyncInFlight) return;
         isSyncInFlight = true;
-        clearAllCmsPlaceholders();
         
         const slug = resolvePageSlug();
         const prefix = PAGE_PREFIX_MAP[slug] || slug;
+        await syncSharedShell(slug);
+        clearAllCmsPlaceholders();
 
         if (DEBUG) console.log(`[CMS] Initializing for slug: ${slug}, using prefix: ${prefix}`);
         const cachedData = readCachedCms(prefix);
