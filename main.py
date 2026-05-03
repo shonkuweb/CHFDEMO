@@ -111,19 +111,34 @@ def fetch_site_content(prefix):
     cursor.execute("SELECT path, value, type FROM site_content WHERE path LIKE ? ORDER BY path ASC", (f"{prefix}%",))
     rows = cursor.fetchall()
     conn.close()
-    return {row['path']: {'value': row['value'], 'type': row['type']} for row in rows}
+    data = {row['path']: {'value': row['value'], 'type': row['type']} for row in rows}
+    if prefix == "home":
+        data.update(FIXED_HOME_HERO_MEDIA)
+    return data
 
 def clear_cache():
     fetch_collection_data.cache_clear()
     fetch_site_content.cache_clear()
 
-SITE_CONTENT_DEFAULTS = {
+FIXED_HOME_HERO_MEDIA = {
     "home/hero/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/videos/hero_vid.mp4",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20image%20desk%20and%20mobile%20view/CHFHERODESK.PNG",
         "type": "media",
     },
     "home/hero/mobile_media": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/videos/hero_vid.mp4",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20image%20desk%20and%20mobile%20view/CHFHEROMOB.png",
+        "type": "media",
+    },
+}
+PROTECTED_SITE_CONTENT_PATHS = set(FIXED_HOME_HERO_MEDIA)
+
+SITE_CONTENT_DEFAULTS = {
+    "home/hero/image": {
+        "value": FIXED_HOME_HERO_MEDIA["home/hero/image"]["value"],
+        "type": "media",
+    },
+    "home/hero/mobile_media": {
+        "value": FIXED_HOME_HERO_MEDIA["home/hero/mobile_media"]["value"],
         "type": "media",
     },
     "home/trends/card1/image": {
@@ -484,7 +499,12 @@ def migrate_legacy_site_content_keys():
 
     for path, payload in SITE_CONTENT_DEFAULTS.items():
         cur.execute("SELECT 1 FROM site_content WHERE path = ?", (path,))
-        if cur.fetchone() is None:
+        if path in PROTECTED_SITE_CONTENT_PATHS:
+            cur.execute(
+                "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
+                (path, payload["value"], payload["type"]),
+            )
+        elif cur.fetchone() is None:
             cur.execute(
                 "INSERT INTO site_content (path, value, type) VALUES (?, ?, ?)",
                 (path, payload["value"], payload["type"]),
@@ -952,6 +972,12 @@ async def save_site_content(request: Request, admin: str = Depends(get_current_a
     if not isinstance(updates, dict):
         raise HTTPException(status_code=400, detail="Invalid payload")
 
+    updates = {
+        path: data
+        for path, data in updates.items()
+        if path not in PROTECTED_SITE_CONTENT_PATHS
+    }
+
     # Determine which page prefixes are being edited in this save payload.
     # Example paths: avenue/block1/title, global/contact/email
     edited_prefixes = set()
@@ -981,6 +1007,11 @@ async def save_site_content(request: Request, admin: str = Depends(get_current_a
             INSERT OR REPLACE INTO site_content (path, value, type)
             VALUES (?, ?, ?)
         ''', (path, data.get('value'), data.get('type')))
+    for path, data in FIXED_HOME_HERO_MEDIA.items():
+        cursor.execute('''
+            INSERT OR REPLACE INTO site_content (path, value, type)
+            VALUES (?, ?, ?)
+        ''', (path, data["value"], data["type"]))
     conn.commit()
     conn.close()
     clear_cache()

@@ -38,8 +38,44 @@
                     <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300" href="about">About Us</a>
                     <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300" href="inquiry">Enquiry</a>
                 </nav>
+                <button id="mobile-menu-btn" class="lg:hidden flex items-center text-ivory z-[80] p-2 relative w-10 h-10 justify-center" aria-label="Open navigation">
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-300 block transform -translate-y-[7px] origin-center"></span>
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-300 block opacity-100 origin-center"></span>
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-300 block transform translate-y-[7px] origin-center"></span>
+                </button>
             </div>
         </header>
+
+        <div id="mobile-backdrop" class="fixed inset-0 bg-black/50 backdrop-blur-md z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
+        <div id="mobile-sidebar" class="fixed top-0 right-0 h-full w-full bg-[#0a0a0a]/95 backdrop-blur-3xl z-[100] lg:hidden flex flex-col translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] overflow-y-auto">
+            <div class="flex items-center justify-between px-7 pt-7 pb-6 border-b border-white/[0.06] flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF" class="h-8 w-8 rounded-full object-cover border border-white/10 bg-[#1a1a1a]">
+                    <span class="font-serif text-base tracking-widest text-ivory uppercase">CHF</span>
+                </div>
+                <button id="mobile-close-btn" class="w-8 h-8 flex items-center justify-center text-ivory/50 hover:text-ivory transition-colors duration-300 rounded-full border border-white/10 hover:border-white/30" aria-label="Close navigation">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <nav class="flex flex-col flex-1 px-7 py-8 gap-1">
+                <a href="plant-experience-center" class="mobile-link flex items-center justify-between py-4 border-b border-white/[0.05] text-ivory/80 hover:text-accent-bronze transition-colors">Plant Experience Center</a>
+                <a href="collections" class="mobile-link flex items-center justify-between py-4 border-b border-white/[0.05] text-ivory/80 hover:text-accent-bronze transition-colors">Collections</a>
+                <div class="py-4 border-b border-white/[0.05]">
+                    <span class="block text-[10px] uppercase tracking-[0.25em] font-bold text-accent-bronze/80 mb-3">Services</span>
+                    <div class="flex flex-col pl-3 gap-3">
+                        <a href="landscaping-design-development" class="mobile-link text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors">Landscaping Design &amp; Development</a>
+                        <a href="plant-supply" class="mobile-link text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors">Plant Supply</a>
+                        <a href="garden-maintenance" class="mobile-link text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors">Garden Maintenance</a>
+                    </div>
+                </div>
+                <a href="about" class="mobile-link flex items-center justify-between py-4 border-b border-white/[0.05] text-ivory/80 hover:text-accent-bronze transition-colors">About Us</a>
+                <a href="inquiry" class="mobile-link block w-full mt-6 py-3.5 text-center text-[11px] uppercase tracking-[0.25em] font-bold text-black bg-accent-bronze hover:bg-[#b8966e] transition-colors">Make an Enquiry</a>
+            </nav>
+            <div class="px-7 py-6 border-t border-white/[0.06] flex-shrink-0">
+                <a href="mailto:calcuttahorticulturalfarm@gmail.com" class="block text-[12px] text-ivory/60 hover:text-accent-bronze transition-colors break-all mb-3" data-cms="global/contact/email">calcuttahorticulturalfarm@gmail.com</a>
+                <a href="tel:+917980783108" class="block text-[12px] text-ivory/60 hover:text-accent-bronze transition-colors" data-cms="global/contact/phone">+91 79807 83108</a>
+            </div>
+        </div>
 
         <main class="flex-grow pt-20">
             <section class="py-24 px-6 lg:px-12 text-center max-w-4xl mx-auto relative">
@@ -99,7 +135,64 @@
                 <p class="font-serif text-2xl md:text-4xl lg:text-5xl text-ivory leading-tight" data-cms="garden-maintenance/closing/title"></p>
             </section>
         </main>
+        <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
+            <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                    <div class="md:col-span-2">
+                        <h2 class="font-serif text-2xl text-ivory mb-6">CHF <span class="text-accent-bronze italic">Botanical Luxury</span></h2>
+                        <p class="text-gray-500 max-w-sm text-sm leading-relaxed">Curating nature's rarest architectural wonders for refined spaces.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold mb-6">Navigate</h4>
+                        <ul class="space-y-4">
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="/">Home</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="collections">Collections</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about">About</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry">Enquiry</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold mb-6">Contact</h4>
+                        <ul class="space-y-4">
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors break-all" href="mailto:calcuttahorticulturalfarm@gmail.com" data-cms="global/contact/email">calcuttahorticulturalfarm@gmail.com</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="tel:+917980783108" data-cms="global/contact/phone">+91 79807 83108</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-white/5 pt-8 text-center">
+                    <p class="text-xs text-gray-600" data-cms="global/footer/copyright">© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb</p>
+                </div>
+            </div>
+        </footer>
     </div>
+    <script>
+        (() => {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const closeBtn = document.getElementById('mobile-close-btn');
+            const sidebar = document.getElementById('mobile-sidebar');
+            const backdrop = document.getElementById('mobile-backdrop');
+            if (!menuBtn || !closeBtn || !sidebar || !backdrop) return;
+
+            const openMenu = () => {
+                sidebar.classList.remove('translate-x-full');
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = 'hidden';
+            };
+            const closeMenu = () => {
+                sidebar.classList.add('translate-x-full');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            };
+
+            menuBtn.addEventListener('click', openMenu);
+            closeBtn.addEventListener('click', closeMenu);
+            backdrop.addEventListener('click', closeMenu);
+            sidebar.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') closeMenu();
+            });
+        })();
+    </script>
     <script src="assets/cms-core.js"></script>
 </body>
 </html>

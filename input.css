@@ -10,3 +10,10 @@
         background-position: center;
     }
 }
+
+@layer components {
+    body > .relative.flex.min-h-screen > header {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+}

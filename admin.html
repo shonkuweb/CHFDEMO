@@ -403,11 +403,11 @@
                     </section>
 
                     <template v-for="[path, content] in filteredSiteEntries" :key="path">
-                        <div v-if="path === 'home/hero/image' || path === 'home/hero/mobile_media' || path === 'plant-center/hero/video'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
+                        <div v-if="path === 'plant-center/hero/video'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
                             <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
                                 <div>
                                     <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block">{{ path.split('/').join(' / ') }}</span>
-                                    <p class="text-xs text-gray-500 mt-2">Manage desktop/mobile hero image or video. Supports image URLs, direct video files, and Cloudflare Stream links.</p>
+                                    <p class="text-xs text-gray-500 mt-2">Manage the Plant Experience Center hero video. Supports direct video files and Cloudflare Stream links.</p>
                                 </div>
                                 <span class="text-[9px] text-gray-500 uppercase">Hero Manager</span>
                             </div>
@@ -649,6 +649,10 @@
                     'home/trends/card2/image', 'home/trends/card2/title', 'home/trends/card2/body',
                     'home/trends/card3/image', 'home/trends/card3/title', 'home/trends/card3/body'
                 ];
+                const LOCKED_SITE_CONTENT_PATHS = [
+                    'home/hero/image',
+                    'home/hero/mobile_media'
+                ];
                 const MEDIA_LIMIT_NOTE = 'Accepted: JPG, PNG, WEBP, GIF, MP4, WEBM, MOV (max 80MB). Recommended image: 1920x1080 or 1200x1500.';
                 const currentSelection = ref(null); // id of page or collection
                 const viewMode = ref(null); // 'collections' or 'site-content'
@@ -735,7 +739,10 @@
                     return entries.sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
                 });
                 const filteredSiteEntries = computed(() => (
-                    sortedSiteEntries.value.filter(([path]) => !HOME_TRENDS_CARD_PATHS.includes(path))
+                    sortedSiteEntries.value.filter(([path]) => (
+                        !HOME_TRENDS_CARD_PATHS.includes(path) &&
+                        !LOCKED_SITE_CONTENT_PATHS.includes(path)
+                    ))
                 ));
                 const homeTrendCardsForAdmin = computed(() => {
                     if (currentSelection.value !== 'home' || !currentSiteData.value) return [];
