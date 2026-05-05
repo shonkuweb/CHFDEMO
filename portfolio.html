@@ -1,12 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev" crossorigin>
 
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Portfolio - CHF Botanical Luxury</title>
+    <title>CHF - Botanical Luxury - CHF Botanical Luxury</title>
     <link rel="stylesheet" href="assets/tailwind.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap"
@@ -19,11 +22,182 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* Hero media must always bleed edge-to-edge without letterboxing */
+        .hero-section {
+            height: 100svh;
+            min-height: 100svh;
+        }
+
+        /* Mobile: hero starts below the 80px navbar */
+        @media (max-width: 767px) {
+            .hero-section {
+                height: calc(100svh - 5rem);
+                min-height: calc(100svh - 5rem);
+                margin-top: 5rem;
+            }
+        }
+
+        .hero-section [data-cms="home/hero/image"],
+        .hero-section [data-cms="home/hero/mobile_media"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-section .cms-hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw;
+            min-width: 177.78svh;
+            min-height: 100svh;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        .hero-home-copy {
+            position: absolute;
+            z-index: 40;
+            top: 50%;
+            left: clamp(1rem, 6vw, 6rem);
+            width: min(56rem, calc(100% - 2rem));
+            transform: translateY(-50%);
+            text-align: left;
+        }
+
+        .hero-home-title {
+            font-family: "Noto Serif", serif;
+            font-size: clamp(4.5rem, 9vw, 8rem);
+            line-height: 0.95;
+            font-weight: 300;
+            letter-spacing: -0.025em;
+            text-shadow: 0 18px 42px rgba(0, 0, 0, 0.55);
+        }
+
+        .hero-home-rule {
+            width: clamp(4rem, 8vw, 6rem);
+            height: 0.25rem;
+            margin-top: clamp(1rem, 2vw, 1.5rem);
+            background: #799644;
+        }
+
+        .hero-home-subtitle {
+            max-width: 29rem;
+            margin-top: clamp(1rem, 2vw, 1.5rem);
+            font-size: clamp(1.25rem, 2.4vw, 2rem);
+            line-height: 1.15;
+            font-weight: 300;
+            text-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-home-cta {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-top: clamp(1.25rem, 2.5vw, 2rem);
+            padding: clamp(0.9rem, 1.6vw, 1.25rem) clamp(1.4rem, 3vw, 2rem);
+            background: #799644;
+            color: #e8e4db;
+            font-size: clamp(0.75rem, 1.1vw, 0.875rem);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: background-color 0.2s ease;
+        }
+
+        .hero-home-cta:hover {
+            background: #8aa84d;
+        }
+
+        .hero-home-features {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+            max-width: 42rem;
+            margin-top: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .hero-home-feature {
+            padding-right: clamp(0.75rem, 2vw, 1.5rem);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-home-feature:last-child {
+            border-right: 0;
+            padding-right: 0;
+        }
+
+        .hero-home-feature .material-symbols-outlined {
+            margin-bottom: 0.65rem;
+            color: #799644;
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+        }
+
+        .hero-home-feature-title {
+            font-size: clamp(0.65rem, 1vw, 0.875rem);
+            line-height: 1.15;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .hero-home-feature-text {
+            margin-top: 0.3rem;
+            font-size: clamp(0.65rem, 1vw, 0.875rem);
+            line-height: 1.25;
+            font-weight: 300;
+        }
+
+        @media (max-width: 767px) {
+            .hero-home-copy {
+                top: 45%;
+                left: 1rem;
+                width: calc(100% - 2rem);
+            }
+
+            .hero-home-title {
+                font-size: clamp(3rem, 15vw, 4.25rem);
+            }
+
+            .hero-home-subtitle {
+                max-width: 20rem;
+                font-size: clamp(1rem, 5vw, 1.35rem);
+            }
+
+            .hero-home-features {
+                gap: 0.5rem;
+                max-width: 100%;
+                margin-top: 1.25rem;
+            }
+
+            .hero-home-feature {
+                padding-right: 0.5rem;
+            }
+        }
+
+        /* Pull curve slightly upward so it overlaps hero cleanly */
+        .hero-curved-overlay {
+            bottom: -1px;
+            transform: translate(-50%, calc(100% - 8vh)) !important;
+        }
+
+        @media (min-width: 768px) {
+            .hero-curved-overlay {
+                transform: translate(-50%, calc(100% - 12vh)) !important;
+            }
+        }
     </style>
-    
     <!-- Premium Animations -->
     <link rel="stylesheet" href="assets/animations.css">
     <script src="assets/animation-core.js" defer></script>
+    
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased">
@@ -77,17 +251,16 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                            href="portfolio">Portfolio</a>
+                    </div>
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
                             href="about">About Us</a>
                     </div>
-                    <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="inquiry">Enquiry</a>
-                    </div>
                 </nav>
-                                <button id="mobile-menu-btn"
+                <button id="mobile-menu-btn"
                     class="lg:hidden flex items-center text-ivory z-[80] p-2 relative w-10 h-10 justify-center">
                     <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform -translate-y-[7px] origin-center"></span>
                     <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block opacity-100 origin-center"></span>
@@ -96,7 +269,6 @@
             </div>
         </header>
 
-        
         <!-- Mobile Sidebar Backdrop -->
         <div id="mobile-backdrop"
             class="fixed inset-0 bg-black/50 backdrop-blur-md z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
@@ -124,7 +296,7 @@
             <nav class="flex flex-col flex-1 px-7 py-8 gap-1" id="sidebar-nav">
 
                 <!-- Plant Experience Center -->
-                <a href="plant-experience-center" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
+                <a href="plant-experience-center" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group" style="transition-delay: 0.05s">
                     <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Plant Experience Center</span>
                     <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
                 </a>
@@ -161,17 +333,15 @@
                 </div>
 
                 <!-- About Us -->
-                <a href="about" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
-                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">About Us</span>
+                <a href="portfolio" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group" style="transition-delay: 0.15s">
+                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Portfolio</span>
                     <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
                 </a>
 
-                <!-- Enquiry CTA -->
-                <div class="mt-6 flex-shrink-0">
-                    <a href="inquiry" class="mobile-link block w-full py-3.5 text-center text-[11px] uppercase tracking-[0.25em] font-bold text-black bg-accent-bronze hover:bg-[#b8966e] transition-colors duration-300">
-                        Make an Enquiry
-                    </a>
-                </div>
+                <a href="about" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group" style="transition-delay: 0.15s">
+                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">About Us</span>
+                    <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
+                </a>
             </nav>
 
             <!-- Sidebar Footer -->
@@ -199,93 +369,8 @@
                 <p class="text-[10px] text-white/15 uppercase tracking-widest">© 2026 CHF Botanical Luxury</p>
             </div>
         </div>
-<main class="flex-grow pt-32 lg:pt-40">
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32 overflow-hidden">
-                <div class="flex flex-col md:flex-row justify-between items-end gap-12">
-                    <div class="max-w-3xl">
-                        <div class="flex items-center gap-4 mb-6">
-                            <span class="w-12 h-px bg-accent-bronze/40"></span>
-                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Archives</span>
-                        </div>
-                        <h2 class="font-serif text-balance text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8">
-                            Curated <br />
-                            <span class="text-accent-bronze italic font-light drop-shadow-sm">Portfolios</span>
-                        </h2>
-                    </div>
-                    <div class="flex flex-col items-start md:items-end gap-6 max-w-xs mb-4">
-                        <p class="text-gray-400 font-light text-sm leading-relaxed uppercase tracking-[0.15em] text-left md:text-right border-l md:border-l-0 md:border-r border-accent-bronze/30 pl-6 md:pl-0 md:pr-6">
-                            A visual synthesis of botanical life and contemporary living spaces.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-40">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-32 gap-x-20">
-                    <!-- Project 1 -->
-                    <div class="group cursor-pointer">
-                        <div class="relative aspect-[4/5] overflow-hidden mb-8 bg-surface-dark">
-                            <div class="w-full h-full transition-transform duration-[1.5s] group-hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-700"></div>
-                        </div>
-                        <div class="flex justify-between items-end border-b border-white/10 pb-6 transition-colors duration-500 group-hover:border-accent-bronze">
-                            <div>
-                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-2">London, UK</span>
-                                <h3 class="font-serif text-3xl">The Serpentine Gallery</h3>
-                            </div>
-                            <span class="material-symbols-outlined text-accent-bronze group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">arrow_outward</span>
-                        </div>
-                    </div>
-
-                    <!-- Project 2 -->
-                    <div class="group cursor-pointer md:mt-40">
-                        <div class="relative aspect-[4/5] overflow-hidden mb-8 bg-surface-dark">
-                            <div class="w-full h-full transition-transform duration-[1.5s] group-hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-700"></div>
-                        </div>
-                        <div class="flex justify-between items-end border-b border-white/10 pb-6 transition-colors duration-500 group-hover:border-accent-bronze">
-                            <div>
-                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-2">New York, USA</span>
-                                <h3 class="font-serif text-3xl">Hudson Yards Residence</h3>
-                            </div>
-                            <span class="material-symbols-outlined text-accent-bronze group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">arrow_outward</span>
-                        </div>
-                    </div>
-
-                    <!-- Project 3 -->
-                    <div class="group cursor-pointer">
-                        <div class="relative aspect-[4/5] overflow-hidden mb-8 bg-surface-dark">
-                            <div class="w-full h-full transition-transform duration-[1.5s] group-hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-700"></div>
-                        </div>
-                        <div class="flex justify-between items-end border-b border-white/10 pb-6 transition-colors duration-500 group-hover:border-accent-bronze">
-                            <div>
-                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-2">Dubai, UAE</span>
-                                <h3 class="font-serif text-3xl">Desert Mirage Oasis</h3>
-                            </div>
-                            <span class="material-symbols-outlined text-accent-bronze group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">arrow_outward</span>
-                        </div>
-                    </div>
-
-                    <!-- Project 4 -->
-                    <div class="group cursor-pointer md:mt-40">
-                        <div class="relative aspect-[4/5] overflow-hidden mb-8 bg-surface-dark">
-                            <div class="w-full h-full transition-transform duration-[1.5s] group-hover:scale-110 bg-[#1a1a1a] wireframe-cross"></div>
-                            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-700"></div>
-                        </div>
-                        <div class="flex justify-between items-end border-b border-white/10 pb-6 transition-colors duration-500 group-hover:border-accent-bronze">
-                            <div>
-                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-2">Milan, Italy</span>
-                                <h3 class="font-serif text-3xl">Palazzo di Botanica</h3>
-                            </div>
-                            <span class="material-symbols-outlined text-accent-bronze group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">arrow_outward</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
+<main class="flex-grow pt-20"></main>
+    <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                 <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
@@ -332,7 +417,7 @@
                                 <div>
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry">Enquiry</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry">Inquiry</a></li>
                         <li class="flex flex-col gap-2 pt-2">
                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Email</span>
                             <a class="text-sm text-gray-500 hover:text-primary transition-colors break-all" href="mailto:calcuttahorticulturalfarm@gmail.com" data-cms="global/contact/email">calcuttahorticulturalfarm@gmail.com</a>
@@ -354,7 +439,7 @@
     </div>
 
     <!-- Scripts -->
-        <script>
+    <script>
         // ── Mobile Sidebar Logic ──────────────────────────────────────────
         const mobileBtn      = document.getElementById('mobile-menu-btn');
         const mobileCloseBtn = document.getElementById('mobile-close-btn');
@@ -370,6 +455,7 @@
             sidebar.classList.add('menu-open');
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
             backdrop.classList.add('opacity-100', 'pointer-events-auto');
+            // Hamburger → X
             lines[0].style.transform = 'translateY(0) rotate(45deg)';
             lines[1].style.opacity   = '0';
             lines[2].style.transform = 'translateY(0) rotate(-45deg)';
@@ -382,6 +468,7 @@
             sidebar.classList.remove('menu-open');
             backdrop.classList.add('opacity-0', 'pointer-events-none');
             backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            // X → Hamburger
             lines[0].style.transform = 'translateY(-7px) rotate(0deg)';
             lines[1].style.opacity   = '1';
             lines[2].style.transform = 'translateY(7px) rotate(0deg)';
@@ -392,6 +479,7 @@
         mobileCloseBtn.addEventListener('click', closeSidebar);
         backdrop.addEventListener('click', closeSidebar);
 
+        // Close on nav link click
         mobileLinks.forEach(link => {
             if (link.tagName === 'A') {
                 link.addEventListener('click', closeSidebar);
@@ -406,6 +494,7 @@
                 const chevron = btn.querySelector('.sidebar-chevron');
                 const isExpanded = panel.style.maxHeight && panel.style.maxHeight !== '0px';
 
+                // Collapse all panels first
                 document.querySelectorAll('.sidebar-panel').forEach(p => p.style.maxHeight = '0px');
                 document.querySelectorAll('.sidebar-chevron').forEach(c => c.style.transform = 'rotate(0deg)');
 
@@ -415,8 +504,77 @@
                 }
             });
         });
+
+        // ── Mobile Services Dots ────────────────────────────────────────────
+        (function initMobileServiceDots() {
+            const track = document.getElementById('services-cards-track');
+            const dotsWrap = document.getElementById('services-mobile-dots');
+            const arrowIcon = document.getElementById('services-mobile-arrow-icon');
+            const arrowLabel = document.getElementById('services-mobile-arrow-label');
+            if (!track || !dotsWrap) return;
+
+            const dots = Array.from(dotsWrap.querySelectorAll('.service-dot'));
+            const cards = Array.from(track.querySelectorAll('.service-card'));
+            if (!dots.length || !cards.length) return;
+
+            const setActiveDot = (idx) => {
+                dots.forEach((dot, i) => {
+                    const active = i === idx;
+                    dot.classList.toggle('bg-accent-bronze', active);
+                    dot.classList.toggle('shadow-[0_0_14px_rgba(166,139,106,0.9)]', active);
+                    dot.classList.toggle('scale-110', active);
+                    dot.classList.toggle('bg-white/25', !active);
+                });
+
+                if (!arrowIcon || !arrowLabel) return;
+                if (idx <= 0) {
+                    arrowIcon.textContent = '→';
+                    arrowLabel.textContent = 'Swipe Right';
+                } else if (idx >= cards.length - 1) {
+                    arrowIcon.textContent = '←';
+                    arrowLabel.textContent = 'Swipe Left';
+                } else {
+                    arrowIcon.textContent = '↔';
+                    arrowLabel.textContent = 'Swipe';
+                }
+            };
+
+            const getClosestCardIndex = () => {
+                const trackCenter = track.getBoundingClientRect().left + (track.clientWidth / 2);
+                let closestIndex = 0;
+                let closestDistance = Infinity;
+                cards.forEach((card, idx) => {
+                    const cardCenter = card.getBoundingClientRect().left + (card.clientWidth / 2);
+                    const dist = Math.abs(cardCenter - trackCenter);
+                    if (dist < closestDistance) {
+                        closestDistance = dist;
+                        closestIndex = idx;
+                    }
+                });
+                return closestIndex;
+            };
+
+            let rafId = null;
+            const onScroll = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => setActiveDot(getClosestCardIndex()));
+            };
+
+            dots.forEach((dot, idx) => {
+                dot.addEventListener('click', () => {
+                    cards[idx]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    setActiveDot(idx);
+                });
+            });
+
+            track.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            setActiveDot(0);
+        })();
     </script>
-    <script src="assets/cms-core.js"></script>
+    
+    <!-- Universal CMS Core (v2 with cache busting) -->
+    <script src="assets/cms-core.js?v=2.1"></script>
 </body>
 
 </html>

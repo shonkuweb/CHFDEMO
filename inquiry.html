@@ -6,7 +6,7 @@
 
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Enquiry - CHF Botanical Luxury</title>
+    <title>Inquiry - CHF Botanical Luxury</title>
     <link rel="stylesheet" href="assets/tailwind.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap"
@@ -288,11 +288,11 @@
 
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="about">About Us</a>
+                            href="portfolio">Portfolio</a>
                     </div>
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="inquiry">Enquiry</a>
+                            href="about">About Us</a>
                     </div>
                 </nav>
                                 <button id="mobile-menu-btn"
@@ -368,18 +368,17 @@
                     </div>
                 </div>
 
+                <!-- Portfolio -->
+                <a href="portfolio" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
+                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Portfolio</span>
+                    <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
+                </a>
+
                 <!-- About Us -->
                 <a href="about" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
                     <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">About Us</span>
                     <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
                 </a>
-
-                <!-- Enquiry CTA -->
-                <div class="mt-6 flex-shrink-0">
-                    <a href="inquiry" class="mobile-link block w-full py-3.5 text-center text-[11px] uppercase tracking-[0.25em] font-bold text-black bg-accent-bronze hover:bg-[#b8966e] transition-colors duration-300">
-                        Make an Enquiry
-                    </a>
-                </div>
             </nav>
 
             <!-- Sidebar Footer -->
@@ -417,7 +416,7 @@
                         </div>
                         <h2 class="font-serif text-balance text-5xl md:text-7xl text-ivory font-light leading-[1.1] mb-8">
                             Botanical <br />
-                            <span class="text-accent-bronze italic font-light">Enquiry</span>
+                            <span class="text-accent-bronze italic font-light">Inquiry</span>
                         </h2>
                         <p class="text-ivory-dim text-lg font-light leading-relaxed mb-12">
                             Request a consultation for your architectural project or private collection. Our curators will assist in selecting the perfect living specimens tailored to your environment.
@@ -487,7 +486,7 @@
                                 <div class="chf-field-submit">
                                     <button type="submit" class="chf-submit">
                                         <span class="chf-submit-inner">
-                                            Send Enquiry
+                                            Send Inquiry
                                             <span class="chf-submit-arrow">&#8594;</span>
                                         </span>
                                     </button>
@@ -500,7 +499,7 @@
                             <!-- Success Message (Hidden) -->
                             <div id="success-msg" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-12 bg-background-dark/90 backdrop-blur-md z-20">
                                 <span class="material-symbols-outlined text-6xl text-accent-bronze mb-6">check_circle</span>
-                                <h3 class="font-serif text-3xl mb-4">Enquiry Received</h3>
+                                <h3 class="font-serif text-3xl mb-4">Inquiry Received</h3>
                                 <p class="text-ivory-dim font-light max-w-sm">Your message has been received. Our horticultural curators will reach out to you within 24 hours.</p>
                                 <button onclick="location.reload()" class="mt-10 text-xs uppercase tracking-widest border-b border-accent-bronze text-accent-bronze hover:text-white hover:border-white transition-all">Send Another</button>
                             </div>
@@ -557,7 +556,7 @@
                                 <div>
                     <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
                     <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry">Enquiry</a></li>
+                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry">Inquiry</a></li>
                         <li class="flex flex-col gap-2 pt-2">
                             <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Email</span>
                             <a class="text-sm text-gray-500 hover:text-primary transition-colors break-all" href="mailto:calcuttahorticulturalfarm@gmail.com" data-cms="global/contact/email">calcuttahorticulturalfarm@gmail.com</a>
@@ -641,7 +640,7 @@
             });
         });
 
-        // ── Enquiry Form → WhatsApp ───────────────────────────────────────
+        // ── Inquiry Form → WhatsApp ───────────────────────────────────────
         const CHF_WHATSAPP = '917980783108'; // India +91 79807 83108
 
         document.getElementById('inquiry-form').addEventListener('submit', function (e) {
@@ -655,7 +654,7 @@
 
             // Build a premium formatted WhatsApp message
             const text = [
-                '🌿 *New Enquiry — CHF Botanical Luxury*',
+                '🌿 *New Inquiry — CHF Botanical Luxury*',
                 '─────────────────────────',
                 `👤 *Name:* ${name}`,
                 `📞 *Phone:* ${phone}`,
