@@ -10,6 +10,7 @@ from fastapi import FastAPI, Depends, HTTPException, Request, Response, Form, Up
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from functools import lru_cache
 from datetime import datetime, timedelta
 from passlib.hash import argon2
@@ -54,6 +55,8 @@ except ImportError:
 
 # ── FastAPI App & Auth Settings ─────────────
 app = FastAPI(title="CHF API")
+# Compress text responses to reduce transfer time.
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 SECRET_KEY = os.environ.get("JWT_SECRET", "DEV_Fallback_Secret_2026_!@#")
 ALGORITHM = "HS256"
@@ -713,10 +716,21 @@ def verify_turnstile_or_raise(turnstile_response: Optional[str]):
 @app.middleware("http")
 async def add_api_no_cache_headers(request: Request, call_next):
     response = await call_next(request)
-    if request.url.path.startswith("/api/"):
+    path = request.url.path
+    if path.startswith("/api/"):
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "0"
+    elif path.startswith("/assets/") or path.startswith("/uploads/"):
+        # Long-lived immutable cache for static assets.
+        response.headers.setdefault("Cache-Control", "public, max-age=31536000, immutable")
+    elif (
+        response.headers.get("content-type", "").startswith("text/html")
+        and not path.startswith("/admin")
+        and not path.startswith("/api/")
+    ):
+        # Short cache for HTML pages to keep content fresh but reduce repeat loads.
+        response.headers.setdefault("Cache-Control", "public, max-age=300, stale-while-revalidate=600")
     return response
 
 @app.on_event("startup")
@@ -1094,11 +1108,14 @@ async def serve_static(request: Request, path: str):
             return RedirectResponse("/admin-login")
 
     response = FileResponse(resolved_path)
-    # Keep HTML always fresh to avoid stale shell flashes after publish.
+    # Cache public HTML briefly to speed repeat navigations.
     if resolved_path.lower().endswith(".html"):
-        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "0"
+        if resolved_path.lower() in {"admin.html", "admin-login.html"}:
+            response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+        else:
+            response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=600"
     return response
 
 if __name__ == "__main__":
