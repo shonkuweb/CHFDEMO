@@ -9,7 +9,7 @@
 
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>CHF - Botanical Luxury - CHF Botanical Luxury</title>
+    <title>Portfolio - CHF Botanical Luxury</title>
     <link rel="stylesheet" href="assets/tailwind.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap"
@@ -23,175 +23,224 @@
             scroll-behavior: smooth;
         }
 
-        /* Hero media must always bleed edge-to-edge without letterboxing */
-        .hero-section {
-            height: 100svh;
-            min-height: 100svh;
+        /* Featured projects — rounded-path carousel */
+        .portfolio-carousel-viewport {
+            overflow: hidden;
+            width: 100%;
+            min-height: clamp(20rem, 52vh, 34rem);
+            position: relative;
+            touch-action: pan-y;
+            padding-left: max(1rem, env(safe-area-inset-left));
+            padding-right: max(1rem, env(safe-area-inset-right));
+        }
+        .portfolio-projects-track {
+            position: relative;
+            width: 100%;
+            min-height: clamp(20rem, 52vh, 34rem);
+            transform-style: preserve-3d;
         }
 
-        /* Mobile: hero starts below the 80px navbar */
+        /* Curved marquee: strip sits on the bottom arc of a cylinder (half-circle in profile) */
+        .portfolio-marquee-scene {
+            perspective: 1200px;
+            perspective-origin: 50% 28%;
+            padding-top: 0.5rem;
+            padding-bottom: clamp(3rem, 8vw, 5.5rem);
+        }
+        .portfolio-marquee-stage {
+            transform-origin: 50% 100%;
+            transform-style: preserve-3d;
+            transform: rotateX(16deg) scale(0.95);
+        }
         @media (max-width: 767px) {
-            .hero-section {
-                height: calc(100svh - 5rem);
-                min-height: calc(100svh - 5rem);
-                margin-top: 5rem;
+            .portfolio-marquee-scene {
+                perspective: 900px;
+                perspective-origin: 50% 22%;
+                padding-bottom: clamp(2.5rem, 10vw, 4rem);
+            }
+            .portfolio-marquee-stage {
+                transform: rotateX(11deg) scale(0.97);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .portfolio-marquee-scene {
+                perspective: none;
+                padding-bottom: 1rem;
+            }
+            .portfolio-marquee-stage {
+                transform: none;
             }
         }
 
-        .hero-section [data-cms="home/hero/image"],
-        .hero-section [data-cms="home/hero/mobile_media"] {
+        .portfolio-feature-card {
             position: absolute;
-            inset: 0;
+            left: 50%;
+            top: 50%;
+            flex-shrink: 0;
+            width: clamp(10.25rem, 32vw, 15rem);
+            aspect-ratio: 2 / 3;
+            border-radius: 2px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background:
+                radial-gradient(circle at 50% 24%, rgba(166, 139, 106, 0.18), transparent 36%),
+                linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(10, 10, 10, 0.96) 55%, rgba(4, 4, 4, 1));
+            z-index: 1;
+            will-change: transform, filter, opacity;
+            transition:
+                filter 0.55s ease,
+                opacity 0.55s ease,
+                box-shadow 0.55s ease,
+                border-color 0.35s ease;
+        }
+        .portfolio-feature-card.is-spotlight {
+            filter: none;
+            -webkit-filter: none;
+            opacity: 1;
+            z-index: 3;
+            box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55);
+            border-color: rgba(166, 139, 106, 0.45);
+        }
+        @media (min-width: 768px) {
+            .portfolio-feature-card {
+                width: clamp(11.5rem, 22vw, 16rem);
+            }
+        }
+        @media (min-width: 1024px) {
+            .portfolio-feature-card {
+                width: clamp(12rem, 18vw, 17rem);
+            }
+        }
+        .portfolio-feature-card:not(.is-spotlight) {
+            opacity: 0.58;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .portfolio-feature-card:not(.is-spotlight) {
+                filter: blur(4px);
+                -webkit-filter: blur(4px);
+                opacity: 0.65;
+            }
+            .portfolio-feature-card.is-spotlight {
+                transform: scale(1.02);
+            }
+        }
+        .portfolio-feature-card img {
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .hero-section .cms-hero-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 56.25vw;
-            min-width: 177.78svh;
-            min-height: 100svh;
-            transform: translate(-50%, -50%);
             object-fit: cover;
+            transition: transform 0.55s ease;
+        }
+        .portfolio-feature-card.is-spotlight img {
+            filter: brightness(1.08) contrast(1.06) saturate(1.04);
+        }
+        .portfolio-feature-card.is-spotlight:hover img {
+            transform: scale(1.04);
         }
 
-        .hero-home-copy {
-            position: absolute;
-            z-index: 40;
-            top: 50%;
-            left: clamp(1rem, 6vw, 6rem);
-            width: min(56rem, calc(100% - 2rem));
-            transform: translateY(-50%);
-            text-align: left;
+        .portfolio-strip-panel {
+            display: none;
         }
-
-        .hero-home-title {
-            font-family: "Noto Serif", serif;
-            font-size: clamp(4.5rem, 9vw, 8rem);
-            line-height: 0.95;
-            font-weight: 300;
-            letter-spacing: -0.025em;
-            text-shadow: 0 18px 42px rgba(0, 0, 0, 0.55);
+        .portfolio-strip-panel.is-active {
+            display: block;
         }
-
-        .hero-home-rule {
-            width: clamp(4rem, 8vw, 6rem);
-            height: 0.25rem;
-            margin-top: clamp(1rem, 2vw, 1.5rem);
-            background: #799644;
-        }
-
-        .hero-home-subtitle {
-            max-width: 29rem;
-            margin-top: clamp(1rem, 2vw, 1.5rem);
-            font-size: clamp(1.25rem, 2.4vw, 2rem);
-            line-height: 1.15;
-            font-weight: 300;
-            text-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
-        }
-
-        .hero-home-cta {
-            pointer-events: auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 1.25rem;
-            margin-top: clamp(1.25rem, 2.5vw, 2rem);
-            padding: clamp(0.9rem, 1.6vw, 1.25rem) clamp(1.4rem, 3vw, 2rem);
-            background: #799644;
-            color: #e8e4db;
-            font-size: clamp(0.75rem, 1.1vw, 0.875rem);
-            font-weight: 500;
-            letter-spacing: 0.08em;
+        .portfolio-tab {
+            flex: 0 0 auto;
+            cursor: pointer;
+            font: inherit;
+            text-align: center;
+            white-space: nowrap;
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(10, 10, 10, 0.65);
+            color: rgba(232, 228, 219, 0.5);
+            letter-spacing: 0.18em;
             text-transform: uppercase;
-            transition: background-color 0.2s ease;
-        }
-
-        .hero-home-cta:hover {
-            background: #8aa84d;
-        }
-
-        .hero-home-features {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: clamp(0.75rem, 2vw, 1.5rem);
-            max-width: 42rem;
-            margin-top: clamp(1.5rem, 3vw, 2.5rem);
-        }
-
-        .hero-home-feature {
-            padding-right: clamp(0.75rem, 2vw, 1.5rem);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .hero-home-feature:last-child {
-            border-right: 0;
-            padding-right: 0;
-        }
-
-        .hero-home-feature .material-symbols-outlined {
-            margin-bottom: 0.65rem;
-            color: #799644;
-            font-size: clamp(1.6rem, 3vw, 2.5rem);
-        }
-
-        .hero-home-feature-title {
-            font-size: clamp(0.65rem, 1vw, 0.875rem);
-            line-height: 1.15;
+            font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-
-        .hero-home-feature-text {
-            margin-top: 0.3rem;
-            font-size: clamp(0.65rem, 1vw, 0.875rem);
             line-height: 1.25;
-            font-weight: 300;
+            transition:
+                color 0.22s ease,
+                border-color 0.22s ease,
+                background 0.22s ease,
+                box-shadow 0.22s ease,
+                transform 0.15s ease;
         }
-
-        @media (max-width: 767px) {
-            .hero-home-copy {
-                top: 45%;
-                left: 1rem;
-                width: calc(100% - 2rem);
-            }
-
-            .hero-home-title {
-                font-size: clamp(3rem, 15vw, 4.25rem);
-            }
-
-            .hero-home-subtitle {
-                max-width: 20rem;
-                font-size: clamp(1rem, 5vw, 1.35rem);
-            }
-
-            .hero-home-features {
-                gap: 0.5rem;
-                max-width: 100%;
-                margin-top: 1.25rem;
-            }
-
-            .hero-home-feature {
-                padding-right: 0.5rem;
-            }
-        }
-
-        /* Pull curve slightly upward so it overlaps hero cleanly */
-        .hero-curved-overlay {
-            bottom: -1px;
-            transform: translate(-50%, calc(100% - 8vh)) !important;
-        }
-
         @media (min-width: 768px) {
-            .hero-curved-overlay {
-                transform: translate(-50%, calc(100% - 12vh)) !important;
+            .portfolio-tab {
+                font-size: 11px;
+                letter-spacing: 0.2em;
+                padding: 0.875rem 1.5rem;
             }
+        }
+        .portfolio-tab:hover[aria-selected="false"] {
+            color: rgba(232, 228, 219, 0.88);
+            border-color: rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .portfolio-tab[aria-selected="true"] {
+            color: #e8e4db;
+            border-color: rgba(166, 139, 106, 0.75);
+            background: linear-gradient(165deg, rgba(166, 139, 106, 0.22) 0%, rgba(18, 18, 18, 0.95) 55%, rgba(10, 10, 10, 0.98) 100%);
+            box-shadow:
+                0 0 0 1px rgba(166, 139, 106, 0.12),
+                0 12px 32px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.07);
+        }
+        .portfolio-tab:active {
+            transform: scale(0.98);
+        }
+        .portfolio-tab:focus-visible {
+            outline: 2px solid rgba(166, 139, 106, 0.85);
+            outline-offset: 3px;
+        }
+
+        /* Clientele marquees (from About) */
+        @keyframes marquee-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            will-change: transform;
+        }
+        .marquee-left { animation: marquee-left 40s linear infinite; }
+        .marquee-right { animation: marquee-right 45s linear infinite; }
+        .marquee-track:hover { animation-play-state: paused; }
+        .client-card {
+            flex-shrink: 0;
+            width: 220px;
+            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            transition: border-color 0.3s;
+        }
+        .client-card:hover {
+            border-color: rgba(166, 139, 106, 0.35);
+        }
+        .client-card img {
+            width: 195px;
+            height: 104px;
+            object-fit: contain;
+            filter: brightness(1.2) contrast(1.15) saturate(1.05);
+            transition: transform 0.4s, filter 0.3s;
+        }
+        .client-card:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.28) contrast(1.2) saturate(1.08);
+        }
+        .client-card .review {
+            display: none;
         }
     </style>
     <!-- Premium Animations -->
@@ -332,7 +381,7 @@
                     </div>
                 </div>
 
-                <!-- About Us -->
+                <!-- Portfolio -->
                 <a href="portfolio" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group" style="transition-delay: 0.15s">
                     <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Portfolio</span>
                     <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
@@ -369,7 +418,302 @@
                 <p class="text-[10px] text-white/15 uppercase tracking-widest">© 2026 CHF Botanical Luxury</p>
             </div>
         </div>
-<main class="flex-grow pt-20"></main>
+        <main class="flex-grow pt-20">
+            <!-- Portfolio intro (spacing aligned with About title sections: px-6 lg:px-12, py-24 rhythm) -->
+            <section class="relative px-6 lg:px-12 pt-14 md:pt-16 lg:pt-20 pb-6 md:pb-7 text-center max-w-4xl mx-auto">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,28rem)] h-[min(50vw,16rem)] bg-accent-bronze/8 rounded-full blur-[90px] pointer-events-none"></div>
+                <h1 id="portfolio-featured-heading" class="font-serif text-balance text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory leading-[1.05] tracking-tight mb-4 md:mb-5 relative z-10 reveal reveal-up stagger-1">
+                    Featured Projects
+                </h1>
+                <p class="text-base md:text-lg lg:text-xl text-ivory-dim font-light max-w-3xl mx-auto leading-relaxed relative z-10 reveal reveal-up stagger-2">
+                    A continuous thread of landscapes, interiors, and living collections shaped for clients who treat greenery as architecture.
+                </p>
+            </section>
+
+            <!-- Category tabs + hero strip (max-w-7xl + gap-8 stack matches site content sections) -->
+            <section class="relative flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 md:pb-16 lg:pb-20 border-b border-white/[0.06] bg-[#070707] -mt-1" aria-labelledby="portfolio-featured-heading">
+                <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 flex flex-col gap-5 md:gap-6 pt-4 md:pt-5">
+                    <div class="flex flex-wrap justify-center gap-3 md:gap-4 snap-x snap-mandatory" role="tablist" aria-label="Portfolio categories">
+                        <button type="button" role="tab" id="tab-housing" aria-controls="panel-housing" aria-selected="true" data-portfolio-tab="housing"
+                            data-desc="Greenery for apartments, complexes, and housing communities — calm, legible, and built to live with every day."
+                            class="portfolio-tab snap-start shrink-0">
+                            Housing Projects
+                        </button>
+                        <button type="button" role="tab" id="tab-terrace" aria-controls="panel-terrace" aria-selected="false" data-portfolio-tab="terrace"
+                            data-desc="Terraces and outdoor rooms treated as extensions of the home — planters, privacy, and skyline-ready planting."
+                            class="portfolio-tab snap-start shrink-0">
+                            Terrace Projects
+                        </button>
+                        <button type="button" role="tab" id="tab-villa" aria-controls="panel-villa" aria-selected="false" data-portfolio-tab="villa"
+                            data-desc="Villa-scale landscapes where drive, court, garden, and interior views are composed as one continuous experience."
+                            class="portfolio-tab snap-start shrink-0">
+                            Villa Project
+                        </button>
+                    </div>
+                    <p id="portfolio-category-desc" class="text-center text-ivory-dim text-sm md:text-base font-light leading-relaxed max-w-2xl mx-auto min-h-[2.75rem] md:min-h-[3rem]">
+                        Greenery for apartments, complexes, and housing communities — calm, legible, and built to live with every day.
+                    </p>
+                </div>
+
+                <div class="relative w-full overflow-hidden portfolio-marquee-scene -mt-2 md:-mt-1">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-32 z-10 bg-gradient-to-r from-[#070707] to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-32 z-10 bg-gradient-to-l from-[#070707] to-transparent"></div>
+
+                    <!-- Housing -->
+                    <div id="panel-housing" class="portfolio-strip-panel is-active" role="tabpanel" aria-labelledby="tab-housing" data-portfolio-panel="housing" aria-hidden="false">
+                        <div class="portfolio-marquee-stage">
+                            <div class="portfolio-carousel-viewport">
+                                <div class="portfolio-projects-track" data-carousel-track role="list">
+                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Housing project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terrace -->
+                    <div id="panel-terrace" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-terrace" data-portfolio-panel="terrace" aria-hidden="true">
+                        <div class="portfolio-marquee-stage">
+                            <div class="portfolio-carousel-viewport">
+                                <div class="portfolio-projects-track" data-carousel-track role="list">
+                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Terrace project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Villa -->
+                    <div id="panel-villa" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-villa" data-portfolio-panel="villa" aria-hidden="true">
+                        <div class="portfolio-marquee-stage">
+                            <div class="portfolio-carousel-viewport">
+                                <div class="portfolio-projects-track" data-carousel-track role="list">
+                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Villa project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clientele Section -->
+            <section class="py-32 bg-[#0a0a0a] border-t border-white/5 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+                <!-- Header -->
+                <div class="max-w-4xl mx-auto text-center relative z-10 px-6 lg:px-12 mb-20">
+                    <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4 reveal reveal-up">The Trust We've Built</span>
+                    <h2 class="font-serif text-balance text-4xl mb-8 text-ivory reveal reveal-up stagger-1">Our Clientele</h2>
+                    <p class="text-ivory-dim text-sm md:text-base leading-relaxed font-light reveal reveal-up stagger-2">
+                        Over the decades, we have had the privilege of working with a distinguished range of clients across industries. From corporate institutions to private residences, our work reflects long-standing relationships built on trust, expertise, and a shared vision for meaningful green spaces.
+                    </p>
+                </div>
+
+                <!-- Marquee Container -->
+                <div class="relative w-full overflow-hidden">
+
+                    <!-- Fade masks on left & right -->
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-[#0a0a0a] to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-[#0a0a0a] to-transparent"></div>
+
+                    <!-- ROW 1 — scrolls left -->
+                    <div class="flex gap-6 mb-6 marquee-track marquee-left">
+
+                        <!-- Cards duplicated for seamless loop -->
+                        <div class="marquee-set flex gap-6 flex-shrink-0">
+
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5254.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"CHF transformed our corporate campus into a living, breathing environment. Exceptional expertise."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5255.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Every specimen they placed was perfectly scaled and beautifully maintained. Truly a luxury experience."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5256.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Our lobby has become the most talked-about space in the building. CHF made it happen."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5257.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Decades of relationship and the quality never wavers. CHF is our trusted green partner."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5258.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"The bespoke installation at our villa was handled with extraordinary attention to detail."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5259.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Flawless from consultation to aftercare. A team that truly understands botanical luxury."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5260.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Rare plants sourced perfectly for our hospitality spaces. Outstanding service throughout."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5261.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"CHF elevated our terrace into a curated outdoor sanctuary. Breathtaking results."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5262.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Working with CHF is seamless — they handle every detail with professionalism and passion."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5263.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"The landscape they designed for our estate has evolved beautifully over the years."</p>
+                            </div>
+
+                        </div>
+                        <!-- Duplicate set for loop -->
+                        <div class="marquee-set flex gap-6 flex-shrink-0" aria-hidden="true">
+
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5254.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"CHF transformed our corporate campus into a living, breathing environment. Exceptional expertise."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5255.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Every specimen they placed was perfectly scaled and beautifully maintained. Truly a luxury experience."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5256.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Our lobby has become the most talked-about space in the building. CHF made it happen."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5257.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Decades of relationship and the quality never wavers. CHF is our trusted green partner."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5258.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"The bespoke installation at our villa was handled with extraordinary attention to detail."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5259.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Flawless from consultation to aftercare. A team that truly understands botanical luxury."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5260.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Rare plants sourced perfectly for our hospitality spaces. Outstanding service throughout."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5261.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"CHF elevated our terrace into a curated outdoor sanctuary. Breathtaking results."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5262.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Working with CHF is seamless — they handle every detail with professionalism and passion."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5263.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"The landscape they designed for our estate has evolved beautifully over the years."</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ROW 2 — scrolls right -->
+                    <div class="flex gap-6 marquee-track marquee-right">
+
+                        <div class="marquee-set flex gap-6 flex-shrink-0">
+
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5264.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"The tree transplantation project was executed with zero disruption. Remarkable skill."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5265.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Our guests always ask about the plants. CHF gave our space a quiet, unforgettable presence."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5266.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"CHF's understanding of plant ecology is unmatched. They design landscapes that truly thrive."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5267.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"From the nursery selection to the final placement, the entire process was a masterclass."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5269.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Beautiful specimens, delivered on time, installed perfectly. CHF sets the gold standard."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5271.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Our boardroom centrepiece is a conversation starter every single day. Thank you, CHF."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5272.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"The soil preparation and care protocols they follow guarantee that every plant flourishes."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5273.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"A partnership built on decades of shared growth. CHF is part of our legacy."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5254.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Precision, patience, and presence — three words that sum up our experience with CHF."</p>
+                            </div>
+
+                        </div>
+                        <!-- Duplicate set for loop -->
+                        <div class="marquee-set flex gap-6 flex-shrink-0" aria-hidden="true">
+
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5264.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"The tree transplantation project was executed with zero disruption. Remarkable skill."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5265.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Our guests always ask about the plants. CHF gave our space a quiet, unforgettable presence."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5266.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"CHF's understanding of plant ecology is unmatched. They design landscapes that truly thrive."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5267.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"From the nursery selection to the final placement, the entire process was a masterclass."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5269.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Beautiful specimens, delivered on time, installed perfectly. CHF sets the gold standard."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5271.PNG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Our boardroom centrepiece is a conversation starter every single day. Thank you, CHF."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5272.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"The soil preparation and care protocols they follow guarantee that every plant flourishes."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5273.WEBP" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"A partnership built on decades of shared growth. CHF is part of our legacy."</p>
+                            </div>
+                            <div class="client-card">
+                                <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/clientele/IMG_5254.JPG" alt="Client" / decoding="async" loading="lazy" fetchpriority="low">
+                                <p class="review">"Precision, patience, and presence — three words that sum up our experience with CHF."</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div><!-- end marquee container -->
+            </section>
+
+        </main>
     <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
@@ -570,6 +914,247 @@
             track.addEventListener('scroll', onScroll, { passive: true });
             window.addEventListener('resize', onScroll);
             setActiveDot(0);
+        })();
+
+        // ── Portfolio product carousel: rounded path, center spotlight, infinite modular phase ──
+        (function initPortfolioProductCarousel() {
+            const state = {};
+            let rafId = null;
+
+            function syncStrip(panel) {
+                const panelId = panel.getAttribute('data-portfolio-panel');
+                const track = panel.querySelector('[data-carousel-track]');
+                if (!track) return;
+                track.querySelectorAll('.portfolio-feature-card[aria-hidden="true"]').forEach((el) => el.remove());
+                if (!state[panelId]) {
+                    const cards = track.querySelectorAll('.portfolio-feature-card');
+                    state[panelId] = {
+                        basePhase: cards.length ? Math.floor(cards.length / 2) : 0,
+                        startT: null,
+                        pausedAt: null,
+                        hoverBound: false
+                    };
+                }
+                bindHoverPause(panel);
+            }
+
+            function shortestOffset(index, phase, total) {
+                if (!total) return 0;
+                let x = index - phase;
+                x = ((x + total / 2) % total + total) % total - total / 2;
+                return x;
+            }
+
+            function layoutArc(panel, now) {
+                const panelId = panel.getAttribute('data-portfolio-panel');
+                const viewport = panel.querySelector('.portfolio-carousel-viewport');
+                const track = panel.querySelector('[data-carousel-track]');
+                const st = state[panelId];
+                if (!viewport || !track || !st) return;
+                if (!panel.classList.contains('is-active')) return;
+
+                const cards = Array.from(track.querySelectorAll('.portfolio-feature-card'));
+                if (cards.length < 2) return;
+
+                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const holdMs = reduce ? 1600 : 1000;
+                const moveMs = reduce ? 1800 : 950;
+                const cycleMs = holdMs + moveMs;
+                if (st.startT == null) {
+                    st.startT = now;
+                }
+
+                const elapsed = now - st.startT;
+                const stepCount = Math.floor(elapsed / cycleMs);
+                const cycleT = elapsed - stepCount * cycleMs;
+                const activeIndex = (st.basePhase + stepCount) % cards.length;
+                const isHolding = cycleT < holdMs;
+                const moveT = isHolding ? 0 : (cycleT - holdMs) / moveMs;
+                const easedMove = 1 - Math.pow(1 - Math.min(1, moveT), 3);
+                const phase = (activeIndex + easedMove) % cards.length;
+                const rect = viewport.getBoundingClientRect();
+                const radiusX = Math.min(rect.width * 0.38, 430);
+                const radiusY = Math.min(rect.height * 0.2, 92);
+                const smoothstep = (x) => {
+                    const t = Math.max(0, Math.min(1, x));
+                    return t * t * (3 - 2 * t);
+                };
+                const centerStrength = (distance) => smoothstep(1 - Math.min(1, distance / 0.72));
+
+                cards.forEach((card, i) => {
+                    const offset = shortestOffset(i, phase, cards.length);
+                    const abs = Math.abs(offset);
+                    const visible = abs <= 3.1;
+                    const clamped = Math.max(-3.1, Math.min(3.1, offset));
+                    const progress = Math.min(1, abs / 3.1);
+                    const x = clamped * radiusX * 0.62;
+                    const y = Math.pow(Math.abs(clamped), 1.45) * radiusY * 0.38;
+                    const strength = centerStrength(abs);
+                    const isCenterHeld = strength > 0.88;
+                    const baseScale = 0.5;
+                    const scale = baseScale + (1.25 - baseScale) * strength;
+                    const rotate = clamped * 5.5;
+                    const blur = Math.max(0, (1 - strength) * Math.max(4, progress * 9));
+                    const sideOpacity = Math.max(0.28, 0.7 - progress * 0.38);
+                    const opacity = visible ? sideOpacity + (1 - sideOpacity) * strength : 0;
+                    const z = Math.round(100 + strength * 70 - abs * 12);
+
+                    card.style.transform = 'translate3d(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px), 0) rotate(' + rotate + 'deg) scale(' + scale + ')';
+                    card.style.filter = 'blur(' + blur + 'px)';
+                    card.style.webkitFilter = 'blur(' + blur + 'px)';
+                    card.style.opacity = opacity;
+                    card.style.zIndex = z;
+                    card.style.pointerEvents = visible ? '' : 'none';
+                });
+
+                cards.forEach((card, i) => {
+                    const on = centerStrength(Math.abs(shortestOffset(i, phase, cards.length))) > 0.88;
+                    card.classList.toggle('is-spotlight', on);
+                    if (on) {
+                        card.style.zIndex = '160';
+                    }
+                });
+            }
+
+            function stopLoop() {
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+            }
+
+            function tick(t) {
+                const panel = document.querySelector('[data-portfolio-panel].is-active');
+                if (!panel) {
+                    rafId = requestAnimationFrame(tick);
+                    return;
+                }
+                layoutArc(panel, t);
+                rafId = requestAnimationFrame(tick);
+            }
+
+            function startLoop() {
+                stopLoop();
+                rafId = requestAnimationFrame(tick);
+            }
+
+            function pausePanel(panel) {
+                const panelId = panel.getAttribute('data-portfolio-panel');
+                const st = state[panelId];
+                if (!st || !panel.classList.contains('is-active')) return;
+                const now = performance.now();
+                st.pausedAt = now;
+                layoutArc(panel, now);
+                stopLoop();
+            }
+
+            function resumePanel(panel) {
+                const panelId = panel.getAttribute('data-portfolio-panel');
+                const st = state[panelId];
+                if (!st || !panel.classList.contains('is-active')) return;
+                const now = performance.now();
+                if (st.startT != null && st.pausedAt != null) {
+                    st.startT += now - st.pausedAt;
+                }
+                st.pausedAt = null;
+                startLoop();
+            }
+
+            function bindHoverPause(panel) {
+                const panelId = panel.getAttribute('data-portfolio-panel');
+                const st = state[panelId];
+                const viewport = panel.querySelector('.portfolio-carousel-viewport');
+                if (!st || !viewport || st.hoverBound) return;
+                st.hoverBound = true;
+                viewport.addEventListener('pointerenter', () => pausePanel(panel));
+                viewport.addEventListener('pointerleave', () => resumePanel(panel));
+            }
+
+            function onTabChange(categoryId) {
+                stopLoop();
+                document.querySelectorAll('[data-portfolio-panel]').forEach((p) => {
+                    const id = p.getAttribute('data-portfolio-panel');
+                    syncStrip(p);
+                    if (state[id]) {
+                        const cards = p.querySelectorAll('.portfolio-feature-card');
+                        state[id].basePhase = cards.length ? Math.floor(cards.length / 2) : 0;
+                        state[id].startT = null;
+                        state[id].pausedAt = null;
+                    }
+                    p.querySelectorAll('.portfolio-feature-card').forEach((c, i) => {
+                        c.classList.toggle('is-spotlight', i === 0);
+                    });
+                });
+                const panel = document.querySelector('[data-portfolio-panel="' + categoryId + '"]');
+                if (!panel) return;
+                requestAnimationFrame(() => {
+                    const id = panel.getAttribute('data-portfolio-panel');
+                    syncStrip(panel);
+                    if (state[id]) {
+                        const cards = panel.querySelectorAll('.portfolio-feature-card');
+                        state[id].basePhase = cards.length ? Math.floor(cards.length / 2) : 0;
+                        state[id].startT = null;
+                        state[id].pausedAt = null;
+                    }
+                    layoutArc(panel, performance.now());
+                    startLoop();
+                });
+            }
+
+            document.querySelectorAll('[data-portfolio-panel]').forEach((panel) => {
+                syncStrip(panel);
+            });
+
+            document.addEventListener('portfolioTabChange', (e) => {
+                const id = e.detail && e.detail.categoryId;
+                if (id) onTabChange(id);
+            });
+
+            let resizeRaf = null;
+            window.addEventListener('resize', () => {
+                if (resizeRaf) cancelAnimationFrame(resizeRaf);
+                resizeRaf = requestAnimationFrame(() => {
+                    const active = document.querySelector('[data-portfolio-panel].is-active');
+                    if (!active) return;
+                    syncStrip(active);
+                    layoutArc(active, performance.now());
+                });
+            });
+        })();
+
+        // ── Portfolio category tabs + hero strip ─────────────────────────
+        (function initPortfolioTabs() {
+            const tabs = document.querySelectorAll('[data-portfolio-tab]');
+            const panels = document.querySelectorAll('[data-portfolio-panel]');
+            const desc = document.getElementById('portfolio-category-desc');
+            if (!tabs.length || !panels.length) return;
+
+            function applyTabVisual(button, selected) {
+                button.setAttribute('aria-selected', selected ? 'true' : 'false');
+            }
+
+            function activate(categoryId) {
+                tabs.forEach((btn) => {
+                    applyTabVisual(btn, btn.getAttribute('data-portfolio-tab') === categoryId);
+                });
+                panels.forEach((panel) => {
+                    const on = panel.getAttribute('data-portfolio-panel') === categoryId;
+                    panel.classList.toggle('is-active', on);
+                    panel.setAttribute('aria-hidden', on ? 'false' : 'true');
+                });
+                const current = document.querySelector('[data-portfolio-tab="' + categoryId + '"]');
+                if (desc && current && current.dataset.desc) {
+                    desc.textContent = current.dataset.desc;
+                }
+                document.dispatchEvent(new CustomEvent('portfolioTabChange', { detail: { categoryId: categoryId } }));
+            }
+
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', () => activate(tab.getAttribute('data-portfolio-tab')));
+            });
+
+            const initialTab = Array.from(tabs).find((t) => t.getAttribute('aria-selected') === 'true');
+            if (initialTab) activate(initialTab.getAttribute('data-portfolio-tab'));
         })();
     </script>
     
