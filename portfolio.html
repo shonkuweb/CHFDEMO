@@ -454,43 +454,72 @@
 
             <!-- Category tabs + hero strip (max-w-7xl + gap-8 stack matches site content sections) -->
             <section class="relative flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 md:pb-16 lg:pb-20 border-b border-white/[0.06] bg-[#070707] -mt-1" aria-labelledby="portfolio-featured-heading">
-                <!-- Category tabs + write-up removed
                 <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 flex flex-col gap-5 md:gap-6 pt-4 md:pt-5">
-                    <div class="flex flex-wrap justify-center gap-3 md:gap-4 snap-x snap-mandatory" role="tablist" aria-label="Portfolio categories">...</div>
-                    <p id="portfolio-category-desc">...</p>
+                    <div class="flex flex-wrap justify-center gap-3 md:gap-4 snap-x snap-mandatory" role="tablist" aria-label="Portfolio categories">
+                        <button type="button" role="tab" id="tab-villa" aria-controls="panel-villa" aria-selected="true" data-portfolio-tab="villa"
+                            class="portfolio-tab snap-start shrink-0">
+                            Villa Projects
+                        </button>
+                        <button type="button" role="tab" id="tab-terrace" aria-controls="panel-terrace" aria-selected="false" data-portfolio-tab="terrace"
+                            class="portfolio-tab snap-start shrink-0">
+                            Terrace Projects
+                        </button>
+                        <button type="button" role="tab" id="tab-housing" aria-controls="panel-housing" aria-selected="false" data-portfolio-tab="housing"
+                            class="portfolio-tab snap-start shrink-0">
+                            Housing Projects
+                        </button>
+                    </div>
                 </div>
-                -->
 
                 <div class="relative w-full overflow-hidden portfolio-marquee-scene -mt-2 md:-mt-1">
                     <div class="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-32 z-10 bg-gradient-to-r from-[#070707] to-transparent"></div>
                     <div class="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-32 z-10 bg-gradient-to-l from-[#070707] to-transparent"></div>
 
-                    <!-- Single portfolio carousel (all unique images: housing 2, terrace 13, villa 6) -->
-                    <div id="panel-portfolio" class="portfolio-strip-panel is-active" role="tabpanel" data-portfolio-panel="portfolio" aria-hidden="false">
+                    <!-- Villa -->
+                    <div id="panel-villa" class="portfolio-strip-panel is-active" role="tabpanel" aria-labelledby="tab-villa" data-portfolio-panel="villa" aria-hidden="false">
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
-                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="21" role="list">
-                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/ACFF5D17-19DC-4EF7-B097-20B8E5FEAC0F.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/14C3D11D-6A55-40A0-BDDE-9D87F6778B6D.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/2DF1E3ED-EC48-45AC-ADDC-890447876E11%20(2).png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/35CEA33A-08DB-4C89-B47F-765BA6246452.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/42185EE8-F3B3-4FA5-A186-CB1A2B557807%20(1).png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/48E40800-D3B8-4BF8-9D1C-F84AF93ADB0D.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/66BD27DB-5C07-40A5-B799-E3BE3A4135C7.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/72B7A13D-B37A-4343-B3A4-7732C4AD72DC.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/7CC2240C-F179-411D-94EC-D6161CAE8B00.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/838984EF-9F5B-4FE2-B22C-BB9D9B0ED1A7.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/8DAE7ED9-DD8D-4F25-A67B-FBD0069CBE01.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/9CA486C0-6566-489C-B397-149E1E7FF13E%20(2).png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/CA4C5AC3-901D-43B6-8653-69AC16191A6F.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/E33B8408-A13B-4702-9FB6-129F47CCE582.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/1A8586D8-4B63-45A8-8499-7E6926501953.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/43B31350-DA3C-422D-AFA3-626139C9E578.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/79F1D9E2-1DC6-4BCA-A755-36D5E5585079.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/917D98C1-D55E-459A-82DF-0483C62FF622.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/AD34490C-109A-4FC7-AFDF-F29438D7E0EB.png" width="240" height="360" decoding="async"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/E6BEDFF8-BD56-445B-B06F-66497110D62B.png" width="240" height="360" decoding="async"></div>
+                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="6" role="list">
+                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/1A8586D8-4B63-45A8-8499-7E6926501953.png" alt="Villa project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/43B31350-DA3C-422D-AFA3-626139C9E578.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/79F1D9E2-1DC6-4BCA-A755-36D5E5585079.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/917D98C1-D55E-459A-82DF-0483C62FF622.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/AD34490C-109A-4FC7-AFDF-F29438D7E0EB.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/E6BEDFF8-BD56-445B-B06F-66497110D62B.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terrace -->
+                    <div id="panel-terrace" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-terrace" data-portfolio-panel="terrace" aria-hidden="true">
+                        <div class="portfolio-marquee-stage">
+                            <div class="portfolio-carousel-viewport">
+                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="11" role="list">
+                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/14C3D11D-6A55-40A0-BDDE-9D87F6778B6D.png" alt="Terrace project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/2DF1E3ED-EC48-45AC-ADDC-890447876E11%20(2).png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/35CEA33A-08DB-4C89-B47F-765BA6246452.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/42185EE8-F3B3-4FA5-A186-CB1A2B557807%20(1).png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/48E40800-D3B8-4BF8-9D1C-F84AF93ADB0D.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/66BD27DB-5C07-40A5-B799-E3BE3A4135C7.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/7CC2240C-F179-411D-94EC-D6161CAE8B00.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/838984EF-9F5B-4FE2-B22C-BB9D9B0ED1A7.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/9CA486C0-6566-489C-B397-149E1E7FF13E%20(2).png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/CA4C5AC3-901D-43B6-8653-69AC16191A6F.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/E33B8408-A13B-4702-9FB6-129F47CCE582.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Housing -->
+                    <div id="panel-housing" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-housing" data-portfolio-panel="housing" aria-hidden="true">
+                        <div class="portfolio-marquee-stage">
+                            <div class="portfolio-carousel-viewport">
+                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="3" role="list">
+                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/ACFF5D17-19DC-4EF7-B097-20B8E5FEAC0F.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
                                 </div>
                             </div>
                         </div>
@@ -989,25 +1018,35 @@
                 else img.addEventListener('load', reveal, { once: true });
             }
 
-            var track = document.querySelector('[data-carousel-track]');
-            if (!track) return;
-
-            var queue = Array.from(track.querySelectorAll('.portfolio-feature-card img[data-src]'));
-            if (!queue.length) return;
-
-            var cursor = 0;
-            function runBatch() {
-                var end = Math.min(cursor + BATCH_SIZE, queue.length);
-                for (var i = cursor; i < end; i++) {
-                    activateImg(queue[i]);
+            function runBatchForTrack(track) {
+                if (!track || track.dataset.batchStarted === '1') return;
+                var queue = Array.from(track.querySelectorAll('.portfolio-feature-card img[data-src]'));
+                if (!queue.length) return;
+                track.dataset.batchStarted = '1';
+                var cursor = 0;
+                function runBatch() {
+                    var end = Math.min(cursor + BATCH_SIZE, queue.length);
+                    for (var i = cursor; i < end; i++) {
+                        activateImg(queue[i]);
+                    }
+                    cursor = end;
+                    if (cursor < queue.length) {
+                        setTimeout(runBatch, BATCH_INTERVAL_MS);
+                    }
                 }
-                cursor = end;
-                if (cursor < queue.length) {
-                    setTimeout(runBatch, BATCH_INTERVAL_MS);
-                }
+                runBatch();
             }
 
-            runBatch();
+            document.querySelectorAll('[data-carousel-track]').forEach(function (track) {
+                runBatchForTrack(track);
+            });
+
+            document.addEventListener('portfolioTabChange', function (e) {
+                var id = e.detail && e.detail.categoryId;
+                if (!id) return;
+                var panel = document.querySelector('[data-portfolio-panel="' + id + '"]');
+                if (panel) runBatchForTrack(panel.querySelector('[data-carousel-track]'));
+            });
         })();
 
         // ── Portfolio product carousel: rounded path, center spotlight, infinite modular phase ──
@@ -1240,7 +1279,6 @@
         (function initPortfolioTabs() {
             const tabs = document.querySelectorAll('[data-portfolio-tab]');
             const panels = document.querySelectorAll('[data-portfolio-panel]');
-            const desc = document.getElementById('portfolio-category-desc');
             if (!tabs.length || !panels.length) return;
 
             function applyTabVisual(button, selected) {
@@ -1256,45 +1294,6 @@
                     panel.classList.toggle('is-active', on);
                     panel.setAttribute('aria-hidden', on ? 'false' : 'true');
                 });
-                const current = document.querySelector('[data-portfolio-tab="' + categoryId + '"]');
-                if (desc && current && current.dataset.desc) {
-                    desc.textContent = current.dataset.desc;
-                }
-                document.dispatchEvent(new CustomEvent('portfolioTabChange', { detail: { categoryId: categoryId } }));
-            }
-
-            tabs.forEach((tab) => {
-                tab.addEventListener('click', () => activate(tab.getAttribute('data-portfolio-tab')));
-            });
-
-            const initialTab = Array.from(tabs).find((t) => t.getAttribute('aria-selected') === 'true');
-            if (initialTab) activate(initialTab.getAttribute('data-portfolio-tab'));
-        })();
-
-        // ── Portfolio category tabs + hero strip ─────────────────────────
-        (function initPortfolioTabs() {
-            const tabs = document.querySelectorAll('[data-portfolio-tab]');
-            const panels = document.querySelectorAll('[data-portfolio-panel]');
-            const desc = document.getElementById('portfolio-category-desc');
-            if (!tabs.length || !panels.length) return;
-
-            function applyTabVisual(button, selected) {
-                button.setAttribute('aria-selected', selected ? 'true' : 'false');
-            }
-
-            function activate(categoryId) {
-                tabs.forEach((btn) => {
-                    applyTabVisual(btn, btn.getAttribute('data-portfolio-tab') === categoryId);
-                });
-                panels.forEach((panel) => {
-                    const on = panel.getAttribute('data-portfolio-panel') === categoryId;
-                    panel.classList.toggle('is-active', on);
-                    panel.setAttribute('aria-hidden', on ? 'false' : 'true');
-                });
-                const current = document.querySelector('[data-portfolio-tab="' + categoryId + '"]');
-                if (desc && current && current.dataset.desc) {
-                    desc.textContent = current.dataset.desc;
-                }
                 document.dispatchEvent(new CustomEvent('portfolioTabChange', { detail: { categoryId: categoryId } }));
             }
 
