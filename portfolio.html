@@ -6,7 +6,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev" crossorigin>
-
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Portfolio - CHF Botanical Luxury</title>
@@ -124,15 +123,33 @@
                 transform: scale(1.02);
             }
         }
+        .portfolio-card-media img.portfolio-card-img {
+            transition: opacity 0.5s ease;
+        }
+        .portfolio-card-media.is-loading img.portfolio-card-img {
+            opacity: 0;
+        }
+        .portfolio-card-media.is-loaded img.portfolio-card-img {
+            opacity: 1;
+        }
+
+        .portfolio-feature-card picture {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .portfolio-feature-card picture,
         .portfolio-feature-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.55s ease;
         }
+        .portfolio-feature-card.is-spotlight picture img,
         .portfolio-feature-card.is-spotlight img {
             filter: brightness(1.08) contrast(1.06) saturate(1.04);
         }
+        .portfolio-feature-card.is-spotlight:hover picture img,
         .portfolio-feature-card.is-spotlight:hover img {
             transform: scale(1.04);
         }
@@ -420,88 +437,57 @@
         </div>
         <main class="flex-grow pt-20">
             <!-- Portfolio intro (spacing aligned with About title sections: px-6 lg:px-12, py-24 rhythm) -->
-            <section class="relative px-6 lg:px-12 pt-14 md:pt-16 lg:pt-20 pb-6 md:pb-7 text-center max-w-4xl mx-auto">
+            <section class="relative px-6 lg:px-12 pt-20 md:pt-24 lg:pt-28 pb-6 md:pb-7 text-center max-w-4xl mx-auto">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,28rem)] h-[min(50vw,16rem)] bg-accent-bronze/8 rounded-full blur-[90px] pointer-events-none"></div>
                 <h1 id="portfolio-featured-heading" class="font-serif text-balance text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory leading-[1.05] tracking-tight mb-4 md:mb-5 relative z-10 reveal reveal-up stagger-1">
                     Featured Projects
                 </h1>
+                <!-- Featured Projects intro copy removed
                 <p class="text-base md:text-lg lg:text-xl text-ivory-dim font-light max-w-3xl mx-auto leading-relaxed relative z-10 reveal reveal-up stagger-2">
                     A continuous thread of landscapes, interiors, and living collections shaped for clients who treat greenery as architecture.
                 </p>
+                -->
             </section>
 
             <!-- Category tabs + hero strip (max-w-7xl + gap-8 stack matches site content sections) -->
             <section class="relative flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 md:pb-16 lg:pb-20 border-b border-white/[0.06] bg-[#070707] -mt-1" aria-labelledby="portfolio-featured-heading">
+                <!-- Category tabs + write-up removed
                 <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 flex flex-col gap-5 md:gap-6 pt-4 md:pt-5">
-                    <div class="flex flex-wrap justify-center gap-3 md:gap-4 snap-x snap-mandatory" role="tablist" aria-label="Portfolio categories">
-                        <button type="button" role="tab" id="tab-housing" aria-controls="panel-housing" aria-selected="true" data-portfolio-tab="housing"
-                            data-desc="Greenery for apartments, complexes, and housing communities — calm, legible, and built to live with every day."
-                            class="portfolio-tab snap-start shrink-0">
-                            Housing Projects
-                        </button>
-                        <button type="button" role="tab" id="tab-terrace" aria-controls="panel-terrace" aria-selected="false" data-portfolio-tab="terrace"
-                            data-desc="Terraces and outdoor rooms treated as extensions of the home — planters, privacy, and skyline-ready planting."
-                            class="portfolio-tab snap-start shrink-0">
-                            Terrace Projects
-                        </button>
-                        <button type="button" role="tab" id="tab-villa" aria-controls="panel-villa" aria-selected="false" data-portfolio-tab="villa"
-                            data-desc="Villa-scale landscapes where drive, court, garden, and interior views are composed as one continuous experience."
-                            class="portfolio-tab snap-start shrink-0">
-                            Villa Project
-                        </button>
-                    </div>
-                    <p id="portfolio-category-desc" class="text-center text-ivory-dim text-sm md:text-base font-light leading-relaxed max-w-2xl mx-auto min-h-[2.75rem] md:min-h-[3rem]">
-                        Greenery for apartments, complexes, and housing communities — calm, legible, and built to live with every day.
-                    </p>
+                    <div class="flex flex-wrap justify-center gap-3 md:gap-4 snap-x snap-mandatory" role="tablist" aria-label="Portfolio categories">...</div>
+                    <p id="portfolio-category-desc">...</p>
                 </div>
+                -->
 
                 <div class="relative w-full overflow-hidden portfolio-marquee-scene -mt-2 md:-mt-1">
                     <div class="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-32 z-10 bg-gradient-to-r from-[#070707] to-transparent"></div>
                     <div class="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-32 z-10 bg-gradient-to-l from-[#070707] to-transparent"></div>
 
-                    <!-- Housing -->
-                    <div id="panel-housing" class="portfolio-strip-panel is-active" role="tabpanel" aria-labelledby="tab-housing" data-portfolio-panel="housing" aria-hidden="false">
+                    <!-- Single portfolio carousel (all unique images: housing 2, terrace 13, villa 6) -->
+                    <div id="panel-portfolio" class="portfolio-strip-panel is-active" role="tabpanel" data-portfolio-panel="portfolio" aria-hidden="false">
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
-                                <div class="portfolio-projects-track" data-carousel-track role="list">
-                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Housing project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Terrace -->
-                    <div id="panel-terrace" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-terrace" data-portfolio-panel="terrace" aria-hidden="true">
-                        <div class="portfolio-marquee-stage">
-                            <div class="portfolio-carousel-viewport">
-                                <div class="portfolio-projects-track" data-carousel-track role="list">
-                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Terrace project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Villa -->
-                    <div id="panel-villa" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-villa" data-portfolio-panel="villa" aria-hidden="true">
-                        <div class="portfolio-marquee-stage">
-                            <div class="portfolio-carousel-viewport">
-                                <div class="portfolio-projects-track" data-carousel-track role="list">
-                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Villa project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"></div>
+                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="21" role="list">
+                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/ACFF5D17-19DC-4EF7-B097-20B8E5FEAC0F.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/14C3D11D-6A55-40A0-BDDE-9D87F6778B6D.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/2DF1E3ED-EC48-45AC-ADDC-890447876E11%20(2).png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/35CEA33A-08DB-4C89-B47F-765BA6246452.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/42185EE8-F3B3-4FA5-A186-CB1A2B557807%20(1).png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/48E40800-D3B8-4BF8-9D1C-F84AF93ADB0D.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/66BD27DB-5C07-40A5-B799-E3BE3A4135C7.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/72B7A13D-B37A-4343-B3A4-7732C4AD72DC.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/7CC2240C-F179-411D-94EC-D6161CAE8B00.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/838984EF-9F5B-4FE2-B22C-BB9D9B0ED1A7.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/8DAE7ED9-DD8D-4F25-A67B-FBD0069CBE01.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/9CA486C0-6566-489C-B397-149E1E7FF13E%20(2).png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/CA4C5AC3-901D-43B6-8653-69AC16191A6F.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/E33B8408-A13B-4702-9FB6-129F47CCE582.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/1A8586D8-4B63-45A8-8499-7E6926501953.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/43B31350-DA3C-422D-AFA3-626139C9E578.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/79F1D9E2-1DC6-4BCA-A755-36D5E5585079.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/917D98C1-D55E-459A-82DF-0483C62FF622.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/AD34490C-109A-4FC7-AFDF-F29438D7E0EB.png" width="240" height="360" decoding="async"></div>
+                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img class="portfolio-card-img opacity-0" data-src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/E6BEDFF8-BD56-445B-B06F-66497110D62B.png" width="240" height="360" decoding="async"></div>
                                 </div>
                             </div>
                         </div>
@@ -916,6 +902,111 @@
             setActiveDot(0);
         })();
 
+        // ── Portfolio carousel responsive images (WebP/AVIF on R2) ──
+        (function initPortfolioOptimizedImages() {
+            var WIDTHS = [320, 480, 640, 960];
+            var SIZES = '(max-width:768px) 45vw, 240px';
+            var R2_ORIGIN = 'https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev';
+
+            function optimizedSrcset(pngSrc, ext) {
+                try {
+                    var u = new URL(pngSrc);
+                    var match = u.pathname.match(/\/assets\/portfolio\/(.+)\/([^/]+)\.png$/i);
+                    if (!match) return '';
+                    var folder = decodeURIComponent(match[1]);
+                    var stem = decodeURIComponent(match[2]);
+                    var encFolder = folder.split('/').map(function (s) { return encodeURIComponent(s); }).join('/');
+                    return WIDTHS.map(function (w) {
+                        return R2_ORIGIN + '/assets/portfolio/optimized/' + encFolder + '/'
+                            + encodeURIComponent(stem) + '-' + w + 'w.' + ext + ' ' + w + 'w';
+                    }).join(', ');
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            window.portfolioCreatePicture = function (pngSrc, opts) {
+                opts = opts || {};
+                var eager = opts.eager === true;
+                var picture = document.createElement('picture');
+                picture.className = eager ? 'portfolio-card-media is-loaded' : 'portfolio-card-media is-loading';
+                var avif = document.createElement('source');
+                avif.type = 'image/avif';
+                avif.sizes = SIZES;
+                var webp = document.createElement('source');
+                webp.type = 'image/webp';
+                webp.sizes = SIZES;
+                var avifSet = optimizedSrcset(pngSrc, 'avif');
+                var webpSet = optimizedSrcset(pngSrc, 'webp');
+                if (eager) {
+                    avif.srcset = avifSet;
+                    webp.srcset = webpSet;
+                } else {
+                    avif.setAttribute('data-srcset', avifSet);
+                    webp.setAttribute('data-srcset', webpSet);
+                }
+                var img = document.createElement('img');
+                img.alt = opts.alt || '';
+                img.width = 240;
+                img.height = 360;
+                img.decoding = 'async';
+                img.className = eager ? 'portfolio-card-img' : 'portfolio-card-img opacity-0';
+                if (eager) {
+                    img.src = pngSrc;
+                    img.loading = 'eager';
+                    if (opts.fetchpriority) img.fetchPriority = opts.fetchpriority;
+                } else {
+                    img.setAttribute('data-src', pngSrc);
+                    img.loading = 'lazy';
+                    if (opts.fetchpriority) img.fetchPriority = opts.fetchpriority;
+                }
+                picture.appendChild(avif);
+                picture.appendChild(webp);
+                picture.appendChild(img);
+                return picture;
+            };
+        })();
+
+        // ── Portfolio carousel: batch-load images (3 per second, DOM order) ──
+        (function initPortfolioBatchImages() {
+            var BATCH_SIZE = 3;
+            var BATCH_INTERVAL_MS = 1000;
+
+            function activateImg(img) {
+                if (!img || img.dataset.loaded === '1') return;
+                var url = img.getAttribute('data-src') || img.getAttribute('src');
+                if (!url) return;
+                img.dataset.loaded = '1';
+                img.src = url;
+                img.removeAttribute('data-src');
+                function reveal() {
+                    img.classList.remove('opacity-0');
+                }
+                if (img.complete && img.naturalWidth > 0) reveal();
+                else img.addEventListener('load', reveal, { once: true });
+            }
+
+            var track = document.querySelector('[data-carousel-track]');
+            if (!track) return;
+
+            var queue = Array.from(track.querySelectorAll('.portfolio-feature-card img[data-src]'));
+            if (!queue.length) return;
+
+            var cursor = 0;
+            function runBatch() {
+                var end = Math.min(cursor + BATCH_SIZE, queue.length);
+                for (var i = cursor; i < end; i++) {
+                    activateImg(queue[i]);
+                }
+                cursor = end;
+                if (cursor < queue.length) {
+                    setTimeout(runBatch, BATCH_INTERVAL_MS);
+                }
+            }
+
+            runBatch();
+        })();
+
         // ── Portfolio product carousel: rounded path, center spotlight, infinite modular phase ──
         (function initPortfolioProductCarousel() {
             const state = {};
@@ -1101,6 +1192,24 @@
                 });
             }
 
+            function resetPanelState(panel) {
+                const id = panel.getAttribute('data-portfolio-panel');
+                if (!state[id]) return;
+                const cards = panel.querySelectorAll('.portfolio-feature-card');
+                state[id].basePhase = cards.length ? Math.floor(cards.length / 2) : 0;
+                state[id].startT = null;
+                state[id].pausedAt = null;
+            }
+
+            function bootActivePanel() {
+                const active = document.querySelector('[data-portfolio-panel].is-active');
+                if (!active) return;
+                syncStrip(active);
+                resetPanelState(active);
+                layoutArc(active, performance.now());
+                startLoop();
+            }
+
             document.querySelectorAll('[data-portfolio-panel]').forEach((panel) => {
                 syncStrip(panel);
             });
@@ -1109,6 +1218,8 @@
                 const id = e.detail && e.detail.categoryId;
                 if (id) onTabChange(id);
             });
+
+            bootActivePanel();
 
             let resizeRaf = null;
             window.addEventListener('resize', () => {
@@ -1120,6 +1231,41 @@
                     layoutArc(active, performance.now());
                 });
             });
+        })();
+
+        // ── Portfolio category tabs + hero strip ─────────────────────────
+        (function initPortfolioTabs() {
+            const tabs = document.querySelectorAll('[data-portfolio-tab]');
+            const panels = document.querySelectorAll('[data-portfolio-panel]');
+            const desc = document.getElementById('portfolio-category-desc');
+            if (!tabs.length || !panels.length) return;
+
+            function applyTabVisual(button, selected) {
+                button.setAttribute('aria-selected', selected ? 'true' : 'false');
+            }
+
+            function activate(categoryId) {
+                tabs.forEach((btn) => {
+                    applyTabVisual(btn, btn.getAttribute('data-portfolio-tab') === categoryId);
+                });
+                panels.forEach((panel) => {
+                    const on = panel.getAttribute('data-portfolio-panel') === categoryId;
+                    panel.classList.toggle('is-active', on);
+                    panel.setAttribute('aria-hidden', on ? 'false' : 'true');
+                });
+                const current = document.querySelector('[data-portfolio-tab="' + categoryId + '"]');
+                if (desc && current && current.dataset.desc) {
+                    desc.textContent = current.dataset.desc;
+                }
+                document.dispatchEvent(new CustomEvent('portfolioTabChange', { detail: { categoryId: categoryId } }));
+            }
+
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', () => activate(tab.getAttribute('data-portfolio-tab')));
+            });
+
+            const initialTab = Array.from(tabs).find((t) => t.getAttribute('aria-selected') === 'true');
+            if (initialTab) activate(initialTab.getAttribute('data-portfolio-tab'));
         })();
 
         // ── Portfolio category tabs + hero strip ─────────────────────────

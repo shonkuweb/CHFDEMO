@@ -125,11 +125,11 @@ def clear_cache():
 
 FIXED_HOME_HERO_MEDIA = {
     "home/hero/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20image%20desk%20and%20mobile%20view/CHFHERODESK.png",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20image%20desk%20and%20mobile%20view/chfherodesk.png",
         "type": "media",
     },
     "home/hero/mobile_media": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20image%20desk%20and%20mobile%20view/CHFHEROMOB.png",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20image%20desk%20and%20mobile%20view/chfheromob.png",
         "type": "media",
     },
 }
