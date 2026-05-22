@@ -729,8 +729,9 @@ async def add_api_no_cache_headers(request: Request, call_next):
         and not path.startswith("/admin")
         and not path.startswith("/api/")
     ):
-        # Short cache for HTML pages to keep content fresh but reduce repeat loads.
-        response.headers.setdefault("Cache-Control", "public, max-age=300, stale-while-revalidate=600")
+        # Avoid serving stale HTML from edge cache (prevents old inline fallbacks flashing before CMS).
+        response.headers.setdefault("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        response.headers.setdefault("Pragma", "no-cache")
     return response
 
 @app.on_event("startup")

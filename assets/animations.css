@@ -12,6 +12,15 @@
     --content-inline: clamp(1rem, 3.6vw, 2.5rem);
 }
 
+/* CMS: hide editable regions until cms-core.js hydrates from API (prevents old inline fallback flash) */
+html:not(.cms-ready) [data-cms],
+html:not(.cms-ready) [data-home-trends] {
+    visibility: hidden;
+}
+html:not(.cms-ready) #mobile-sidebar [data-cms] {
+    visibility: visible;
+}
+
 /* Reveal Bases */
 .reveal {
     opacity: 0;

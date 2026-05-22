@@ -101,30 +101,56 @@
     };
 
     function getCmsCacheKey(prefix) {
-        return `chf_cms_cache_v1_${prefix}`;
+        return `chf_cms_cache_v2_${prefix}`;
     }
 
-    function readCachedCms(prefix) {
+    function readCachedCmsEntry(prefix) {
         try {
             const raw = sessionStorage.getItem(getCmsCacheKey(prefix));
             if (!raw) return null;
             const parsed = JSON.parse(raw);
             if (!parsed || typeof parsed !== 'object' || !parsed.data) return null;
-            return parsed.data;
+            return {
+                data: parsed.data,
+                syncVersion: Number(parsed.syncVersion || 0)
+            };
         } catch (_) {
             return null;
         }
     }
 
-    function writeCachedCms(prefix, data) {
+    function writeCachedCms(prefix, data, syncVersion) {
         try {
             sessionStorage.setItem(getCmsCacheKey(prefix), JSON.stringify({
                 savedAt: Date.now(),
+                syncVersion: Number(syncVersion || 0),
                 data
             }));
         } catch (_) {
             // Ignore storage limits/private mode failures.
         }
+    }
+
+    function setCmsReady(ready) {
+        document.documentElement.classList.toggle('cms-ready', ready);
+    }
+
+    async function fetchSyncVersion() {
+        const res = await fetch(`/api/sync-version?t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) return 0;
+        const payload = await res.json();
+        return Number(payload?.version || 0);
+    }
+
+    async function fetchCmsPayload(prefix) {
+        const t = Date.now();
+        const [pageRes, globalRes] = await Promise.all([
+            fetch(`/api/site-content?page=${prefix}&t=${t}`, { cache: 'no-store' }),
+            fetch(`/api/site-content?page=global&t=${t}`, { cache: 'no-store' })
+        ]);
+        const pageData = await pageRes.json();
+        const globalData = await globalRes.json();
+        return { ...globalData, ...pageData };
     }
 
     async function syncSharedShell(slug) {
@@ -246,49 +272,61 @@
         });
     }
 
-    async function initCMS() {
+    async function initCMS(options) {
+        const silent = options && options.silent === true;
         if (isSyncInFlight) return;
         isSyncInFlight = true;
-        
+
         const slug = resolvePageSlug();
         const prefix = PAGE_PREFIX_MAP[slug] || slug;
-        await syncSharedShell(slug);
-        clearAllCmsPlaceholders();
 
-        if (DEBUG) console.log(`[CMS] Initializing for slug: ${slug}, using prefix: ${prefix}`);
-        const cachedData = readCachedCms(prefix);
-        if (cachedData) {
-            const cachedSignature = JSON.stringify(cachedData);
-            applyContent(cachedData);
-            lastCmsSignature = cachedSignature;
-            if (DEBUG) console.log('[CMS] Applied cached content immediately');
+        if (!silent) {
+            setCmsReady(false);
         }
 
-        try {
-            const t = Date.now();
-            const [pageRes, globalRes] = await Promise.all([
-                fetch(`/api/site-content?page=${prefix}&t=${t}`, { cache: 'no-store' }),
-                fetch(`/api/site-content?page=global&t=${t}`, { cache: 'no-store' })
-            ]);
+        await syncSharedShell(slug);
 
-            const pageData = await pageRes.json();
-            const globalData = await globalRes.json();
-            // Merge: page content overrides global
-            const cmsData = { ...globalData, ...pageData };
-            writeCachedCms(prefix, cmsData);
+        if (DEBUG) console.log(`[CMS] Initializing for slug: ${slug}, using prefix: ${prefix}`);
+
+        try {
+            const syncVersion = await fetchSyncVersion();
+            lastSeenSyncVersion = syncVersion;
+
+            const cachedEntry = readCachedCmsEntry(prefix);
+            const cacheValid = cachedEntry && cachedEntry.syncVersion === syncVersion;
+
+            if (cacheValid && !silent) {
+                applyContent(cachedEntry.data);
+                await applyHomeTrendsSection();
+                lastCmsSignature = JSON.stringify(cachedEntry.data);
+                setCmsReady(true);
+                if (DEBUG) console.log('[CMS] Revealed from version-matched cache');
+            }
+
+            const cmsData = await fetchCmsPayload(prefix);
+            writeCachedCms(prefix, cmsData, syncVersion);
             const signature = JSON.stringify(cmsData);
 
-            if (DEBUG) console.log(`[CMS] Content loaded for prefix "${prefix}":`, cmsData);
+            if (DEBUG) console.log(`[CMS] Content loaded for prefix "${prefix}"`);
             if (signature !== lastCmsSignature) {
                 applyContent(cmsData);
                 await applyHomeTrendsSection();
                 lastCmsSignature = signature;
-                if (DEBUG) console.log('[CMS] Live sync applied');
+                if (DEBUG) console.log('[CMS] Live content applied');
             }
 
+            if (!document.documentElement.classList.contains('cms-ready')) {
+                setCmsReady(true);
+            }
         } catch (err) {
             console.error('[CMS] Failed to initialize:', err);
+            const cachedEntry = readCachedCmsEntry(prefix);
+            if (cachedEntry) {
+                applyContent(cachedEntry.data);
+                lastCmsSignature = JSON.stringify(cachedEntry.data);
+            }
             await applyHomeTrendsSection();
+            setCmsReady(true);
         } finally {
             isSyncInFlight = false;
         }
@@ -311,15 +349,12 @@
         }
     }
 
-    async function checkCmsSyncVersion(forceRefresh = false) {
+    async function checkCmsSyncVersion() {
         try {
-            const res = await fetch(`/api/sync-version?t=${Date.now()}`, { cache: 'no-store' });
-            if (!res.ok) return;
-            const payload = await res.json();
-            const incomingVersion = Number(payload?.version || 0);
-            if (forceRefresh || !lastSeenSyncVersion || incomingVersion > lastSeenSyncVersion) {
+            const incomingVersion = await fetchSyncVersion();
+            if (incomingVersion > lastSeenSyncVersion) {
                 lastSeenSyncVersion = incomingVersion;
-                await initCMS();
+                await initCMS({ silent: true });
             }
         } catch (_) {
             // Ignore transient polling failures; next poll retries.
@@ -580,29 +615,29 @@
             ? CMS_VERSION_POLL_MS_ACTIVE
             : CMS_VERSION_POLL_MS_BACKGROUND;
         cmsSyncTimer = setTimeout(async () => {
-            await checkCmsSyncVersion(false);
+            await checkCmsSyncVersion();
             scheduleCmsSync();
         }, interval);
     }
 
-    // Keep public pages synced with near-instant active-tab refresh.
+    // Keep public pages synced when admin publishes (version bump only — no flash on tab focus).
     scheduleCmsSync();
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
-            checkCmsSyncVersion(true);
+            checkCmsSyncVersion();
         }
         scheduleCmsSync();
     });
-    window.addEventListener('focus', () => checkCmsSyncVersion(true));
+    window.addEventListener('focus', () => checkCmsSyncVersion());
 
     // Instant sync signal from admin publish (same browser/session).
     window.addEventListener('storage', (event) => {
         if (event.key === 'chf_content_sync') {
-            checkCmsSyncVersion(true);
+            checkCmsSyncVersion();
         }
     });
     if ('BroadcastChannel' in window) {
         const syncChannel = new BroadcastChannel('chf-content-sync');
-        syncChannel.addEventListener('message', () => checkCmsSyncVersion(true));
+        syncChannel.addEventListener('message', () => checkCmsSyncVersion());
     }
 })();
