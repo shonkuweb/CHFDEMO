@@ -24,18 +24,59 @@
 
         /* Featured projects — rounded-path carousel */
         .portfolio-carousel-viewport {
-            overflow: hidden;
+            overflow: visible;
             width: 100%;
-            min-height: clamp(20rem, 52vh, 34rem);
+            min-height: clamp(22rem, 58vh, 38rem);
             position: relative;
             touch-action: pan-y;
             padding-left: max(1rem, env(safe-area-inset-left));
             padding-right: max(1rem, env(safe-area-inset-right));
+            padding-bottom: 4.25rem;
+        }
+        .portfolio-carousel-nav {
+            position: absolute;
+            top: auto;
+            bottom: 0.65rem;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.75rem;
+            height: 2.75rem;
+            margin-top: 0;
+            border-radius: 9999px;
+            border: 1px solid rgba(166, 139, 106, 0.45);
+            background: rgba(10, 10, 10, 0.82);
+            color: #e8e4db;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+        .portfolio-carousel-nav:hover {
+            background: rgba(166, 139, 106, 0.22);
+            border-color: rgba(166, 139, 106, 0.75);
+            color: #fff;
+        }
+        .portfolio-carousel-nav:focus-visible {
+            outline: 2px solid rgba(166, 139, 106, 0.85);
+            outline-offset: 3px;
+        }
+        .portfolio-carousel-nav .material-symbols-outlined {
+            font-size: 1.75rem;
+        }
+        .portfolio-carousel-prev {
+            left: calc(50% - 3.5rem);
+            right: auto;
+        }
+        .portfolio-carousel-next {
+            left: calc(50% + 0.75rem);
+            right: auto;
         }
         .portfolio-projects-track {
             position: relative;
             width: 100%;
-            min-height: clamp(20rem, 52vh, 34rem);
+            min-height: clamp(22rem, 58vh, 38rem);
             transform-style: preserve-3d;
         }
 
@@ -45,6 +86,7 @@
             perspective-origin: 50% 28%;
             padding-top: 0.5rem;
             padding-bottom: clamp(3rem, 8vw, 5.5rem);
+            overflow: visible;
         }
         .portfolio-marquee-stage {
             transform-origin: 50% 100%;
@@ -76,15 +118,20 @@
             left: 50%;
             top: 50%;
             flex-shrink: 0;
-            width: clamp(10.25rem, 32vw, 15rem);
-            aspect-ratio: 2 / 3;
+            width: clamp(12rem, 36vw, 17.5rem);
+            min-height: 10rem;
             border-radius: 2px;
-            overflow: hidden;
+            overflow: visible;
             border: 1px solid rgba(255, 255, 255, 0.08);
             background:
                 radial-gradient(circle at 50% 24%, rgba(166, 139, 106, 0.18), transparent 36%),
                 linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(10, 10, 10, 0.96) 55%, rgba(4, 4, 4, 1));
             z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem;
+            box-sizing: border-box;
             will-change: transform, filter, opacity;
             transition:
                 filter 0.55s ease,
@@ -102,12 +149,12 @@
         }
         @media (min-width: 768px) {
             .portfolio-feature-card {
-                width: clamp(11.5rem, 22vw, 16rem);
+                width: clamp(13rem, 26vw, 19rem);
             }
         }
         @media (min-width: 1024px) {
             .portfolio-feature-card {
-                width: clamp(12rem, 18vw, 17rem);
+                width: clamp(14rem, 22vw, 20.5rem);
             }
         }
         .portfolio-feature-card:not(.is-spotlight) {
@@ -124,7 +171,8 @@
             }
         }
         .portfolio-card-media img.portfolio-card-img {
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            transform-origin: center center;
         }
         .portfolio-card-media.is-loading img.portfolio-card-img {
             opacity: 0;
@@ -140,18 +188,36 @@
         }
         .portfolio-feature-card picture,
         .portfolio-feature-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.55s ease;
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: clamp(17rem, 48vh, 28rem);
+            object-fit: contain;
+            object-position: center;
         }
         .portfolio-feature-card.is-spotlight picture img,
         .portfolio-feature-card.is-spotlight img {
+            max-height: clamp(19rem, 54vh, 32rem);
             filter: brightness(1.08) contrast(1.06) saturate(1.04);
         }
-        .portfolio-feature-card.is-spotlight:hover picture img,
-        .portfolio-feature-card.is-spotlight:hover img {
-            transform: scale(1.04);
+        .portfolio-feature-card img.portfolio-card-img {
+            transform-origin: center center;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .portfolio-feature-card.is-hover-zoom img.portfolio-card-img {
+                transform: scale(1.2);
+            }
+        }
+        .portfolio-feature-card.is-hover-zoom {
+            z-index: 220 !important;
+            filter: none !important;
+            -webkit-filter: none !important;
+            opacity: 1 !important;
+        }
+        .portfolio-feature-card.is-hover-zoom img.portfolio-card-img {
+            transform: scale(2);
         }
 
         .portfolio-strip-panel {
@@ -471,7 +537,7 @@
                     </div>
                 </div>
 
-                <div class="relative w-full overflow-hidden portfolio-marquee-scene -mt-2 md:-mt-1">
+                <div class="relative w-full overflow-visible portfolio-marquee-scene -mt-2 md:-mt-1">
                     <div class="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-32 z-10 bg-gradient-to-r from-[#070707] to-transparent"></div>
                     <div class="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-32 z-10 bg-gradient-to-l from-[#070707] to-transparent"></div>
 
@@ -479,6 +545,12 @@
                     <div id="panel-villa" class="portfolio-strip-panel is-active" role="tabpanel" aria-labelledby="tab-villa" data-portfolio-panel="villa" aria-hidden="false">
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
+                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
+                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                                </button>
+                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
+                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                                </button>
                                 <div class="portfolio-projects-track" data-carousel-track data-slide-count="6" role="list">
                                     <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/1A8586D8-4B63-45A8-8499-7E6926501953.png" alt="Villa project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
                                     <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/43B31350-DA3C-422D-AFA3-626139C9E578.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
@@ -495,6 +567,12 @@
                     <div id="panel-terrace" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-terrace" data-portfolio-panel="terrace" aria-hidden="true">
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
+                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
+                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                                </button>
+                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
+                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                                </button>
                                 <div class="portfolio-projects-track" data-carousel-track data-slide-count="11" role="list">
                                     <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/14C3D11D-6A55-40A0-BDDE-9D87F6778B6D.png" alt="Terrace project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
                                     <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/2DF1E3ED-EC48-45AC-ADDC-890447876E11%20(2).png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
@@ -516,6 +594,12 @@
                     <div id="panel-housing" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-housing" data-portfolio-panel="housing" aria-hidden="true">
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
+                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
+                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                                </button>
+                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
+                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                                </button>
                                 <div class="portfolio-projects-track" data-carousel-track data-slide-count="3" role="list">
                                     <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
                                     <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/ACFF5D17-19DC-4EF7-B097-20B8E5FEAC0F.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
@@ -1125,7 +1209,7 @@
                     const strength = centerStrength(abs);
                     const isCenterHeld = strength > 0.88;
                     const baseScale = 0.5;
-                    const scale = baseScale + (1.25 - baseScale) * strength;
+                    const scale = baseScale + (1.32 - baseScale) * strength;
                     const rotate = clamped * 5.5;
                     const blur = Math.max(0, (1 - strength) * Math.max(4, progress * 9));
                     const sideOpacity = Math.max(0.28, 0.7 - progress * 0.38);
@@ -1142,8 +1226,8 @@
 
                 cards.forEach((card, i) => {
                     const on = centerStrength(Math.abs(shortestOffset(i, phase, cards.length))) > 0.88;
-                    card.classList.toggle('is-spotlight', on);
-                    if (on) {
+                    card.classList.toggle('is-spotlight', on && !card.classList.contains('is-hover-zoom'));
+                    if (on && !card.classList.contains('is-hover-zoom')) {
                         card.style.zIndex = '160';
                     }
                 });
@@ -1203,6 +1287,53 @@
                 viewport.addEventListener('pointerleave', () => resumePanel(panel));
             }
 
+            function advancePanel(panel, delta) {
+                const panelId = panel.getAttribute('data-portfolio-panel');
+                const st = state[panelId];
+                const cards = panel.querySelectorAll('.portfolio-feature-card');
+                if (!st || !cards.length) return;
+                st.basePhase = (st.basePhase + delta + cards.length) % cards.length;
+                st.startT = performance.now();
+                st.pausedAt = null;
+                layoutArc(panel, performance.now());
+                if (!rafId && panel.classList.contains('is-active')) {
+                    startLoop();
+                }
+            }
+
+            function bindCarouselNav(panel) {
+                if (panel.dataset.navBound === '1') return;
+                panel.dataset.navBound = '1';
+                const prev = panel.querySelector('[data-carousel-prev]');
+                const next = panel.querySelector('[data-carousel-next]');
+                if (prev) {
+                    prev.addEventListener('click', () => advancePanel(panel, -1));
+                }
+                if (next) {
+                    next.addEventListener('click', () => advancePanel(panel, 1));
+                }
+            }
+
+            function bindCardHoverZoom(panel) {
+                if (panel.dataset.hoverZoomBound === '1') return;
+                panel.dataset.hoverZoomBound = '1';
+                panel.querySelectorAll('.portfolio-feature-card').forEach((card) => {
+                    card.addEventListener('pointerenter', () => {
+                        if (!panel.classList.contains('is-active')) return;
+                        card.classList.add('is-hover-zoom');
+                        pausePanel(panel);
+                        layoutArc(panel, performance.now());
+                    });
+                    card.addEventListener('pointerleave', () => {
+                        card.classList.remove('is-hover-zoom');
+                        if (panel.classList.contains('is-active')) {
+                            layoutArc(panel, performance.now());
+                            resumePanel(panel);
+                        }
+                    });
+                });
+            }
+
             function onTabChange(categoryId) {
                 stopLoop();
                 document.querySelectorAll('[data-portfolio-panel]').forEach((p) => {
@@ -1254,6 +1385,8 @@
 
             document.querySelectorAll('[data-portfolio-panel]').forEach((panel) => {
                 syncStrip(panel);
+                bindCarouselNav(panel);
+                bindCardHoverZoom(panel);
             });
 
             document.addEventListener('portfolioTabChange', (e) => {
