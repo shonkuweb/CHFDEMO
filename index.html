@@ -204,20 +204,19 @@
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
             class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
-            <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-12 w-full">
-                <a href="/" class="flex items-center gap-3">
-                    <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF Logo" class="h-10 w-10 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="eager" fetchpriority="high">
-                    <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
+            <div class="mx-auto flex h-20 items-center justify-between pl-0 pr-8 lg:pl-0 lg:pr-10 w-full">
+                <a href="/" class="flex items-center justify-start" style="width: clamp(120px, 18vw, 200px); height: 5rem; flex: 0 0 auto; overflow: hidden; align-self: center;">
+                    <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_logo.png" alt="CHF Logo" class="block flex-shrink-0" style="width: 100%; height: 5rem; object-fit: cover; object-position: left center; background: transparent; transform: translate(-18px, 18px) scale(4); transform-origin: left center;" decoding="async" loading="eager" fetchpriority="high">
                 </a>
-                <nav class="hidden lg:flex items-center gap-8">
+                <nav class="hidden lg:flex items-center gap-8" style="flex: 1 1 auto; min-width: 0; justify-content: flex-end; gap: clamp(0.35rem, 1.4vw, 1.5rem); overflow: visible; padding-right: 1.5rem; box-sizing: border-box;">
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="plant-experience-center">Plant Experience Center</a>
                     </div>
 
                     <!-- Collections Dropdown -->
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="javascript:void(0)">
                             Collections
                             <span class="material-symbols-outlined text-sm">expand_more</span>
@@ -236,7 +235,7 @@
 
                     <!-- Services Dropdown -->
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="javascript:void(0)">
                             Services
                             <span class="material-symbols-outlined text-sm">expand_more</span>
@@ -253,11 +252,11 @@
                         </div>
                     </div>
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="portfolio">Portfolio</a>
                     </div>
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="about">About Us</a>
                     </div>
                 </nav>
@@ -282,8 +281,7 @@
             <!-- Sidebar Header -->
             <div class="flex items-center justify-between px-7 pt-7 pb-6 border-b border-white/[0.06] flex-shrink-0">
                 <div class="flex items-center gap-3">
-                    <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF" class="h-8 w-8 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="lazy" fetchpriority="low">
-                    <span class="font-serif text-base tracking-widest text-ivory uppercase">CHF</span>
+                    <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_logo.png" alt="CHF Logo" class="block flex-shrink-0" style="width: 200px; height: 4rem; object-fit: contain; background: transparent;" decoding="async" loading="lazy" fetchpriority="low">
                 </div>
                 <button id="mobile-close-btn" class="w-8 h-8 flex items-center justify-center text-ivory/50 hover:text-ivory transition-colors duration-300 rounded-full border border-white/10 hover:border-white/30">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -441,16 +439,16 @@
         </section>
 
             <section
-                class="bg-[#111111] py-20 md:py-28 px-5 md:px-12 lg:px-16 relative z-40 overflow-hidden">
+                class="bg-black py-20 md:py-28 px-5 md:px-12 lg:px-16 relative z-40 overflow-hidden">
                 <div class="mx-auto max-w-7xl">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-start">
                         <div class="md:col-span-4 pt-4 lg:pt-10 reveal reveal-up">
                             <h2 class="font-serif text-5xl sm:text-4xl md:text-5xl lg:text-[4.5rem] text-ivory/60 font-light leading-[0.92] tracking-tight mb-8"
                                 data-cms="home/staging/title">Landscape Staging</h2>
-                            <p class="bg-black/70 text-ivory/70 font-light text-sm md:text-base leading-relaxed max-w-sm px-3 py-2 mb-6"
+                            <p class="text-ivory/70 font-light text-sm md:text-base leading-relaxed max-w-sm mb-6"
                                 data-cms="home/staging/body">Layered landscape compositions that bring structure, softness, and living depth into contemporary spaces.</p>
                             <a href="landscape-staging"
-                                class="group inline-flex items-center gap-4 bg-black/75 px-4 py-3 text-[10px] uppercase tracking-[0.24em] text-ivory/80 border border-white/5 w-fit hover:text-accent-bronze transition-colors">
+                                class="group inline-flex items-center gap-4 px-0 py-3 text-[10px] uppercase tracking-[0.24em] text-ivory/80 w-fit hover:text-accent-bronze transition-colors">
                                 <span data-cms="home/staging/cta">Let's Create Something Living</span>
                                 <span class="text-lg leading-none transition-transform group-hover:translate-x-1">→</span>
                             </a>
@@ -460,32 +458,32 @@
                             <div class="grid grid-cols-3 gap-3 sm:gap-6 lg:gap-7 mb-3">
                                 <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] rounded-[1.25rem] sm:rounded-[2rem] bg-cover bg-center bg-no-repeat"
                                     data-cms="home/staging/feature1/image"
-                                    style="border: 3px solid rgba(255, 255, 255, 0.45); background-color: #111111;"
+                                    style="background-color: #111111;"
                                     aria-hidden="true"></div>
                                 <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] rounded-[1.25rem] sm:rounded-[2rem] bg-cover bg-center bg-no-repeat"
                                     data-cms="home/staging/feature2/image"
-                                    style="border: 3px solid rgba(255, 255, 255, 0.45); background-color: #111111;"
+                                    style="background-color: #111111;"
                                     aria-hidden="true"></div>
                                 <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] rounded-[1.25rem] sm:rounded-[2rem] bg-cover bg-center bg-no-repeat"
                                     data-cms="home/staging/feature3/image"
-                                    style="border: 3px solid rgba(255, 255, 255, 0.45); background-color: #111111;"
+                                    style="background-color: #111111;"
                                     aria-hidden="true"></div>
                             </div>
 
                             <div class="grid grid-cols-3 gap-3 sm:gap-6 lg:gap-7">
-                                <div class="bg-black/70 px-3 sm:px-4 py-5">
+                                <div class="px-0 py-5">
                                     <h3 class="font-serif text-lg md:text-xl text-ivory/75 mb-2"
                                         data-cms="home/staging/feature1/title">Intentional Layering</h3>
                                     <p class="text-ivory/55 font-light text-sm leading-relaxed"
                                         data-cms="home/staging/feature1/body">Thoughtful plant selection and spatial layering.</p>
                                 </div>
-                                <div class="bg-black/70 px-3 sm:px-4 py-5">
+                                <div class="px-0 py-5">
                                     <h3 class="font-serif text-lg md:text-xl text-ivory/75 mb-2"
                                         data-cms="home/staging/feature2/title">Natural Integration</h3>
                                     <p class="text-ivory/55 font-light text-sm leading-relaxed"
                                         data-cms="home/staging/feature2/body">Seamless harmony between nature and architecture.</p>
                                 </div>
-                                <div class="bg-black/70 px-3 sm:px-4 py-5">
+                                <div class="px-0 py-5">
                                     <h3 class="font-serif text-lg md:text-xl text-ivory/75 mb-2"
                                         data-cms="home/staging/feature3/title">Sensory Experience</h3>
                                     <p class="text-ivory/55 font-light text-sm leading-relaxed"
@@ -710,12 +708,11 @@
             </section>
         </main>
     <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
-        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl pl-0 pr-6 lg:pl-0 lg:pr-8">
             <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
                 <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
-                    <div class="flex items-center gap-3 mb-8">
-                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF Logo" class="h-12 w-12 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="lazy" fetchpriority="low">
-                        <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
+                    <div class="flex items-center justify-start gap-3 mb-8">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_logo.png" alt="CHF Logo" class="block flex-shrink-0" style="width: 200px; height: 4.5rem; object-fit: cover; object-position: left center; background: transparent; transform: scale(2); transform-origin: left center;" decoding="async" loading="lazy" fetchpriority="low">
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
                         Elevating spaces through the thoughtful integration of nature and design. We bring the quiet

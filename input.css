@@ -16,4 +16,26 @@
         background-color: transparent !important;
         box-shadow: none !important;
     }
+
+    header img[src*="chf_logo.png"] {
+        width: auto !important;
+        height: 3.5rem !important;
+        max-width: 8rem;
+        object-fit: contain !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    #mobile-sidebar img[src*="chf_logo.png"] {
+        width: auto !important;
+        height: 3rem !important;
+        max-width: 7rem;
+        object-fit: contain !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
 }
