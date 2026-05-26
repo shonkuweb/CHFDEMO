@@ -35,9 +35,7 @@
         'full-grown-avenue-trees',
         'exotic-indoor-plants',
         'bonsai',
-        'curated-planters',
-        'curated-specimens',
-        'deep-solitude'
+        'curated-planters'
     ];
 
     if (!VALID_PAGES.includes(filename)) return;

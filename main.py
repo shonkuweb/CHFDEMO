@@ -1086,6 +1086,9 @@ async def save_home_trends_section(request: Request, admin: str = Depends(get_cu
 async def serve_static(request: Request, path: str):
     if not path or path == "/":
         path = "index.html"
+
+    if path in {"deep-solitude", "deep-solitude.html"}:
+        return RedirectResponse("/curated-specimens", status_code=301)
         
     if path.endswith(".py") or path.endswith(".db") or path == ".env" or path.startswith("."):
         raise HTTPException(status_code=403, detail="Forbidden")
