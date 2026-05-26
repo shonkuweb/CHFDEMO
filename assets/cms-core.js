@@ -87,6 +87,7 @@
         'living-walls': 'living-walls',
         'architectural-harmony': 'arch',
         'landscaping-design-development': 'landscaping-design',
+        'landscape-staging': 'landscape-staging',
         'plant-supply': 'plant-supply',
         'garden-maintenance': 'garden-maintenance',
         'plant-experience-center': 'plant-center',

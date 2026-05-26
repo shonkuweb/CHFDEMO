@@ -180,6 +180,58 @@ SITE_CONTENT_DEFAULTS = {
         "value": "Vertical ecosystems that redefine internal boundaries, offering a rhythmic pulse to static architecture.",
         "type": "longtext",
     },
+    "home/staging/eyebrow": {
+        "value": "Service as an Art Form",
+        "type": "text",
+    },
+    "home/staging/title": {
+        "value": "Landscape Staging",
+        "type": "text",
+    },
+    "home/staging/body": {
+        "value": "Layered landscape compositions that bring structure, softness, and living depth into contemporary spaces.",
+        "type": "longtext",
+    },
+    "home/staging/cta": {
+        "value": "Let's Create Something Living",
+        "type": "text",
+    },
+    "home/staging/feature1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg",
+        "type": "media",
+    },
+    "home/staging/feature1/title": {
+        "value": "Intentional Layering",
+        "type": "text",
+    },
+    "home/staging/feature1/body": {
+        "value": "Thoughtful plant selection and spatial layering.",
+        "type": "longtext",
+    },
+    "home/staging/feature2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg",
+        "type": "media",
+    },
+    "home/staging/feature2/title": {
+        "value": "Natural Integration",
+        "type": "text",
+    },
+    "home/staging/feature2/body": {
+        "value": "Seamless harmony between nature and architecture.",
+        "type": "longtext",
+    },
+    "home/staging/feature3/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg",
+        "type": "media",
+    },
+    "home/staging/feature3/title": {
+        "value": "Sensory Experience",
+        "type": "text",
+    },
+    "home/staging/feature3/body": {
+        "value": "Landscapes that engage the senses and elevate daily life.",
+        "type": "longtext",
+    },
     "home/philosophy/image": {
         "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/deepsolitudehero.png",
         "type": "media",
@@ -226,6 +278,18 @@ SITE_CONTENT_DEFAULTS = {
     },
     "landscaping-design/closing/title": {
         "value": "From concept to completion,<br><span class=\"text-accent-bronze italic mt-4 block\">we build landscapes that mature with intent.</span>",
+        "type": "text",
+    },
+    "landscape-staging/hero/title": {
+        "value": "Landscape <span class=\"text-accent-bronze italic\">Staging</span>",
+        "type": "text",
+    },
+    "landscape-staging/hero/subtitle": {
+        "value": "Composed botanical staging for spaces that need to feel complete from the first impression.",
+        "type": "text",
+    },
+    "landscape-staging/closing/title": {
+        "value": "Every staged landscape should feel effortless.<br><span class=\"text-accent-bronze italic mt-4 block\">We make the living details intentional.</span>",
         "type": "text",
     },
     "plant-supply/hero/title": {
@@ -463,6 +527,13 @@ LANDSCAPING_BLOCKS = [
     ("Post-Completion Evolution", "We design for years ahead, not just launch day. Growth behavior, replacement strategy, and seasonal transitions are considered upfront to keep the landscape refined over time.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_post_completion.jpg"),
 ]
 
+LANDSCAPE_STAGING_BLOCKS = [
+    ("Arrival Composition", "We stage entrances, patios, terraces, and event-facing green zones so the first view feels balanced, lush, and ready for use.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg"),
+    ("Layered Visual Depth", "Tall forms, ground textures, planters, and focal specimens are arranged to create depth without overwhelming the architecture.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg"),
+    ("Event-Ready Greenery", "Plant material, containers, and placement are coordinated for openings, photoshoots, residences, and hospitality spaces that need immediate polish.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg"),
+    ("Refinement After Placement", "After staging, we tune spacing, orientation, irrigation access, and care notes so the composition remains composed beyond installation day.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_post_completion.jpg"),
+]
+
 PLANT_SUPPLY_BLOCKS = [
     ("Curated Plant Procurement", "We source healthy, structurally sound plant material from trusted growers, with species calibrated to project context, climate, and desired visual maturity.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_procurement.jpg"),
     ("Nursery Quality Audit", "Before dispatch, every batch is evaluated for root health, branch structure, pest status, and moisture condition to reduce replacement risk on site.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_quality_audit.jpg"),
@@ -487,6 +558,20 @@ for idx, (title, body, image_url) in enumerate(LANDSCAPING_BLOCKS, start=1):
         "type": "text",
     }
     SITE_CONTENT_DEFAULTS[f"landscaping-design/block{idx}/body"] = {
+        "value": body,
+        "type": "longtext",
+    }
+
+for idx, (title, body, image_url) in enumerate(LANDSCAPE_STAGING_BLOCKS, start=1):
+    SITE_CONTENT_DEFAULTS[f"landscape-staging/block{idx}/image"] = {
+        "value": image_url,
+        "type": "media",
+    }
+    SITE_CONTENT_DEFAULTS[f"landscape-staging/block{idx}/title"] = {
+        "value": title,
+        "type": "text",
+    }
+    SITE_CONTENT_DEFAULTS[f"landscape-staging/block{idx}/body"] = {
         "value": body,
         "type": "longtext",
     }

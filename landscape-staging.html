@@ -4,7 +4,7 @@
     <link rel="preconnect" href="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev" crossorigin>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Plant Supply - CHF Botanical Luxury</title>
+    <title>Landscape Staging - CHF Botanical Luxury</title>
     <link rel="stylesheet" href="assets/tailwind.css" />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
@@ -25,8 +25,6 @@
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
                             href="plant-experience-center">Plant Experience Center</a>
                     </div>
-
-                    <!-- Collections Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
                             href="javascript:void(0)">
@@ -44,8 +42,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Services Dropdown -->
                     <div class="relative group">
                         <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
                             href="javascript:void(0)">
@@ -56,20 +52,17 @@
                             <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
                                 <div class="flex flex-col gap-4">
                                     <a href="landscaping-design-development" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Landscaping Design &amp; Development</a>
+                                    <a href="landscape-staging" class="text-[10px] uppercase tracking-widest text-accent-bronze transition-colors">Landscape Staging</a>
                                     <a href="plant-supply" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Plant Supply</a>
                                     <a href="garden-maintenance" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Garden Maintenance</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="portfolio">Portfolio</a>
-                    </div>
-                    <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="about">About Us</a>
-                    </div>
+                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        href="portfolio">Portfolio</a>
+                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
+                        href="about">About Us</a>
                 </nav>
                 <button id="mobile-menu-btn"
                     class="lg:hidden flex items-center text-ivory z-[80] p-2 relative w-10 h-10 justify-center">
@@ -80,16 +73,12 @@
             </div>
         </header>
 
-        <!-- Mobile Sidebar Backdrop -->
         <div id="mobile-backdrop"
             class="fixed inset-0 bg-black/50 backdrop-blur-md z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
 
-        <!-- Mobile Sidebar Drawer -->
         <div id="mobile-sidebar"
             class="fixed top-0 right-0 h-full w-full bg-[#0a0a0a]/95 backdrop-blur-3xl z-[100] lg:hidden flex flex-col translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] overflow-y-auto"
             style="will-change: transform;">
-
-            <!-- Sidebar Header -->
             <div class="flex items-center justify-between px-7 pt-7 pb-6 border-b border-white/[0.06] flex-shrink-0">
                 <div class="flex items-center gap-3">
                     <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF" class="h-8 w-8 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="lazy" fetchpriority="low">
@@ -99,20 +88,12 @@
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-
-            <!-- Bronze accent line -->
             <div class="h-px bg-gradient-to-r from-transparent via-accent-bronze/40 to-transparent mx-7 flex-shrink-0"></div>
-
-            <!-- Nav Links -->
             <nav class="flex flex-col flex-1 px-7 py-8 gap-1" id="sidebar-nav">
-
-                <!-- Plant Experience Center -->
-                <a href="plant-experience-center" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group" style="transition-delay: 0.05s">
+                <a href="plant-experience-center" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
                     <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Plant Experience Center</span>
                     <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
                 </a>
-
-                <!-- Collections Accordion -->
                 <div class="border-b border-white/[0.05]">
                     <button class="sidebar-accordion w-full flex items-center justify-between py-4 group" data-target="collections-panel">
                         <span class="text-[10px] uppercase tracking-[0.25em] font-bold text-accent-bronze/80 group-hover:text-accent-bronze transition-colors duration-300">Collections</span>
@@ -127,8 +108,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Services Accordion -->
                 <div class="border-b border-white/[0.05]">
                     <button class="sidebar-accordion w-full flex items-center justify-between py-4 group" data-target="services-panel">
                         <span class="text-[10px] uppercase tracking-[0.25em] font-bold text-accent-bronze/80 group-hover:text-accent-bronze transition-colors duration-300">Services</span>
@@ -137,175 +116,151 @@
                     <div id="services-panel" class="sidebar-panel overflow-hidden" style="max-height: 0; transition: max-height 0.4s cubic-bezier(0.76,0,0.24,1);">
                         <div class="flex flex-col pb-4 pl-3 gap-0.5">
                             <a href="landscaping-design-development" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Landscaping Design &amp; Development</a>
+                            <a href="landscape-staging" class="mobile-link py-2.5 text-[13px] font-light text-accent-bronze transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Landscape Staging</a>
                             <a href="plant-supply" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Plant Supply</a>
                             <a href="garden-maintenance" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Garden Maintenance</a>
                         </div>
                     </div>
                 </div>
-
-                <!-- About Us -->
-                <a href="portfolio" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group" style="transition-delay: 0.15s">
+                <a href="portfolio" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
                     <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Portfolio</span>
                     <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
                 </a>
-
-                <a href="about" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group" style="transition-delay: 0.15s">
+                <a href="about" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
                     <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">About Us</span>
                     <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
                 </a>
             </nav>
-
-            <!-- Sidebar Footer -->
-                        <!-- Sidebar Contact Info -->
-            <div class="px-7 py-4 border-t border-white/[0.06] flex flex-col gap-3">
-                <div class="flex flex-col">
-                    <span class="text-[9px] uppercase tracking-widest text-accent-bronze/50 font-bold mb-1">Email</span>
-                    <a href="mailto:calcuttahorticulturalfarm@gmail.com" class="text-[12px] text-ivory/60 hover:text-accent-bronze transition-colors break-all" data-cms="global/contact/email">calcuttahorticulturalfarm@gmail.com</a>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-[9px] uppercase tracking-widest text-accent-bronze/50 font-bold mb-1">Phone</span>
-                    <a href="tel:+917980783108" class="text-[12px] text-ivory/60 hover:text-accent-bronze transition-colors" data-cms="global/contact/phone">+91 79807 83108</a>
-                </div>
-            </div>
-
-            <div class="px-7 py-6 border-t border-white/[0.06] flex-shrink-0">
-                <div class="flex items-center gap-4 mb-5">
-                    <a class="text-white/30 hover:text-accent-bronze transition-colors duration-300" href="https://www.instagram.com/chf_thegreenscapers/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
-                    </a>
-                    <a class="text-white/30 hover:text-accent-bronze transition-colors duration-300" href="https://www.facebook.com/CalcuttaHorticulturalFarm/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"></path></svg>
-                    </a>
-                </div>
-                <p class="text-[10px] text-white/15 uppercase tracking-widest">© 2026 CHF Botanical Luxury</p>
-            </div>
         </div>
 
         <main class="flex-grow pt-20">
             <section class="py-24 px-6 lg:px-12 text-center max-w-4xl mx-auto relative">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
-                <h1 class="font-serif text-balance text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10" data-cms="plant-supply/hero/title">
-                    Plant <span class="text-accent-bronze italic">Supply</span>
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <span class="w-12 h-px bg-accent-bronze/40"></span>
+                    <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Services</span>
+                    <span class="w-12 h-px bg-accent-bronze/40"></span>
+                </div>
+                <h1 class="font-serif text-balance text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10" data-cms="landscape-staging/hero/title">
+                    Landscape <span class="text-accent-bronze italic">Staging</span>
                 </h1>
-                <p class="text-ivory-dim text-sm md:text-base font-bold uppercase tracking-[0.2em] relative z-10" data-cms="plant-supply/hero/subtitle">
-                    Sourcing resilient plant material for premium landscapes.
+                <p class="text-ivory-dim text-sm md:text-base font-bold uppercase tracking-[0.2em] relative z-10" data-cms="landscape-staging/hero/subtitle">
+                    Composed botanical staging for spaces that need to feel complete from the first impression.
                 </p>
             </section>
 
             <section class="pb-32 px-6 lg:px-24 flex flex-col gap-24 lg:gap-32 w-full max-w-7xl mx-auto">
-                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 reveal reveal-up">
                     <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_procurement.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="plant-supply/block1/image" / decoding="async" loading="lazy" fetchpriority="low">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg" alt="Arrival composition with staged greenery" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="landscape-staging/block1/image" decoding="async" loading="lazy" fetchpriority="low">
                     </div>
                     <div class="w-full lg:w-[55%] flex flex-col justify-center">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="plant-supply/block1/title">Curated Plant Procurement</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="plant-supply/block1/body"></p>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="landscape-staging/block1/title">Arrival Composition</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="landscape-staging/block1/body">
+                            We stage entrances, patios, terraces, and event-facing green zones so the first view feels balanced, lush, and ready for use.
+                        </p>
                     </div>
                 </div>
-                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20 reveal reveal-up">
                     <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_quality_audit.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="plant-supply/block2/image" / decoding="async" loading="lazy" fetchpriority="low">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg" alt="Layered landscape staging textures" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="landscape-staging/block2/image" decoding="async" loading="lazy" fetchpriority="low">
                     </div>
                     <div class="w-full lg:w-[55%] flex flex-col justify-center">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="plant-supply/block2/title">Nursery Quality Audit</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="plant-supply/block2/body"></p>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="landscape-staging/block2/title">Layered Visual Depth</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="landscape-staging/block2/body">
+                            Tall forms, ground textures, planters, and focal specimens are arranged to create depth without overwhelming the architecture.
+                        </p>
                     </div>
                 </div>
-                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 reveal reveal-up">
                     <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_climate_matched.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="plant-supply/block3/image" / decoding="async" loading="lazy" fetchpriority="low">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg" alt="Event-ready botanical staging" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="landscape-staging/block3/image" decoding="async" loading="lazy" fetchpriority="low">
                     </div>
                     <div class="w-full lg:w-[55%] flex flex-col justify-center">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="plant-supply/block3/title">Climate-Matched Selection</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="plant-supply/block3/body"></p>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="landscape-staging/block3/title">Event-Ready Greenery</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="landscape-staging/block3/body">
+                            Plant material, containers, and placement are coordinated for openings, photoshoots, residences, and hospitality spaces that need immediate polish.
+                        </p>
                     </div>
                 </div>
-                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20 reveal reveal-up">
                     <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_logistics_control.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="plant-supply/block4/image" / decoding="async" loading="lazy" fetchpriority="low">
+                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_post_completion.jpg" alt="Final staging refinement after placement" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="landscape-staging/block4/image" decoding="async" loading="lazy" fetchpriority="low">
                     </div>
                     <div class="w-full lg:w-[55%] flex flex-col justify-center">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="plant-supply/block4/title">Logistics and Staging Control</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="plant-supply/block4/body"></p>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="landscape-staging/block4/title">Refinement After Placement</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="landscape-staging/block4/body">
+                            After staging, we tune spacing, orientation, irrigation access, and care notes so the composition remains composed beyond installation day.
+                        </p>
                     </div>
                 </div>
             </section>
 
             <section class="py-24 bg-[#0a0a0a] border-t border-white/5 text-center mt-8">
-                <p class="font-serif text-2xl md:text-4xl lg:text-5xl text-ivory leading-tight" data-cms="plant-supply/closing/title"></p>
+                <p class="font-serif text-2xl md:text-4xl lg:text-5xl text-ivory leading-tight px-6" data-cms="landscape-staging/closing/title">
+                    Every staged landscape should feel effortless.<br>
+                    <span class="text-accent-bronze italic mt-4 block">We make the living details intentional.</span>
+                </p>
             </section>
         </main>
-    <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
-        <div class="mx-auto max-w-7xl px-6 lg:px-8">
-            <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
-                <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
-                    <div class="flex items-center gap-3 mb-8">
-                        <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF Logo" class="h-12 w-12 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="lazy" fetchpriority="low">
-                        <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
+
+        <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
+            <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
+                    <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
+                        <div class="flex items-center gap-3 mb-8">
+                            <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF Logo" class="h-12 w-12 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="lazy" fetchpriority="low">
+                            <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
+                            Elevating spaces through the thoughtful integration of nature and design. We bring the quiet
+                            power of the forest into the modern sanctuary.
+                        </p>
                     </div>
-                    <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
-                        Elevating spaces through the thoughtful integration of nature and design. We bring the quiet
-                        power of the forest into the modern sanctuary.
-                    </p>
-                    <div class="flex gap-6">
-                        <a class="text-gray-500 hover:text-accent-bronze transition-colors" href="https://www.instagram.com/chf_thegreenscapers/" target="_blank" rel="noopener noreferrer">
-                            <span class="sr-only">Instagram</span>
-                            <svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
-                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
-                            </svg>
-                        </a>
-                        <a class="text-gray-500 hover:text-accent-bronze transition-colors" href="https://www.facebook.com/CalcuttaHorticulturalFarm/?ref=PRODASH_UPSELL_xav_ig_profile_page_web#" target="_blank" rel="noopener noreferrer">
-                            <span class="sr-only">Facebook</span>
-                            <svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"></path>
-                            </svg>
-                        </a>
+                    <div>
+                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
+                        <ul class="space-y-4">
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about">About Us</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center">Experience Center</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio">Portfolio</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Expertise</h3>
+                        <ul class="space-y-4">
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="landscaping-design-development">Landscaping Design &amp; Development</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="landscape-staging">Landscape Staging</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-supply">Plant Supply</a></li>
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="garden-maintenance">Garden Maintenance</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
+                        <ul class="space-y-4">
+                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry">Inquiry</a></li>
+                            <li class="flex flex-col gap-2 pt-2">
+                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Email</span>
+                                <a class="text-sm text-gray-500 hover:text-primary transition-colors break-all" href="mailto:calcuttahorticulturalfarm@gmail.com" data-cms="global/contact/email">calcuttahorticulturalfarm@gmail.com</a>
+                            </li>
+                            <li class="flex flex-col gap-2 pt-2">
+                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Phone</span>
+                                <a class="text-sm text-gray-500 hover:text-primary transition-colors" href="tel:+917980783108" data-cms="global/contact/phone">+91 79807 83108</a>
+                            </li>
+                            <li><a class="text-[10px] uppercase tracking-widest text-gray-800 hover:text-accent-bronze transition-colors mt-8 block" href="admin-login">Admin Login</a></li>
+                        </ul>
                     </div>
                 </div>
-                <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
-                    <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about">About Us</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center">Experience Center</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio">Portfolio</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Expertise</h3>
-                    <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="landscaping-design-development">Landscaping Design &amp; Development</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-supply">Plant Supply</a></li>
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="garden-maintenance">Garden Maintenance</a></li>
-                        
-                    </ul>
-                </div>
-                                <div>
-                    <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
-                    <ul class="space-y-4">
-                        <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry">Inquiry</a></li>
-                        <li class="flex flex-col gap-2 pt-2">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Email</span>
-                            <a class="text-sm text-gray-500 hover:text-primary transition-colors break-all" href="mailto:calcuttahorticulturalfarm@gmail.com" data-cms="global/contact/email">calcuttahorticulturalfarm@gmail.com</a>
-                        </li>
-                        <li class="flex flex-col gap-2 pt-2">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Phone</span>
-                            <a class="text-sm text-gray-500 hover:text-primary transition-colors" href="tel:+917980783108" data-cms="global/contact/phone">+91 79807 83108</a>
-                        </li>
-                        <li><a class="text-[10px] uppercase tracking-widest text-gray-800 hover:text-accent-bronze transition-colors mt-8 block" href="admin-login">Admin Login</a></li>
-                    </ul>
+                <div class="border-t border-white/5 pt-8 text-center">
+                    <p class="text-xs text-gray-600" data-cms="global/footer/copyright">© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb</p>
                 </div>
             </div>
-            <div class="border-t border-white/5 pt-8 text-center">
-                <p class="text-xs text-gray-600" data-cms="global/footer/copyright">© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb</p>
-            </div>
-        </div>
-        </div>
-    </footer>
+        </footer>
     </div>
+
     <script>
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileCloseBtn = document.getElementById('mobile-close-btn');
@@ -314,6 +269,7 @@
         const mobileLinks = document.querySelectorAll('.mobile-link');
         const lines = mobileBtn ? mobileBtn.querySelectorAll('.hamburger-line') : [];
         let isOpen = false;
+
         function openSidebar() {
             isOpen = true;
             sidebar.classList.remove('translate-x-full');
@@ -327,6 +283,7 @@
             }
             document.body.style.overflow = 'hidden';
         }
+
         function closeSidebar() {
             isOpen = false;
             sidebar.classList.add('translate-x-full');
@@ -340,6 +297,7 @@
             }
             document.body.style.overflow = '';
         }
+
         if (mobileBtn && mobileCloseBtn && sidebar && backdrop) {
             mobileBtn.addEventListener('click', () => isOpen ? closeSidebar() : openSidebar());
             mobileCloseBtn.addEventListener('click', closeSidebar);
