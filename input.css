@@ -18,10 +18,11 @@
     }
 
     header img[src*="chf_logo.png"] {
-        width: auto !important;
-        height: 3.5rem !important;
-        max-width: 8rem;
+        width: min(11rem, 100%) !important;
+        height: 4rem !important;
         object-fit: contain !important;
+        object-position: left center !important;
+        transform: none !important;
         border: 0 !important;
         border-radius: 0 !important;
         background: transparent !important;
