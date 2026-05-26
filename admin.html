@@ -819,9 +819,8 @@
                     if (!currentSiteData.value) return;
                     const existing = getStructuredBlockIndices(prefix);
                     const nextIndex = existing.length ? Math.max(...existing) + 1 : 1;
-                    const imageSeed = ((nextIndex - 1) % 4) + 1;
                     currentSiteData.value[`${prefix}/block${nextIndex}/image`] = {
-                        value: `https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_${imageSeed}.png`,
+                        value: '',
                         type: 'media'
                     };
                     currentSiteData.value[`${prefix}/block${nextIndex}/title`] = {

@@ -658,6 +658,40 @@ def migrate_legacy_site_content_keys():
             ("", path, stale_value),
         )
 
+    # Remove bundled placeholder media from CMS rows. Public pages should show
+    # only URLs that were intentionally published through admin.
+    stale_media_patterns = [
+        "%/assets/arch_zigzag_%.png",
+        "%/assets/images/deepsolitudehero.png",
+        "%/assets/images/services/architectural_harmony.png",
+        "%/assets/images/services/curated_specimen_%.png",
+        "%/assets/images/services/curated_specimens.png",
+        "%/assets/images/services/garden_maintenance_%.jpg",
+        "%/assets/images/services/landscape_design_%.jpg",
+        "%/assets/images/services/plant_supply_%.jpg",
+        "%/assets/images/services/white_glove_%.png",
+    ]
+    for pattern in stale_media_patterns:
+        cur.execute(
+            "UPDATE site_content SET value = ? WHERE type = ? AND value LIKE ?",
+            ("", "media", pattern),
+        )
+
+    # If a row still exactly matches a bundled default, treat it as seed content,
+    # not authored CMS content. This preserves any admin-published value that
+    # differs from the old defaults while preventing old copy from resurfacing.
+    protected_default_prefixes = ("global/", "home/staging/")
+    for path, payload in SITE_CONTENT_DEFAULTS.items():
+        if path in PROTECTED_SITE_CONTENT_PATHS or path.startswith(protected_default_prefixes):
+            continue
+        default_value = str(payload.get("value") or "")
+        if not default_value:
+            continue
+        cur.execute(
+            "UPDATE site_content SET value = ? WHERE path = ? AND value = ?",
+            ("", path, default_value),
+        )
+
     for path, payload in SITE_CONTENT_DEFAULTS.items():
         cur.execute("SELECT value FROM site_content WHERE path = ?", (path,))
         row = cur.fetchone()
@@ -671,24 +705,9 @@ def migrate_legacy_site_content_keys():
         if row is None:
             cur.execute(
                 "INSERT INTO site_content (path, value, type) VALUES (?, ?, ?)",
-                (path, payload["value"], payload["type"]),
+                (path, "", payload["type"]),
             )
             continue
-
-        if not str(row["value"] or "").strip():
-            backfill_value = payload["value"]
-            backfill_type = payload["type"]
-            if path.startswith("deep/"):
-                legacy_path = path.replace("deep/", "specimens/", 1)
-                cur.execute("SELECT value, type FROM site_content WHERE path = ?", (legacy_path,))
-                legacy_row = cur.fetchone()
-                if legacy_row and str(legacy_row["value"] or "").strip():
-                    backfill_value = legacy_row["value"]
-                    backfill_type = legacy_row["type"] or payload["type"]
-            cur.execute(
-                "UPDATE site_content SET value = ?, type = ? WHERE path = ?",
-                (backfill_value, backfill_type, path),
-            )
 
     conn.commit()
     conn.close()
