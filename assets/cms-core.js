@@ -366,19 +366,17 @@
             const content = data[path];
 
             if (!content) {
-                clearCmsElement(el);
-                if (DEBUG) console.warn(`[CMS] No data found for path: ${path}, fallback cleared`);
+                if (DEBUG) console.warn(`[CMS] No data found for path: ${path}, keeping inline fallback`);
                 return;
             }
 
             const val  = content.value;
             const type = content.type;
+            if (val == null || !String(val).trim()) {
+                if (DEBUG) console.warn(`[CMS] Empty value for path: ${path}, keeping inline fallback`);
+                return;
+            }
             if (type === 'media') {
-                if (val == null || !String(val).trim()) {
-                    clearCmsElement(el);
-                    if (DEBUG) console.warn(`[CMS] Empty media for path: ${path}, cleared`);
-                    return;
-                }
                 if (el.tagName === 'IMG') {
                     el.src = val;
                 } else if (el.tagName === 'VIDEO') {

@@ -360,6 +360,66 @@ SITE_CONTENT_DEFAULTS = {
         "value": "When walls begin to grow, spaces begin to breathe.<br><span class=\"text-accent-bronze italic mt-4 block\">Nature becomes architecture.</span>",
         "type": "text",
     },
+    "deep/hero/title": {
+        "value": "Deep <br /><span class=\"text-accent-bronze italic font-light drop-shadow-sm\">Solitude</span>",
+        "type": "text",
+    },
+    "deep/hero/subtitle": {
+        "value": "Not added — introduced. Every specimen placed with purpose.",
+        "type": "text",
+    },
+    "deep/block1/title": {
+        "value": "Sensory Calm",
+        "type": "text",
+    },
+    "deep/block1/body": {
+        "value": "Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.",
+        "type": "longtext",
+    },
+    "deep/block1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_1.png",
+        "type": "media",
+    },
+    "deep/block2/title": {
+        "value": "Breathable Living",
+        "type": "text",
+    },
+    "deep/block2/body": {
+        "value": "Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.",
+        "type": "longtext",
+    },
+    "deep/block2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_2.png",
+        "type": "media",
+    },
+    "deep/block3/title": {
+        "value": "Quietly Premium",
+        "type": "text",
+    },
+    "deep/block3/body": {
+        "value": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.",
+        "type": "longtext",
+    },
+    "deep/block3/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_3.png",
+        "type": "media",
+    },
+    "deep/block4/title": {
+        "value": "Elevated Thinking",
+        "type": "text",
+    },
+    "deep/block4/body": {
+        "value": "Clean lines, controlled light, and a sculptural plant improve cognitive performance and reduce fatigue — bringing clarity, calm, and subtle vitality into a workspace designed for focus, decision-making, and elevated thinking.",
+        "type": "longtext",
+    },
+    "deep/block4/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png",
+        "type": "media",
+    },
+    "deep/closing/title": {
+        "value": "A space that feels alive<br><span class=\"text-accent-bronze italic mt-4 block\">is a space that inspires.</span>",
+        "type": "longtext",
+    },
 }
 
 HOME_TRENDS_DEFAULTS = {
@@ -501,20 +561,40 @@ def migrate_legacy_site_content_keys():
     )
 
     for path, payload in SITE_CONTENT_DEFAULTS.items():
-        cur.execute("SELECT 1 FROM site_content WHERE path = ?", (path,))
+        cur.execute("SELECT value FROM site_content WHERE path = ?", (path,))
+        row = cur.fetchone()
         if path in PROTECTED_SITE_CONTENT_PATHS:
             cur.execute(
                 "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
                 (path, payload["value"], payload["type"]),
             )
-        elif cur.fetchone() is None:
+            continue
+
+        if row is None:
             cur.execute(
                 "INSERT INTO site_content (path, value, type) VALUES (?, ?, ?)",
                 (path, payload["value"], payload["type"]),
             )
+            continue
+
+        if not str(row["value"] or "").strip():
+            backfill_value = payload["value"]
+            backfill_type = payload["type"]
+            if path.startswith("deep/"):
+                legacy_path = path.replace("deep/", "specimens/", 1)
+                cur.execute("SELECT value, type FROM site_content WHERE path = ?", (legacy_path,))
+                legacy_row = cur.fetchone()
+                if legacy_row and str(legacy_row["value"] or "").strip():
+                    backfill_value = legacy_row["value"]
+                    backfill_type = legacy_row["type"] or payload["type"]
+            cur.execute(
+                "UPDATE site_content SET value = ?, type = ? WHERE path = ?",
+                (backfill_value, backfill_type, path),
+            )
 
     conn.commit()
     conn.close()
+    clear_cache()
 
 def ensure_sync_state_table():
     conn = get_db_connection()
