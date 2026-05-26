@@ -197,7 +197,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "home/staging/feature1/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg",
+        "value": "",
         "type": "media",
     },
     "home/staging/feature1/title": {
@@ -209,7 +209,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "longtext",
     },
     "home/staging/feature2/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg",
+        "value": "",
         "type": "media",
     },
     "home/staging/feature2/title": {
@@ -221,7 +221,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "longtext",
     },
     "home/staging/feature3/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg",
+        "value": "",
         "type": "media",
     },
     "home/staging/feature3/title": {
@@ -644,6 +644,19 @@ def migrate_legacy_site_content_keys():
         "UPDATE categories SET page_slug = ? WHERE page_slug = ?",
         ("curated-planters", "curated-plants")
     )
+
+    # The homepage Landscape Staging image slots intentionally start blank.
+    # Clear only the earlier built-in defaults; preserve any custom URLs added later.
+    stale_staging_images = {
+        "home/staging/feature1/image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg",
+        "home/staging/feature2/image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg",
+        "home/staging/feature3/image": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg",
+    }
+    for path, stale_value in stale_staging_images.items():
+        cur.execute(
+            "UPDATE site_content SET value = ? WHERE path = ? AND value = ?",
+            ("", path, stale_value),
+        )
 
     for path, payload in SITE_CONTENT_DEFAULTS.items():
         cur.execute("SELECT value FROM site_content WHERE path = ?", (path,))
