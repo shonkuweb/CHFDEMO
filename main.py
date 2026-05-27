@@ -117,6 +117,7 @@ def fetch_site_content(prefix):
     data = {row['path']: {'value': row['value'], 'type': row['type']} for row in rows}
     if prefix == "home":
         data.update(FIXED_HOME_HERO_MEDIA)
+        data.update(FIXED_HOME_STAGING_MEDIA)
     return data
 
 def clear_cache():
@@ -133,7 +134,21 @@ FIXED_HOME_HERO_MEDIA = {
         "type": "media",
     },
 }
-PROTECTED_SITE_CONTENT_PATHS = set(FIXED_HOME_HERO_MEDIA)
+FIXED_HOME_STAGING_MEDIA = {
+    "home/staging/feature1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner1.png",
+        "type": "media",
+    },
+    "home/staging/feature2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner2.png",
+        "type": "media",
+    },
+    "home/staging/feature3/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner.png",
+        "type": "media",
+    },
+}
+PROTECTED_SITE_CONTENT_PATHS = set(FIXED_HOME_HERO_MEDIA) | set(FIXED_HOME_STAGING_MEDIA)
 
 SITE_CONTENT_DEFAULTS = {
     "home/hero/image": {
@@ -197,7 +212,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "home/staging/feature1/image": {
-        "value": "",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner1.png",
         "type": "media",
     },
     "home/staging/feature1/title": {
@@ -209,7 +224,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "longtext",
     },
     "home/staging/feature2/image": {
-        "value": "",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner2.png",
         "type": "media",
     },
     "home/staging/feature2/title": {
@@ -221,7 +236,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "longtext",
     },
     "home/staging/feature3/image": {
-        "value": "",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner.png",
         "type": "media",
     },
     "home/staging/feature3/title": {
@@ -657,6 +672,18 @@ def migrate_legacy_site_content_keys():
             "UPDATE site_content SET value = ? WHERE path = ? AND value = ?",
             ("", path, stale_value),
         )
+
+    for path, payload in FIXED_HOME_STAGING_MEDIA.items():
+        cur.execute(
+            "UPDATE site_content SET value = ? WHERE path = ? AND (value = '' OR value IS NULL)",
+            (payload["value"], path),
+        )
+        cur.execute("SELECT 1 FROM site_content WHERE path = ?", (path,))
+        if cur.fetchone() is None:
+            cur.execute(
+                "INSERT INTO site_content (path, value, type) VALUES (?, ?, ?)",
+                (path, payload["value"], payload["type"]),
+            )
 
     # Remove bundled placeholder media from CMS rows. Public pages should show
     # only URLs that were intentionally published through admin.
@@ -1219,7 +1246,7 @@ async def save_site_content(request: Request, admin: str = Depends(get_current_a
             INSERT OR REPLACE INTO site_content (path, value, type)
             VALUES (?, ?, ?)
         ''', (path, data.get('value'), data.get('type')))
-    for path, data in FIXED_HOME_HERO_MEDIA.items():
+    for path, data in {**FIXED_HOME_HERO_MEDIA, **FIXED_HOME_STAGING_MEDIA}.items():
         cursor.execute('''
             INSERT OR REPLACE INTO site_content (path, value, type)
             VALUES (?, ?, ?)

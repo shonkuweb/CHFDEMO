@@ -367,16 +367,14 @@
             const content = data[path];
 
             if (!content) {
-                clearCmsElement(el);
-                if (DEBUG) console.warn(`[CMS] No data found for path: ${path}, cleared inline fallback`);
+                if (DEBUG) console.warn(`[CMS] No data found for path: ${path}, keeping inline fallback`);
                 return;
             }
 
             const val  = content.value;
             const type = content.type;
             if (val == null || !String(val).trim()) {
-                clearCmsElement(el);
-                if (DEBUG) console.warn(`[CMS] Empty value for path: ${path}, cleared inline fallback`);
+                if (DEBUG) console.warn(`[CMS] Empty value for path: ${path}, keeping inline fallback`);
                 return;
             }
             if (type === 'media') {

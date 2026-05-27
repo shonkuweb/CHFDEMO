@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    html {
+        overflow-x: clip;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        overflow-x: clip;
+    }
+
+    img,
+    video,
+    iframe,
+    svg {
+        max-width: 100%;
+    }
+}
+
 @layer utilities {
     .wireframe-cross {
         background-image: url('wireframe-placeholder.svg'); /* Need to make sure this path is right */
@@ -17,26 +35,127 @@
         box-shadow: none !important;
     }
 
-    header img[src*="chf_logo.png"] {
-        width: min(11rem, 100%) !important;
-        height: 4rem !important;
-        object-fit: contain !important;
-        object-position: left center !important;
-        transform: none !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        background: transparent !important;
-        box-shadow: none !important;
+    header a:has(.nav-logo) {
+        align-self: center;
+        flex: 0 0 auto;
+        width: 118px;
+        height: 49px;
+        margin-left: 1rem;
+        padding-left: 0;
     }
 
-    #mobile-sidebar img[src*="chf_logo.png"] {
-        width: auto !important;
-        height: 3rem !important;
-        max-width: 7rem;
-        object-fit: contain !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        background: transparent !important;
-        box-shadow: none !important;
+    header .nav-logo {
+        display: block;
+        width: 118px;
+        height: 49px;
+        max-width: none;
+        object-fit: contain;
+        object-position: left center;
+    }
+
+    #mobile-sidebar .nav-logo {
+        display: block;
+        width: 120px;
+        height: 50px;
+        max-width: none;
+        object-fit: contain;
+        object-position: left center;
+    }
+
+    @media (min-width: 768px) {
+        header a:has(.nav-logo) {
+            width: 155px;
+            height: 64px;
+            margin-left: 2.75rem;
+        }
+
+        header .nav-logo {
+            width: 155px;
+            height: 64px;
+        }
+    }
+
+    .site-footer {
+        padding-top: 4rem;
+        padding-bottom: 2.5rem;
+    }
+
+    .site-footer .footer-inner {
+        width: 100%;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .site-footer .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.75rem;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .site-footer .footer-brand {
+        max-width: 32rem;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .site-footer .footer-logo-wrap,
+    .site-footer .footer-socials {
+        justify-content: center;
+    }
+
+    .site-footer .footer-logo {
+        display: block;
+        width: 150px;
+        height: 76px;
+        max-width: none;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    @media (min-width: 768px) {
+        .site-footer {
+            padding-top: 5rem;
+            padding-bottom: 3rem;
+        }
+
+        .site-footer .footer-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            text-align: left;
+        }
+
+        .site-footer .footer-brand {
+            grid-column: span 2 / span 2;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .site-footer .footer-logo-wrap,
+        .site-footer .footer-socials {
+            justify-content: flex-start;
+        }
+
+        .site-footer .footer-logo {
+            width: 170px;
+            height: 86px;
+            object-position: left center;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .site-footer {
+            padding-top: 6rem;
+        }
+
+        .site-footer .footer-grid {
+            grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+            gap: 4rem;
+        }
+
+        .site-footer .footer-brand {
+            grid-column: auto;
+            padding-right: 2rem;
+        }
     }
 }
