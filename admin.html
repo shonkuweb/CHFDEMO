@@ -388,10 +388,16 @@
                         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
                             <div v-for="card in homeTrendCardsForAdmin" :key="'home-trends-card-' + card.idx" class="border border-white/10 rounded p-4 space-y-4">
                                 <p class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Card {{ card.idx }}</p>
-                                <div class="aspect-video bg-black/40 border border-white/10 overflow-hidden rounded">
+                                <div
+                                    @dragover.prevent="dragover = card.imagePath"
+                                    @dragleave.prevent="dragover = null"
+                                    @drop.prevent="handleGenericDrop($event, card.imagePath)"
+                                    @click="triggerGenericUpload(card.imagePath)"
+                                    :class="['upload-zone aspect-video bg-black/40 overflow-hidden rounded cursor-pointer relative', dragover === card.imagePath ? 'dragover' : 'border-white/10']"
+                                >
                                     <img v-if="card.image.value && !isVideo(card.image.value)" :src="card.image.value" class="w-full h-full object-cover" decoding="async" loading="eager" fetchpriority="high">
                                     <video v-else-if="card.image.value && isVideo(card.image.value)" :src="card.image.value" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
-                                    <div v-else class="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-widest text-gray-600">No media</div>
+                                    <div v-else class="w-full h-full flex items-center justify-center text-center px-4 text-[10px] uppercase tracking-widest text-gray-600">Drop or click to upload</div>
                                 </div>
                                 <input v-model="card.image.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-3 py-2 text-xs text-white transition-colors" placeholder="Image URL">
                                 <button @click="triggerGenericUpload(card.imagePath)" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-3 py-2 hover:bg-accent-bronze/5 transition-colors">Upload Image</button>
@@ -414,13 +420,19 @@
 
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                                 <div class="lg:col-span-5">
-                                    <div class="relative aspect-[16/9] bg-black rounded overflow-hidden border border-white/10">
+                                    <div
+                                        @dragover.prevent="dragover = path"
+                                        @dragleave.prevent="dragover = null"
+                                        @drop.prevent="handleGenericDrop($event, path, true)"
+                                        @click="triggerGenericUpload(path)"
+                                        :class="['upload-zone relative aspect-[16/9] bg-black rounded overflow-hidden cursor-pointer', dragover === path ? 'dragover' : 'border-white/10']"
+                                    >
                                         <iframe v-if="isCloudflareVideoUrl(content.value)" :src="getCloudflareEmbedUrl(content.value)" class="absolute inset-0 w-full h-full" frameborder="0" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
                                         <video v-else-if="isVideo(content.value)" :src="content.value" class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline controls></video>
                                         <img v-else-if="content.value" :src="content.value" class="absolute inset-0 w-full h-full object-cover" decoding="async" loading="lazy" fetchpriority="low">
                                         <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-gray-600">
                                             <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m-6 4h4a2 2 0 002-2V8a2 2 0 00-2-2H9a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                                            <span class="text-xs uppercase tracking-widest">No hero media</span>
+                                            <span class="text-xs uppercase tracking-widest">Drop or click to upload</span>
                                         </div>
                                     </div>
                                 </div>
@@ -476,9 +488,16 @@
 
                             <!-- Media Input -->
                             <div v-else-if="content.type === 'media'" class="flex flex-col sm:flex-row gap-4 sm:gap-8">
-                                <div class="w-full sm:w-32 h-44 sm:h-32 bg-black rounded overflow-hidden flex-shrink-0 border border-white/5">
+                                <div
+                                    @dragover.prevent="dragover = path"
+                                    @dragleave.prevent="dragover = null"
+                                    @drop.prevent="handleGenericDrop($event, path)"
+                                    @click="triggerGenericUpload(path)"
+                                    :class="['upload-zone w-full sm:w-32 h-44 sm:h-32 bg-black rounded overflow-hidden flex-shrink-0 cursor-pointer relative', dragover === path ? 'dragover' : 'border-white/5']"
+                                >
                                     <video v-if="isVideo(content.value)" :src="content.value" class="w-full h-full object-cover" autoplay muted loop></video>
                                     <img v-else :src="content.value" class="w-full h-full object-cover" decoding="async" loading="lazy" fetchpriority="low">
+                                    <div v-if="!content.value" class="absolute inset-0 flex items-center justify-center text-center px-3 text-[9px] uppercase tracking-widest text-gray-600">Drop or click</div>
                                 </div>
                                 <div class="flex-grow flex flex-col justify-center gap-4">
                                     <input v-model="content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-xs text-white transition-colors" placeholder="Media URL">
@@ -1152,17 +1171,19 @@
                     }, 50);
                 };
 
-                const handleGenericFileSelect = (e, path) => {
-                    const file = e.target.files[0];
+                const uploadGenericMedia = (file, path, imageOnly = false) => {
                     if (!file) return;
+                    if (imageOnly && !file.type.startsWith('image/')) {
+                        showToast('Please drop an image file for this slot.', 'error');
+                        return;
+                    }
                     if (file.size > 80 * 1024 * 1024) {
                         showToast('File too large. Max 80MB.', 'error');
-                        e.target.value = '';
                         return;
                     }
                     const oldUrl = currentSiteData.value?.[path]?.value || '';
                     
-                    showToast('Uploading generic media...');
+                    showToast('Uploading media...');
                     uploadMediaChunked(file, oldUrl, (url) => {
                         // Ensure reactive update
                         if (currentSiteData.value[path]) {
@@ -1170,7 +1191,20 @@
                             persistUploadedChange();
                             showToast('Media updated and synced.');
                         }
+                        dragover.value = null;
                     }, (p) => {});
+                };
+
+                const handleGenericFileSelect = (e, path) => {
+                    const file = e.target.files[0];
+                    uploadGenericMedia(file, path, e.target.accept === 'image/*');
+                    e.target.value = '';
+                };
+
+                const handleGenericDrop = (e, path, imageOnly = false) => {
+                    dragover.value = null;
+                    const file = e.dataTransfer.files[0];
+                    uploadGenericMedia(file, path, imageOnly);
                 };
 
                 const handleDrop = (e, cat, idx) => {
@@ -1279,7 +1313,8 @@
                     addStructuredBlock,
                     removeStructuredBlock,
                     triggerGenericUpload,
-                    handleGenericFileSelect
+                    handleGenericFileSelect,
+                    handleGenericDrop
                 }
             },
             mounted() {
