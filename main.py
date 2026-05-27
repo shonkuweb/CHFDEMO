@@ -251,28 +251,44 @@ SITE_CONTENT_DEFAULTS = {
         "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/deepsolitudehero.png",
         "type": "media",
     },
-    "plant-center/hero/video": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_video_placeholder.mp4",
+    "plant-center/hero/image": {
+        "value": "",
         "type": "media",
     },
-    "plant-center/intro/title": {
-        "value": "An Immersive <br/>Botanical Archive",
-        "type": "text",
-    },
-    "plant-center/intro/body": {
-        "value": "Far beyond a traditional nursery, the Alipore Experience Center is designed as a living gallery. We invite architects, interior designers, and collectors to walk through staggered glasshouses, bonsai viewing decks, and rare specimen yards to visualize the scale, texture, and character of the plants in their ideal environment.",
-        "type": "longtext",
-    },
-    "plant-center/gallery/img1": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimens.png",
+    "plant-center/experience/card1/image": {
+        "value": "",
         "type": "media",
     },
-    "plant-center/gallery/img2": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/about/aboutus_legacy.png",
+    "plant-center/experience/card2/image": {
+        "value": "",
         "type": "media",
     },
-    "plant-center/gallery/img3": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/architectural_harmony.png",
+    "plant-center/experience/card3/image": {
+        "value": "",
+        "type": "media",
+    },
+    "plant-center/experience/card4/image": {
+        "value": "",
+        "type": "media",
+    },
+    "plant-center/philosophy/image": {
+        "value": "",
+        "type": "media",
+    },
+    "plant-center/collect/plants/image": {
+        "value": "",
+        "type": "media",
+    },
+    "plant-center/collect/pots/image": {
+        "value": "",
+        "type": "media",
+    },
+    "plant-center/collect/figurines/image": {
+        "value": "",
+        "type": "media",
+    },
+    "plant-center/collect/garden-objects/image": {
+        "value": "",
         "type": "media",
     },
     "arch/hero/subtitle": {
@@ -639,6 +655,24 @@ def migrate_legacy_site_content_keys():
         )
     if legacy_row:
         cur.execute("DELETE FROM site_content WHERE path = ?", ("plant-center/hero/media",))
+
+    # The Plant Experience Center was rebuilt as an image-led landing page.
+    # Remove legacy video/intro/gallery keys so the admin panel shows only
+    # image slots that are still used by the live template.
+    obsolete_plant_center_paths = (
+        "plant-center/hero/video",
+        "plant-center/hero/title",
+        "plant-center/hero/subtitle",
+        "plant-center/intro/title",
+        "plant-center/intro/body",
+        "plant-center/gallery/img1",
+        "plant-center/gallery/img2",
+        "plant-center/gallery/img3",
+    )
+    cur.executemany(
+        "DELETE FROM site_content WHERE path = ?",
+        [(path,) for path in obsolete_plant_center_paths],
+    )
 
     # Curated Planters rename migration:
     # - site_content path prefix curated/* -> curated-planters/*

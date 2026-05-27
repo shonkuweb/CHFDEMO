@@ -197,6 +197,7 @@
             background-position: center;
             background-repeat: no-repeat;
             background-color: #0b110d;
+            background-attachment: scroll !important;
         }
 
         .pec-bg::before {
@@ -364,9 +365,9 @@
 
         .pec-collect {
             display: grid;
-            grid-template-columns: 30% 70%;
+            grid-template-columns: 24% 76%;
             gap: 0;
-            padding: 1.75rem 2.15rem 1.55rem;
+            padding: 2.25rem 2.75rem 2.15rem;
             border-top: 1px solid rgba(238, 232, 221, 0.08);
             border-bottom: 1px solid rgba(238, 232, 221, 0.08);
             background: #060a07;
@@ -407,7 +408,7 @@
 
         .pec-collection-card {
             position: relative;
-            min-height: 10.2rem;
+            min-height: 12rem;
             display: flex;
             align-items: flex-end;
             justify-content: center;
@@ -697,7 +698,7 @@
 
         <main class="flex-grow">
             <section class="pec-hero">
-                <div class="pec-bg" aria-hidden="true"></div>
+                <div class="pec-bg" data-cms="plant-center/hero/image" aria-hidden="true"></div>
                 <div class="pec-hero-content">
                     <h1 class="pec-serif">Curated<em>Botanical</em>Experience</h1>
                     <div class="pec-rule"></div>
@@ -710,41 +711,26 @@
             <section class="pec-experience">
                 <p class="pec-section-label">What You'll Experience</p>
                 <div class="pec-card-grid">
-                    <article class="pec-feature-card">
+                    <article class="pec-feature-card" data-cms="plant-center/experience/card1/image">
                         <svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M38 9C22 11 12 21 11 37c16-1 26-12 27-28Z"/><path d="M14 34c8-9 15-15 22-21"/></svg>
                         <h3>Rare Plant Collections</h3>
                         <p>Curated tropicals, bonsai, and statement specimens displayed within immersive natural settings.</p>
                     </article>
-                    <article class="pec-feature-card">
+                    <article class="pec-feature-card" data-cms="plant-center/experience/card2/image">
                         <svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M15 18c0-6 4-10 9-10s9 4 9 10c0 4-2 8-5 10v5h-8v-5c-3-2-5-6-5-10Z"/><path d="M18 40h12M20 33h8"/></svg>
                         <h3>Sculptural Garden Objects</h3>
                         <p>Explore artisanal pots, figurines, vessels, and botanical decor curated for refined spaces.</p>
                     </article>
-                    <article class="pec-feature-card">
+                    <article class="pec-feature-card" data-cms="plant-center/experience/card3/image">
                         <svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M9 31c5-10 10-15 15-15s10 5 15 15"/><path d="M13 31h22"/><path d="M24 16V8M17 20l-5-5M31 20l5-5"/></svg>
                         <h3>Immersive Landscapes</h3>
                         <p>Walk through layered gardens, shaded courtyards, and architectural plant environments.</p>
                     </article>
-                    <article class="pec-feature-card">
+                    <article class="pec-feature-card" data-cms="plant-center/experience/card4/image">
                         <svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><circle cx="24" cy="24" r="7"/><path d="M24 5v8M24 35v8M5 24h8M35 24h8M10.6 10.6l5.6 5.6M31.8 31.8l5.6 5.6M37.4 10.6l-5.6 5.6M16.2 31.8l-5.6 5.6"/></svg>
                         <h3>Spatial Inspiration</h3>
                         <p>Designed for homeowners, architects, collectors, and hospitality spaces seeking living design ideas.</p>
                     </article>
-                </div>
-            </section>
-
-            <section class="pec-collect">
-                <div class="pec-collect-copy">
-                    <p class="pec-eyebrow">Collect From The Experience</p>
-                    <h2 class="pec-serif">Bring Nature<br>Home</h2>
-                    <p>Take home curated plants, sculptural vessels, garden objects, and living compositions selected from the archive.</p>
-                    <a class="pec-button" href="curated-specimens">Explore Collections →</a>
-                </div>
-                <div class="pec-collection-grid">
-                    <article class="pec-collection-card"><div class="pec-bg" aria-hidden="true"></div><h3>Plants</h3></article>
-                    <article class="pec-collection-card"><div class="pec-bg" aria-hidden="true"></div><h3>Pots &amp; Planters</h3></article>
-                    <article class="pec-collection-card"><div class="pec-bg" aria-hidden="true"></div><h3>Figurines</h3></article>
-                    <article class="pec-collection-card"><div class="pec-bg" aria-hidden="true"></div><h3>Garden Objects</h3></article>
                 </div>
             </section>
 
@@ -759,7 +745,7 @@
                     <p>We believe plants should not simply occupy spaces — they should shape atmosphere, influence emotion, and transform the way people experience architecture. Through curation, design, and immersion, we reconnect people with the quiet power of nature.</p>
                     <a class="pec-link" href="about">Learn More About CHF →</a>
                 </div>
-                <div class="pec-quote-image"><div class="pec-bg" aria-hidden="true"></div></div>
+                <div class="pec-quote-image"><div class="pec-bg" data-cms="plant-center/philosophy/image" aria-hidden="true"></div></div>
             </section>
 
             <section class="pec-designed">
@@ -771,6 +757,21 @@
                     <article class="pec-designed-card"><svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M12 40V18l12-8 12 8v22"/><path d="M17 23h14M17 30h14"/></svg><h3>Hospitality<br>Projects</h3></article>
                     <article class="pec-designed-card"><svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M24 36c-6-7-15-5-18 1"/><path d="M24 36c6-7 15-5 18 1"/><path d="M24 20c-5-5-2-12 4-11 5 1 6 7 0 12l-4 4-4-4c-6-5-5-11 0-12 6-1 9 6 4 11Z"/></svg><h3>Wellness<br>Spaces</h3></article>
                     <article class="pec-designed-card"><svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M8 42h32V20L24 8 8 20v22Z"/><path d="M19 42V29h10v13"/></svg><h3>Contemporary<br>Homes</h3></article>
+                </div>
+            </section>
+
+            <section class="pec-collect">
+                <div class="pec-collect-copy">
+                    <p class="pec-eyebrow">Collect From The Experience</p>
+                    <h2 class="pec-serif">Bring Nature<br>Home</h2>
+                    <p>Take home curated plants, sculptural vessels, garden objects, and living compositions selected from the archive.</p>
+                    <a class="pec-button" href="curated-specimens">Explore Collections →</a>
+                </div>
+                <div class="pec-collection-grid">
+                    <article class="pec-collection-card"><div class="pec-bg" data-cms="plant-center/collect/plants/image" aria-hidden="true"></div><h3>Plants</h3></article>
+                    <article class="pec-collection-card"><div class="pec-bg" data-cms="plant-center/collect/pots/image" aria-hidden="true"></div><h3>Pots &amp; Planters</h3></article>
+                    <article class="pec-collection-card"><div class="pec-bg" data-cms="plant-center/collect/figurines/image" aria-hidden="true"></div><h3>Figurines</h3></article>
+                    <article class="pec-collection-card"><div class="pec-bg" data-cms="plant-center/collect/garden-objects/image" aria-hidden="true"></div><h3>Garden Objects</h3></article>
                 </div>
             </section>
 

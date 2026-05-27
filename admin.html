@@ -168,7 +168,7 @@
                             <button @click="loadPageContent('plant-center')" 
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
                                 currentSelection === 'plant-center' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
-                                Plant Exp Center
+                                Plant Experience Center
                             </button>
                         </div>
                     </div>
@@ -403,13 +403,13 @@
                     </section>
 
                     <template v-for="[path, content] in filteredSiteEntries" :key="path">
-                        <div v-if="path === 'plant-center/hero/video'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
+                        <div v-if="path === 'plant-center/hero/image'" class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6">
                             <div class="flex items-center justify-between mb-2 border-b border-accent-bronze/20 pb-3">
                                 <div>
                                     <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block">{{ path.split('/').join(' / ') }}</span>
-                                    <p class="text-xs text-gray-500 mt-2">Manage the Plant Experience Center hero video. Supports direct video files and Cloudflare Stream links.</p>
+                                    <p class="text-xs text-gray-500 mt-2">Manage the Plant Experience Center hero image used at the top of the page.</p>
                                 </div>
-                                <span class="text-[9px] text-gray-500 uppercase">Hero Manager</span>
+                                <span class="text-[9px] text-gray-500 uppercase">Hero Image</span>
                             </div>
 
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -426,18 +426,18 @@
                                 </div>
 
                                 <div class="lg:col-span-7 space-y-4">
-                                    <label class="block text-xs text-gray-400 uppercase tracking-wider">Hero Media URL</label>
+                                    <label class="block text-xs text-gray-400 uppercase tracking-wider">Hero Image URL</label>
                                     <input v-model="content.value" @blur="normalizeHeroMediaUrl(content)"
                                         type="text"
                                         class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-xs text-white transition-colors"
-                                        placeholder="Paste image/video URL or upload local file (max 80MB)">
+                                        placeholder="Paste image URL or upload local file (max 80MB)">
 
                                     <div class="flex flex-wrap gap-2">
                                         <button @click="normalizeHeroMediaUrl(content)" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-4 py-2 hover:bg-accent-bronze/5 transition-colors">
-                                            Normalize Video URL
+                                            Apply URL
                                         </button>
                                         <button @click="triggerGenericUpload(path)" class="text-[10px] uppercase tracking-widest text-white border border-white/20 px-4 py-2 hover:bg-white/5 transition-colors">
-                                            Upload Image/Video
+                                            Upload Image
                                         </button>
                                         <button @click="content.value=''" class="text-[10px] uppercase tracking-widest text-red-400 border border-red-400/30 px-4 py-2 hover:bg-red-400/5 transition-colors">
                                             Clear Media
@@ -446,13 +446,12 @@
 
                                     <div class="text-[11px] text-gray-500 leading-relaxed space-y-1">
                                         <p><span class="text-accent-bronze">Media limits:</span> {{ MEDIA_LIMIT_NOTE }}</p>
-                                        <p><span class="text-accent-bronze">Tip:</span> For Cloudflare Stream, paste either a full iframe URL or stream URL, then use <em>Normalize Video URL</em>.</p>
+                                        <p><span class="text-accent-bronze">Tip:</span> Use a wide, high-resolution image for the hero background.</p>
                                         <p>Examples:</p>
-                                        <p class="font-mono text-[10px] text-gray-400 break-all">https://iframe.videodelivery.net/VIDEO_ID</p>
                                         <p class="font-mono text-[10px] text-gray-400 break-all">https://.../hero-image.jpg</p>
                                     </div>
 
-                                    <input type="file" :id="'file_' + path.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, path)" accept="image/*,video/*">
+                                    <input type="file" :id="'file_' + path.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, path)" accept="image/*">
                                 </div>
                             </div>
                         </div>
