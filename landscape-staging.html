@@ -1,329 +1,953 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev" crossorigin>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Landscape Staging - CHF Botanical Luxury</title>
-    <link rel="stylesheet" href="assets/tailwind.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap" rel="stylesheet" />
+    <title>Landscape Staging - CHF Designs</title>
+    <link rel="stylesheet" href="assets/tailwind.css?v=landscape-staging-reference" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/animations.css">
-    <script src="assets/animation-core.js" defer></script>
+    <style>
+        :root {
+            --ls-cream: #eee9df;
+            --ls-cream-dark: #d7d1c6;
+            --ls-dark: #050806;
+            --ls-panel: #0e1510;
+            --ls-line: rgba(238, 233, 223, 0.18);
+            --ls-muted: rgba(238, 233, 223, 0.68);
+            --ls-ink: #161713;
+            --ls-olive: #6f7c4d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--ls-dark);
+        }
+
+        body {
+            margin: 0;
+            background: var(--ls-dark);
+            color: var(--ls-cream);
+            font-family: "Manrope", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: geometricPrecision;
+        }
+
+        .ls-page {
+            min-height: 100vh;
+            overflow-x: clip;
+            background: var(--ls-dark);
+        }
+
+        .ls-serif {
+            font-family: "Noto Serif", serif;
+            font-weight: 300;
+            letter-spacing: -0.045em;
+        }
+
+        .ls-logo {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            color: var(--ls-cream);
+            text-decoration: none;
+            line-height: 1;
+        }
+
+        .ls-logo__mark {
+            font-family: "Noto Serif", serif;
+            font-size: 1.56rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+        }
+
+        .ls-logo__sub {
+            margin-top: 0.12rem;
+            font-size: 0.32rem;
+            font-weight: 700;
+            letter-spacing: 0.38em;
+            opacity: 0.7;
+            transform: translateX(0.08rem);
+        }
+
+        .ls-header {
+            position: absolute;
+            inset: 0 0 auto 0;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 4.85rem;
+            padding: 0 2.45rem;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.56), rgba(0, 0, 0, 0));
+        }
+
+        .ls-nav {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            display: flex;
+            gap: clamp(1.55rem, 3.1vw, 3.05rem);
+            transform: translate(-50%, -50%);
+        }
+
+        .ls-nav a,
+        .ls-footer-nav a,
+        .ls-consultation,
+        .ls-link {
+            color: var(--ls-cream);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.48rem;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+        }
+
+        .ls-nav a {
+            opacity: 0.82;
+            transition: opacity 180ms ease, color 180ms ease;
+        }
+
+        .ls-nav a:hover,
+        .ls-footer-nav a:hover,
+        .ls-link:hover {
+            color: var(--ls-cream-dark);
+            opacity: 1;
+        }
+
+        .ls-consultation {
+            border: 1px solid rgba(238, 233, 223, 0.62);
+            padding: 0.72rem 1.08rem;
+            opacity: 0.88;
+        }
+
+        .ls-mobile-toggle {
+            display: none;
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 1px solid rgba(238, 233, 223, 0.32);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--ls-cream);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ls-mobile-toggle span,
+        .ls-mobile-toggle span::before,
+        .ls-mobile-toggle span::after {
+            display: block;
+            width: 1.05rem;
+            height: 1px;
+            background: currentColor;
+            content: "";
+        }
+
+        .ls-mobile-toggle span::before {
+            transform: translateY(-0.38rem);
+        }
+
+        .ls-mobile-toggle span::after {
+            transform: translateY(0.32rem);
+        }
+
+        .ls-mobile-panel {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            display: none;
+            flex-direction: column;
+            gap: 1.4rem;
+            padding: 5.5rem 2rem 2rem;
+            background: rgba(5, 8, 6, 0.96);
+            backdrop-filter: blur(18px);
+            transform: translateX(100%);
+            transition: transform 260ms ease;
+        }
+
+        .ls-mobile-panel.is-open {
+            transform: translateX(0);
+        }
+
+        .ls-mobile-panel a {
+            color: var(--ls-cream);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+            border-bottom: 1px solid rgba(238, 233, 223, 0.08);
+            padding-bottom: 1rem;
+        }
+
+        .ls-mobile-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 1px solid rgba(238, 233, 223, 0.28);
+            background: transparent;
+            color: var(--ls-cream);
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .ls-hero {
+            position: relative;
+            min-height: 43.5rem;
+            display: flex;
+            align-items: center;
+            padding: 7.5rem 0 4.75rem;
+            overflow: hidden;
+        }
+
+        .ls-bg {
+            position: absolute;
+            inset: 0;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .ls-hero .ls-bg {
+            background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/landing%20page/B7A76EA2-369A-418A-8865-7B8236E91BBC.png');
+        }
+
+        .ls-hero::after {
+            position: absolute;
+            inset: 0;
+            content: "";
+            background:
+                linear-gradient(90deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.42) 43%, rgba(0, 0, 0, 0.08) 100%),
+                linear-gradient(180deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.02) 42%, rgba(5, 8, 6, 0.52) 100%);
+        }
+
+        .ls-hero-content {
+            position: relative;
+            z-index: 2;
+            width: min(100%, 33rem);
+            margin-left: clamp(2.5rem, 7.6vw, 5rem);
+            padding-top: 2rem;
+        }
+
+        .ls-eyebrow {
+            margin: 0 0 1.45rem;
+            color: rgba(238, 233, 223, 0.75);
+            text-transform: uppercase;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.29em;
+        }
+
+        .ls-hero h1 {
+            margin: 0;
+            font-size: clamp(3.8rem, 8.4vw, 6.7rem);
+            line-height: 0.96;
+        }
+
+        .ls-hero-copy {
+            width: min(100%, 22.7rem);
+            margin: 3.05rem 0 1.42rem;
+            color: rgba(238, 233, 223, 0.78);
+            font-size: 1.02rem;
+            font-weight: 500;
+            line-height: 1.65;
+        }
+
+        .ls-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            border-bottom: 1px solid rgba(238, 233, 223, 0.72);
+            padding-bottom: 0.18rem;
+        }
+
+        .ls-approach {
+            display: grid;
+            grid-template-columns: 42.2% 57.8%;
+            min-height: 32rem;
+            background: var(--ls-panel);
+        }
+
+        .ls-approach-copy {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4.6rem 4.8rem 4.6rem 5rem;
+        }
+
+        .ls-approach h2,
+        .ls-section-title {
+            margin: 0;
+            font-size: clamp(2rem, 3.45vw, 3.08rem);
+            line-height: 1.08;
+        }
+
+        .ls-body-copy {
+            color: rgba(238, 233, 223, 0.67);
+            font-size: 0.83rem;
+            font-weight: 500;
+            line-height: 1.75;
+        }
+
+        .ls-approach .ls-body-copy {
+            max-width: 24.5rem;
+            margin: 2.15rem 0 2.05rem;
+        }
+
+        .ls-approach-image {
+            position: relative;
+            width: calc(100% - 4.5rem);
+            aspect-ratio: 16 / 9;
+            min-height: 0;
+            align-self: center;
+            justify-self: center;
+            overflow: hidden;
+        }
+
+        .ls-approach-image .ls-bg {
+            background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/landing%20page/8CC86A26-6E04-47BC-85C2-EC2D02A35A68%20(1).png');
+        }
+
+        .ls-approach-image::after {
+            position: absolute;
+            inset: 0;
+            content: "";
+            background: linear-gradient(90deg, rgba(14, 21, 16, 0.06), rgba(0, 0, 0, 0.22));
+        }
+
+        .ls-principles {
+            background: #f0ece2;
+            color: var(--ls-ink);
+            padding: 3.3rem 4.6rem 3.8rem;
+            text-align: center;
+        }
+
+        .ls-principles .ls-eyebrow {
+            margin-bottom: 1.05rem;
+            color: rgba(22, 23, 19, 0.45);
+        }
+
+        .ls-principles h2 {
+            margin: 0;
+            font-size: clamp(1.82rem, 3vw, 2.65rem);
+            line-height: 1.18;
+        }
+
+        .ls-principle-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            margin-top: 3.25rem;
+        }
+
+        .ls-principle {
+            padding: 0 1.65rem;
+            border-right: 1px solid rgba(22, 23, 19, 0.11);
+        }
+
+        .ls-principle:last-child {
+            border-right: 0;
+        }
+
+        .ls-principle svg {
+            width: 2.05rem;
+            height: 2.05rem;
+            margin: 0 auto 1.45rem;
+            color: rgba(22, 23, 19, 0.42);
+        }
+
+        .ls-principle h3 {
+            margin: 0 0 1rem;
+            color: rgba(22, 23, 19, 0.7);
+            text-transform: uppercase;
+            font-size: 0.58rem;
+            font-weight: 800;
+            letter-spacing: 0.17em;
+            line-height: 1.35;
+        }
+
+        .ls-principle p {
+            margin: 0;
+            color: rgba(22, 23, 19, 0.48);
+            font-size: 0.72rem;
+            font-weight: 600;
+            line-height: 1.75;
+        }
+
+        .ls-process {
+            background: #07100c;
+            padding: 3.1rem 5rem 3.75rem;
+            text-align: center;
+        }
+
+        .ls-process .ls-eyebrow {
+            margin-bottom: 0.7rem;
+            color: rgba(238, 233, 223, 0.34);
+        }
+
+        .ls-process h2 {
+            margin: 0;
+            font-size: clamp(1.7rem, 2.7vw, 2.45rem);
+            line-height: 1.15;
+        }
+
+        .ls-process-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            margin-top: 3.45rem;
+            text-align: left;
+        }
+
+        .ls-step {
+            min-height: 8.4rem;
+            padding: 0 1.7rem 0 0;
+            border-right: 1px solid rgba(238, 233, 223, 0.22);
+        }
+
+        .ls-step + .ls-step {
+            padding-left: 2.35rem;
+        }
+
+        .ls-step:last-child {
+            border-right: 0;
+        }
+
+        .ls-step-number {
+            margin: 0 0 1.25rem;
+            font-family: "Noto Serif", serif;
+            font-size: 1.7rem;
+            font-weight: 300;
+            color: rgba(238, 233, 223, 0.82);
+        }
+
+        .ls-step h3 {
+            margin: 0 0 0.62rem;
+            text-transform: uppercase;
+            font-size: 0.58rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            color: rgba(238, 233, 223, 0.76);
+        }
+
+        .ls-step p {
+            max-width: 7.3rem;
+            margin: 0;
+            color: rgba(238, 233, 223, 0.43);
+            font-size: 0.65rem;
+            font-weight: 600;
+            line-height: 1.65;
+        }
+
+        .ls-cta {
+            position: relative;
+            min-height: 20.8rem;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding: 3rem 5rem;
+            background: #050806;
+        }
+
+        .ls-cta-media {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 41.5% 58.5%;
+        }
+
+        .ls-cta-media .ls-bg:first-child {
+            position: relative;
+            background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/landing%20page/9B9DCCE8-2E0F-4F1F-962B-30AED00B160C.png');
+        }
+
+        .ls-cta-media .ls-bg:last-child {
+            position: relative;
+            background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/landing%20page/9B9DCCE8-2E0F-4F1F-962B-30AED00B160C.png');
+        }
+
+        .ls-cta::after {
+            position: absolute;
+            inset: 0;
+            content: "";
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.54) 42%, rgba(0, 0, 0, 0.18));
+        }
+
+        .ls-cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 28rem;
+        }
+
+        .ls-cta h2 {
+            margin: 0 0 1.9rem;
+            font-size: clamp(2.1rem, 4vw, 3.32rem);
+            line-height: 1.02;
+        }
+
+        .ls-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 2.35rem;
+            border: 1px solid rgba(238, 233, 223, 0.72);
+            padding: 0 1.25rem;
+            color: var(--ls-cream);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.57rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+        }
+
+        .ls-footer {
+            display: grid;
+            grid-template-columns: 12rem 1fr auto;
+            align-items: center;
+            gap: 2rem;
+            min-height: 7.35rem;
+            padding: 0 5rem;
+            border-top: 1px solid rgba(238, 233, 223, 0.07);
+            background: #07100c;
+        }
+
+        .ls-footer .ls-logo__mark {
+            font-size: 1.64rem;
+        }
+
+        .ls-footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: clamp(1.6rem, 4vw, 3.6rem);
+        }
+
+        .ls-footer-nav a {
+            opacity: 0.62;
+        }
+
+        .ls-copyright {
+            color: rgba(238, 233, 223, 0.42);
+            text-transform: uppercase;
+            font-size: 0.52rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 900px) {
+            .ls-header {
+                position: fixed;
+                height: 4.75rem;
+                padding: 0 1.35rem;
+                background: rgba(5, 8, 6, 0.58);
+                backdrop-filter: blur(14px);
+            }
+
+            .ls-nav,
+            .ls-consultation {
+                display: none;
+            }
+
+            .ls-mobile-toggle,
+            .ls-mobile-panel {
+                display: flex;
+            }
+
+            .ls-hero {
+                min-height: 39rem;
+                padding-top: 8rem;
+            }
+
+            .ls-hero-content {
+                margin-left: 1.5rem;
+                margin-right: 1.5rem;
+                width: auto;
+            }
+
+            .ls-hero h1 {
+                font-size: clamp(3.25rem, 16vw, 5.2rem);
+            }
+
+            .ls-approach {
+                grid-template-columns: 1fr;
+            }
+
+            .ls-approach-copy {
+                padding: 4rem 1.5rem;
+            }
+
+            .ls-approach-image {
+                width: calc(100% - 3rem);
+                min-height: 0;
+            }
+
+            .ls-principles,
+            .ls-process,
+            .ls-cta {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .ls-principle-grid,
+            .ls-process-grid {
+                grid-template-columns: 1fr;
+                gap: 2.2rem;
+            }
+
+            .ls-principle {
+                border-right: 0;
+                border-bottom: 1px solid rgba(22, 23, 19, 0.11);
+                padding: 0 0 2.1rem;
+            }
+
+            .ls-principle:last-child {
+                border-bottom: 0;
+                padding-bottom: 0;
+            }
+
+            .ls-step,
+            .ls-step + .ls-step {
+                min-height: auto;
+                border-right: 0;
+                border-bottom: 1px solid rgba(238, 233, 223, 0.16);
+                padding: 0 0 1.75rem;
+            }
+
+            .ls-step:last-child {
+                border-bottom: 0;
+                padding-bottom: 0;
+            }
+
+            .ls-step p {
+                max-width: none;
+            }
+
+            .ls-cta {
+                min-height: 24rem;
+            }
+
+            .ls-cta-media {
+                grid-template-columns: 1fr;
+            }
+
+            .ls-footer {
+                grid-template-columns: 1fr;
+                justify-items: center;
+                gap: 1.75rem;
+                padding: 2.4rem 1.5rem;
+                text-align: center;
+            }
+
+            .ls-footer-nav {
+                flex-wrap: wrap;
+                gap: 1.25rem 2rem;
+            }
+
+            .ls-copyright {
+                white-space: normal;
+                line-height: 1.8;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .ls-hero {
+                min-height: 35rem;
+                align-items: flex-end;
+                padding: 8rem 1.25rem 4.25rem;
+            }
+
+            .ls-hero-content {
+                width: 100%;
+                margin: 0;
+                padding-top: 0;
+            }
+
+            .ls-hero h1 {
+                font-size: clamp(3.15rem, 14vw, 4.4rem);
+                line-height: 0.98;
+            }
+
+            .ls-hero-copy {
+                width: min(100%, 20rem);
+                margin: 2rem 0 1.35rem;
+                font-size: 0.92rem;
+                line-height: 1.65;
+            }
+
+            .ls-approach {
+                min-height: 0;
+            }
+
+            .ls-approach-copy {
+                padding: 3.25rem 1.25rem 2.25rem;
+            }
+
+            .ls-approach-image {
+                width: calc(100% - 2.5rem);
+                margin-bottom: 3.25rem;
+            }
+
+            .ls-principles {
+                padding: 3.2rem 1.25rem;
+            }
+
+            .ls-process {
+                padding: 3.1rem 1.25rem 3.4rem;
+            }
+
+            .ls-cta {
+                min-height: 26rem;
+                padding: 3.5rem 1.25rem;
+            }
+
+            .ls-cta-media {
+                display: block;
+            }
+
+            .ls-cta-media .ls-bg:first-child {
+                position: absolute;
+                inset: 0;
+            }
+
+            .ls-cta-media .ls-bg:last-child {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ls-hero {
+                min-height: 35rem;
+                align-items: flex-end;
+                padding: 8rem 1.25rem 4.25rem;
+            }
+
+            .ls-hero::after {
+                background:
+                    linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.52) 58%, rgba(0, 0, 0, 0.22) 100%),
+                    linear-gradient(180deg, rgba(0, 0, 0, 0.48) 0%, rgba(0, 0, 0, 0.08) 38%, rgba(5, 8, 6, 0.82) 100%);
+            }
+
+            .ls-hero-content {
+                width: 100%;
+                margin: 0;
+                padding-top: 0;
+            }
+
+            .ls-hero h1 {
+                font-size: clamp(3.15rem, 14vw, 4.4rem);
+                line-height: 0.98;
+            }
+
+            .ls-hero-copy {
+                width: min(100%, 20rem);
+                margin: 2rem 0 1.35rem;
+                font-size: 0.92rem;
+                line-height: 1.65;
+            }
+
+            .ls-link,
+            .ls-button {
+                font-size: 0.5rem;
+                letter-spacing: 0.16em;
+            }
+
+            .ls-approach {
+                min-height: 0;
+            }
+
+            .ls-approach-copy {
+                padding: 3.25rem 1.25rem 2.25rem;
+            }
+
+            .ls-approach h2,
+            .ls-section-title {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+
+            .ls-body-copy {
+                font-size: 0.8rem;
+            }
+
+            .ls-approach-image {
+                width: calc(100% - 2.5rem);
+                margin-bottom: 3.25rem;
+            }
+
+            .ls-principles {
+                padding: 3.2rem 1.25rem;
+            }
+
+            .ls-principles h2,
+            .ls-process h2 {
+                font-size: clamp(1.75rem, 8vw, 2.4rem);
+            }
+
+            .ls-principle-grid {
+                margin-top: 2.6rem;
+                gap: 1.9rem;
+            }
+
+            .ls-principle p {
+                max-width: 17rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .ls-process {
+                padding: 3.1rem 1.25rem 3.4rem;
+            }
+
+            .ls-process-grid {
+                margin-top: 2.7rem;
+                gap: 1.6rem;
+            }
+
+            .ls-step {
+                text-align: center;
+            }
+
+            .ls-step-number {
+                margin-bottom: 0.8rem;
+            }
+
+            .ls-cta {
+                min-height: 26rem;
+                padding: 3.5rem 1.25rem;
+            }
+
+            .ls-cta-media {
+                display: block;
+            }
+
+            .ls-cta-media .ls-bg:first-child {
+                position: absolute;
+                inset: 0;
+            }
+
+            .ls-cta-media .ls-bg:last-child {
+                display: none;
+            }
+
+            .ls-cta::after {
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.52) 58%, rgba(0, 0, 0, 0.18));
+            }
+
+            .ls-cta h2 {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+        }
+    </style>
 </head>
 <body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
-        <header
-            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
-            <div class="mx-auto flex h-20 items-center justify-between px-6 lg:px-12 w-full">
-                <a href="/" class="flex items-center gap-3">
-                    <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF Logo" class="h-10 w-10 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="eager" fetchpriority="high">
-                    <h1 class="font-serif text-xl font-medium tracking-wide text-ivory uppercase line-clamp-1">CHF</h1>
-                </a>
-                <nav class="hidden lg:flex items-center gap-8">
-                    <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                            href="plant-experience-center">Plant Experience Center</a>
-                    </div>
-                    <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
-                            href="javascript:void(0)">
-                            Collections
-                            <span class="material-symbols-outlined text-sm">expand_more</span>
-                        </a>
-                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                            <div class="bg-background-dark border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
-                                <div class="flex flex-col gap-4">
-                                    <a href="full-grown-avenue-trees" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Full Grown Avenue Trees</a>
-                                    <a href="exotic-indoor-plants" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Exotic Indoor Plants</a>
-                                    <a href="bonsai" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Bonsai</a>
-                                    <a href="curated-planters" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Planters</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2"
-                            href="javascript:void(0)">
-                            Services
-                            <span class="material-symbols-outlined text-sm">expand_more</span>
-                        </a>
-                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                            <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
-                                <div class="flex flex-col gap-4">
-                                    <a href="landscaping-design-development" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Landscaping Design &amp; Development</a>
-                                    <a href="landscape-staging" class="text-[10px] uppercase tracking-widest text-accent-bronze transition-colors">Landscape Staging</a>
-                                    <a href="plant-supply" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Plant Supply</a>
-                                    <a href="garden-maintenance" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Garden Maintenance</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="portfolio">Portfolio</a>
-                    <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300"
-                        href="about">About Us</a>
-                </nav>
-                <button id="mobile-menu-btn"
-                    class="lg:hidden flex items-center text-ivory z-[80] p-2 relative w-10 h-10 justify-center">
-                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform -translate-y-[7px] origin-center"></span>
-                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block opacity-100 origin-center"></span>
-                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform translate-y-[7px] origin-center"></span>
-                </button>
-            </div>
-        </header>
+        <header></header>
 
-        <div id="mobile-backdrop"
-            class="fixed inset-0 bg-black/50 backdrop-blur-md z-[65] lg:hidden opacity-0 pointer-events-none transition-opacity duration-500"></div>
-
-        <div id="mobile-sidebar"
-            class="fixed top-0 right-0 h-full w-full bg-[#0a0a0a]/95 backdrop-blur-3xl z-[100] lg:hidden flex flex-col translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] overflow-y-auto"
-            style="will-change: transform;">
-            <div class="flex items-center justify-between px-7 pt-7 pb-6 border-b border-white/[0.06] flex-shrink-0">
-                <div class="flex items-center gap-3">
-                    <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF" class="h-8 w-8 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="lazy" fetchpriority="low">
-                    <span class="font-serif text-base tracking-widest text-ivory uppercase">CHF</span>
-                </div>
-                <button id="mobile-close-btn" class="w-8 h-8 flex items-center justify-center text-ivory/50 hover:text-ivory transition-colors duration-300 rounded-full border border-white/10 hover:border-white/30">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            <div class="h-px bg-gradient-to-r from-transparent via-accent-bronze/40 to-transparent mx-7 flex-shrink-0"></div>
-            <nav class="flex flex-col flex-1 px-7 py-8 gap-1" id="sidebar-nav">
-                <a href="plant-experience-center" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
-                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Plant Experience Center</span>
-                    <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
-                </a>
-                <div class="border-b border-white/[0.05]">
-                    <button class="sidebar-accordion w-full flex items-center justify-between py-4 group" data-target="collections-panel">
-                        <span class="text-[10px] uppercase tracking-[0.25em] font-bold text-accent-bronze/80 group-hover:text-accent-bronze transition-colors duration-300">Collections</span>
-                        <svg class="sidebar-chevron w-3 h-3 text-white/30 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div id="collections-panel" class="sidebar-panel overflow-hidden" style="max-height: 0; transition: max-height 0.4s cubic-bezier(0.76,0,0.24,1);">
-                        <div class="flex flex-col pb-4 pl-3 gap-0.5">
-                            <a href="full-grown-avenue-trees" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Full Grown Avenue Trees</a>
-                            <a href="exotic-indoor-plants" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Exotic Indoor Plants</a>
-                            <a href="bonsai" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Bonsai</a>
-                            <a href="curated-planters" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Curated Planters</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="border-b border-white/[0.05]">
-                    <button class="sidebar-accordion w-full flex items-center justify-between py-4 group" data-target="services-panel">
-                        <span class="text-[10px] uppercase tracking-[0.25em] font-bold text-accent-bronze/80 group-hover:text-accent-bronze transition-colors duration-300">Services</span>
-                        <svg class="sidebar-chevron w-3 h-3 text-white/30 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div id="services-panel" class="sidebar-panel overflow-hidden" style="max-height: 0; transition: max-height 0.4s cubic-bezier(0.76,0,0.24,1);">
-                        <div class="flex flex-col pb-4 pl-3 gap-0.5">
-                            <a href="landscaping-design-development" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Landscaping Design &amp; Development</a>
-                            <a href="landscape-staging" class="mobile-link py-2.5 text-[13px] font-light text-accent-bronze transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Landscape Staging</a>
-                            <a href="plant-supply" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Plant Supply</a>
-                            <a href="garden-maintenance" class="mobile-link py-2.5 text-[13px] font-light text-ivory/50 hover:text-ivory transition-colors duration-300 flex items-center gap-3"><span class="w-3 h-px bg-accent-bronze/30 flex-shrink-0"></span>Garden Maintenance</a>
-                        </div>
-                    </div>
-                </div>
-                <a href="portfolio" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
-                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Portfolio</span>
-                    <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
-                </a>
-                <a href="about" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
-                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">About Us</span>
-                    <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
-                </a>
-            </nav>
-        </div>
-
-        <main class="flex-grow pt-20">
-            <section class="py-24 px-6 lg:px-12 text-center max-w-4xl mx-auto relative">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
-                <div class="flex items-center justify-center gap-4 mb-6">
-                    <span class="w-12 h-px bg-accent-bronze/40"></span>
-                    <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Services</span>
-                    <span class="w-12 h-px bg-accent-bronze/40"></span>
-                </div>
-                <h1 class="font-serif text-balance text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10" data-cms="landscape-staging/hero/title">
-                    Landscape <span class="text-accent-bronze italic">Staging</span>
-                </h1>
-                <p class="text-ivory-dim text-sm md:text-base font-bold uppercase tracking-[0.2em] relative z-10" data-cms="landscape-staging/hero/subtitle">
-                    Composed botanical staging for spaces that need to feel complete from the first impression.
-                </p>
-            </section>
-
-            <section class="pb-32 px-6 lg:px-24 flex flex-col gap-24 lg:gap-32 w-full max-w-7xl mx-auto">
-                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 reveal reveal-up">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img alt="Arrival composition with staged greenery" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="landscape-staging/block1/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="landscape-staging/block1/title">Arrival Composition</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="landscape-staging/block1/body">
-                            We stage entrances, patios, terraces, and event-facing green zones so the first view feels balanced, lush, and ready for use.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20 reveal reveal-up">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img alt="Layered landscape staging textures" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="landscape-staging/block2/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="landscape-staging/block2/title">Layered Visual Depth</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="landscape-staging/block2/body">
-                            Tall forms, ground textures, planters, and focal specimens are arranged to create depth without overwhelming the architecture.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 reveal reveal-up">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img alt="Event-ready botanical staging" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="landscape-staging/block3/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="landscape-staging/block3/title">Event-Ready Greenery</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="landscape-staging/block3/body">
-                            Plant material, containers, and placement are coordinated for openings, photoshoots, residences, and hospitality spaces that need immediate polish.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20 reveal reveal-up">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img alt="Final staging refinement after placement" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="landscape-staging/block4/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="landscape-staging/block4/title">Refinement After Placement</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="landscape-staging/block4/body">
-                            After staging, we tune spacing, orientation, irrigation access, and care notes so the composition remains composed beyond installation day.
-                        </p>
-                    </div>
+        <main class="flex-grow bg-black">
+            <section class="ls-hero">
+                <div class="ls-bg" aria-hidden="true"></div>
+                <div class="ls-hero-content">
+                    <h1 class="ls-serif">Landscape<br>Staging</h1>
+                    <p class="ls-hero-copy">Layered landscape compositions that bring structure, softness, and living depth into contemporary spaces.</p>
+                    <a class="ls-link" href="inquiry">Let's Create Something Living <span aria-hidden="true">→</span></a>
                 </div>
             </section>
 
-            <section class="py-24 bg-[#0a0a0a] border-t border-white/5 text-center mt-8">
-                <p class="font-serif text-2xl md:text-4xl lg:text-5xl text-ivory leading-tight px-6" data-cms="landscape-staging/closing/title">
-                    Every staged landscape should feel effortless.<br>
-                    <span class="text-accent-bronze italic mt-4 block">We make the living details intentional.</span>
-                </p>
+            <section class="ls-approach" id="approach">
+                <div class="ls-approach-copy">
+                    <p class="ls-eyebrow">The CHF Approach</p>
+                    <h2 class="ls-serif">Spaces, elevated by<br>nature's intelligence.</h2>
+                    <p class="ls-body-copy">We compose landscapes with intention and precision-balancing structure and softness, architecture and nature, to craft environments that feel alive, considered, and timeless.</p>
+                    <a class="ls-link" href="inquiry">Our Philosophy <span aria-hidden="true">→</span></a>
+                </div>
+                <div class="ls-approach-image">
+                    <div class="ls-bg" aria-hidden="true"></div>
+                </div>
+            </section>
+
+            <section class="ls-principles" id="principles">
+                <p class="ls-eyebrow">Our Principles</p>
+                <h2 class="ls-serif">Design that lives. Landscapes that last.</h2>
+                <div class="ls-principle-grid">
+                    <article class="ls-principle">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 7l14 8-14 8-14-8 14-8Z"/><path d="M10 24l14 8 14-8"/><path d="M10 33l14 8 14-8"/></svg>
+                        <h3>Layered &amp;<br>Considered</h3>
+                        <p>Every layer is placed with purpose-creating depth, texture, and visual harmony.</p>
+                    </article>
+                    <article class="ls-principle">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 5v38M5 24h38M10.6 10.6l26.8 26.8M37.4 10.6 10.6 37.4"/><circle cx="24" cy="24" r="6"/></svg>
+                        <h3>Structure &amp;<br>Flow</h3>
+                        <p>We shape movement, define spaces, and bring clarity to every landscape.</p>
+                    </article>
+                    <article class="ls-principle">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M39 9C23 11 12 21 11 37c16-1 26-12 28-28Z"/><path d="M14 34c8-9 15-15 22-21"/></svg>
+                        <h3>Softness &amp;<br>Balance</h3>
+                        <p>Organic forms and natural textures introduce calm, warmth, and softness.</p>
+                    </article>
+                    <article class="ls-principle">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 41V24"/><path d="M16 41h16"/><path d="M15 27c-5-3-7-9-4-14 4 1 7 4 9 8"/><path d="M28 21c2-7 6-11 12-12 2 7-2 14-9 17"/><path d="M16 25c-2 4-1 8 3 11"/></svg>
+                        <h3>Living<br>Depth</h3>
+                        <p>Thoughtful plant selection ensures the landscape evolves and matures beautifully.</p>
+                    </article>
+                    <article class="ls-principle">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 36c-6-7-15-5-18 1"/><path d="M24 36c6-7 15-5 18 1"/><path d="M24 19c-5-5-2-12 4-11 5 1 6 7 0 12l-4 4-4-4c-6-5-5-11 0-12 6-1 9 6 4 11Z"/></svg>
+                        <h3>Sustainable<br>By Design</h3>
+                        <p>We work with nature-creating resilient, low-maintenance, and sustainable environments.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="ls-process" id="process">
+                <p class="ls-eyebrow">Our Process</p>
+                <h2 class="ls-serif">From vision to living reality.</h2>
+                <div class="ls-process-grid">
+                    <article class="ls-step">
+                        <p class="ls-step-number">01</p>
+                        <h3>Discover</h3>
+                        <p>Understanding your vision, spaces, and aspirations.</p>
+                    </article>
+                    <article class="ls-step">
+                        <p class="ls-step-number">02</p>
+                        <h3>Conceptualize</h3>
+                        <p>Crafting layered landscape concepts and spatial ideas.</p>
+                    </article>
+                    <article class="ls-step">
+                        <p class="ls-step-number">03</p>
+                        <h3>Design</h3>
+                        <p>Refining every detail-plants, materials, textures, and flow.</p>
+                    </article>
+                    <article class="ls-step">
+                        <p class="ls-step-number">04</p>
+                        <h3>Execute</h3>
+                        <p>Precision installation with meticulous attention to detail.</p>
+                    </article>
+                    <article class="ls-step">
+                        <p class="ls-step-number">05</p>
+                        <h3>Evolve</h3>
+                        <p>Ongoing care and curation to help your landscape thrive.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="ls-cta" id="cta">
+                <div class="ls-cta-media" aria-hidden="true">
+                    <div class="ls-bg"></div>
+                    <div class="ls-bg"></div>
+                </div>
+                <div class="ls-cta-content">
+                    <h2 class="ls-serif">Let's create a landscape<br>that transforms how<br>you experience space.</h2>
+                    <a class="ls-button" href="inquiry">Start Your Project</a>
+                </div>
             </section>
         </main>
 
-        <footer class="border-t border-white/10 bg-background-darker pt-24 pb-12">
-            <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5 mb-16">
-                    <div class="col-span-1 lg:col-span-2 pr-0 lg:pr-12">
-                        <div class="flex items-center gap-3 mb-8">
-                            <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/chf_logo.png" alt="CHF Logo" class="h-12 w-12 rounded-full object-cover border border-white/10 bg-[#1a1a1a]" decoding="async" loading="lazy" fetchpriority="low">
-                            <h2 class="font-serif text-lg font-medium tracking-wide text-ivory">CHF</h2>
-                        </div>
-                        <p class="text-sm text-gray-500 mb-8 leading-7 font-light">
-                            Elevating spaces through the thoughtful integration of nature and design. We bring the quiet
-                            power of the forest into the modern sanctuary.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Discover</h3>
-                        <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="about">About Us</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-experience-center">Experience Center</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="portfolio">Portfolio</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Expertise</h3>
-                        <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="landscaping-design-development">Landscaping Design &amp; Development</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="landscape-staging">Landscape Staging</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="plant-supply">Plant Supply</a></li>
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="garden-maintenance">Garden Maintenance</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-xs uppercase tracking-widest font-bold text-white mb-6">Contact</h3>
-                        <ul class="space-y-4">
-                            <li><a class="text-sm text-gray-500 hover:text-primary transition-colors" href="inquiry">Inquiry</a></li>
-                            <li class="flex flex-col gap-2 pt-2">
-                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Email</span>
-                                <a class="text-sm text-gray-500 hover:text-primary transition-colors break-all" href="mailto:calcuttahorticulturalfarm@gmail.com" data-cms="global/contact/email">calcuttahorticulturalfarm@gmail.com</a>
-                            </li>
-                            <li class="flex flex-col gap-2 pt-2">
-                                <span class="text-[10px] uppercase tracking-widest text-accent-bronze/60 font-bold">Phone</span>
-                                <a class="text-sm text-gray-500 hover:text-primary transition-colors" href="tel:+917980783108" data-cms="global/contact/phone">+91 79807 83108</a>
-                            </li>
-                            <li><a class="text-[10px] uppercase tracking-widest text-gray-800 hover:text-accent-bronze transition-colors mt-8 block" href="admin-login">Admin Login</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="border-t border-white/5 pt-8 text-center">
-                    <p class="text-xs text-gray-600" data-cms="global/footer/copyright">© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb</p>
-                </div>
-            </div>
-        </footer>
+        <footer></footer>
     </div>
-
-    <script>
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const mobileCloseBtn = document.getElementById('mobile-close-btn');
-        const sidebar = document.getElementById('mobile-sidebar');
-        const backdrop = document.getElementById('mobile-backdrop');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-        const lines = mobileBtn ? mobileBtn.querySelectorAll('.hamburger-line') : [];
-        let isOpen = false;
-
-        function openSidebar() {
-            isOpen = true;
-            sidebar.classList.remove('translate-x-full');
-            sidebar.classList.add('menu-open');
-            backdrop.classList.remove('opacity-0', 'pointer-events-none');
-            backdrop.classList.add('opacity-100', 'pointer-events-auto');
-            if (lines.length >= 3) {
-                lines[0].style.transform = 'translateY(0) rotate(45deg)';
-                lines[1].style.opacity = '0';
-                lines[2].style.transform = 'translateY(0) rotate(-45deg)';
-            }
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeSidebar() {
-            isOpen = false;
-            sidebar.classList.add('translate-x-full');
-            sidebar.classList.remove('menu-open');
-            backdrop.classList.add('opacity-0', 'pointer-events-none');
-            backdrop.classList.remove('opacity-100', 'pointer-events-auto');
-            if (lines.length >= 3) {
-                lines[0].style.transform = 'translateY(-7px) rotate(0deg)';
-                lines[1].style.opacity = '1';
-                lines[2].style.transform = 'translateY(7px) rotate(0deg)';
-            }
-            document.body.style.overflow = '';
-        }
-
-        if (mobileBtn && mobileCloseBtn && sidebar && backdrop) {
-            mobileBtn.addEventListener('click', () => isOpen ? closeSidebar() : openSidebar());
-            mobileCloseBtn.addEventListener('click', closeSidebar);
-            backdrop.addEventListener('click', closeSidebar);
-            mobileLinks.forEach(link => {
-                if (link.tagName === 'A') link.addEventListener('click', closeSidebar);
-            });
-            document.querySelectorAll('.sidebar-accordion').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const panelId = btn.getAttribute('data-target');
-                    const panel = panelId ? document.getElementById(panelId) : null;
-                    const chevron = btn.querySelector('.sidebar-chevron');
-                    const isExpanded = panel && panel.style.maxHeight && panel.style.maxHeight !== '0px';
-                    document.querySelectorAll('.sidebar-panel').forEach(p => { p.style.maxHeight = '0px'; });
-                    document.querySelectorAll('.sidebar-chevron').forEach(c => { c.style.transform = 'rotate(0deg)'; });
-                    if (!isExpanded && panel) {
-                        panel.style.maxHeight = panel.scrollHeight + 'px';
-                        if (chevron) chevron.style.transform = 'rotate(180deg)';
-                    }
-                });
-            });
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') closeSidebar();
-            });
-        }
-    </script>
     <script src="assets/cms-core.js?v=2.4"></script>
 </body>
 </html>
