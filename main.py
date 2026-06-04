@@ -291,13 +291,81 @@ SITE_CONTENT_DEFAULTS = {
         "value": "",
         "type": "media",
     },
-    "arch/hero/subtitle": {
+    "arch/block1/body": {
+        "value": "In landscape architecture, drawings capture a moment—but gardens don't stand still. They grow, expand, compete, and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.",
+        "type": "longtext",
+    },
+    "arch/intro/headline": {
         "value": "Design is Instant. Growth is Inevitable. We Plan for Both.",
         "type": "text",
     },
-    "arch/closing/title": {
-        "value": "We don\u2019t just develop gardens.<br><span class=\"text-accent-bronze italic mt-4 block\">We future-proof them.</span>",
+    "arch/intro/p2": {
+        "value": "As consulting horticulturists, we often see thoughtfully designed spaces challenged by plant selections that don't account for scale or maturity. Fast growers are placed where restraint is essential. Foreground hedges are composed of species that eventually outgrow and obscure the very layers they were meant to frame. What appears harmonious on day one can lose its proportion and clarity with time.",
+        "type": "longtext",
+    },
+    "arch/intro/callout": {
+        "value": "This is where collaboration becomes critical.",
         "type": "text",
+    },
+    "arch/collab/title": {
+        "value": "Our Collaborative Approach",
+        "type": "text",
+    },
+    "arch/collab/body": {
+        "value": "With the intent to not redefine but strengthen the designs, we as landscape developers work closely with landscape architects—either as consultants during the design phase or as collaborators during execution—to ensure that plant selections are informed, intentional, and future-ready.",
+        "type": "longtext",
+    },
+    "arch/tomorrow/title": {
+        "value": "Design with Tomorrow in Mind.",
+        "type": "text",
+    },
+    "arch/tomorrow/p1": {
+        "value": "By bringing horticultural depth into the conversation early, we help align design vision with plant behaviour, site conditions, and long-term growth patterns.",
+        "type": "longtext",
+    },
+    "arch/tomorrow/body": {
+        "value": "With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony—not just immediate visual appeal.",
+        "type": "longtext",
+    },
+    "arch/tomorrow/quote": {
+        "value": "Because a successful landscape is not just about how it looks when installed—it's about how it evolves.",
+        "type": "longtext",
+    },
+    "arch/closing/line1": {
+        "value": "We don't just develop gardens.",
+        "type": "text",
+    },
+    "arch/closing/line2": {
+        "value": "We future-proof them.",
+        "type": "text",
+    },
+    "arch/block1/image": {
+        "value": "",
+        "type": "media",
+    },
+    "arch/block2/image": {
+        "value": "",
+        "type": "media",
+    },
+    "arch/block3/image": {
+        "value": "",
+        "type": "media",
+    },
+    "arch/block4/image": {
+        "value": "",
+        "type": "media",
+    },
+    "arch/timeline/year1/image": {
+        "value": "",
+        "type": "media",
+    },
+    "arch/timeline/year34/image": {
+        "value": "",
+        "type": "media",
+    },
+    "arch/tomorrow/leaf": {
+        "value": "assets/arch-harmony-leaf.png",
+        "type": "media",
     },
     "landscaping-design/hero/title": {
         "value": "Landscaping Design <span class=\"text-accent-bronze italic\">&amp; Development</span>",

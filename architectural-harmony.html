@@ -2,8 +2,6 @@
 <html lang="en">
 
 <head>
-    <link rel="preconnect" href="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev" crossorigin>
-
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <link rel="icon" href="assets/chf_logo_nav.png" type="image/png" />
@@ -20,6 +18,470 @@
     <style>
         html {
             scroll-behavior: smooth;
+        }
+
+        :root {
+            --ah-gold: #a68b6a;
+            --ah-ivory: #eee9df;
+            --ah-muted: rgba(238, 233, 223, 0.68);
+            --ah-line: rgba(238, 233, 223, 0.16);
+            --ah-leaf: #a4b88c;
+        }
+
+        .ah-page {
+            background: #000;
+            color: var(--ah-ivory);
+        }
+
+        .ah-serif {
+            font-family: "Noto Serif", serif;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+        }
+
+        .ah-media {
+            position: relative;
+            overflow: hidden;
+            background: #0a0a0a;
+        }
+
+        .ah-media-slot {
+            position: absolute;
+            inset: 0;
+            background-color: #0a0a0a;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .ah-media-slot::before {
+            position: absolute;
+            inset: 0;
+            content: "";
+            background:
+                linear-gradient(135deg, transparent 48%, rgba(166, 139, 106, 0.14) 49%, rgba(166, 139, 106, 0.14) 51%, transparent 52%),
+                linear-gradient(45deg, transparent 48%, rgba(166, 139, 106, 0.09) 49%, rgba(166, 139, 106, 0.09) 51%, transparent 52%),
+                radial-gradient(circle at 28% 22%, rgba(164, 184, 140, 0.1), transparent 40%);
+            pointer-events: none;
+        }
+
+        /* —— Intro —— */
+        .ah-intro {
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+            gap: clamp(1.75rem, 3.5vw, 3rem);
+            align-items: stretch;
+            padding: clamp(2.75rem, 5.5vw, 4.75rem) clamp(1.35rem, 5vw, 5rem) clamp(2.5rem, 4vw, 3.75rem);
+        }
+
+        .ah-intro h1 {
+            margin: 0 0 1.15rem;
+            font-size: clamp(2rem, 3.6vw, 3.25rem);
+            line-height: 1.1;
+        }
+
+        .ah-intro-rule {
+            width: 4.35rem;
+            height: 1px;
+            margin-bottom: 1.65rem;
+            background: var(--ah-gold);
+        }
+
+        .ah-intro-copy p {
+            margin: 0 0 1.1rem;
+            color: var(--ah-muted);
+            font-size: clamp(0.8rem, 1vw, 0.94rem);
+            font-weight: 300;
+            line-height: 1.78;
+        }
+
+        .ah-intro-callout {
+            margin: 1.35rem 0 0;
+            font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+            font-weight: 700;
+            color: var(--ah-ivory);
+        }
+
+        .ah-intro-media {
+            min-height: clamp(20rem, 38vw, 32rem);
+        }
+
+        /* —— Collaborative —— */
+        .ah-collab {
+            background:
+                radial-gradient(ellipse 70% 55% at 92% 42%, rgba(166, 139, 106, 0.09), transparent 58%),
+                #000;
+        }
+
+        .ah-collab-layout {
+            display: grid;
+            grid-template-columns: minmax(16rem, 0.4fr) minmax(0, 0.6fr);
+            column-gap: clamp(1.75rem, 3.5vw, 3.25rem);
+            align-items: stretch;
+            min-height: clamp(22rem, 38vw, 30rem);
+            padding: clamp(2.5rem, 5vw, 4.25rem) clamp(1.35rem, 4vw, 4rem);
+        }
+
+        .ah-collab-media {
+            position: relative;
+            min-height: clamp(18rem, 32vw, 26rem);
+            overflow: hidden;
+            box-shadow: 0 1.5rem 3.5rem rgba(0, 0, 0, 0.55);
+        }
+
+        .ah-collab-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.25rem, 2.5vw, 2rem);
+            background: linear-gradient(135deg, rgba(238, 233, 223, 0.04) 0%, rgba(238, 233, 223, 0.01) 48%, transparent 100%);
+            border-left: 1px solid rgba(166, 139, 106, 0.28);
+            box-shadow: inset 1px 0 0 rgba(238, 233, 223, 0.04);
+        }
+
+        .ah-collab-copy::before {
+            content: "How we partner";
+            display: block;
+            margin-bottom: 0.85rem;
+            font-family: "Manrope", sans-serif;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--ah-gold);
+        }
+
+        .ah-collab-copy h2 {
+            margin: 0 0 0.35rem;
+            font-size: clamp(2rem, 3.2vw, 3rem);
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+        }
+
+        .ah-collab-rule {
+            width: clamp(4rem, 8vw, 6.5rem);
+            height: 2px;
+            margin-bottom: clamp(1.35rem, 2.2vw, 1.85rem);
+            background: linear-gradient(90deg, var(--ah-gold) 0%, rgba(166, 139, 106, 0.15) 100%);
+        }
+
+        .ah-collab-copy p {
+            margin: 0;
+            max-width: none;
+            color: rgba(238, 233, 223, 0.84);
+            font-size: clamp(1rem, 1.22vw, 1.125rem);
+            font-weight: 300;
+            line-height: 1.85;
+        }
+
+        .ah-collab-copy p::first-letter {
+            float: left;
+            margin: 0.06em 0.14em 0 0;
+            font-family: "Noto Serif", serif;
+            font-size: 3.15em;
+            font-weight: 300;
+            line-height: 0.82;
+            color: var(--ah-gold);
+        }
+
+        .ah-pillars {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: clamp(0.45rem, 0.9vw, 0.65rem);
+            margin-top: clamp(2.15rem, 3.5vw, 3rem);
+        }
+
+        .ah-pillar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: clamp(1.1rem, 1.8vw, 1.45rem) clamp(0.5rem, 0.85vw, 0.75rem);
+            text-align: center;
+            background: linear-gradient(180deg, rgba(166, 139, 106, 0.1) 0%, rgba(10, 10, 10, 0.65) 100%);
+            border: 1px solid rgba(166, 139, 106, 0.22);
+            transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .ah-pillar:hover {
+            transform: translateY(-4px);
+            border-color: rgba(166, 139, 106, 0.48);
+            box-shadow: 0 0.85rem 1.75rem rgba(0, 0, 0, 0.45);
+        }
+
+        .ah-pillar-icon {
+            width: clamp(2.35rem, 3vw, 2.85rem);
+            height: clamp(2.35rem, 3vw, 2.85rem);
+            margin: 0 auto 1.05rem;
+            padding: 0.55rem;
+            color: var(--ah-gold);
+            border: 1px solid rgba(166, 139, 106, 0.35);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.35);
+            flex-shrink: 0;
+        }
+
+        .ah-pillar-icon svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ah-pillar h3 {
+            margin: 0 0 0.55rem;
+            font-family: "Noto Serif", serif;
+            font-size: clamp(0.78rem, 0.95vw, 0.92rem);
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+            text-transform: none;
+            color: var(--ah-ivory);
+        }
+
+        .ah-pillar p {
+            margin: 0;
+            max-width: none;
+            color: rgba(238, 233, 223, 0.62);
+            font-size: clamp(0.72rem, 0.86vw, 0.8rem);
+            font-weight: 400;
+            line-height: 1.55;
+        }
+
+        /* —— Tomorrow —— */
+        .ah-tomorrow {
+            position: relative;
+            overflow: visible;
+            padding: clamp(2.5rem, 4.5vw, 3.75rem) clamp(1.35rem, 4vw, 4rem) clamp(2rem, 3.5vw, 3rem);
+            text-align: center;
+        }
+
+        .ah-tomorrow h2 {
+            margin: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+            font-size: clamp(1.55rem, 2.5vw, 2.2rem);
+            line-height: 1.15;
+        }
+
+        .ah-timeline-stage {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            column-gap: clamp(1.75rem, 3.5vw, 3rem);
+            row-gap: 0;
+            align-items: start;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .ah-timeline-item {
+            position: relative;
+            min-width: 0;
+        }
+
+        .ah-timeline-item:first-of-type {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .ah-timeline-item:last-of-type {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .ah-timeline-media {
+            position: relative;
+            z-index: 1;
+            aspect-ratio: 16 / 10;
+            margin-bottom: 0.85rem;
+        }
+
+        .ah-timeline-label {
+            margin: 0;
+            font-size: 0.56rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            line-height: 1.4;
+            text-align: left;
+            text-transform: uppercase;
+            color: rgba(238, 233, 223, 0.55);
+        }
+
+        .ah-timeline-diamond {
+            grid-column: 1 / -1;
+            grid-row: 1;
+            z-index: 2;
+            justify-self: center;
+            align-self: center;
+            width: 0.5rem;
+            height: 0.5rem;
+            margin: 0;
+            background: var(--ah-gold);
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+
+        .ah-tomorrow-outro {
+            position: relative;
+            z-index: 2;
+            overflow: visible;
+            padding: clamp(2rem, 3.5vw, 3rem) clamp(1.35rem, 4vw, 4rem) clamp(2rem, 3.5vw, 3rem);
+            text-align: left;
+        }
+
+        .ah-tomorrow-footer {
+            position: relative;
+            width: 100%;
+            min-height: clamp(11rem, 20vw, 15rem);
+        }
+
+        .ah-leaf-art {
+            position: absolute;
+            top: clamp(1.5rem, 3vw, 2.25rem);
+            left: clamp(0.25rem, 1.5vw, 1rem);
+            z-index: 1;
+            width: min(42%, clamp(11rem, 22vw, 17.5rem));
+            margin: 0;
+            pointer-events: none;
+        }
+
+        .ah-leaf-art img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .ah-tomorrow-text {
+            position: relative;
+            z-index: 5;
+            width: min(100%, 36rem);
+            max-width: 36rem;
+            margin: clamp(0.5rem, 1.5vw, 1.25rem) auto 0;
+            padding: 0 clamp(1rem, 2.5vw, 1.5rem);
+        }
+
+        .ah-tomorrow-text p {
+            margin: 0 0 0.85rem;
+            color: rgba(238, 233, 223, 0.72);
+            font-size: clamp(0.82rem, 1.02vw, 0.96rem);
+            font-weight: 300;
+            line-height: 1.78;
+        }
+
+        .ah-tomorrow-rule {
+            width: clamp(2.75rem, 5vw, 4rem);
+            height: 1px;
+            margin: 1rem 0 1.05rem;
+            background: var(--ah-gold);
+        }
+
+        .ah-tomorrow-quote {
+            margin: 1.15rem 0 0;
+            color: var(--ah-leaf);
+            font-family: "Noto Serif", serif;
+            font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+            font-style: italic;
+            font-weight: 400;
+            line-height: 1.55;
+        }
+
+        .ah-closing {
+            padding: clamp(2.5rem, 5vw, 4rem) clamp(1.35rem, 5vw, 5rem) clamp(3rem, 6vw, 5rem);
+            text-align: center;
+        }
+
+        .ah-closing p {
+            margin: 0;
+            font-family: "Noto Serif", serif;
+            font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+            font-weight: 300;
+            line-height: 1.25;
+            letter-spacing: -0.03em;
+        }
+
+        .ah-closing-accent {
+            margin-top: 0.65rem;
+            color: var(--ah-gold);
+            font-style: italic;
+        }
+
+        @media (max-width: 1024px) {
+            .ah-intro {
+                grid-template-columns: 1fr;
+            }
+
+            .ah-intro-media {
+                min-height: 18rem;
+                order: -1;
+            }
+
+            .ah-collab-layout {
+                grid-template-columns: 1fr;
+                min-height: 0;
+            }
+
+            .ah-collab-media {
+                min-height: clamp(14rem, 40vw, 20rem);
+            }
+
+            .ah-collab-panel {
+                border-left: 0;
+                border-top: 1px solid rgba(166, 139, 106, 0.28);
+                padding: clamp(2rem, 4vw, 2.75rem) 0 0;
+            }
+
+            .ah-pillars {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .ah-pillar:last-child {
+                grid-column: 1 / -1;
+                max-width: 18rem;
+                margin-inline: auto;
+            }
+
+            .ah-timeline-stage {
+                grid-template-columns: 1fr;
+                row-gap: 1.25rem;
+                text-align: center;
+            }
+
+            .ah-timeline-item:first-of-type,
+            .ah-timeline-item:last-of-type {
+                grid-column: 1;
+                grid-row: auto;
+            }
+
+            .ah-timeline-diamond {
+                display: none;
+            }
+
+            .ah-timeline-label {
+                text-align: center;
+            }
+
+            .ah-leaf-art {
+                left: 50%;
+                top: clamp(1rem, 2.5vw, 1.5rem);
+                width: min(58vw, 12rem);
+                margin: 0;
+                transform: translateX(-50%);
+            }
+
+            .ah-tomorrow-text {
+                max-width: 28rem;
+                margin-top: clamp(1rem, 3vw, 1.5rem);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ah-collab-copy p::first-letter {
+                font-size: 2.6em;
+            }
+
+            .ah-pillars {
+                grid-template-columns: 1fr;
+            }
+
+            .ah-pillar:last-child {
+                max-width: none;
+            }
         }
     </style>
     
@@ -96,96 +558,117 @@
             </div>
         </header>
 
-        <main class="flex-grow pt-20">
+        <main class="ah-page flex-grow pt-20">
+            <!--
+              Architectural Harmony image slots (empty until URLs are provided):
+              arch/block1/image          — Intro section (right)
+              arch/block3/image          — Collaborative approach (left)
+              arch/timeline/year1/image  — Timeline: Year 1
+              arch/timeline/year34/image — Timeline: Year 3–4
+              Send image links with these slot names to update the page.
+            -->
 
-
-            <!-- Title Section -->
-            <section class="py-24 px-6 lg:px-12 text-center max-w-4xl mx-auto relative">
-                <!-- Abstract ambient glow -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
-                
-                <h1 class="font-serif text-balance text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10" data-cms="arch/hero/title">
-                    Architectural <span class="text-accent-bronze italic">Harmony</span>
-                </h1>
-                <p class="text-ivory-dim text-sm md:text-base font-bold uppercase tracking-[0.2em] relative z-10" data-cms="arch/hero/subtitle">
-                    Design is Instant. Growth is Inevitable. We Plan for Both.
-                </p>
+            <section class="ah-intro" id="intro">
+                <div class="ah-intro-copy">
+                    <h1 class="ah-serif" data-cms="arch/intro/headline">Design is Instant. Growth is Inevitable. We Plan for Both.</h1>
+                    <div class="ah-intro-rule" aria-hidden="true"></div>
+                    <p data-cms="arch/block1/body">In landscape architecture, drawings capture a moment—but gardens don't stand still. They grow, expand, compete, and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.</p>
+                    <p data-cms="arch/intro/p2">As consulting horticulturists, we often see thoughtfully designed spaces challenged by plant selections that don't account for scale or maturity. Fast growers are placed where restraint is essential. Foreground hedges are composed of species that eventually outgrow and obscure the very layers they were meant to frame. What appears harmonious on day one can lose its proportion and clarity with time.</p>
+                    <p class="ah-intro-callout" data-cms="arch/intro/callout">This is where collaboration becomes critical.</p>
+                </div>
+                <div class="ah-intro-media ah-media">
+                    <div class="ah-media-slot" data-cms="arch/block1/image" role="img" aria-label="Intro image placeholder"></div>
+                </div>
             </section>
 
-            <!-- Zigzag Content Sections -->
-            <section class="pb-32 px-6 lg:px-24 flex flex-col gap-24 lg:gap-32 w-full max-w-7xl mx-auto">
-
-                <!-- Block 1: Image Left, Text Right -->
-                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img alt="A Living Architecture" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="arch/block1/image" decoding="async" loading="lazy" fetchpriority="low">
+            <section class="ah-collab" id="collaborative-approach">
+                <div class="ah-collab-layout">
+                    <div class="ah-collab-media ah-media">
+                        <div class="ah-media-slot" data-cms="arch/block3/image" role="img" aria-label="Collaborative approach image placeholder"></div>
                     </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="arch/block1/title">A Living Architecture</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="arch/block1/body">
-                            In landscape architecture, drawings capture a moment—but gardens don’t stand still. They grow, expand, compete, and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Block 2: Text Left, Image Right -->
-                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img alt="Scale and Maturity" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="arch/block2/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="arch/block2/title">Scale and Maturity</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="arch/block2/body">
-                            As consulting horticulturists, we often see thoughtfully designed spaces challenged by plant selections that don’t account for scale or maturity. Fast growers are placed where restraint is essential. Foreground hedges are composed of species that eventually outgrow and obscure the very layers they were meant to frame. What appears harmonious on day one can lose its proportion and clarity with time.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Mid-page Quote Center -->
-                <div class="py-8 my-4 border-y border-white/5 text-center relative pointer-events-none">
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[100px] bg-primary/10 rounded-full blur-[80px]"></div>
-                    <p class="text-ivory text-xl md:text-2xl italic font-serif relative z-10 text-accent-bronze/90">
-                        "This is where collaboration becomes critical."
-                    </p>
-                </div>
-
-                <!-- Block 3: Image Left, Text Right -->
-                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img alt="Intentional Growth" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="arch/block3/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="arch/block3/title">Intentional Growth</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="arch/block3/body">
-                            With the intent to not redefine but strengthen the designs, we as landscape developers work closely with landscape architects—either as consultants during the design phase or as collaborators during execution—to ensure that plant selections are informed, intentional, and future-ready. By bringing horticultural depth into the conversation early, we help align design vision with plant behaviour, site conditions, and long-term growth patterns.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Block 4: Text Left, Image Right -->
-                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
-                        <img alt="Enduring Vision" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="arch/block4/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="arch/block4/title">Enduring Vision</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="arch/block4/body">
-                            With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony—not just immediate visual appeal. Because a successful landscape is not just about how it looks when installed—it’s about how it evolves.
-                        </p>
+                    <div class="ah-collab-panel">
+                        <div class="ah-collab-copy">
+                            <h2 class="ah-serif" data-cms="arch/collab/title">Our Collaborative <em class="text-accent-bronze not-italic font-light">Approach</em></h2>
+                            <div class="ah-collab-rule" aria-hidden="true"></div>
+                            <p data-cms="arch/collab/body">With the intent to not redefine but strengthen the designs, we as landscape developers work closely with landscape architects—either as consultants during the design phase or as collaborators during execution—to ensure that plant selections are informed, intentional, and future-ready.</p>
+                        </div>
+                        <div class="ah-pillars">
+                            <article class="ah-pillar">
+                                <div class="ah-pillar-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 8v6"/><path d="M14 12l4 5"/><path d="M34 12l-4 5"/><circle cx="24" cy="26" r="8"/><path d="M20 26h8"/><path d="M24 22v8"/></svg>
+                                </div>
+                                <h3 data-cms="arch/pillar1/title">Understand the Vision</h3>
+                                <p data-cms="arch/pillar1/body">We align with your design intent, spatial goals, and client expectations.</p>
+                            </article>
+                            <article class="ah-pillar">
+                                <div class="ah-pillar-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 38V22"/><path d="M18 38h12"/><path d="M17 24c-4-2-6-7-3-11 3 1 5 4 6 7"/><path d="M31 22c1-5 5-8 10-9 1 6-3 11-8 13"/></svg>
+                                </div>
+                                <h3 data-cms="arch/pillar2/title">Assess the Site</h3>
+                                <p data-cms="arch/pillar2/body">We evaluate site conditions, microclimate, soils, and surrounding context.</p>
+                            </article>
+                            <article class="ah-pillar">
+                                <div class="ah-pillar-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 40V26"/><rect x="17" y="12" width="14" height="14" rx="2"/><path d="M21 18h6"/></svg>
+                                </div>
+                                <h3 data-cms="arch/pillar3/title">Select with Foresight</h3>
+                                <p data-cms="arch/pillar3/body">We recommend the right plants for scale, function, and long-term performance.</p>
+                            </article>
+                            <article class="ah-pillar">
+                                <div class="ah-pillar-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="16" cy="20" r="4"/><circle cx="24" cy="16" r="4"/><circle cx="32" cy="20" r="4"/><path d="M10 34c2-5 6-8 14-8s12 3 14 8"/></svg>
+                                </div>
+                                <h3 data-cms="arch/pillar4/title">Collaborate Seamlessly</h3>
+                                <p data-cms="arch/pillar4/body">We integrate horticultural insight into drawings, schedules, and on-site execution.</p>
+                            </article>
+                            <article class="ah-pillar">
+                                <div class="ah-pillar-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M24 40V28"/><path d="M16 40h16"/><path d="M20 24c-3-4-2-10 4-12 5 2 6 8 0 12l-4 4-4-4c-6-4-5-10 0-12 6-2 9 4 4 12Z"/></svg>
+                                </div>
+                                <h3 data-cms="arch/pillar5/title">Ensure Lasting Performance</h3>
+                                <p data-cms="arch/pillar5/body">We support your vision as the landscape evolves beautifully over time.</p>
+                            </article>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Concluding Section -->
-            <section class="py-24 bg-[#0a0a0a] border-t border-white/5 text-center mt-8">
-                <p class="font-serif text-2xl md:text-4xl lg:text-5xl text-ivory leading-tight" data-cms="arch/closing/title">
-                    We don’t just develop gardens.<br>
-                    <span class="text-accent-bronze italic mt-4 block">We future-proof them.</span>
-                </p>
+            <section class="ah-tomorrow" id="design-tomorrow">
+                <h2 class="ah-serif" data-cms="arch/tomorrow/title">Design with Tomorrow in Mind.</h2>
+                <div class="ah-timeline-stage">
+                    <figure class="ah-timeline-item">
+                        <div class="ah-timeline-media ah-media">
+                            <div class="ah-media-slot" data-cms="arch/timeline/year1/image" role="img" aria-label="Year 1 timeline image placeholder"></div>
+                        </div>
+                        <figcaption class="ah-timeline-label" data-cms="arch/timeline/year1/label">Year 1 Establishment</figcaption>
+                    </figure>
+                    <figure class="ah-timeline-item">
+                        <div class="ah-timeline-media ah-media">
+                            <div class="ah-media-slot" data-cms="arch/timeline/year34/image" role="img" aria-label="Year 3–4 timeline image placeholder"></div>
+                        </div>
+                        <figcaption class="ah-timeline-label" data-cms="arch/timeline/year34/label">Year 3–4 Growth &amp; Maturation</figcaption>
+                    </figure>
+                    <span class="ah-timeline-diamond" aria-hidden="true"></span>
+                </div>
+            </section>
+
+            <section class="ah-tomorrow-outro" id="design-tomorrow-outro">
+                <div class="ah-tomorrow-footer">
+                    <div class="ah-leaf-art" aria-hidden="true">
+                        <img src="assets/arch-harmony-leaf.png" alt="" width="682" height="1024" data-cms="arch/tomorrow/leaf" decoding="async" loading="lazy">
+                    </div>
+                    <div class="ah-tomorrow-text">
+                        <p data-cms="arch/tomorrow/p1">By bringing horticultural depth into the conversation early, we help align design vision with plant behaviour, site conditions, and long-term growth patterns.</p>
+                        <div class="ah-tomorrow-rule" aria-hidden="true"></div>
+                        <p data-cms="arch/tomorrow/body">With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony—not just immediate visual appeal.</p>
+                        <p class="ah-tomorrow-quote" data-cms="arch/tomorrow/quote">Because a successful landscape is not just about how it looks when installed—it's about how it evolves.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="ah-closing" id="arch-closing">
+                <p data-cms="arch/closing/line1">We don't just develop gardens.</p>
+                <p class="ah-closing-accent" data-cms="arch/closing/line2">We future-proof them.</p>
             </section>
         </main>
 

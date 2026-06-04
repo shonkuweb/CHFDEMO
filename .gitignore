@@ -17,6 +17,8 @@ chf_archive.db
 *.jpg
 *.jpeg
 *.svg
+!assets/arch-harmony-leaf.svg
+!assets/arch-harmony-leaf.png
 *.mp4
 *.webm
 assets/images/

@@ -21,6 +21,439 @@
         html {
             scroll-behavior: smooth;
         }
+
+        :root {
+            --wg-gold: #a68b6a;
+            --wg-ivory: #eee9df;
+            --wg-muted: rgba(238, 233, 223, 0.68);
+            --wg-line: rgba(238, 233, 223, 0.16);
+        }
+
+        .wg-page {
+            background: #000;
+            color: var(--wg-ivory);
+        }
+
+        .wg-serif {
+            font-family: "Noto Serif", serif;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+        }
+
+        .wg-media {
+            position: relative;
+            overflow: hidden;
+            background: #0a0a0a;
+        }
+
+        .wg-media-slot {
+            position: absolute;
+            inset: 0;
+            background-color: #0a0a0a;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .wg-media-slot:not([style*="background-image"])::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, transparent 48%, rgba(166, 139, 106, 0.12) 49%, rgba(166, 139, 106, 0.12) 51%, transparent 52%),
+                radial-gradient(circle at 30% 20%, rgba(164, 184, 140, 0.08), transparent 45%);
+            pointer-events: none;
+        }
+
+        .wg-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.85rem 1.65rem;
+            background: var(--wg-gold);
+            color: #0a0a0a;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .wg-btn:hover {
+            background: #c5a073;
+            color: #000;
+        }
+
+        /* Hero */
+        .wg-hero {
+            position: relative;
+            min-height: clamp(28rem, 88vh, 44rem);
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .wg-hero-media {
+            position: absolute;
+            inset: 0;
+        }
+
+        .wg-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.25) 100%),
+                linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, transparent 45%);
+            z-index: 1;
+        }
+
+        .wg-hero-inner {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: clamp(5rem, 12vw, 7rem) clamp(1.35rem, 5vw, 5rem) clamp(3rem, 6vw, 4.5rem);
+        }
+
+        .wg-hero-eyebrow {
+            margin: 0 0 1rem;
+            color: var(--wg-gold);
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+        }
+
+        .wg-hero-title {
+            margin: 0 0 1.25rem;
+            max-width: 14ch;
+            font-size: clamp(2.15rem, 4.2vw, 3.65rem);
+            line-height: 1.08;
+        }
+
+        .wg-hero-lead {
+            margin: 0 0 0.85rem;
+            max-width: 32rem;
+            font-size: clamp(1rem, 1.35vw, 1.2rem);
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .wg-hero-body {
+            margin: 0 0 1.75rem;
+            max-width: 36rem;
+            color: var(--wg-muted);
+            font-size: clamp(0.82rem, 1vw, 0.94rem);
+            font-weight: 300;
+            line-height: 1.78;
+        }
+
+        /* Beyond */
+        .wg-beyond {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 0.88fr);
+            gap: clamp(2rem, 4vw, 3.5rem);
+            align-items: stretch;
+            padding: clamp(3.5rem, 7vw, 5.5rem) clamp(1.35rem, 5vw, 5rem);
+        }
+
+        .wg-beyond-rule {
+            width: 4.35rem;
+            height: 1px;
+            margin-bottom: 1.65rem;
+            background: var(--wg-gold);
+        }
+
+        .wg-beyond h2 {
+            margin: 0 0 1.35rem;
+            font-size: clamp(1.75rem, 2.8vw, 2.45rem);
+            line-height: 1.12;
+        }
+
+        .wg-beyond-copy p {
+            margin: 0 0 1.1rem;
+            color: var(--wg-muted);
+            font-size: clamp(0.8rem, 1vw, 0.94rem);
+            font-weight: 300;
+            line-height: 1.78;
+        }
+
+        .wg-beyond-media {
+            min-height: clamp(22rem, 42vw, 34rem);
+        }
+
+        /* Cards */
+        .wg-handle {
+            padding: clamp(3rem, 6vw, 4.5rem) clamp(1.35rem, 5vw, 5rem) clamp(3.5rem, 7vw, 5rem);
+        }
+
+        .wg-handle h2 {
+            margin: 0 0 clamp(2rem, 4vw, 3rem);
+            text-align: center;
+            font-size: clamp(1.65rem, 2.6vw, 2.25rem);
+        }
+
+        .wg-cards {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0;
+            max-width: 80rem;
+            margin: 0 auto;
+        }
+
+        .wg-card {
+            padding: clamp(1.5rem, 2.5vw, 2rem) clamp(1.15rem, 2vw, 1.5rem);
+            border: 1px solid rgba(166, 139, 106, 0.45);
+            text-align: center;
+        }
+
+        .wg-card + .wg-card {
+            border-left: 0;
+        }
+
+        .wg-card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            margin: 0 auto 1.15rem;
+            color: var(--wg-gold);
+        }
+
+        .wg-card-icon svg {
+            width: 1.65rem;
+            height: 1.65rem;
+        }
+
+        .wg-card h3 {
+            margin: 0 0 0.75rem;
+            font-size: clamp(0.88rem, 1.1vw, 1rem);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .wg-card p {
+            margin: 0;
+            color: var(--wg-muted);
+            font-size: clamp(0.72rem, 0.9vw, 0.82rem);
+            font-weight: 300;
+            line-height: 1.65;
+        }
+
+        /* Distinguished */
+        .wg-distinguished {
+            position: relative;
+            min-height: clamp(22rem, 42vw, 30rem);
+            display: flex;
+            align-items: center;
+        }
+
+        .wg-distinguished-bg {
+            position: absolute;
+            inset: 0;
+        }
+
+        .wg-distinguished-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.35) 100%);
+            z-index: 1;
+        }
+
+        .wg-distinguished-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: clamp(3.5rem, 7vw, 5rem) clamp(1.35rem, 5vw, 5rem);
+            width: 100%;
+        }
+
+        .wg-distinguished h2 {
+            margin: 0 0 1.25rem;
+            max-width: 18ch;
+            font-size: clamp(1.75rem, 2.8vw, 2.45rem);
+            line-height: 1.12;
+        }
+
+        .wg-distinguished p {
+            margin: 0 0 1.1rem;
+            max-width: 36rem;
+            color: var(--wg-muted);
+            font-size: clamp(0.8rem, 1vw, 0.94rem);
+            font-weight: 300;
+            line-height: 1.78;
+        }
+
+        /* Approach */
+        .wg-approach {
+            padding: clamp(3.5rem, 7vw, 5.5rem) clamp(1.35rem, 5vw, 5rem) clamp(4rem, 8vw, 6rem);
+        }
+
+        .wg-approach h2 {
+            margin: 0 0 clamp(2.5rem, 5vw, 3.5rem);
+            text-align: center;
+            font-size: clamp(1.65rem, 2.6vw, 2.25rem);
+        }
+
+        .wg-steps {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: clamp(1rem, 2vw, 1.75rem);
+            max-width: 80rem;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .wg-steps::before {
+            content: "";
+            position: absolute;
+            top: 1.15rem;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: rgba(166, 139, 106, 0.35);
+            z-index: 0;
+        }
+
+        .wg-step {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 0 0.5rem;
+        }
+
+        .wg-step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.35rem;
+            height: 2.35rem;
+            margin: 0 auto 1.25rem;
+            border: 1px solid var(--wg-gold);
+            border-radius: 50%;
+            color: var(--wg-gold);
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .wg-step h3 {
+            margin: 0 0 0.65rem;
+            font-size: clamp(0.78rem, 0.95vw, 0.88rem);
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .wg-step p {
+            margin: 0;
+            color: var(--wg-muted);
+            font-size: clamp(0.68rem, 0.85vw, 0.78rem);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        /* Testimonial */
+        .wg-quote {
+            position: relative;
+            padding: clamp(4rem, 8vw, 6rem) clamp(1.35rem, 5vw, 5rem);
+            text-align: center;
+        }
+
+        .wg-quote-bg {
+            position: absolute;
+            inset: 0;
+        }
+
+        .wg-quote-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            z-index: 1;
+        }
+
+        .wg-quote-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 46rem;
+            margin: 0 auto;
+        }
+
+        .wg-quote-mark {
+            display: block;
+            margin: 0 auto 1rem;
+            color: var(--wg-gold);
+            font-family: "Noto Serif", serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            line-height: 1;
+            opacity: 0.85;
+        }
+
+        .wg-quote-text {
+            margin: 0 0 1.5rem;
+            font-size: clamp(1.35rem, 2.4vw, 2rem);
+            line-height: 1.45;
+        }
+
+        .wg-quote-attr {
+            margin: 0;
+            color: var(--wg-gold);
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 1024px) {
+            .wg-beyond {
+                grid-template-columns: 1fr;
+            }
+
+            .wg-beyond-media {
+                min-height: clamp(18rem, 50vw, 26rem);
+            }
+
+            .wg-cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .wg-card:nth-child(odd) {
+                border-left: 1px solid rgba(166, 139, 106, 0.45);
+            }
+
+            .wg-card:nth-child(2) {
+                border-left: 0;
+            }
+
+            .wg-card:nth-child(n+3) {
+                border-top: 0;
+            }
+
+            .wg-steps {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .wg-steps::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .wg-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .wg-card,
+            .wg-card + .wg-card {
+                border: 1px solid rgba(166, 139, 106, 0.45);
+                border-top: 0;
+            }
+
+            .wg-card:first-child {
+                border-top: 1px solid rgba(166, 139, 106, 0.45);
+            }
+        }
     </style>
     
     <!-- Premium Animations -->
@@ -165,12 +598,6 @@
                     <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
                 </a>
 
-                <!-- Portfolio -->
-                <a href="portfolio" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
-                    <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">Portfolio</span>
-                    <span class="material-symbols-outlined text-base text-white/20 group-hover:text-accent-bronze/60 transition-colors duration-300">arrow_forward</span>
-                </a>
-
                 <!-- About Us -->
                 <a href="about" class="mobile-link sidebar-item flex items-center justify-between py-4 border-b border-white/[0.05] group">
                     <span class="font-serif text-[15px] text-ivory/80 group-hover:text-accent-bronze transition-colors duration-300">About Us</span>
@@ -203,112 +630,131 @@
                 <p class="text-[10px] text-white/15 uppercase tracking-widest">© 2026 CHF Botanical Luxury</p>
             </div>
         </div>
-<main class="flex-grow pt-32 lg:pt-40">
+        <main class="wg-page flex-grow pt-20">
+            <!--
+              White Glove Service image slots (publish via admin):
+              whiteglove/hero/image           — Hero background
+              whiteglove/beyond/image         — Beyond Maintenance (right)
+              whiteglove/distinguished/image  — Distinguished Properties background
+              whiteglove/testimonial/bg       — Testimonial background
+            -->
 
-            <!-- Page Header -->
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32 overflow-hidden">
-                <div class="flex flex-col md:flex-row justify-between items-end gap-12">
-                    <div class="max-w-3xl">
-                        <div class="flex items-center gap-4 mb-6">
-                            <span class="w-12 h-px bg-accent-bronze/40"></span>
-                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Services</span>
-                        </div>
-                        <h2 class="font-serif text-balance text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8" data-cms="whiteglove/hero/title">
-                            White Glove <br />
-                            <span class="text-accent-bronze italic font-light drop-shadow-sm">Service</span>
-                        </h2>
-                    </div>
-                    <div class="flex flex-col items-start md:items-end gap-6 max-w-xs mb-4">
-                        <p class="text-gray-400 font-light text-sm leading-relaxed uppercase tracking-[0.15em] text-left md:text-right border-l md:border-l-0 md:border-r border-accent-bronze/30 pl-6 md:pl-0 md:pr-6" data-cms="whiteglove/hero/subtitle">
-                            From nursery to installation — precision, care, and craft at every step.
-                        </p>
-                    </div>
+            <section class="wg-hero" id="hero">
+                <div class="wg-hero-media wg-media">
+                    <div class="wg-media-slot" data-cms="whiteglove/hero/image" role="img" aria-label="White Glove Service hero"></div>
+                </div>
+                <div class="wg-hero-overlay" aria-hidden="true"></div>
+                <div class="wg-hero-inner">
+                    <p class="wg-hero-eyebrow" data-cms="whiteglove/hero/eyebrow">White Glove Service</p>
+                    <h1 class="wg-hero-title wg-serif" data-cms="whiteglove/hero/title">Botanical Concierge for Exceptional Landscapes</h1>
+                    <p class="wg-hero-lead" data-cms="whiteglove/hero/lead">Your landscape deserves more than maintenance. It deserves dedicated stewardship.</p>
+                    <p class="wg-hero-body" data-cms="whiteglove/hero/body">CHF White Glove Service is a bespoke horticultural programme designed for luxury residences, hospitality properties, corporate campuses, and premium developments where exceptional presentation is expected every day.</p>
+                    <a href="inquiry" class="wg-btn">Schedule a Consultation</a>
                 </div>
             </section>
 
-            <!-- Image + Text Blocks -->
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-40">
-                <div class="flex flex-col gap-32">
-
-                    <!-- Block 1: Image Left — Seamless Logistics -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7">
-                            <div class="relative aspect-video overflow-hidden bg-surface-dark group">
-                        <img alt="Seamless logistics and transportation of premium plant specimens" class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" data-cms="whiteglove/block1/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pl-12">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Stage I</span>
-                            <h3 class="font-serif text-balance text-4xl mb-6" data-cms="whiteglove/block1/title">Seamless Logistics</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8" data-cms="whiteglove/block1/body">
-                                Seamless logistics meets craftsmanship. From nursery to installation, we transport and position premium specimens with precision, preserving their form and character while elevating your landscape into a refined visual experience.
-                            </p>
-                            <a href="inquiry" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Request a Consultation</a>
-                        </div>
-                    </div>
-
-                    <!-- Block 2: Image Right — Handled Like Living Art -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7 lg:order-2">
-                            <div class="relative aspect-video overflow-hidden bg-surface-dark group">
-                        <img alt="Specialists handling and placing statement plants with care" class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" data-cms="whiteglove/block2/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pr-12 lg:order-1 lg:text-left">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Stage II</span>
-                            <h3 class="font-serif text-balance text-4xl mb-6" data-cms="whiteglove/block2/title">Handled Like Living Art</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8" data-cms="whiteglove/block2/body">
-                                Our specialists deliver and place statement plants with care and control, ensuring every curated specimen arrives safely and integrates flawlessly into your luxury outdoor space.
-                            </p>
-                            <a href="inquiry" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Enquire About Delivery</a>
-                        </div>
-                    </div>
-
-                    <!-- Block 3: Image Left — Foundation of Excellence -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7">
-                            <div class="relative aspect-video overflow-hidden bg-surface-dark group">
-                        <img alt="Rich soil preparation ensuring long-term vitality for curated specimens" class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" data-cms="whiteglove/block3/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pl-12">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Stage III</span>
-                            <h3 class="font-serif text-balance text-4xl mb-6" data-cms="whiteglove/block3/title">Foundation of Excellence</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8" data-cms="whiteglove/block3/body">
-                                Crafting the foundation of excellence. Rich soil preparation ensures long-term vitality, giving each curated specimen the perfect start — combining expertise, care, and precision for landscapes that thrive beautifully over time.
-                            </p>
-                            <a href="inquiry" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Explore Our Process</a>
-                        </div>
-                    </div>
-
-                    <!-- Block 4: Image Right — Precision Planting -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div class="lg:col-span-7 lg:order-2">
-                            <div class="relative aspect-video overflow-hidden bg-surface-dark group">
-                        <img alt="Precision planting creating refined outdoor environments" class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" data-cms="whiteglove/block4/image" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                        </div>
-                        <div class="lg:col-span-5 lg:pr-12 lg:order-1 lg:text-left">
-                            <span class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold block mb-4">Stage IV</span>
-                            <h3 class="font-serif text-balance text-4xl mb-6" data-cms="whiteglove/block4/title">Precision Planting</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed mb-8" data-cms="whiteglove/block4/body">
-                                Our team carefully positions curated specimens, blending architecture and nature seamlessly, creating refined outdoor environments that feel intentional, balanced, and effortlessly luxurious.
-                            </p>
-                            <a href="inquiry" class="inline-flex items-center gap-3 text-xs uppercase tracking-widest border-b border-accent-bronze pb-1 hover:text-accent-bronze transition-colors">Begin Your Project</a>
-                        </div>
-                    </div>
-
+            <section class="wg-beyond" id="beyond-maintenance">
+                <div class="wg-beyond-copy">
+                    <div class="wg-beyond-rule" aria-hidden="true"></div>
+                    <h2 class="wg-serif" data-cms="whiteglove/beyond/title">Beyond Maintenance. Beyond Expectations.</h2>
+                    <p data-cms="whiteglove/beyond/p1">Standard maintenance keeps landscapes alive. White Glove stewardship keeps them exceptional—guided by specialist horticultural expertise that understands tropical planting, irrigation nuance, and the presentation standards luxury properties demand.</p>
+                    <p data-cms="whiteglove/beyond/p2">Our team anticipates seasonal transitions, monitors plant health before issues surface, and coordinates enhancements with minimal disruption—proactive management that protects your investment and your peace of mind.</p>
+                    <p data-cms="whiteglove/beyond/p3">Every programme is tailored to your property's architecture, microclimate, and aesthetic intent—ensuring care feels invisible while results remain unmistakably refined.</p>
+                </div>
+                <div class="wg-beyond-media wg-media">
+                    <div class="wg-media-slot" data-cms="whiteglove/beyond/image" role="img" aria-label="CHF specialist tending tropical planting"></div>
                 </div>
             </section>
 
-            <!-- Closing Statement -->
-            <section class="py-24 bg-[#0a0a0a] border-t border-white/5 text-center">
-                <p class="font-serif text-2xl md:text-4xl lg:text-5xl text-ivory leading-tight px-6" data-cms="whiteglove/closing/title">
-                    Every detail considered.<br>
-                    <span class="text-accent-bronze italic mt-4 block">Every specimen placed with purpose.</span>
-                </p>
+            <section class="wg-handle" id="what-we-handle">
+                <h2 class="wg-serif" data-cms="whiteglove/handle/title">What We Handle</h2>
+                <div class="wg-cards">
+                    <article class="wg-card">
+                        <div class="wg-card-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3c-4 3-6 6-6 10a6 6 0 0 0 12 0c0-4-2-7-6-10Z"/><path d="M12 10v7"/></svg>
+                        </div>
+                        <h3 data-cms="whiteglove/card1/title">Botanical Asset Management</h3>
+                        <p data-cms="whiteglove/card1/body">Protecting long-term plant health and landscape value.</p>
+                    </article>
+                    <article class="wg-card">
+                        <div class="wg-card-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+                        </div>
+                        <h3 data-cms="whiteglove/card2/title">Seasonal Enhancements</h3>
+                        <p data-cms="whiteglove/card2/body">Refreshing colour, texture, and visual interest throughout the year.</p>
+                    </article>
+                    <article class="wg-card">
+                        <div class="wg-card-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+                        </div>
+                        <h3 data-cms="whiteglove/card3/title">Priority Response</h3>
+                        <p data-cms="whiteglove/card3/body">Rapid support for urgent landscape requirements and unexpected needs.</p>
+                    </article>
+                    <article class="wg-card">
+                        <div class="wg-card-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="9" cy="8" r="2.5"/><circle cx="15" cy="8" r="2.5"/><path d="M4 20c0-3 2.5-5 5-5s5 2 5 5M14 15c2 0 4 1.5 4 5"/></svg>
+                        </div>
+                        <h3 data-cms="whiteglove/card4/title">Dedicated Care Team</h3>
+                        <p data-cms="whiteglove/card4/body">Consistent specialists familiar with your property and preferences.</p>
+                    </article>
+                </div>
             </section>
 
+            <section class="wg-distinguished" id="distinguished-properties">
+                <div class="wg-distinguished-bg wg-media">
+                    <div class="wg-media-slot" data-cms="whiteglove/distinguished/image" role="img" aria-label="Illuminated garden pathway at dusk"></div>
+                </div>
+                <div class="wg-distinguished-overlay" aria-hidden="true"></div>
+                <div class="wg-distinguished-inner">
+                    <h2 class="wg-serif" data-cms="whiteglove/distinguished/title">Designed for Distinguished Properties</h2>
+                    <p data-cms="whiteglove/distinguished/p1">White Glove Service is suited to private residences, boutique hotels, corporate headquarters, and premium developments where landscape presentation is inseparable from brand and hospitality.</p>
+                    <p data-cms="whiteglove/distinguished/p2">We align stewardship with how you use your outdoor spaces—entertaining, arrival experiences, guest circulation, and quiet retreat—so exceptional standards endure and long-term landscape value grows with every season.</p>
+                </div>
+            </section>
+
+            <section class="wg-approach" id="white-glove-approach">
+                <h2 class="wg-serif" data-cms="whiteglove/approach/title">Our White Glove Approach</h2>
+                <div class="wg-steps">
+                    <article class="wg-step">
+                        <div class="wg-step-num" aria-hidden="true">01</div>
+                        <h3 data-cms="whiteglove/step1/title">Assessment &amp; Landscape Audit</h3>
+                        <p data-cms="whiteglove/step1/body">Comprehensive evaluation of planting, irrigation, and landscape condition.</p>
+                    </article>
+                    <article class="wg-step">
+                        <div class="wg-step-num" aria-hidden="true">02</div>
+                        <h3 data-cms="whiteglove/step2/title">Custom Care Programme</h3>
+                        <p data-cms="whiteglove/step2/body">Tailored stewardship plan developed around your property's requirements.</p>
+                    </article>
+                    <article class="wg-step">
+                        <div class="wg-step-num" aria-hidden="true">03</div>
+                        <h3 data-cms="whiteglove/step3/title">Scheduled Specialist Visits</h3>
+                        <p data-cms="whiteglove/step3/body">Routine visits focused on proactive care and enhancement.</p>
+                    </article>
+                    <article class="wg-step">
+                        <div class="wg-step-num" aria-hidden="true">04</div>
+                        <h3 data-cms="whiteglove/step4/title">Performance Monitoring</h3>
+                        <p data-cms="whiteglove/step4/body">Ongoing assessment of plant health and landscape presentation.</p>
+                    </article>
+                    <article class="wg-step">
+                        <div class="wg-step-num" aria-hidden="true">05</div>
+                        <h3 data-cms="whiteglove/step5/title">Continuous Improvement</h3>
+                        <p data-cms="whiteglove/step5/body">Recommendations and enhancements that keep the landscape evolving beautifully.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="wg-quote" id="testimonial">
+                <div class="wg-quote-bg wg-media">
+                    <div class="wg-media-slot" data-cms="whiteglove/testimonial/bg" role="img" aria-label="Testimonial background"></div>
+                </div>
+                <div class="wg-quote-overlay" aria-hidden="true"></div>
+                <div class="wg-quote-inner">
+                    <span class="wg-quote-mark" aria-hidden="true">&ldquo;</span>
+                    <blockquote class="wg-quote-text wg-serif" data-cms="whiteglove/testimonial/quote">The confidence of knowing every detail is professionally managed allows us to simply enjoy the landscape.</blockquote>
+                    <span class="wg-quote-mark" aria-hidden="true">&rdquo;</span>
+                    <p class="wg-quote-attr" data-cms="whiteglove/testimonial/attribution">PRIVATE RESIDENCE CLIENT</p>
+                </div>
+            </section>
         </main>
 
         <footer class="site-footer border-t border-white/10 bg-background-darker">
