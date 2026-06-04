@@ -136,15 +136,15 @@ FIXED_HOME_HERO_MEDIA = {
 }
 FIXED_HOME_STAGING_MEDIA = {
     "home/staging/feature1/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner1.png",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/1%20(1).png",
         "type": "media",
     },
     "home/staging/feature2/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner2.png",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/2%20(1).png",
         "type": "media",
     },
     "home/staging/feature3/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner.png",
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/3.png",
         "type": "media",
     },
 }
@@ -212,7 +212,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "home/staging/feature1/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner1.png",
+        "value": FIXED_HOME_STAGING_MEDIA["home/staging/feature1/image"]["value"],
         "type": "media",
     },
     "home/staging/feature1/title": {
@@ -224,7 +224,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "longtext",
     },
     "home/staging/feature2/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner2.png",
+        "value": FIXED_HOME_STAGING_MEDIA["home/staging/feature2/image"]["value"],
         "type": "media",
     },
     "home/staging/feature2/title": {
@@ -236,7 +236,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "longtext",
     },
     "home/staging/feature3/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner.png",
+        "value": FIXED_HOME_STAGING_MEDIA["home/staging/feature3/image"]["value"],
         "type": "media",
     },
     "home/staging/feature3/title": {
