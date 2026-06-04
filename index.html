@@ -155,6 +155,14 @@
             font-weight: 300;
         }
 
+        /* Spacing under "Service as an Art Form" — not in compiled tailwind.css (mt-16, etc.) */
+        .service-heading-divider {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
         @media (max-width: 767px) {
             .hero-home-copy {
                 top: 45%;
@@ -401,7 +409,7 @@
                         Luxury botanical solutions for premium spaces
                     </p>
                     <a href="inquiry" class="hero-home-cta">
-                        Explore Now
+                        EXPLORE THE EXPERIENCE
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </a>
                     <div class="hero-home-features">
@@ -439,7 +447,7 @@
         </section>
 
             <section
-                class="bg-black py-20 md:py-28 px-5 md:px-12 lg:px-16 relative z-40 overflow-hidden">
+                class="bg-black pt-20 pb-16 md:pt-28 md:pb-24 px-5 md:px-12 lg:px-16 relative z-40 overflow-hidden">
                 <div class="mx-auto max-w-7xl">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-start">
                         <div class="md:col-span-4 pt-4 lg:pt-10 reveal reveal-up">
@@ -456,21 +464,21 @@
 
                         <div class="md:col-span-8 reveal reveal-up stagger-1">
                             <div class="grid grid-cols-3 gap-3 sm:gap-6 lg:gap-7 mb-3">
-                                <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] overflow-hidden rounded-[1.25rem] sm:rounded-[2rem] bg-[#111111]">
+                                <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] overflow-hidden bg-[#111111]">
                                     <img alt="Landscape staging — intentional layering"
                                         class="h-full w-full object-cover"
                                         data-cms="home/staging/feature1/image"
                                         src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner1.png"
                                         decoding="async" loading="lazy">
                                 </div>
-                                <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] overflow-hidden rounded-[1.25rem] sm:rounded-[2rem] bg-[#111111]">
+                                <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] overflow-hidden bg-[#111111]">
                                     <img alt="Landscape staging — natural integration"
                                         class="h-full w-full object-cover"
                                         data-cms="home/staging/feature2/image"
                                         src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/ImageForHomepageBanner2.png"
                                         decoding="async" loading="lazy">
                                 </div>
-                                <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] overflow-hidden rounded-[1.25rem] sm:rounded-[2rem] bg-[#111111]">
+                                <div class="h-[18rem] sm:h-[22rem] lg:h-[28rem] overflow-hidden bg-[#111111]">
                                     <img alt="Landscape staging — sensory experience"
                                         class="h-full w-full object-cover"
                                         data-cms="home/staging/feature3/image"
@@ -504,20 +512,21 @@
                 </div>
             </section>
             <section
-                class="bg-background-darker py-24 md:py-40 px-6 md:px-12 lg:px-24 border-y border-white/5 relative overflow-hidden">
+                class="bg-black pt-12 pb-24 md:pt-16 md:pb-40 px-6 md:px-12 lg:px-24 border-b border-white/5 relative overflow-hidden">
                 <!-- Aesthetic background elements -->
                 <div
                     class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent-bronze/5 rounded-full blur-[120px] pointer-events-none">
                 </div>
 
                 <div class="mx-auto max-w-7xl relative z-10 service-heading-container">
-                    <div class="mb-24 text-center">
+                    <div class="mb-8 text-center">
                         <span
                             class="inline-block text-accent-bronze text-[10px] uppercase tracking-[0.3em] font-bold mb-6">Our
                             Expertise</span>
                         <h3 class="font-serif text-balance text-4xl md:text-5xl lg:text-6xl text-ivory font-light drop-shadow-xl">
                             Service as an <span class="italic text-accent-bronze">Art Form</span></h3>
-                        <div class="w-px h-16 bg-gradient-to-b from-accent-bronze/50 to-transparent mx-auto mt-12">
+                        <div class="service-heading-divider">
+                            <div class="w-px h-16 bg-gradient-to-b from-accent-bronze/50 to-transparent"></div>
                         </div>
                     </div>
 
@@ -525,7 +534,7 @@
 
                         <!-- Curated Specimens Card -->
                         <a href="curated-specimens"
-                            class="service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
+                            class="service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -553,7 +562,7 @@
 
                         <!-- Architectural Harmony Card -->
                         <a href="architectural-harmony"
-                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
+                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -582,7 +591,7 @@
 
                         <!-- White Glove Service Card -->
                         <a href="white-glove-service"
-                            class="service-card reveal reveal-up stagger-4 group block relative z-20 p-10 lg:p-14 bg-background-darker hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
+                            class="service-card reveal reveal-up stagger-4 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
