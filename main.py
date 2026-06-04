@@ -312,11 +312,11 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "landscape-staging/hero/title": {
-        "value": "Landscape <span class=\"text-accent-bronze italic\">Staging</span>",
+        "value": "Living Landscape,<br>Beautifully Composed",
         "type": "text",
     },
     "landscape-staging/hero/subtitle": {
-        "value": "Composed botanical staging for spaces that need to feel complete from the first impression.",
+        "value": "Carefully orchestrated plant palettes<br>that introduce texture, movement and<br>natural harmony into modern spaces.",
         "type": "text",
     },
     "landscape-staging/closing/title": {
