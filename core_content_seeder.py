@@ -20,7 +20,7 @@ about_seeds = {
 }
 
 global_seeds = {
-    "global/contact/email": {"value": "calcuttahorticulturalfarm@gmail.com", "type": "text"},
+    "global/contact/email": {"value": "support@chfexperience.com", "type": "text"},
     "global/contact/phone": {"value": "+91 79807 83108", "type": "text"}
 }
 

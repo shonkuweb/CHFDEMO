@@ -146,7 +146,7 @@ seeds = {
     
     # ── Global Settings ──
     "global/footer/copyright": {"value": "© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb", "type": "text"},
-    "global/contact/email": {"value": "enquiry@chfbotanical.com", "type": "text"},
+    "global/contact/email": {"value": "support@chfexperience.com", "type": "text"},
     "global/contact/phone": {"value": "+91 98300 98300", "type": "text"},
     # ── Curated Specimens ──
     "specimens/hero/title": {"value": "Curated <br />\n<span class='text-accent-bronze italic font-light drop-shadow-sm'>Specimens</span>", "type": "text"},
