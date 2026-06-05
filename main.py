@@ -213,7 +213,7 @@ ABOUT_LEGACY_FORWARD_TITLE = "Carrying the Legacy Forward"
 ABOUT_LEGACY_FORWARD_COPY = (
     "Today, the legacy is carried forward by Indra Bose and Apurba Bose, expanding the practice into "
     "contemporary formats while staying rooted in its core philosophy. Alongside design and consulting, "
-    "we offer curated plant solutions, gardening essentials, and a diverse range of products tailored "
+    "we offer curated plant solutions, gardening essentials and a diverse range of products tailored "
     "for modern green living."
 )
 ABOUT_NURSERIES_IMAGE_1 = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-1-25c9a8f0.png"
@@ -223,7 +223,7 @@ ABOUT_NURSERIES_COPY = (
     "With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, "
     "we house a rich collection of indoor, outdoor and exotic plants, along with bonsais, topiaries "
     "and an extensive selection of pots and planters. Our plant experience centre in Alipore further "
-    "brings this vision to life—an immersive space where clients can explore, interact, and engage "
+    "brings this vision to life—an immersive space where clients can explore, interact and engage "
     "with plants in thoughtfully curated settings."
 )
 FIXED_ABOUT_MEDIA = {
@@ -426,7 +426,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "home/staging/body": {
-        "value": "Layered landscape compositions that bring structure, softness, and living depth into contemporary spaces.",
+        "value": "Layered landscape compositions that bring structure, softness and living depth into contemporary spaces.",
         "type": "longtext",
     },
     "home/staging/cta": {
@@ -566,7 +566,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "media",
     },
     "arch/block1/body": {
-        "value": "In landscape architecture, drawings capture a moment—but gardens don't stand still. They grow, expand, compete, and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.",
+        "value": "In landscape architecture, drawings capture a moment—but gardens don't stand still. They grow, expand, compete and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.",
         "type": "longtext",
     },
     "arch/intro/headline": {
@@ -586,7 +586,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "arch/collab/body": {
-        "value": "With the intent to not redefine but strengthen the designs, we as landscape developers work closely with landscape architects—either as consultants during the design phase or as collaborators during execution—to ensure that plant selections are informed, intentional, and future-ready.",
+        "value": "With the intent to not redefine but strengthen the designs, we as landscape developers work closely with landscape architects—either as consultants during the design phase or as collaborators during execution—to ensure that plant selections are informed, intentional and future-ready.",
         "type": "longtext",
     },
     "arch/tomorrow/title": {
@@ -594,7 +594,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "arch/tomorrow/p1": {
-        "value": "By bringing horticultural depth into the conversation early, we help align design vision with plant behaviour, site conditions, and long-term growth patterns.",
+        "value": "By bringing horticultural depth into the conversation early, we help align design vision with plant behaviour, site conditions and long-term growth patterns.",
         "type": "longtext",
     },
     "arch/tomorrow/body": {
@@ -690,7 +690,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "biophilic-workspace/hero/subtitle": {
-        "value": "Integrating verdant life into professional sanctuaries for clarity, composure, and spatial softness.",
+        "value": "Integrating verdant life into professional sanctuaries for clarity, composure and spatial softness.",
         "type": "text",
     },
     "biophilic-workspace/block1/image": {
@@ -714,7 +714,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "biophilic-workspace/block2/body": {
-        "value": "Plant-led layering softens hard interiors, improves perceived air quality, and contributes to calmer acoustics across open-plan environments.",
+        "value": "Plant-led layering softens hard interiors, improves perceived air quality and contributes to calmer acoustics across open-plan environments.",
         "type": "longtext",
     },
     "rare-specimen-sculptures/hero/title": {
@@ -734,7 +734,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "rare-specimen-sculptures/block1/body": {
-        "value": "Each specimen is selected for maturity, silhouette, and sculptural character to anchor space with botanical authority.",
+        "value": "Each specimen is selected for maturity, silhouette and sculptural character to anchor space with botanical authority.",
         "type": "longtext",
     },
     "rare-specimen-sculptures/block2/image": {
@@ -746,7 +746,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "rare-specimen-sculptures/block2/body": {
-        "value": "We align plant provenance, form, and long-term care protocols with each collector's design intent and lifestyle rhythm.",
+        "value": "We align plant provenance, form and long-term care protocols with each collector's design intent and lifestyle rhythm.",
         "type": "longtext",
     },
     "living-walls/hero/title": {
@@ -766,7 +766,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "living-walls/block1/body": {
-        "value": "We design irrigation, species layering, and maintenance access as one integrated system so the wall remains healthy and visually composed over time.",
+        "value": "We design irrigation, species layering and maintenance access as one integrated system so the wall remains healthy and visually composed over time.",
         "type": "longtext",
     },
     "living-walls/block2/image": {
@@ -778,7 +778,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "living-walls/block2/body": {
-        "value": "Living walls soften rigid architecture, improve ambience, and create an immersive natural experience in high-value interior environments.",
+        "value": "Living walls soften rigid architecture, improve ambience and create an immersive natural experience in high-value interior environments.",
         "type": "longtext",
     },
     "deep/hero/title": {
@@ -794,7 +794,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "deep/block1/body": {
-        "value": "Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.",
+        "value": "Golden light, water reflections and a sculptural specimen create sensory calm — where negative ions, natural textures and biophilic balance reduce stress, slow the mind and elevate the entire outdoor experience.",
         "type": "longtext",
     },
     "deep/block1/image": {
@@ -806,7 +806,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "deep/block2/body": {
-        "value": "Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.",
+        "value": "Expansive light, open flow and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.",
         "type": "longtext",
     },
     "deep/block2/image": {
@@ -818,7 +818,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "deep/block3/body": {
-        "value": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.",
+        "value": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional and quietly premium.",
         "type": "longtext",
     },
     "deep/block3/image": {
@@ -830,7 +830,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "deep/block4/body": {
-        "value": "Clean lines, controlled light, and a sculptural plant improve cognitive performance and reduce fatigue — bringing clarity, calm, and subtle vitality into a workspace designed for focus, decision-making, and elevated thinking.",
+        "value": "Clean lines, controlled light and a sculptural plant improve cognitive performance and reduce fatigue — bringing clarity, calm and subtle vitality into a workspace designed for focus, decision-making and elevated thinking.",
         "type": "longtext",
     },
     "deep/block4/image": {
@@ -850,11 +850,11 @@ HOME_TRENDS_DEFAULTS = {
 }
 
 AVENUE_EXTRA_BLOCKS = [
-    ("Canopy Continuity", "From boulevard medians to estate driveways, consistent canopy rhythm gives movement and coherence to long linear spaces. Each alignment is selected for mature spread, branching behaviour, and maintenance practicality."),
-    ("Root-Zone Intelligence", "Avenue trees fail early when underground conditions are ignored. We map soil depth, drainage, and hardscape pressure before planting, so root systems establish with long-term structural stability."),
-    ("Seasonal Character", "A layered avenue should evolve gracefully across seasons. We curate flowering cycles, leaf texture, and tonal contrast so streetscapes retain visual depth beyond a single blooming window."),
+    ("Canopy Continuity", "From boulevard medians to estate driveways, consistent canopy rhythm gives movement and coherence to long linear spaces. Each alignment is selected for mature spread, branching behaviour and maintenance practicality."),
+    ("Root-Zone Intelligence", "Avenue trees fail early when underground conditions are ignored. We map soil depth, drainage and hardscape pressure before planting, so root systems establish with long-term structural stability."),
+    ("Seasonal Character", "A layered avenue should evolve gracefully across seasons. We curate flowering cycles, leaf texture and tonal contrast so streetscapes retain visual depth beyond a single blooming window."),
     ("Wind and Exposure Planning", "Large-form trees must withstand corridor winds and reflected heat. Species choices are calibrated to site exposure, reducing failure risk while preserving the intended architectural silhouette."),
-    ("Maintenance by Design", "Pruning regimes, irrigation access, and replacement strategies are considered at planning stage. This keeps the avenue visually disciplined while reducing operational surprises over time."),
+    ("Maintenance by Design", "Pruning regimes, irrigation access and replacement strategies are considered at planning stage. This keeps the avenue visually disciplined while reducing operational surprises over time."),
     ("Arrival Experience", "The first 30 seconds of arrival define perception. We use tree sequencing and spacing to create a composed procession that feels both grand and grounded."),
     ("Legacy-Scale Outcomes", "A successful avenue is measured in decades, not months. Our approach combines horticultural foresight and execution discipline so the landscape matures with clarity and intent."),
 ]
@@ -875,30 +875,30 @@ for idx, (title, body) in enumerate(AVENUE_EXTRA_BLOCKS, start=5):
     }
 
 LANDSCAPING_BLOCKS = [
-    ("Site-Led Concept Planning", "Every project begins with reading the land: light, soil, circulation, and architectural language. We shape planting intent and hardscape rhythm so aesthetics and environmental logic align from day one.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg"),
-    ("Material and Plant Integration", "Our design-development workflow unifies botanical palettes, grading, stone, and built edges into one coherent system. This avoids disconnected execution and preserves spatial clarity.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg"),
+    ("Site-Led Concept Planning", "Every project begins with reading the land: light, soil, circulation and architectural language. We shape planting intent and hardscape rhythm so aesthetics and environmental logic align from day one.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg"),
+    ("Material and Plant Integration", "Our design-development workflow unifies botanical palettes, grading, stone and built edges into one coherent system. This avoids disconnected execution and preserves spatial clarity.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg"),
     ("Execution-Level Detailing", "From planting density to irrigation zoning, details are developed for real-world buildability. The result is a landscape that performs as elegantly as it appears.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg"),
-    ("Post-Completion Evolution", "We design for years ahead, not just launch day. Growth behavior, replacement strategy, and seasonal transitions are considered upfront to keep the landscape refined over time.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_post_completion.jpg"),
+    ("Post-Completion Evolution", "We design for years ahead, not just launch day. Growth behavior, replacement strategy and seasonal transitions are considered upfront to keep the landscape refined over time.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_post_completion.jpg"),
 ]
 
 LANDSCAPE_STAGING_BLOCKS = [
-    ("Arrival Composition", "We stage entrances, patios, terraces, and event-facing green zones so the first view feels balanced, lush, and ready for use.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg"),
-    ("Layered Visual Depth", "Tall forms, ground textures, planters, and focal specimens are arranged to create depth without overwhelming the architecture.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg"),
-    ("Event-Ready Greenery", "Plant material, containers, and placement are coordinated for openings, photoshoots, residences, and hospitality spaces that need immediate polish.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg"),
-    ("Refinement After Placement", "After staging, we tune spacing, orientation, irrigation access, and care notes so the composition remains composed beyond installation day.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_post_completion.jpg"),
+    ("Arrival Composition", "We stage entrances, patios, terraces and event-facing green zones so the first view feels balanced, lush and ready for use.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_site_planning.jpg"),
+    ("Layered Visual Depth", "Tall forms, ground textures, planters and focal specimens are arranged to create depth without overwhelming the architecture.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_material_integration.jpg"),
+    ("Event-Ready Greenery", "Plant material, containers and placement are coordinated for openings, photoshoots, residences and hospitality spaces that need immediate polish.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_execution_detailing.jpg"),
+    ("Refinement After Placement", "After staging, we tune spacing, orientation, irrigation access and care notes so the composition remains composed beyond installation day.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/landscape_design_post_completion.jpg"),
 ]
 
 PLANT_SUPPLY_BLOCKS = [
-    ("Curated Plant Procurement", "We source healthy, structurally sound plant material from trusted growers, with species calibrated to project context, climate, and desired visual maturity.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_procurement.jpg"),
-    ("Nursery Quality Audit", "Before dispatch, every batch is evaluated for root health, branch structure, pest status, and moisture condition to reduce replacement risk on site.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_quality_audit.jpg"),
-    ("Climate-Matched Selection", "Species are shortlisted based on exposure, local humidity, soil profile, and irrigation capacity so delivered plants establish quickly and reliably.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_climate_matched.jpg"),
-    ("Logistics and Staging Control", "Transit sequencing, loading method, and staging windows are planned to preserve plant vitality between nursery pickup and final placement.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_logistics_control.jpg"),
+    ("Curated Plant Procurement", "We source healthy, structurally sound plant material from trusted growers, with species calibrated to project context, climate and desired visual maturity.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_procurement.jpg"),
+    ("Nursery Quality Audit", "Before dispatch, every batch is evaluated for root health, branch structure, pest status and moisture condition to reduce replacement risk on site.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_quality_audit.jpg"),
+    ("Climate-Matched Selection", "Species are shortlisted based on exposure, local humidity, soil profile and irrigation capacity so delivered plants establish quickly and reliably.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_climate_matched.jpg"),
+    ("Logistics and Staging Control", "Transit sequencing, loading method and staging windows are planned to preserve plant vitality between nursery pickup and final placement.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/plant_supply_logistics_control.jpg"),
 ]
 
 GARDEN_MAINTENANCE_BLOCKS = [
-    ("Seasonal Maintenance Programming", "Care calendars are tuned to growth cycles, weather shifts, and flowering behavior so each zone receives intervention at the right moment.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_seasonal_programming.jpg"),
-    ("Pruning and Canopy Discipline", "Formative pruning, thinning, and canopy balancing maintain proportion, sightlines, and plant health without compromising architectural composition.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_canopy_discipline.jpg"),
-    ("Nutrition and Soil Vitality", "Targeted nutrient plans and soil-conditioning routines restore vigor, support root stability, and keep ornamental quality consistently high.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_soil_vitality.jpg"),
+    ("Seasonal Maintenance Programming", "Care calendars are tuned to growth cycles, weather shifts and flowering behavior so each zone receives intervention at the right moment.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_seasonal_programming.jpg"),
+    ("Pruning and Canopy Discipline", "Formative pruning, thinning and canopy balancing maintain proportion, sightlines and plant health without compromising architectural composition.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_canopy_discipline.jpg"),
+    ("Nutrition and Soil Vitality", "Targeted nutrient plans and soil-conditioning routines restore vigor, support root stability and keep ornamental quality consistently high.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_soil_vitality.jpg"),
     ("Preventive Plant Health Monitoring", "Routine scouting identifies stress signals early, enabling low-impact corrective action before issues spread across the landscape.", "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_health_monitoring.jpg"),
 ]
 

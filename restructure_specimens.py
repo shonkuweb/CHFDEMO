@@ -37,7 +37,7 @@ new_html_content = """<main class="flex-grow pt-32 lg:pt-48">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
                         <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="specimens/block1/title">Sensory Calm</h3>
                         <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="specimens/block1/body">
-                            Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.
+                            Golden light, water reflections and a sculptural specimen create sensory calm — where negative ions, natural textures and biophilic balance reduce stress, slow the mind and elevate the entire outdoor experience.
                         </p>
                     </div>
                 </div>
@@ -51,7 +51,7 @@ new_html_content = """<main class="flex-grow pt-32 lg:pt-48">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
                         <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="specimens/block2/title">Breathable Living</h3>
                         <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="specimens/block2/body">
-                            Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.
+                            Expansive light, open flow and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.
                         </p>
                     </div>
                 </div>
@@ -65,7 +65,7 @@ new_html_content = """<main class="flex-grow pt-32 lg:pt-48">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
                         <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="specimens/block3/title">Quietly Premium</h3>
                         <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="specimens/block3/body">
-                            A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.
+                            A refined interior anchored by a living specimen — naturally filtering air, softening acoustics and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional and quietly premium.
                         </p>
                     </div>
                 </div>
@@ -79,7 +79,7 @@ new_html_content = """<main class="flex-grow pt-32 lg:pt-48">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
                         <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="specimens/block4/title">Collector's Edition</h3>
                         <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="specimens/block4/body">
-                            Singular botanical expressions reserved for spaces that demand rarity, permanence, and cultivated visual restraint.
+                            Singular botanical expressions reserved for spaces that demand rarity, permanence and cultivated visual restraint.
                         </p>
                     </div>
                 </div>
@@ -131,16 +131,16 @@ seeds = """
     "specimens/hero/subtitle": {"value": "Not added — introduced. Every specimen placed with purpose.", "type": "text"},
     "specimens/block1/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_1.png", "type": "media"},
     "specimens/block1/title": {"value": "Sensory Calm", "type": "text"},
-    "specimens/block1/body": {"value": "Golden light, water reflections, and a sculptural specimen create sensory calm — where negative ions, natural textures, and biophilic balance reduce stress, slow the mind, and elevate the entire outdoor experience.", "type": "longtext"},
+    "specimens/block1/body": {"value": "Golden light, water reflections and a sculptural specimen create sensory calm — where negative ions, natural textures and biophilic balance reduce stress, slow the mind and elevate the entire outdoor experience.", "type": "longtext"},
     "specimens/block2/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_2.png", "type": "media"},
     "specimens/block2/title": {"value": "Breathable Living", "type": "text"},
-    "specimens/block2/body": {"value": "Expansive light, open flow, and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.", "type": "longtext"},
+    "specimens/block2/body": {"value": "Expansive light, open flow and a single curated plant enhance oxygen levels and visual calm — proven to reduce cortisol and improve focus, creating a breathable, emotionally warm living environment.", "type": "longtext"},
     "specimens/block3/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_3.png", "type": "media"},
     "specimens/block3/title": {"value": "Quietly Premium", "type": "text"},
-    "specimens/block3/body": {"value": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics, and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional, and quietly premium.", "type": "longtext"},
+    "specimens/block3/body": {"value": "A refined interior anchored by a living specimen — naturally filtering air, softening acoustics and enhancing well-being through biophilic design, creating a welcoming space that feels calm, intentional and quietly premium.", "type": "longtext"},
     "specimens/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png", "type": "media"},
     "specimens/block4/title": {"value": "Collector's Edition", "type": "text"},
-    "specimens/block4/body": {"value": "Singular botanical expressions reserved for spaces that demand rarity, permanence, and cultivated visual restraint.", "type": "longtext"},
+    "specimens/block4/body": {"value": "Singular botanical expressions reserved for spaces that demand rarity, permanence and cultivated visual restraint.", "type": "longtext"},
     "specimens/closing/title": {"value": "Not just added.<br>\\n<span class='text-accent-bronze italic font-light'>Introduced.</span>", "type": "text"},
 """
 
