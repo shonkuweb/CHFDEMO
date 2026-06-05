@@ -384,6 +384,18 @@ SITE_CONTENT_DEFAULTS = {
         "value": "assets/arch-harmony-leaf.png",
         "type": "media",
     },
+    "whiteglove/hero/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/0F00B042-06A1-4DFD-A901-187491BC03F0.png",
+        "type": "media",
+    },
+    "whiteglove/beyond/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/B617BE96-4A0A-489F-A1F1-8A55C3350BC8.png",
+        "type": "media",
+    },
+    "whiteglove/distinguished/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/560FC3C2-359F-46EB-8CA4-88FED5E5D0AE.png",
+        "type": "media",
+    },
     "landscaping-design/hero/title": {
         "value": "Landscaping Design <span class=\"text-accent-bronze italic\">&amp; Development</span>",
         "type": "text",

@@ -26,12 +26,12 @@ seeds = {
     "plant-center/hero/media": {"value": "", "type": "media"}, # Blank for wireframe
     
     # ── White Glove Service (Botanical Concierge) ──
-    "whiteglove/hero/image": {"value": "", "type": "media"},
+    "whiteglove/hero/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/0F00B042-06A1-4DFD-A901-187491BC03F0.png", "type": "media"},
     "whiteglove/hero/eyebrow": {"value": "White Glove Service", "type": "text"},
     "whiteglove/hero/title": {"value": "Botanical Concierge for Exceptional Landscapes", "type": "text"},
     "whiteglove/hero/lead": {"value": "Your landscape deserves more than maintenance. It deserves dedicated stewardship.", "type": "text"},
     "whiteglove/hero/body": {"value": "CHF White Glove Service is a bespoke horticultural programme designed for luxury residences, hospitality properties, corporate campuses, and premium developments where exceptional presentation is expected every day.", "type": "longtext"},
-    "whiteglove/beyond/image": {"value": "", "type": "media"},
+    "whiteglove/beyond/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/B617BE96-4A0A-489F-A1F1-8A55C3350BC8.png", "type": "media"},
     "whiteglove/beyond/title": {"value": "Beyond Maintenance. Beyond Expectations.", "type": "text"},
     "whiteglove/beyond/p1": {"value": "Standard maintenance keeps landscapes alive. White Glove stewardship keeps them exceptional—guided by specialist horticultural expertise that understands tropical planting, irrigation nuance, and the presentation standards luxury properties demand.", "type": "longtext"},
     "whiteglove/beyond/p2": {"value": "Our team anticipates seasonal transitions, monitors plant health before issues surface, and coordinates enhancements with minimal disruption—proactive management that protects your investment and your peace of mind.", "type": "longtext"},
@@ -45,7 +45,7 @@ seeds = {
     "whiteglove/card3/body": {"value": "Rapid support for urgent landscape requirements and unexpected needs.", "type": "text"},
     "whiteglove/card4/title": {"value": "Dedicated Care Team", "type": "text"},
     "whiteglove/card4/body": {"value": "Consistent specialists familiar with your property and preferences.", "type": "text"},
-    "whiteglove/distinguished/image": {"value": "", "type": "media"},
+    "whiteglove/distinguished/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/560FC3C2-359F-46EB-8CA4-88FED5E5D0AE.png", "type": "media"},
     "whiteglove/distinguished/title": {"value": "Designed for Distinguished Properties", "type": "text"},
     "whiteglove/distinguished/p1": {"value": "White Glove Service is suited to private residences, boutique hotels, corporate headquarters, and premium developments where landscape presentation is inseparable from brand and hospitality.", "type": "longtext"},
     "whiteglove/distinguished/p2": {"value": "We align stewardship with how you use your outdoor spaces—entertaining, arrival experiences, guest circulation, and quiet retreat—so exceptional standards endure and long-term landscape value grows with every season.", "type": "longtext"},

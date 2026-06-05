@@ -97,6 +97,14 @@
             inset: 0;
         }
 
+        .wg-hero-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
         .wg-hero-overlay {
             position: absolute;
             inset: 0;
@@ -152,7 +160,7 @@
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 0.88fr);
             gap: clamp(2rem, 4vw, 3.5rem);
-            align-items: stretch;
+            align-items: center;
             padding: clamp(3.5rem, 7vw, 5.5rem) clamp(1.35rem, 5vw, 5rem);
         }
 
@@ -178,7 +186,19 @@
         }
 
         .wg-beyond-media {
-            min-height: clamp(22rem, 42vw, 34rem);
+            width: 100%;
+            height: fit-content;
+            display: block;
+            align-self: center;
+            background: transparent;
+        }
+
+        .wg-beyond-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
         }
 
         /* Cards */
@@ -409,10 +429,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .wg-beyond-media {
-                min-height: clamp(18rem, 50vw, 26rem);
-            }
-
             .wg-cards {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
@@ -641,7 +657,14 @@
 
             <section class="wg-hero" id="hero">
                 <div class="wg-hero-media wg-media">
-                    <div class="wg-media-slot" data-cms="whiteglove/hero/image" role="img" aria-label="White Glove Service hero"></div>
+                    <img
+                        class="wg-hero-image"
+                        data-cms="whiteglove/hero/image"
+                        src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/0F00B042-06A1-4DFD-A901-187491BC03F0.png"
+                        alt="White Glove Service landscape stewardship"
+                        decoding="async"
+                        loading="eager"
+                        fetchpriority="high">
                 </div>
                 <div class="wg-hero-overlay" aria-hidden="true"></div>
                 <div class="wg-hero-inner">
@@ -661,8 +684,14 @@
                     <p data-cms="whiteglove/beyond/p2">Our team anticipates seasonal transitions, monitors plant health before issues surface, and coordinates enhancements with minimal disruption—proactive management that protects your investment and your peace of mind.</p>
                     <p data-cms="whiteglove/beyond/p3">Every programme is tailored to your property's architecture, microclimate, and aesthetic intent—ensuring care feels invisible while results remain unmistakably refined.</p>
                 </div>
-                <div class="wg-beyond-media wg-media">
-                    <div class="wg-media-slot" data-cms="whiteglove/beyond/image" role="img" aria-label="CHF specialist tending tropical planting"></div>
+                <div class="wg-beyond-media">
+                    <img
+                        class="wg-beyond-image"
+                        data-cms="whiteglove/beyond/image"
+                        src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/B617BE96-4A0A-489F-A1F1-8A55C3350BC8.png"
+                        alt="CHF specialist tending tropical planting"
+                        decoding="async"
+                        loading="lazy">
                 </div>
             </section>
 
@@ -702,7 +731,7 @@
 
             <section class="wg-distinguished" id="distinguished-properties">
                 <div class="wg-distinguished-bg wg-media">
-                    <div class="wg-media-slot" data-cms="whiteglove/distinguished/image" role="img" aria-label="Illuminated garden pathway at dusk"></div>
+                    <div class="wg-media-slot" data-cms="whiteglove/distinguished/image" role="img" aria-label="Illuminated garden pathway at dusk" style="background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/whiteglove/560FC3C2-359F-46EB-8CA4-88FED5E5D0AE.png');"></div>
                 </div>
                 <div class="wg-distinguished-overlay" aria-hidden="true"></div>
                 <div class="wg-distinguished-inner">
