@@ -195,7 +195,7 @@ ASSETS_CACHE_VERSION = "chf-no-img-zoom-1"
 PEC_IMAGE_BASE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20experience%20center"
 PEC_HERO_IMAGE = f"{PEC_IMAGE_BASE}/9BF51B5D-7851-4D44-BF1D-F2B521F61DB2%20(1).png"
 PEC_PHILOSOPHY_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_bcec5110.png?t=1780033476946"
-ABOUT_FOUNDING_ERA_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_9c903182.png"
+ABOUT_FOUNDING_ERA_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/founding-era-68896cb0.png"
 ABOUT_FOUNDING_ERA_COPY = (
     "Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, "
     "and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with "
