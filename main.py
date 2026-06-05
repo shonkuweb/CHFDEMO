@@ -197,7 +197,7 @@ PEC_HERO_IMAGE = f"{PEC_IMAGE_BASE}/9BF51B5D-7851-4D44-BF1D-F2B521F61DB2%20(1).p
 PEC_PHILOSOPHY_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_bcec5110.png?t=1780033476946"
 ABOUT_FOUNDING_ERA_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/founding-era-68896cb0.png"
 ABOUT_FOUNDING_ERA_COPY = (
-    "Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, "
+    "Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise "
     "and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with "
     "a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in "
     "landscape development and pioneering tree transplantation in the city."
@@ -958,6 +958,83 @@ for idx, (title, body, image_url) in enumerate(GARDEN_MAINTENANCE_BLOCKS, start=
         "type": "longtext",
     }
 
+COMMA_BEFORE_AND_RE = re.compile(r",\s+and\b", re.IGNORECASE)
+
+
+def strip_comma_before_and(text):
+    if not isinstance(text, str) or not text:
+        return text
+    return COMMA_BEFORE_AND_RE.sub(" and", text)
+
+
+def migrate_remove_comma_before_and():
+    """Normalize stored CMS copy by removing commas that precede 'and'."""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    changed = 0
+
+    cur.execute("SELECT path, value FROM site_content")
+    for row in cur.fetchall():
+        old_value = row["value"] or ""
+        new_value = strip_comma_before_and(old_value)
+        if new_value != old_value:
+            cur.execute(
+                "UPDATE site_content SET value = ? WHERE path = ?",
+                (new_value, row["path"]),
+            )
+            changed += 1
+
+    for column in ("label", "title", "description", "ctaText"):
+        cur.execute(f"SELECT id, {column} AS value FROM categories")
+        for row in cur.fetchall():
+            old_value = row["value"] or ""
+            new_value = strip_comma_before_and(old_value)
+            if new_value != old_value:
+                cur.execute(
+                    f"UPDATE categories SET {column} = ? WHERE id = ?",
+                    (new_value, row["id"]),
+                )
+                changed += 1
+
+    for column in ("title", "titleLine1", "titleLine2", "subtitle", "breadcrumb"):
+        cur.execute(f"SELECT slug, {column} AS value FROM pages")
+        for row in cur.fetchall():
+            old_value = row["value"] or ""
+            new_value = strip_comma_before_and(old_value)
+            if new_value != old_value:
+                cur.execute(
+                    f"UPDATE pages SET {column} = ? WHERE slug = ?",
+                    (new_value, row["slug"]),
+                )
+                changed += 1
+
+    for column in (
+        "badge_label",
+        "title_line1",
+        "title_highlight",
+        "title_connector",
+        "title_line3",
+        "description",
+    ):
+        cur.execute(f"SELECT id, {column} AS value FROM home_trends_section")
+        for row in cur.fetchall():
+            old_value = row["value"] or ""
+            new_value = strip_comma_before_and(old_value)
+            if new_value != old_value:
+                cur.execute(
+                    f"UPDATE home_trends_section SET {column} = ? WHERE id = ?",
+                    (new_value, row["id"]),
+                )
+                changed += 1
+
+    conn.commit()
+    conn.close()
+    if changed:
+        clear_cache()
+        bump_sync_version()
+        print(f"[MIGRATE] Removed comma-before-and from {changed} stored content field(s).")
+
+
 def migrate_legacy_site_content_keys():
     """
     Keeps DB paths aligned with data-cms keys used by live templates.
@@ -1410,6 +1487,7 @@ def startup_init_sync_state():
     migrate_legacy_site_content_keys()
     ensure_sync_state_table()
     ensure_home_trends_section_table()
+    migrate_remove_comma_before_and()
     purge_deploy_asset_cache()
 
 # ── Endpoints ───────────────────────────────
