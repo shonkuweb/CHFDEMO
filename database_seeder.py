@@ -156,7 +156,7 @@ seeds = {
 
     # ── About Us ──
     "about/story/title-1": {"value": "The Founding Era (1982)", "type": "text"},
-    "about/story/image-1": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_9c903182.png?t=1780222282232", "type": "media"},
+    "about/story/image-1": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_9c903182.png", "type": "media"},
     "about/philosophy/patience-title": {"value": "Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.", "type": "longtext"},
     "about/story/title-2": {"value": "Design Philosophy", "type": "text"},
     "about/story/image-2": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/design-philosophy-1d66f8f2.png", "type": "media"},

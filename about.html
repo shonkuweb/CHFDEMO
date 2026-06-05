@@ -39,7 +39,7 @@
 
         .about-founding-era {
             width: 100%;
-            max-width: min(56rem, 94vw);
+            max-width: 100%;
             margin: 0 auto;
         }
 
@@ -51,41 +51,48 @@
         .about-founding-era-media {
             position: relative;
             width: 100%;
-            min-height: clamp(22rem, 52vw, 32rem);
             overflow: hidden;
             border: none;
+            line-height: 0;
         }
 
         .about-founding-era-media img {
             display: block;
             width: 100%;
-            height: 100%;
-            min-height: clamp(22rem, 52vw, 32rem);
-            object-fit: cover;
+            height: auto;
+            max-width: 100%;
+            object-fit: contain;
             object-position: center;
-        }
-
-        .about-founding-era-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                to top,
-                rgba(0, 0, 0, 0.94) 0%,
-                rgba(0, 0, 0, 0.72) 38%,
-                rgba(0, 0, 0, 0.18) 68%,
-                transparent 100%
-            );
-            pointer-events: none;
         }
 
         .about-founding-era-copy {
             position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            left: clamp(1.25rem, 4.5vw, 3.5rem);
+            top: clamp(12%, 13vw, 16%);
+            width: min(88vw, 22rem);
+            max-width: 22rem;
             z-index: 2;
-            padding: clamp(1.75rem, 4vw, 3rem) clamp(1.5rem, 5vw, 3.5rem) clamp(1.5rem, 3.5vw, 2.25rem);
+            padding: 0;
             text-align: left;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 2px 28px rgba(0, 0, 0, 0.75);
+        }
+
+        .about-founding-era-copy h3 {
+            margin-bottom: 1.25rem;
+            font-family: "Noto Serif", serif;
+            font-size: clamp(1.8rem, 4.95vw, 3.375rem);
+            font-weight: 400;
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            color: #eee9df;
+        }
+
+        @media (min-width: 768px) {
+            .about-founding-era-copy {
+                width: min(34%, 24rem);
+                max-width: 24rem;
+                top: 14%;
+            }
         }
 
         .about-legacy-media {
@@ -376,12 +383,11 @@
                 <div class="about-founding-era reveal reveal-up">
                     <div class="about-founding-era-stage">
                         <div class="about-founding-era-media group">
-                            <img alt="The Founding Era 1982" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_9c903182.png?t=1780222282232" data-cms="about/story/image-1" decoding="async" loading="lazy" fetchpriority="low">
-                            <div class="about-founding-era-overlay" aria-hidden="true"></div>
+                            <img alt="The Founding Era 1982" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_9c903182.png" width="1536" height="1024" data-cms="about/story/image-1" decoding="async" loading="eager" fetchpriority="high">
                         </div>
                         <div class="about-founding-era-copy reveal reveal-up stagger-1">
                             <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                            <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/story/title-1">The Founding Era (1982)</h3>
+                            <h3 data-cms="about/story/title-1">The Founding Era (1982)</h3>
                             <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base mb-4" data-cms="about/philosophy/patience-title">
                                 Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.
                             </p>
