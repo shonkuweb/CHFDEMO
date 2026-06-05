@@ -22,6 +22,21 @@
         .toast-leave-to { opacity: 0; transform: translateY(-20px); }
         .glass-surface { background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.08); }
         .cp-admin-slide-slot { width: 6.25rem; flex-shrink: 0; }
+        .cp-admin-slide-drop {
+            position: relative;
+            touch-action: none;
+        }
+        .cp-admin-slide-drop::after {
+            content: "";
+            position: absolute;
+            inset: -0.35rem;
+            border-radius: 0.35rem;
+            pointer-events: none;
+        }
+        .cp-admin-slide-drop.dragover::after {
+            border: 1px dashed rgba(166, 139, 106, 0.85);
+            background: rgba(166, 139, 106, 0.08);
+        }
     </style>
     
     <!-- Premium Animations -->
@@ -395,14 +410,20 @@
                                 <div v-for="imageField in block.imageFields" :key="imageField.path" class="cp-admin-slide-slot space-y-2">
                                     <label class="block text-[9px] uppercase tracking-widest text-gray-500">{{ imageField.label }}</label>
                                     <div
+                                        class="cp-admin-slide-drop"
+                                        :class="{ dragover: dragover === imageField.path }"
+                                        @dragenter.prevent="dragover = imageField.path"
                                         @dragover.prevent="dragover = imageField.path"
                                         @dragleave.prevent="dragover = null"
-                                        @drop.prevent="handleGenericDrop($event, imageField.path)"
-                                        @click="triggerGenericUpload(imageField.path)"
-                                        :class="['upload-zone relative aspect-[9/16] bg-black rounded overflow-hidden cursor-pointer', dragover === imageField.path ? 'dragover' : 'border-white/10']"
+                                        @drop.prevent="handleGenericDrop($event, imageField.path, true)"
                                     >
-                                        <img v-if="imageField.content.value" :src="imageField.content.value" class="absolute inset-0 w-full h-full object-contain" decoding="async" loading="lazy" fetchpriority="low">
-                                        <div v-else class="absolute inset-0 flex items-center justify-center text-center px-2 text-[8px] uppercase tracking-widest text-gray-600 leading-tight">Upload</div>
+                                        <div
+                                            @click="triggerGenericUpload(imageField.path)"
+                                            :class="['upload-zone relative aspect-[9/16] bg-black rounded overflow-hidden cursor-pointer', dragover === imageField.path ? 'dragover' : 'border-white/10']"
+                                        >
+                                            <img v-if="imageField.content.value" :src="imageField.content.value" class="absolute inset-0 w-full h-full object-contain pointer-events-none" decoding="async" loading="lazy" fetchpriority="low">
+                                            <div v-else class="absolute inset-0 flex items-center justify-center text-center px-2 text-[8px] uppercase tracking-widest text-gray-600 leading-tight pointer-events-none">Drop or upload</div>
+                                        </div>
                                     </div>
                                     <button @click="triggerGenericUpload(imageField.path)" class="w-full text-[9px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-2 py-1.5 hover:bg-accent-bronze/5 transition-colors">Upload</button>
                                     <input v-model="imageField.content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-2 py-1 text-[10px] text-white transition-colors" placeholder="URL">
@@ -1240,7 +1261,7 @@
                     content.value = getCloudflareEmbedUrl(content.value);
                 };
 
-                const uploadMediaChunked = (file, oldUrl, onSuccess, onProgress) => {
+                const uploadMediaChunked = (file, oldUrl, onSuccess, onProgress, cmsPath = '') => {
                     const xhr = new XMLHttpRequest();
                     xhr.withCredentials = true;
                     xhr.upload.onprogress = (e) => {
@@ -1254,20 +1275,27 @@
                         } else if (xhr.status === 401) {
                             showToast('Session expired. Please login again.', 'error');
                             window.location.href = '/admin-login';
+                        } else if (xhr.status === 413) {
+                            showToast('File too large for the server upload limit.', 'error');
                         } else {
                             showToast('Upload failed. Please try again.', 'error');
                         }
                     };
+                    xhr.onerror = () => {
+                        showToast('Upload failed. Check your connection and try again.', 'error');
+                    };
                     xhr.open('POST', '/api/upload');
                     xhr.setRequestHeader('X-Filename', file.name);
                     if (oldUrl) xhr.setRequestHeader('X-Old-Url', oldUrl);
+                    if (cmsPath) xhr.setRequestHeader('X-Cms-Path', cmsPath);
                     xhr.send(file);
                 };
 
                 const persistUploadedChange = async () => {
                     try {
+                        let res;
                         if (viewMode.value === 'collections') {
-                            await fetch('/api/save', {
+                            res = await fetch('/api/save', {
                                 method: 'POST',
                                 credentials: 'include',
                                 headers: { 'Content-Type': 'application/json' },
@@ -1277,12 +1305,15 @@
                                 })
                             });
                         } else if (viewMode.value === 'site-content') {
-                            await fetch('/api/site-content/save', {
+                            res = await fetch('/api/site-content/save', {
                                 method: 'POST',
                                 credentials: 'include',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(currentSiteData.value)
                             });
+                        }
+                        if (res && !res.ok) {
+                            throw new Error('Save failed');
                         }
                         const syncPayload = JSON.stringify({ ts: Date.now(), source: 'admin-upload' });
                         localStorage.setItem('chf_content_sync', syncPayload);
@@ -1292,7 +1323,7 @@
                             syncChannel.close();
                         }
                     } catch (_) {
-                        // keep manual Save Changes fallback if auto-persist fails
+                        showToast('Uploaded, but auto-save failed. Click Save Changes.', 'error');
                     }
                 };
 
@@ -1318,6 +1349,14 @@
                     }, 50);
                 };
 
+                const ensureSiteContentField = (path, type = 'media') => {
+                    if (!currentSiteData.value) currentSiteData.value = {};
+                    if (!currentSiteData.value[path]) {
+                        currentSiteData.value[path] = { value: '', type };
+                    }
+                    return currentSiteData.value[path];
+                };
+
                 const uploadGenericMedia = (file, path, imageOnly = false) => {
                     if (!file) return;
                     if (imageOnly && !file.type.startsWith('image/')) {
@@ -1328,29 +1367,30 @@
                         showToast('File too large. Max 80MB.', 'error');
                         return;
                     }
-                    const oldUrl = currentSiteData.value?.[path]?.value || '';
-                    
+                    const field = ensureSiteContentField(path, 'media');
+                    const oldUrl = field.value || '';
+
                     showToast('Uploading media...');
                     uploadMediaChunked(file, oldUrl, (url) => {
-                        // Ensure reactive update
-                        if (currentSiteData.value[path]) {
-                            currentSiteData.value[path].value = url + '?t=' + Date.now();
-                            persistUploadedChange();
-                            showToast('Media updated and synced.');
-                        }
+                        field.value = url + '?t=' + Date.now();
+                        persistUploadedChange();
+                        showToast('Media updated and synced.');
                         dragover.value = null;
-                    }, (p) => {});
+                    }, () => {}, path);
                 };
 
                 const handleGenericFileSelect = (e, path) => {
                     const file = e.target.files[0];
-                    uploadGenericMedia(file, path, e.target.accept === 'image/*');
+                    const imageOnly = (e.target.getAttribute('accept') || '').includes('image/') && !(e.target.getAttribute('accept') || '').includes('video/');
+                    uploadGenericMedia(file, path, imageOnly);
                     e.target.value = '';
                 };
 
                 const handleGenericDrop = (e, path, imageOnly = false) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     dragover.value = null;
-                    const file = e.dataTransfer.files[0];
+                    const file = e.dataTransfer?.files?.[0];
                     uploadGenericMedia(file, path, imageOnly);
                 };
 

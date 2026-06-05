@@ -1438,6 +1438,7 @@ async def get_r2_media(url: str):
 async def upload_file(request: Request, admin: str = Depends(get_current_admin)):
     filename_header = request.headers.get('X-Filename', 'upload.jpg')
     old_url_header = request.headers.get('X-Old-Url', '').strip()
+    cms_path_header = request.headers.get('X-Cms-Path', '').strip()
     ext = os.path.splitext(filename_header)[1].lower()
     if not ext: ext = '.jpg'
     unique_name = f"media_{uuid.uuid4().hex[:8]}{ext}"
@@ -1447,6 +1448,13 @@ async def upload_file(request: Request, admin: str = Depends(get_current_admin))
         raise HTTPException(status_code=413, detail=f"File too large. Max {MAX_UPLOAD_BYTES // (1024 * 1024)}MB")
     if old_url_header:
         delete_old_media_if_needed(old_url_header)
+
+    r2_key = unique_name
+    if cms_path_header:
+        safe_cms_path = re.sub(r'[^a-zA-Z0-9/_\-]', '', cms_path_header).strip('/')
+        if safe_cms_path:
+            folder = '/'.join(['assets'] + safe_cms_path.split('/')[:-1])
+            r2_key = f"{folder}/{unique_name}" if folder else unique_name
     
     if R2_ENABLED and r2_client:
         mime_map = {
@@ -1459,11 +1467,11 @@ async def upload_file(request: Request, admin: str = Depends(get_current_admin))
         try:
             r2_client.put_object(
                 Bucket=R2_BUCKET,
-                Key=unique_name,
+                Key=r2_key,
                 Body=file_data,
                 ContentType=content_type
             )
-            return {"url": f"{R2_PUBLIC_URL}/{unique_name}", "storage": "r2"}
+            return {"url": f"{R2_PUBLIC_URL}/{r2_key}", "storage": "r2"}
         except Exception as e:
             print(f"[R2 Error] {e}")
             pass
