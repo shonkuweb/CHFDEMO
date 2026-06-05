@@ -25,11 +25,11 @@ global_seeds = {
 }
 
 plant_center_seeds = {
-    "plant-center/hero/title": {"value": "Plant <br /><span class='text-accent-bronze italic font-light drop-shadow-sm'>Experience Center</span>", "type": "text"},
+    "plant-center/hero/title": {"value": "Plant <br /><span class='text-accent-bronze italic font-light drop-shadow-sm'>Experience Centre</span>", "type": "text"},
     "plant-center/hero/subtitle": {"value": "A curated space where architecture meets biodiversity. Experience the quiet power of nature through our multi-sensory botanical archive.", "type": "text"},
     "plant-center/hero/video": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_video_placeholder.mp4", "type": "media"},
     "plant-center/intro/title": {"value": "An Immersive <br/>Botanical Archive", "type": "text"},
-    "plant-center/intro/body": {"value": "Far beyond a traditional nursery, the Alipore Experience Center is designed as a living gallery. We invite architects, interior designers, and collectors to walk through staggered glasshouses, bonsai viewing decks, and rare specimen yards to visualize the scale, texture, and character of the plants in their ideal environment.", "type": "longtext"},
+    "plant-center/intro/body": {"value": "Far beyond a traditional nursery, the Alipore Experience Centre is designed as a living gallery. We invite architects, interior designers, and collectors to walk through staggered glasshouses, bonsai viewing decks, and rare specimen yards to visualize the scale, texture, and character of the plants in their ideal environment.", "type": "longtext"},
     "plant-center/gallery/img1": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimens.png", "type": "media"},
     "plant-center/gallery/img2": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/about/aboutus_legacy.png", "type": "media"},
     "plant-center/gallery/img3": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/architectural_harmony.png", "type": "media"}
@@ -58,7 +58,7 @@ def seed_core_content():
 
     conn.commit()
     conn.close()
-    print("\nCore content seeding complete (Home, About, Global, Plant Center).")
+    print("\nCore content seeding complete (Home, About, Global, Plant Centre).")
 
 if __name__ == "__main__":
     seed_core_content()

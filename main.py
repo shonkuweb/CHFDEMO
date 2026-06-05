@@ -795,7 +795,7 @@ def migrate_legacy_site_content_keys():
     if legacy_row:
         cur.execute("DELETE FROM site_content WHERE path = ?", ("plant-center/hero/media",))
 
-    # The Plant Experience Center was rebuilt as an image-led landing page.
+    # The Plant Experience Centre was rebuilt as an image-led landing page.
     # Remove legacy video/intro/gallery keys so the admin panel shows only
     # image slots that are still used by the live template.
     obsolete_plant_center_paths = (

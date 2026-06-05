@@ -20,8 +20,8 @@ seeds = {
     "arch/timeline/year1/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/architectural-harmony/1FC8B58D-15F6-429D-9493-1FBB93608635.png", "type": "media"},
     "arch/timeline/year34/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/architectural-harmony/6A9FCFBF-63C2-43B7-8311-81F798D6DC87.png", "type": "media"},
 
-    # ── Plant Experience Center ──
-    "plant-center/hero/title": {"value": "Plant <br /> \n<span class='text-accent-bronze italic font-light drop-shadow-sm'>Experience Center</span>", "type": "text"},
+    # ── Plant Experience Centre ──
+    "plant-center/hero/title": {"value": "Plant <br /> \n<span class='text-accent-bronze italic font-light drop-shadow-sm'>Experience Centre</span>", "type": "text"},
     "plant-center/hero/subtitle": {"value": "A curated space where architecture meets biodiversity. Experience the quiet power of nature through our multi-sensory botanical archive.", "type": "longtext"},
     "plant-center/hero/media": {"value": "", "type": "media"}, # Blank for wireframe
     
