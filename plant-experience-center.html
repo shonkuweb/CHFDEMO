@@ -567,6 +567,9 @@
         }
 
         .pec-designed-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
             padding: 0.6rem 1.05rem 0.9rem;
             border-right: 1px solid rgba(238, 232, 221, 0.1);
@@ -575,9 +578,10 @@
         .pec-designed-card:last-child { border-right: 0; }
 
         .pec-designed-card .pec-icon {
+            display: block;
             width: 1.65rem;
             height: 1.65rem;
-            margin-bottom: 0.62rem;
+            margin: 0 auto 0.62rem;
             color: rgba(238, 232, 221, 0.55);
         }
 
