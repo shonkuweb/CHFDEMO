@@ -120,6 +120,8 @@ def fetch_site_content(prefix):
         data.update(FIXED_HOME_STAGING_MEDIA)
     if prefix == "arch":
         data.update(FIXED_ARCH_MEDIA)
+    if prefix == "plant-center":
+        data.update(FIXED_PLANT_CENTER_MEDIA)
     return data
 
 def clear_cache():
@@ -150,6 +152,44 @@ FIXED_HOME_STAGING_MEDIA = {
         "type": "media",
     },
 }
+PEC_IMAGE_BASE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20experience%20center"
+PEC_HERO_IMAGE = f"{PEC_IMAGE_BASE}/9BF51B5D-7851-4D44-BF1D-F2B521F61DB2%20(1).png"
+PEC_PHILOSOPHY_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_bcec5110.png?t=1780033476946"
+FIXED_PLANT_CENTER_COLLECT_MEDIA = {
+    "plant-center/collect/plants/image": {
+        "value": f"{PEC_IMAGE_BASE}/WhatsApp%20Image%202026-06-03%20at%202.29.19%20AM.jpeg",
+        "type": "media",
+    },
+    "plant-center/collect/pots/image": {
+        "value": f"{PEC_IMAGE_BASE}/WhatsApp%20Image%202026-06-03%20at%202.29.19%20AM%20(1).jpeg",
+        "type": "media",
+    },
+    "plant-center/collect/figurines/image": {
+        "value": f"{PEC_IMAGE_BASE}/WhatsApp%20Image%202026-06-03%20at%202.29.20%20AM.jpeg",
+        "type": "media",
+    },
+    "plant-center/collect/garden-objects/image": {
+        "value": f"{PEC_IMAGE_BASE}/WhatsApp%20Image%202026-06-03%20at%202.29.20%20AM%20(1).jpeg",
+        "type": "media",
+    },
+}
+FIXED_PLANT_CENTER_PHILOSOPHY_MEDIA = {
+    "plant-center/philosophy/image": {
+        "value": PEC_PHILOSOPHY_IMAGE,
+        "type": "media",
+    },
+}
+FIXED_PLANT_CENTER_HERO_MEDIA = {
+    "plant-center/hero/image": {
+        "value": PEC_HERO_IMAGE,
+        "type": "media",
+    },
+}
+FIXED_PLANT_CENTER_MEDIA = {
+    **FIXED_PLANT_CENTER_HERO_MEDIA,
+    **FIXED_PLANT_CENTER_COLLECT_MEDIA,
+    **FIXED_PLANT_CENTER_PHILOSOPHY_MEDIA,
+}
 ARCH_IMAGE_BASE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/architectural-harmony"
 FIXED_ARCH_MEDIA = {
     "arch/block1/image": {
@@ -173,7 +213,12 @@ FIXED_ARCH_MEDIA = {
         "type": "media",
     },
 }
-PROTECTED_SITE_CONTENT_PATHS = set(FIXED_HOME_HERO_MEDIA) | set(FIXED_HOME_STAGING_MEDIA) | set(FIXED_ARCH_MEDIA)
+PROTECTED_SITE_CONTENT_PATHS = (
+    set(FIXED_HOME_HERO_MEDIA)
+    | set(FIXED_HOME_STAGING_MEDIA)
+    | set(FIXED_ARCH_MEDIA)
+    | set(FIXED_PLANT_CENTER_MEDIA)
+)
 
 SITE_CONTENT_DEFAULTS = {
     "home/hero/image": {
@@ -277,7 +322,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "media",
     },
     "plant-center/hero/image": {
-        "value": "",
+        "value": PEC_HERO_IMAGE,
         "type": "media",
     },
     "plant-center/experience/card1/image": {
@@ -297,23 +342,23 @@ SITE_CONTENT_DEFAULTS = {
         "type": "media",
     },
     "plant-center/philosophy/image": {
-        "value": "",
+        "value": PEC_PHILOSOPHY_IMAGE,
         "type": "media",
     },
     "plant-center/collect/plants/image": {
-        "value": "",
+        "value": FIXED_PLANT_CENTER_COLLECT_MEDIA["plant-center/collect/plants/image"]["value"],
         "type": "media",
     },
     "plant-center/collect/pots/image": {
-        "value": "",
+        "value": FIXED_PLANT_CENTER_COLLECT_MEDIA["plant-center/collect/pots/image"]["value"],
         "type": "media",
     },
     "plant-center/collect/figurines/image": {
-        "value": "",
+        "value": FIXED_PLANT_CENTER_COLLECT_MEDIA["plant-center/collect/figurines/image"]["value"],
         "type": "media",
     },
     "plant-center/collect/garden-objects/image": {
-        "value": "",
+        "value": FIXED_PLANT_CENTER_COLLECT_MEDIA["plant-center/collect/garden-objects/image"]["value"],
         "type": "media",
     },
     "arch/block1/body": {
@@ -356,14 +401,6 @@ SITE_CONTENT_DEFAULTS = {
         "value": "Because a successful landscape is not just about how it looks when installed—it's about how it evolves.",
         "type": "longtext",
     },
-    "arch/closing/line1": {
-        "value": "We don't just develop gardens.",
-        "type": "text",
-    },
-    "arch/closing/line2": {
-        "value": "We future-proof them.",
-        "type": "text",
-    },
     "arch/block1/image": {
         "value": f"{ARCH_IMAGE_BASE}/B75F2C1E-AE3A-4A10-9F6E-2F88CD2A0A15.png",
         "type": "media",
@@ -404,20 +441,12 @@ SITE_CONTENT_DEFAULTS = {
         "value": "Conceptual precision translated into enduring green environments.",
         "type": "text",
     },
-    "landscaping-design/closing/title": {
-        "value": "From concept to completion,<br><span class=\"text-accent-bronze italic mt-4 block\">we build landscapes that mature with intent.</span>",
-        "type": "text",
-    },
     "landscape-staging/hero/title": {
         "value": "Living Landscape,<br>Beautifully Composed",
         "type": "text",
     },
     "landscape-staging/hero/subtitle": {
         "value": "Carefully orchestrated plant palettes<br>that introduce texture, movement and<br>natural harmony into modern spaces.",
-        "type": "text",
-    },
-    "landscape-staging/closing/title": {
-        "value": "Every staged landscape should feel effortless.<br><span class=\"text-accent-bronze italic mt-4 block\">We make the living details intentional.</span>",
         "type": "text",
     },
     "plant-supply/hero/image": {
@@ -444,20 +473,12 @@ SITE_CONTENT_DEFAULTS = {
         "value": "Sourcing resilient plant material for premium landscapes.",
         "type": "text",
     },
-    "plant-supply/closing/title": {
-        "value": "Strong landscapes begin with strong stock.<br><span class=\"text-accent-bronze italic mt-4 block\">Supply quality defines long-term success.</span>",
-        "type": "text",
-    },
     "garden-maintenance/hero/title": {
         "value": "Garden <span class=\"text-accent-bronze italic\">Maintenance</span>",
         "type": "text",
     },
     "garden-maintenance/hero/subtitle": {
         "value": "Disciplined care routines that protect design intent year-round.",
-        "type": "text",
-    },
-    "garden-maintenance/closing/title": {
-        "value": "A completed garden is only the beginning.<br><span class=\"text-accent-bronze italic mt-4 block\">Maintenance keeps beauty intentional.</span>",
         "type": "text",
     },
     "biophilic-workspace/hero/title": {
@@ -492,10 +513,6 @@ SITE_CONTENT_DEFAULTS = {
         "value": "Plant-led layering softens hard interiors, improves perceived air quality, and contributes to calmer acoustics across open-plan environments.",
         "type": "longtext",
     },
-    "biophilic-workspace/closing/title": {
-        "value": "Workspaces perform better when they feel alive.<br><span class=\"text-accent-bronze italic mt-4 block\">Nature turns routine into renewal.</span>",
-        "type": "text",
-    },
     "rare-specimen-sculptures/hero/title": {
         "value": "Rare Specimen <span class=\"text-accent-bronze italic\">Sculptures</span>",
         "type": "text",
@@ -528,10 +545,6 @@ SITE_CONTENT_DEFAULTS = {
         "value": "We align plant provenance, form, and long-term care protocols with each collector's design intent and lifestyle rhythm.",
         "type": "longtext",
     },
-    "rare-specimen-sculptures/closing/title": {
-        "value": "A rare specimen is more than decor.<br><span class=\"text-accent-bronze italic mt-4 block\">It becomes the identity of the room.</span>",
-        "type": "text",
-    },
     "living-walls/hero/title": {
         "value": "Living <span class=\"text-accent-bronze italic\">Walls</span>",
         "type": "text",
@@ -563,10 +576,6 @@ SITE_CONTENT_DEFAULTS = {
     "living-walls/block2/body": {
         "value": "Living walls soften rigid architecture, improve ambience, and create an immersive natural experience in high-value interior environments.",
         "type": "longtext",
-    },
-    "living-walls/closing/title": {
-        "value": "When walls begin to grow, spaces begin to breathe.<br><span class=\"text-accent-bronze italic mt-4 block\">Nature becomes architecture.</span>",
-        "type": "text",
     },
     "deep/hero/title": {
         "value": "Deep <br /><span class=\"text-accent-bronze italic font-light drop-shadow-sm\">Solitude</span>",
@@ -624,10 +633,7 @@ SITE_CONTENT_DEFAULTS = {
         "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png",
         "type": "media",
     },
-    "deep/closing/title": {
-        "value": "A space that feels alive<br><span class=\"text-accent-bronze italic mt-4 block\">is a space that inspires.</span>",
-        "type": "longtext",
-    },
+
 }
 
 HOME_TRENDS_DEFAULTS = {
@@ -787,6 +793,9 @@ def migrate_legacy_site_content_keys():
         [(path,) for path in obsolete_plant_center_paths],
     )
 
+    # Closing copy is hardcoded in templates; purge CMS keys.
+    cur.execute("DELETE FROM site_content WHERE path LIKE '%/closing/%'")
+
     # Curated Planters rename migration:
     # - site_content path prefix curated/* -> curated-planters/*
     # - page slug curated-plants -> curated-planters
@@ -831,6 +840,7 @@ def migrate_legacy_site_content_keys():
                 "INSERT INTO site_content (path, value, type) VALUES (?, ?, ?)",
                 (path, payload["value"], payload["type"]),
             )
+
 
     # Remove bundled placeholder media from CMS rows. Public pages should show
     # only URLs that were intentionally published through admin.

@@ -79,7 +79,6 @@ seeds = {
     "deep/block4/title": {"value": "Elevated Thinking", "type": "text"},
     "deep/block4/body": {"value": "Clean lines, controlled light, and a sculptural plant improve cognitive performance and reduce fatigue — bringing clarity, calm, and subtle vitality into a workspace designed for focus, decision-making, and elevated thinking.", "type": "longtext"},
     "deep/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png", "type": "media"},
-    "deep/closing/title": {"value": "A space that feels alive<br>\n<span class='text-accent-bronze italic mt-4 block'>is a space that inspires.</span>", "type": "longtext"},
     # ── Bonsai Collections ──
     "bonsai/hero/title": {"value": "Bonsai <span class='text-accent-bronze italic'>Collections</span>", "type": "text"},
     "bonsai/hero/subtitle": {"value": "Curating nature's rarest botanical wonders for refined spaces.", "type": "text"},
@@ -95,7 +94,6 @@ seeds = {
     "bonsai/block4/title": {"value": "Enduring Vision", "type": "text"},
     "bonsai/block4/body": {"value": "With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony.", "type": "longtext"},
     "bonsai/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_4.png", "type": "media"},
-    "bonsai/closing/title": {"value": "We don’t just develop gardens.<br>\n<span class='text-accent-bronze italic mt-4 block'>We future-proof them.</span>", "type": "longtext"},
 
     # ── Full Grown Avenue Trees ──
     "avenue/hero/title": {"value": "Full Grown <span class='text-accent-bronze italic'>Avenue Trees</span>", "type": "text"},
@@ -112,7 +110,6 @@ seeds = {
     "avenue/block4/title": {"value": "Enduring Vision", "type": "text"},
     "avenue/block4/body": {"value": "With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony.", "type": "longtext"},
     "avenue/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_4.png", "type": "media"},
-    "avenue/closing/title": {"value": "We don’t just develop gardens.<br>\n<span class='text-accent-bronze italic mt-4 block'>We future-proof them.</span>", "type": "longtext"},
 
     # ── Exotic Indoor Plants ──
     "indoor/hero/title": {"value": "Exotic <span class='text-accent-bronze italic'>Indoor Plants</span>", "type": "text"},
@@ -129,7 +126,6 @@ seeds = {
     "indoor/block4/title": {"value": "Enduring Vision", "type": "text"},
     "indoor/block4/body": {"value": "With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony.", "type": "longtext"},
     "indoor/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_4.png", "type": "media"},
-    "indoor/closing/title": {"value": "We don’t just develop gardens.<br>\n<span class='text-accent-bronze italic mt-4 block'>We future-proof them.</span>", "type": "longtext"},
 
     # ── Curated Planters ──
     "curated-planters/hero/title": {"value": "Curated <span class='text-accent-bronze italic'>Plants</span>", "type": "text"},
@@ -146,7 +142,6 @@ seeds = {
     "curated-planters/block4/title": {"value": "Enduring Vision", "type": "text"},
     "curated-planters/block4/body": {"value": "With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony.", "type": "longtext"},
     "curated-planters/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_4.png", "type": "media"},
-    "curated-planters/closing/title": {"value": "We don’t just develop gardens.<br>\n<span class='text-accent-bronze italic mt-4 block'>We future-proof them.</span>", "type": "longtext"},
 
     # ── About Us ──
     "about/story/intro": {"value": "Calcutta Horticultural Farm (CHF) is more than a landscape firm; it is a living legacy—built on a deep, enduring respect for nature. Founded over four decades ago, we began with a simple belief: that plants are not mere decorations, but vital, dynamic entities that breathe life into any space.", "type": "longtext"},
@@ -179,7 +174,6 @@ seeds = {
     "specimens/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimen_4.png", "type": "media"},
     "specimens/block4/title": {"value": "Collector's Edition", "type": "text"},
     "specimens/block4/body": {"value": "Singular botanical expressions reserved for spaces that demand rarity, permanence, and cultivated visual restraint.", "type": "longtext"},
-    "specimens/closing/title": {"value": "Not just added.<br>\n<span class='text-accent-bronze italic font-light'>Introduced.</span>", "type": "text"},
 
 }
 
