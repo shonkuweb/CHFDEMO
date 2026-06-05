@@ -867,6 +867,14 @@ def migrate_legacy_site_content_keys():
             (path, payload["value"], payload["type"]),
         )
 
+    cur.execute(
+        """
+        UPDATE categories
+        SET ctaLink = REPLACE(REPLACE(ctaLink, 'inquiry.html', 'enquiry.html'), 'inquiry', 'enquiry')
+        WHERE ctaLink LIKE '%inquiry%'
+        """
+    )
+
     # If a row still exactly matches a bundled default, treat it as seed content,
     # not authored CMS content. This preserves any admin-published value that
     # differs from the old defaults while preventing old copy from resurfacing.
@@ -1476,6 +1484,9 @@ async def serve_static(request: Request, path: str):
 
     if path in {"deep-solitude", "deep-solitude.html"}:
         return RedirectResponse("/curated-specimens", status_code=301)
+
+    if path in {"inquiry", "inquiry.html"}:
+        return RedirectResponse("/enquiry", status_code=301)
         
     if path.endswith(".py") or path.endswith(".db") or path == ".env" or path.startswith("."):
         raise HTTPException(status_code=403, detail="Forbidden")

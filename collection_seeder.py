@@ -48,7 +48,7 @@ DEFAULT_CATEGORIES = [
         "description": "Sculptural botanicals characterized by their geometric precision and structural integrity. These specimens serve as timeless focal points in minimalist environments.",
         "image": "",
         "ctaText": "Request Catalog",
-        "ctaLink": "inquiry.html",
+        "ctaLink": "enquiry.html",
         "display_order": 0
     },
     {
@@ -58,7 +58,7 @@ DEFAULT_CATEGORIES = [
         "description": "Exceptional specimens featuring unique biological pigments. From albino-patterned leaves to deep emerald hues, these are the crown jewels of our living archive.",
         "image": "",
         "ctaText": "Join Waitlist",
-        "ctaLink": "inquiry.html",
+        "ctaLink": "enquiry.html",
         "display_order": 1
     },
     {
@@ -68,7 +68,7 @@ DEFAULT_CATEGORIES = [
         "description": "Integrated living walls that redefine interior topography. A rhythmic integration of biodiversity that breathes life into static surfaces.",
         "image": "",
         "ctaText": "Consult on Design",
-        "ctaLink": "inquiry.html",
+        "ctaLink": "enquiry.html",
         "display_order": 2
     },
 ]
