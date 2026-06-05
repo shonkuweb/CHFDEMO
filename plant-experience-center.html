@@ -334,6 +334,18 @@
             width: 100%;
             line-height: 0;
             background: #0b110d;
+            overflow: hidden;
+        }
+
+        .pec-feature-stage::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.42) 100%),
+                rgba(0, 0, 0, 0.22);
         }
 
         .pec-feature-image {
@@ -342,11 +354,13 @@
             height: auto;
             object-fit: contain;
             object-position: center;
+            filter: brightness(0.78) saturate(0.92);
         }
 
         .pec-feature-body {
             position: absolute;
             inset: 0;
+            z-index: 2;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -368,15 +382,15 @@
             left: 50%;
             top: 50%;
             z-index: -1;
-            width: 145%;
-            height: 165%;
+            width: 155%;
+            height: 175%;
             content: "";
             transform: translate(-50%, -50%);
             background: radial-gradient(
                 ellipse at center,
-                rgba(0, 0, 0, 0.58) 0%,
-                rgba(0, 0, 0, 0.32) 42%,
-                rgba(0, 0, 0, 0) 72%
+                rgba(0, 0, 0, 0.72) 0%,
+                rgba(0, 0, 0, 0.42) 45%,
+                rgba(0, 0, 0, 0) 78%
             );
             pointer-events: none;
         }
@@ -384,9 +398,9 @@
         .pec-feature-copy h3,
         .pec-feature-copy p {
             text-shadow:
-                0 1px 2px rgba(0, 0, 0, 0.9),
-                0 4px 18px rgba(0, 0, 0, 0.75),
-                0 8px 28px rgba(0, 0, 0, 0.45);
+                0 1px 3px rgba(0, 0, 0, 0.95),
+                0 4px 20px rgba(0, 0, 0, 0.85),
+                0 10px 32px rgba(0, 0, 0, 0.55);
         }
 
         .pec-feature-card .pec-icon {
@@ -410,7 +424,7 @@
         .pec-feature-card p {
             width: 100%;
             margin: 0.95rem auto 0;
-            color: rgba(238, 232, 221, 0.82);
+            color: rgba(238, 232, 221, 0.92);
             font-size: 0.72rem;
             font-weight: 600;
             line-height: 1.65;
