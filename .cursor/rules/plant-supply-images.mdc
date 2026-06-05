@@ -1,0 +1,31 @@
+---
+description: Plant Supply page — never crop images; fit layout to image dimensions
+globs: plant-supply.html
+alwaysApply: false
+---
+
+# Plant Supply image handling
+
+When adding or updating images on `plant-supply.html`:
+
+- **Do not crop** images to fit fixed layout boxes (`object-fit: cover`, `background-size: cover`, forced `min-height` on media frames).
+- **Adapt the layout** to each image's natural aspect ratio: use `<img>` with `width: 100%`, `height: auto`, and `object-fit: contain`.
+- Media containers should use `height: fit-content` (not fixed min-heights) so the section grows/shrinks with the asset.
+- Hero and full-bleed banners: wrap image + overlay in a `*-stage` container sized by the image; overlay text sits absolute over the image bounds only.
+- Follow the same pattern as `architectural-harmony.html` intro media and `white-glove-service.html` beyond section.
+
+```css
+/* ✅ Preferred */
+.ps-fit-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* ❌ Avoid on plant-supply */
+object-fit: cover;
+background-size: cover;
+min-height: clamp(...); /* on media-only columns */
+```

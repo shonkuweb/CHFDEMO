@@ -420,6 +420,22 @@ SITE_CONTENT_DEFAULTS = {
         "value": "Every staged landscape should feel effortless.<br><span class=\"text-accent-bronze italic mt-4 block\">We make the living details intentional.</span>",
         "type": "text",
     },
+    "plant-supply/hero/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20supply/C1BC3826-BEC5-4D93-BB44-74EA3345E674.png",
+        "type": "media",
+    },
+    "plant-supply/climate/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20supply/60103D44-2E2A-41C0-AF4E-A00060F0D52C.png",
+        "type": "media",
+    },
+    "plant-supply/quality/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20supply/F578408D-701F-46E5-84F7-F298AC4586F4.png",
+        "type": "media",
+    },
+    "plant-supply/finished/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20supply/53F55AD3-A8A0-4401-9C10-93292959586A.png",
+        "type": "media",
+    },
     "plant-supply/hero/title": {
         "value": "Plant <span class=\"text-accent-bronze italic\">Supply</span>",
         "type": "text",
