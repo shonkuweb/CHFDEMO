@@ -128,8 +128,7 @@ seeds = {
     "indoor/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_4.png", "type": "media"},
 
     # ── Curated Planters ──
-    "curated-planters/hero/title": {"value": "Curated <span class='text-accent-bronze italic'>Plants</span>", "type": "text"},
-    "curated-planters/hero/subtitle": {"value": "Curating nature's rarest botanical wonders for refined spaces.", "type": "text"},
+    "curated-planters/hero/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/curated-planters/74AE6CC1-6D23-466A-BF14-8217B4A948A6.png", "type": "media"},
     "curated-planters/block1/title": {"value": "A Living Architecture", "type": "text"},
     "curated-planters/block1/body": {"value": "In landscape architecture, drawings capture a moment—but gardens don’t stand still. They grow, expand, compete, and transform.", "type": "longtext"},
     "curated-planters/block1/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_1.png", "type": "media"},
