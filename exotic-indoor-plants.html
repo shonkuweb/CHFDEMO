@@ -378,11 +378,17 @@
                     .replace(/'/g, '&#039;');
             }
 
+            function formatBody(value) {
+                const safe = escapeHtml(value);
+                if (!safe) return '';
+                return safe.replace(/^(\S+\s+\S+|\S+)/, '<span class="italic">$1</span>');
+            }
+
             function createBlockMarkup(block, index) {
                 const reverse = index % 2 === 1;
                 const image = escapeHtml(block.image || '');
                 const title = escapeHtml(block.title || `Block ${index + 1}`);
-                const body = escapeHtml(block.body || '');
+                const body = formatBody(block.body || '');
                 return `
                     <div class="flex flex-col ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-10 sm:gap-12 lg:gap-20">
                         <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0">
