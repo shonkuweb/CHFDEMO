@@ -129,6 +129,26 @@ def clear_cache():
     fetch_site_content.cache_clear()
 
 FOUNDERS_ERA_MANIFEST_PATH = "portfolio/founders-era/images"
+FOUNDERS_ERA_R2_FOLDER = "assets/portfolio/founders era projects"
+FOUNDERS_ERA_IMAGES = [
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/57A1B243-7B63-41E3-A88C-1F5114F3421F.jpg",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/5D264EDD-EBE5-4B70-ABB0-DFB0EB41CCEC.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/9D785DE4-1F57-4E99-B579-A8446ED2E812.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/A1682D49-3032-4A43-A1CC-7FFA3A84C344.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/E53541ED-6D22-49D6-8A1A-351BDD6C9A3E.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/0811CD69-AF7D-4729-8E0D-35451B3D2622.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/BEA7806C-3DE7-4786-BCCA-F1C07CEF4D2A.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/74D7D10D-B712-45D3-9B95-1ABFA411C00E.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/98487D03-D11B-430E-8840-1701C3D6E2F9.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/CB26DA90-9EE7-4303-997D-6D13D39D96D8.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/D798C7D7-7389-4038-B49F-04A12F029493.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/D36D8761-203E-42D3-9CD9-F57E432FDA57.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/98440DEA-9647-4996-868C-7D8F636B1190.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/E169FA42-2317-4D97-9F06-2B033E32004E.png",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/486C5605-D4F2-4B9D-8311-28A91BC2CF96.jpg",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/41057253-D0FA-4339-927A-AADC5F94B2F0.jpg",
+    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/A6E2C193-9218-46D3-968C-3341F7E4C11F.jpg",
+]
 
 def fetch_founders_era_manifest() -> list[str]:
     conn = get_db_connection()
@@ -137,12 +157,13 @@ def fetch_founders_era_manifest() -> list[str]:
     row = cur.fetchone()
     conn.close()
     if not row or not row["value"]:
-        return []
+        return list(FOUNDERS_ERA_IMAGES)
     try:
         data = json.loads(row["value"])
-        return [url for url in data if isinstance(url, str) and url.strip()] if isinstance(data, list) else []
+        urls = [url for url in data if isinstance(url, str) and url.strip()] if isinstance(data, list) else []
+        return urls or list(FOUNDERS_ERA_IMAGES)
     except json.JSONDecodeError:
-        return []
+        return list(FOUNDERS_ERA_IMAGES)
 
 FIXED_HOME_HERO_MEDIA = {
     "home/hero/image": {
@@ -927,6 +948,15 @@ def migrate_legacy_site_content_keys():
         cur.execute(
             "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
             (path, payload["value"], payload["type"]),
+        )
+
+    cur.execute("SELECT value FROM site_content WHERE path = ?", (FOUNDERS_ERA_MANIFEST_PATH,))
+    founders_row = cur.fetchone()
+    founders_value = (founders_row["value"] if founders_row else "") or ""
+    if founders_row is None or not founders_value.strip() or founders_value.strip() in {"[]", "null"}:
+        cur.execute(
+            "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
+            (FOUNDERS_ERA_MANIFEST_PATH, json.dumps(FOUNDERS_ERA_IMAGES), "json"),
         )
 
     cur.execute(
