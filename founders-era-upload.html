@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link rel="icon" href="assets/chf_logo_nav.png" type="image/png" />
+    <title>Founder's Era Upload — CHF (Temporary)</title>
+    <link rel="stylesheet" href="assets/tailwind.css?v=footer-responsive" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Serif:wght@300..700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <style>
+        .upload-zone {
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        .upload-zone.dragover {
+            border-color: rgba(196, 154, 108, 0.85);
+            background: rgba(196, 154, 108, 0.08);
+        }
+        .thumb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-ivory font-display antialiased min-h-screen">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-accent-bronze/5 rounded-full blur-[160px] pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-6 py-10 lg:py-14">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8">
+            <div>
+                <p class="text-[10px] uppercase tracking-[0.25em] text-accent-bronze font-bold mb-3">Temporary upload server</p>
+                <h1 class="font-serif text-3xl md:text-4xl font-light text-ivory mb-2">Founder's Era — Portfolio Images</h1>
+                <p class="text-sm text-ivory-dim font-light max-w-2xl leading-relaxed">
+                    Drop images here. Each upload is saved to Cloudflare R2 and linked automatically in the
+                    <strong class="font-normal text-ivory/80">Founder's Era</strong> tab on the Portfolio page.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-3 shrink-0">
+                <a href="portfolio" class="text-[10px] uppercase tracking-widest text-ivory border border-white/15 px-4 py-2.5 hover:border-accent-bronze/50 hover:text-accent-bronze transition-colors">View Portfolio</a>
+                <a href="admin" class="text-[10px] uppercase tracking-widest text-ivory border border-white/15 px-4 py-2.5 hover:border-accent-bronze/50 hover:text-accent-bronze transition-colors">Admin</a>
+            </div>
+        </div>
+
+        <div id="login-banner" class="hidden mb-6 bg-amber-950/40 border border-amber-500/30 rounded px-5 py-4 text-sm text-amber-100/90">
+            You must be logged in as admin to upload.
+            <a href="admin-login?next=founders-era-upload" class="underline text-accent-bronze ml-1">Sign in here</a>
+        </div>
+
+        <div id="upload-app" class="space-y-8">
+            <div
+                id="drop-zone"
+                class="upload-zone rounded-lg bg-surface-dark p-10 md:p-14 text-center cursor-pointer"
+                tabindex="0"
+                role="button"
+                aria-label="Upload Founder's Era images"
+            >
+                <span class="material-symbols-outlined text-4xl text-accent-bronze/70 mb-4 block">cloud_upload</span>
+                <p class="font-serif text-xl text-ivory mb-2">Drop images here</p>
+                <p class="text-sm text-ivory-dim mb-6">PNG, JPG, WEBP, or GIF — up to 80MB each. Multiple files supported.</p>
+                <button type="button" id="pick-files-btn" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/40 px-5 py-2.5 hover:bg-accent-bronze/10 transition-colors">
+                    Choose files
+                </button>
+                <input type="file" id="file-input" class="hidden" accept="image/png,image/jpeg,image/webp,image/gif" multiple />
+            </div>
+
+            <div id="queue-panel" class="hidden bg-surface-dark border border-white/10 rounded p-6">
+                <div class="flex items-center justify-between gap-4 mb-4">
+                    <h2 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Upload queue</h2>
+                    <span id="queue-status" class="text-xs text-ivory-dim"></span>
+                </div>
+                <ul id="queue-list" class="space-y-2 text-sm"></ul>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between gap-4 mb-4">
+                    <h2 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">Live on portfolio (<span id="image-count">0</span>)</h2>
+                    <button type="button" id="refresh-btn" class="text-[10px] uppercase tracking-widest text-ivory/60 hover:text-accent-bronze transition-colors">Refresh</button>
+                </div>
+                <div id="gallery" class="thumb-grid"></div>
+                <p id="empty-gallery" class="text-sm text-ivory-dim font-light">No images yet — upload your first batch above.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const loginBanner = document.getElementById('login-banner');
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const pickBtn = document.getElementById('pick-files-btn');
+            const gallery = document.getElementById('gallery');
+            const emptyGallery = document.getElementById('empty-gallery');
+            const imageCount = document.getElementById('image-count');
+            const queuePanel = document.getElementById('queue-panel');
+            const queueList = document.getElementById('queue-list');
+            const queueStatus = document.getElementById('queue-status');
+            const refreshBtn = document.getElementById('refresh-btn');
+
+            let isAuthed = false;
+            let images = [];
+
+            async function checkAuth() {
+                try {
+                    const res = await fetch('/api/admin/me', { credentials: 'include' });
+                    isAuthed = res.ok;
+                } catch (_) {
+                    isAuthed = false;
+                }
+                loginBanner.classList.toggle('hidden', isAuthed);
+            }
+
+            async function loadGallery() {
+                try {
+                    const res = await fetch('/api/portfolio/founders-era?t=' + Date.now(), { cache: 'no-store' });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    images = Array.isArray(data.images) ? data.images : [];
+                    renderGallery();
+                } catch (_) {}
+            }
+
+            function renderGallery() {
+                imageCount.textContent = String(images.length);
+                gallery.innerHTML = '';
+                emptyGallery.style.display = images.length ? 'none' : 'block';
+                images.forEach(function (url) {
+                    const card = document.createElement('div');
+                    card.className = 'relative group aspect-[3/4] bg-black/40 border border-white/10 rounded overflow-hidden';
+                    card.innerHTML =
+                        '<img src="' + url.replace(/"/g, '&quot;') + '" alt="" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">' +
+                        (isAuthed
+                            ? '<div class="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">' +
+                              '<button type="button" data-url="' + url.replace(/"/g, '&quot;') + '" class="w-full text-[9px] uppercase tracking-widest text-red-300 border border-red-400/40 py-1.5 hover:bg-red-400/10 transition-colors">Remove</button></div>'
+                            : '');
+                    gallery.appendChild(card);
+                });
+                gallery.querySelectorAll('button[data-url]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        removeImage(btn.getAttribute('data-url'));
+                    });
+                });
+            }
+
+            function uploadFile(file) {
+                return new Promise(function (resolve, reject) {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/api/portfolio/founders-era/upload');
+                    xhr.withCredentials = true;
+                    xhr.setRequestHeader('X-Filename', file.name);
+                    xhr.onload = function () {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try { resolve(JSON.parse(xhr.responseText)); } catch (e) { resolve({}); }
+                        } else if (xhr.status === 401) {
+                            reject(new Error('Not logged in — sign in at /admin-login first'));
+                        } else {
+                            reject(new Error(xhr.responseText || ('Upload failed (' + xhr.status + ')')));
+                        }
+                    };
+                    xhr.onerror = function () { reject(new Error('Network error')); };
+                    xhr.send(file);
+                });
+            }
+
+            async function processFiles(fileList) {
+                if (!isAuthed) {
+                    loginBanner.classList.remove('hidden');
+                    alert('Please sign in at /admin-login before uploading.');
+                    return;
+                }
+                const files = Array.from(fileList || []).filter(function (f) { return f.type.startsWith('image/'); });
+                if (!files.length) return;
+
+                queuePanel.classList.remove('hidden');
+                queueList.innerHTML = '';
+                queueStatus.textContent = 'Uploading…';
+
+                for (var i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const row = document.createElement('li');
+                    row.className = 'text-ivory-dim';
+                    row.textContent = file.name + ' — uploading…';
+                    queueList.appendChild(row);
+
+                    try {
+                        const result = await uploadFile(file);
+                        row.innerHTML = file.name + ' — <span class="text-accent-bronze">uploaded</span><br><span class="text-[10px] text-gray-500 break-all">' + (result.url || '') + '</span>';
+                    } catch (err) {
+                        row.textContent = file.name + ' — failed: ' + (err.message || err);
+                        row.className = 'text-red-300';
+                    }
+                }
+
+                queueStatus.textContent = 'Done';
+                await loadGallery();
+            }
+
+            async function removeImage(url) {
+                if (!url || !confirm('Remove this image from the portfolio tab and delete from Cloudflare storage?')) return;
+                const res = await fetch('/api/portfolio/founders-era', {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url }),
+                });
+                if (!res.ok) {
+                    alert('Could not remove image.');
+                    return;
+                }
+                await loadGallery();
+            }
+
+            pickBtn.addEventListener('click', function (e) { e.stopPropagation(); fileInput.click(); });
+            dropZone.addEventListener('click', function () { fileInput.click(); });
+            dropZone.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+            });
+            fileInput.addEventListener('change', function () {
+                processFiles(fileInput.files);
+                fileInput.value = '';
+            });
+            refreshBtn.addEventListener('click', loadGallery);
+
+            ['dragenter', 'dragover'].forEach(function (evt) {
+                dropZone.addEventListener(evt, function (e) {
+                    e.preventDefault();
+                    dropZone.classList.add('dragover');
+                });
+            });
+            ['dragleave', 'drop'].forEach(function (evt) {
+                dropZone.addEventListener(evt, function (e) {
+                    e.preventDefault();
+                    dropZone.classList.remove('dragover');
+                });
+            });
+            dropZone.addEventListener('drop', function (e) {
+                processFiles(e.dataTransfer.files);
+            });
+
+            checkAuth().then(loadGallery);
+        })();
+    </script>
+</body>
+
+</html>

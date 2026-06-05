@@ -117,8 +117,10 @@
                             throw new Error(errData.detail || 'Authentication failed');
                         }
 
-                        // Success! Redirect to the protected admin page.
-                        window.location.href = '/admin';
+                        // Success! Redirect to admin or requested page.
+                        const params = new URLSearchParams(window.location.search);
+                        const next = params.get('next');
+                        window.location.href = next ? '/' + next.replace(/^\//, '') : '/admin';
                         
                     } catch (err) {
                         error.value = err.message;

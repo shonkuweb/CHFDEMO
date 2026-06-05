@@ -75,6 +75,11 @@
                                 currentSelection === 'about' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 About Page
                             </button>
+                            <button @click="loadFoundersEraUpload()"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                viewMode === 'founders-era-upload' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                Founder's Era Upload
+                            </button>
                         </div>
                         </div>
 
@@ -257,7 +262,7 @@
                 </div>
 
                 <!-- Header Actions -->
-                <div v-if="viewMode !== 'settings'" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12 border-b border-white/5 pb-6">
+                <div v-if="viewMode !== 'settings' && viewMode !== 'founders-era-upload'" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12 border-b border-white/5 pb-6">
                     <div>
                         <h1 class="font-serif text-3xl sm:text-4xl mb-2">{{ selectionDisplay }}</h1>
                         <p class="text-gray-500">{{ selectionSubtext }}</p>
@@ -315,6 +320,53 @@
                                 class="border border-red-300/20 text-red-300 px-6 py-3 text-xs uppercase tracking-[0.2em] font-bold rounded-sm hover:bg-red-500/10 transition-colors">
                                 Logout Everywhere
                             </button>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Founder's Era temporary portfolio upload -->
+                <div v-if="viewMode === 'founders-era-upload'" class="space-y-8">
+                    <div class="border-b border-white/5 pb-6">
+                        <h1 class="font-serif text-3xl sm:text-4xl mb-2">Founder's Era — Portfolio Upload</h1>
+                        <p class="text-gray-500">Temporary upload server. Images go to Cloudflare R2 and appear in the Portfolio → Founder's Era tab.</p>
+                        <a href="portfolio" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-4 py-2 hover:bg-accent-bronze/5 transition-colors">Open Portfolio Tab</a>
+                    </div>
+
+                    <section
+                        @dragover.prevent="foundersDragover = true"
+                        @dragleave.prevent="foundersDragover = false"
+                        @drop.prevent="handleFoundersDrop($event)"
+                        @click="triggerFoundersFileInput"
+                        :class="['upload-zone rounded p-10 md:p-14 text-center cursor-pointer bg-surface-dark', foundersDragover ? 'dragover' : '']"
+                    >
+                        <p class="font-serif text-xl text-white mb-2">Drop images here</p>
+                        <p class="text-sm text-gray-500 mb-6">PNG, JPG, WEBP, GIF — up to 80MB each</p>
+                        <button type="button" @click.stop="triggerFoundersFileInput" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/40 px-5 py-2.5 hover:bg-accent-bronze/10 transition-colors">
+                            {{ foundersUploading ? 'Uploading…' : 'Choose files' }}
+                        </button>
+                        <input ref="foundersFileInput" type="file" class="hidden" accept="image/png,image/jpeg,image/webp,image/gif" multiple @change="handleFoundersFileSelect">
+                    </section>
+
+                    <section v-if="foundersQueue.length" class="glass-surface p-6 space-y-2">
+                        <h2 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold mb-3">Upload queue</h2>
+                        <div v-for="item in foundersQueue" :key="item.id" class="text-sm" :class="item.status === 'error' ? 'text-red-300' : item.status === 'done' ? 'text-accent-bronze' : 'text-gray-400'">
+                            {{ item.name }} — {{ item.message }}
+                        </div>
+                    </section>
+
+                    <section class="glass-surface p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">On portfolio ({{ foundersImages.length }})</h2>
+                            <button @click="loadFoundersEraUpload(true)" class="text-[10px] uppercase tracking-widest text-gray-400 hover:text-accent-bronze transition-colors">Refresh</button>
+                        </div>
+                        <p v-if="!foundersImages.length" class="text-sm text-gray-500">No images yet.</p>
+                        <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            <div v-for="url in foundersImages" :key="url" class="relative group aspect-[3/4] bg-black/40 border border-white/10 rounded overflow-hidden">
+                                <img :src="url" alt="" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
+                                <div class="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button @click="removeFoundersImage(url)" class="w-full text-[9px] uppercase tracking-widest text-red-300 border border-red-400/40 py-1.5 hover:bg-red-400/10 transition-colors">Remove</button>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -703,6 +755,12 @@
                     newPassword: '',
                     confirmPassword: ''
                 });
+                const foundersImages = ref([]);
+                const foundersQueue = ref([]);
+                const foundersDragover = ref(false);
+                const foundersUploading = ref(false);
+                const foundersFileInput = ref(null);
+                let foundersQueueId = 0;
 
                 const selectionDisplay = computed(() => {
                     if (viewMode.value === 'collections') {
@@ -727,6 +785,7 @@
                     if (currentSelection.value === 'indoor') return 'Exotic Indoor Plants';
                     if (currentSelection.value === 'bonsai') return 'Bonsai Collections';
                     if (currentSelection.value === 'curated-planters') return 'Curated Planters';
+                    if (viewMode.value === 'founders-era-upload') return "Founder's Era Upload";
                     if (viewMode.value === 'settings') return 'Settings & Security';
                     return '';
                 });
@@ -906,6 +965,100 @@
                         homeTrendsData.value = null;
                     } finally {
                         loading.value = false;
+                    }
+                };
+
+                const loadFoundersEraUpload = async (silent = false) => {
+                    sidebarOpen.value = false;
+                    viewMode.value = 'founders-era-upload';
+                    currentSelection.value = 'founders-era-upload';
+                    if (!silent) loading.value = true;
+                    try {
+                        const res = await fetch(`/api/portfolio/founders-era?t=${Date.now()}`, { cache: 'no-store' });
+                        if (!res.ok) throw new Error("Could not load Founder's Era images");
+                        const data = await res.json();
+                        foundersImages.value = Array.isArray(data.images) ? data.images : [];
+                    } catch (e) {
+                        if (!silent) showToast(e.message, 'error');
+                        foundersImages.value = [];
+                    } finally {
+                        if (!silent) loading.value = false;
+                    }
+                };
+
+                const uploadFoundersEraFile = (file) => new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/api/portfolio/founders-era/upload');
+                    xhr.withCredentials = true;
+                    xhr.setRequestHeader('X-Filename', file.name);
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try { resolve(JSON.parse(xhr.responseText)); } catch (_) { resolve({}); }
+                        } else if (xhr.status === 401) {
+                            reject(new Error('Session expired'));
+                        } else {
+                            reject(new Error(xhr.responseText || 'Upload failed'));
+                        }
+                    };
+                    xhr.onerror = () => reject(new Error('Network error'));
+                    xhr.send(file);
+                });
+
+                const processFoundersFiles = async (fileList) => {
+                    const files = Array.from(fileList || []).filter((f) => f.type.startsWith('image/'));
+                    if (!files.length) return;
+                    foundersUploading.value = true;
+                    for (const file of files) {
+                        const id = ++foundersQueueId;
+                        foundersQueue.value.push({ id, name: file.name, status: 'uploading', message: 'uploading…' });
+                        try {
+                            const result = await uploadFoundersEraFile(file);
+                            const item = foundersQueue.value.find((q) => q.id === id);
+                            if (item) {
+                                item.status = 'done';
+                                item.message = result.url || 'uploaded';
+                            }
+                        } catch (err) {
+                            const item = foundersQueue.value.find((q) => q.id === id);
+                            if (item) {
+                                item.status = 'error';
+                                item.message = err.message || 'failed';
+                            }
+                        }
+                    }
+                    foundersUploading.value = false;
+                    await loadFoundersEraUpload(true);
+                    showToast("Founder's Era upload batch finished.");
+                };
+
+                const triggerFoundersFileInput = () => {
+                    if (foundersFileInput.value) foundersFileInput.value.click();
+                };
+
+                const handleFoundersFileSelect = (event) => {
+                    processFoundersFiles(event.target.files);
+                    event.target.value = '';
+                };
+
+                const handleFoundersDrop = (event) => {
+                    foundersDragover.value = false;
+                    processFoundersFiles(event.dataTransfer.files);
+                };
+
+                const removeFoundersImage = async (url) => {
+                    if (!url || !confirm('Remove this image from the portfolio tab and Cloudflare storage?')) return;
+                    try {
+                        const res = await fetch('/api/portfolio/founders-era', {
+                            method: 'DELETE',
+                            credentials: 'include',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ url }),
+                        });
+                        if (!res.ok) throw new Error('Delete failed');
+                        showToast('Image removed.');
+                        await loadFoundersEraUpload(true);
+                    } catch (e) {
+                        showToast(e.message, 'error');
                     }
                 };
 
@@ -1289,6 +1442,7 @@
                     passwordForm,
                     loadCollection,
                     loadPageContent,
+                    loadFoundersEraUpload,
                     saveAll,
                     openSettings,
                     toggleSidebar,
@@ -1316,7 +1470,16 @@
                     removeStructuredBlock,
                     triggerGenericUpload,
                     handleGenericFileSelect,
-                    handleGenericDrop
+                    handleGenericDrop,
+                    foundersImages,
+                    foundersQueue,
+                    foundersDragover,
+                    foundersUploading,
+                    foundersFileInput,
+                    triggerFoundersFileInput,
+                    handleFoundersFileSelect,
+                    handleFoundersDrop,
+                    removeFoundersImage
                 }
             },
             mounted() {

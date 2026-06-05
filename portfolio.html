@@ -534,6 +534,10 @@
                             class="portfolio-tab snap-start shrink-0">
                             Housing Projects
                         </button>
+                        <button type="button" role="tab" id="tab-founders-era" aria-controls="panel-founders-era" aria-selected="false" data-portfolio-tab="founders-era"
+                            class="portfolio-tab snap-start shrink-0">
+                            Founder's Era
+                        </button>
                     </div>
                 </div>
 
@@ -604,6 +608,22 @@
                                     <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
                                     <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/ACFF5D17-19DC-4EF7-B097-20B8E5FEAC0F.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
                                     <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Founder's Era (images loaded from API) -->
+                    <div id="panel-founders-era" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-founders-era" data-portfolio-panel="founders-era" aria-hidden="true">
+                        <div class="portfolio-marquee-stage">
+                            <div class="portfolio-carousel-viewport">
+                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
+                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                                </button>
+                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
+                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                                </button>
+                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="0" role="list">
                                 </div>
                             </div>
                         </div>
@@ -1137,6 +1157,31 @@
             const state = {};
             let rafId = null;
 
+            async function loadFoundersEraImages() {
+                const panel = document.querySelector('[data-portfolio-panel="founders-era"]');
+                if (!panel) return;
+                const track = panel.querySelector('[data-carousel-track]');
+                if (!track) return;
+                try {
+                    const res = await fetch('/api/portfolio/founders-era?t=' + Date.now(), { cache: 'no-store' });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const images = Array.isArray(data.images) ? data.images : [];
+                    track.setAttribute('data-slide-count', String(images.length));
+                    if (!images.length) {
+                        track.innerHTML = '<div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Founder\'s Era project"><div class="flex items-center justify-center w-full h-full min-h-[240px] text-ivory-dim text-sm px-8 text-center font-light">Images coming soon</div></div>';
+                        return;
+                    }
+                    track.innerHTML = images.map(function (url, i) {
+                        const spotlight = i === 0 ? ' is-spotlight' : '';
+                        const loading = i === 0 ? 'eager' : 'lazy';
+                        const priority = i === 0 ? ' fetchpriority="high"' : '';
+                        const safeUrl = String(url).replace(/"/g, '&quot;');
+                        return '<div class="portfolio-feature-card' + spotlight + '" role="listitem" aria-label="Founder\'s Era project"><img src="' + safeUrl + '" alt="Founder\'s Era project" width="240" height="360" decoding="async" loading="' + loading + '"' + priority + ' class="portfolio-card-img"></div>';
+                    }).join('');
+                } catch (_) {}
+            }
+
             function syncStrip(panel) {
                 const panelId = panel.getAttribute('data-portfolio-panel');
                 const track = panel.querySelector('[data-carousel-track]');
@@ -1314,9 +1359,8 @@
             }
 
             function bindCardHoverZoom(panel) {
-                if (panel.dataset.hoverZoomBound === '1') return;
-                panel.dataset.hoverZoomBound = '1';
-                panel.querySelectorAll('.portfolio-feature-card').forEach((card) => {
+                panel.querySelectorAll('.portfolio-feature-card:not([data-hover-bound])').forEach((card) => {
+                    card.setAttribute('data-hover-bound', '1');
                     card.addEventListener('pointerenter', () => {
                         if (!panel.classList.contains('is-active')) return;
                         card.classList.add('is-hover-zoom');
@@ -1382,18 +1426,21 @@
                 startLoop();
             }
 
-            document.querySelectorAll('[data-portfolio-panel]').forEach((panel) => {
-                syncStrip(panel);
-                bindCarouselNav(panel);
-                bindCardHoverZoom(panel);
-            });
+            async function bootstrapCarousel() {
+                await loadFoundersEraImages();
+                document.querySelectorAll('[data-portfolio-panel]').forEach((panel) => {
+                    syncStrip(panel);
+                    bindCarouselNav(panel);
+                    bindCardHoverZoom(panel);
+                });
+                document.addEventListener('portfolioTabChange', (e) => {
+                    const id = e.detail && e.detail.categoryId;
+                    if (id) onTabChange(id);
+                });
+                bootActivePanel();
+            }
 
-            document.addEventListener('portfolioTabChange', (e) => {
-                const id = e.detail && e.detail.categoryId;
-                if (id) onTabChange(id);
-            });
-
-            bootActivePanel();
+            bootstrapCarousel();
 
             let resizeRaf = null;
             window.addEventListener('resize', () => {

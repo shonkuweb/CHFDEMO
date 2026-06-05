@@ -128,6 +128,47 @@ def clear_cache():
     fetch_collection_data.cache_clear()
     fetch_site_content.cache_clear()
 
+def r2_key_to_public_url(key: str) -> str:
+    encoded_path = "/".join(urllib.parse.quote(segment, safe="") for segment in key.split("/"))
+    return f"{R2_PUBLIC_URL}/{encoded_path}"
+
+def public_url_to_r2_key(url: str) -> str:
+    cleaned = str(url or "").strip().split("?", 1)[0].split("#", 1)[0].strip()
+    if R2_PUBLIC_URL and cleaned.startswith(R2_PUBLIC_URL):
+        return urllib.parse.unquote(cleaned[len(R2_PUBLIC_URL):].lstrip("/"))
+    parsed = urllib.parse.urlparse(cleaned)
+    if parsed.scheme in ("http", "https"):
+        return urllib.parse.unquote(parsed.path.lstrip("/"))
+    return urllib.parse.unquote(cleaned.lstrip("/"))
+
+def fetch_founders_era_manifest() -> list[str]:
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT value FROM site_content WHERE path = ?", (FOUNDERS_ERA_MANIFEST_PATH,))
+    row = cur.fetchone()
+    conn.close()
+    if not row or not row["value"]:
+        return []
+    try:
+        data = json.loads(row["value"])
+        return [url for url in data if isinstance(url, str) and url.strip()] if isinstance(data, list) else []
+    except json.JSONDecodeError:
+        return []
+
+def save_founders_era_manifest(urls: list[str]) -> None:
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
+        (FOUNDERS_ERA_MANIFEST_PATH, json.dumps(urls), "json"),
+    )
+    conn.commit()
+    conn.close()
+    clear_cache()
+
+def founders_era_upload_enabled() -> bool:
+    return os.environ.get("FOUNDERS_ERA_UPLOAD_ENABLED", "true").lower() == "true"
+
 FIXED_HOME_HERO_MEDIA = {
     "home/hero/image": {
         "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/hero%20image%20desk%20and%20mobile%20view/chfherodesk.png",
@@ -153,6 +194,9 @@ FIXED_HOME_STAGING_MEDIA = {
     },
 }
 ASSETS_CACHE_VERSION = "chf-closing-1"
+FOUNDERS_ERA_R2_FOLDER = "assets/portfolio/founders era projects"
+FOUNDERS_ERA_MANIFEST_PATH = "portfolio/founders-era/images"
+PORTFOLIO_IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 PEC_IMAGE_BASE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20experience%20center"
 PEC_HERO_IMAGE = f"{PEC_IMAGE_BASE}/9BF51B5D-7851-4D44-BF1D-F2B521F61DB2%20(1).png"
 PEC_PHILOSOPHY_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_bcec5110.png?t=1780033476946"
@@ -1405,6 +1449,82 @@ async def upload_file(request: Request, admin: str = Depends(get_current_admin))
     url_path = f"uploads/{unique_name}" if UPLOAD_DIR != os.path.join("assets", "images") else f"assets/images/{unique_name}"
     return {"url": url_path, "storage": "local"}
 
+@app.get("/api/portfolio/founders-era")
+async def get_founders_era_images():
+    return {"images": fetch_founders_era_manifest()}
+
+@app.post("/api/portfolio/founders-era/upload")
+async def upload_founders_era_image(request: Request, admin: str = Depends(get_current_admin)):
+    if not founders_era_upload_enabled():
+        raise HTTPException(status_code=403, detail="Founder's Era upload portal is disabled")
+    if not R2_ENABLED or not r2_client:
+        raise HTTPException(status_code=503, detail="R2 is not configured")
+
+    filename_header = request.headers.get("X-Filename", "upload.jpg")
+    ext = os.path.splitext(filename_header)[1].lower()
+    if ext not in PORTFOLIO_IMAGE_EXTS:
+        raise HTTPException(status_code=400, detail="Unsupported image type")
+
+    file_data = await request.body()
+    if len(file_data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail=f"File too large. Max {MAX_UPLOAD_BYTES // (1024 * 1024)}MB")
+
+    mime_map = {
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".webp": "image/webp",
+        ".gif": "image/gif",
+    }
+    unique_stem = str(uuid.uuid4()).upper()
+    key = f"{FOUNDERS_ERA_R2_FOLDER}/{unique_stem}{ext}"
+    try:
+        r2_client.put_object(
+            Bucket=R2_BUCKET,
+            Key=key,
+            Body=file_data,
+            ContentType=mime_map.get(ext, "application/octet-stream"),
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"R2 upload failed: {e}")
+
+    url = r2_key_to_public_url(key)
+    manifest = fetch_founders_era_manifest()
+    if url not in manifest:
+        manifest.append(url)
+        save_founders_era_manifest(manifest)
+        bump_sync_version()
+
+    return {"url": url, "storage": "r2", "count": len(manifest)}
+
+@app.delete("/api/portfolio/founders-era")
+async def delete_founders_era_image(request: Request, admin: str = Depends(get_current_admin)):
+    if not founders_era_upload_enabled():
+        raise HTTPException(status_code=403, detail="Founder's Era upload portal is disabled")
+
+    body = await request.json()
+    url = str(body.get("url", "")).strip()
+    if not url:
+        raise HTTPException(status_code=400, detail="Missing url")
+
+    manifest = fetch_founders_era_manifest()
+    if url not in manifest:
+        raise HTTPException(status_code=404, detail="Image not in manifest")
+
+    manifest = [item for item in manifest if item != url]
+    save_founders_era_manifest(manifest)
+
+    key = public_url_to_r2_key(url)
+    prefix = f"{FOUNDERS_ERA_R2_FOLDER}/"
+    if R2_ENABLED and r2_client and key.startswith(prefix):
+        try:
+            r2_client.delete_object(Bucket=R2_BUCKET, Key=key)
+        except Exception as e:
+            print(f"[R2] Founder's Era delete failed for {key}: {e}")
+
+    bump_sync_version()
+    return {"status": "success", "count": len(manifest)}
+
 @app.post("/api/save")
 async def save_data(request: Request, admin: str = Depends(get_current_admin)):
     data = await request.json()
@@ -1571,7 +1691,7 @@ async def serve_static(request: Request, path: str):
     response = FileResponse(resolved_path)
     # Cache public HTML briefly to speed repeat navigations.
     if resolved_path.lower().endswith(".html"):
-        if resolved_path.lower() in {"admin.html", "admin-login.html"}:
+        if resolved_path.lower() in {"admin.html", "admin-login.html", "founders-era-upload.html"}:
             response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
             response.headers["Pragma"] = "no-cache"
             response.headers["Expires"] = "0"
