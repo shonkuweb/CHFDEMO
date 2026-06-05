@@ -152,6 +152,7 @@ FIXED_HOME_STAGING_MEDIA = {
         "type": "media",
     },
 }
+ASSETS_CACHE_VERSION = "chf-closing-1"
 PEC_IMAGE_BASE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20experience%20center"
 PEC_HERO_IMAGE = f"{PEC_IMAGE_BASE}/9BF51B5D-7851-4D44-BF1D-F2B521F61DB2%20(1).png"
 PEC_PHILOSOPHY_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_bcec5110.png?t=1780033476946"
@@ -1155,11 +1156,24 @@ async def add_api_no_cache_headers(request: Request, call_next):
         response.headers.setdefault("Pragma", "no-cache")
     return response
 
+def purge_deploy_asset_cache():
+    """Purge versioned static assets from Cloudflare after code deploys."""
+    origin = os.environ.get("SITE_PUBLIC_ORIGIN", "").strip().rstrip("/")
+    if not origin:
+        return
+    purge_cloudflare_cache(
+        [
+            f"{origin}/assets/animations.css",
+            f"{origin}/assets/animations.css?v={ASSETS_CACHE_VERSION}",
+        ]
+    )
+
 @app.on_event("startup")
 def startup_init_sync_state():
     migrate_legacy_site_content_keys()
     ensure_sync_state_table()
     ensure_home_trends_section_table()
+    purge_deploy_asset_cache()
 
 # ── Endpoints ───────────────────────────────
 
