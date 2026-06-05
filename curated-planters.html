@@ -233,39 +233,63 @@
         }
 
         .cp-block {
+            --cp-block-gap: clamp(2.5rem, 5vw, 5rem);
+            --cp-block-media-width: clamp(12rem, 32vw, 17.5rem);
+            --cp-block-copy-width: min(100%, 38rem);
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .cp-block-inner {
             display: flex;
             flex-direction: column;
             align-items: stretch;
             gap: clamp(2rem, 4vw, 3rem);
+            width: 100%;
         }
 
         @media (min-width: 1024px) {
             .cp-block {
                 flex-direction: row;
-                align-items: center;
-                gap: clamp(2.5rem, 5vw, 5rem);
+                justify-content: flex-start;
             }
 
             .cp-block.is-reverse {
+                justify-content: flex-end;
+            }
+
+            .cp-block-inner {
+                flex-direction: row;
+                align-items: center;
+                gap: var(--cp-block-gap);
+                width: auto;
+                max-width: calc(var(--cp-block-media-width) + var(--cp-block-gap) + 38rem);
+            }
+
+            .cp-block.is-reverse .cp-block-inner {
                 flex-direction: row-reverse;
             }
         }
 
         .cp-block-media {
             width: 100%;
-            flex-shrink: 0;
-            display: flex;
-            justify-content: center;
+            max-width: var(--cp-block-media-width, 17.5rem);
+            flex: 0 0 auto;
+            align-self: center;
         }
 
         @media (min-width: 1024px) {
             .cp-block-media {
-                width: min(42%, 20rem);
+                width: var(--cp-block-media-width);
+                max-width: none;
+                align-self: center;
             }
         }
 
         .cp-block-carousel {
-            width: min(100%, clamp(12rem, 32vw, 17.5rem));
+            width: 100%;
+            max-width: var(--cp-block-media-width, 17.5rem);
         }
 
         .cp-block-carousel-frame {
@@ -323,16 +347,12 @@
 
         .cp-block-copy {
             width: 100%;
+            max-width: var(--cp-block-copy-width);
+            flex: 0 1 auto;
             display: flex;
             flex-direction: column;
             justify-content: center;
-        }
-
-        @media (min-width: 1024px) {
-            .cp-block-copy {
-                flex: 1;
-                min-width: 0;
-            }
+            min-width: 0;
         }
 
         .cp-block-rule {
@@ -357,6 +377,12 @@
             font-size: clamp(0.875rem, 1vw, 1rem);
             font-weight: 300;
             line-height: 1.75;
+        }
+
+        .cp-blocks-stack {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(4rem, 8vw, 8rem);
         }
 
         .cp-block-highlights-wrap {
@@ -583,7 +609,7 @@
 
             <!-- Zigzag Content Sections -->
             <section class="cp-blocks-section px-4 sm:px-6 lg:px-24 w-full max-w-7xl mx-auto">
-                <div id="curated-planters-blocks-container" class="flex flex-col gap-16 sm:gap-24 lg:gap-32"></div>
+                <div id="curated-planters-blocks-container" class="cp-blocks-stack"></div>
             </section>
 
             <!-- Concluding Section -->
@@ -913,19 +939,21 @@
 
                 return `
                     <article class="cp-block${reverse ? ' is-reverse' : ''}">
-                        <div class="cp-block-media">
-                            ${images.length ? `
-                                <div class="cp-block-carousel" data-cp-carousel>
-                                    <div class="cp-block-carousel-frame">${slides}</div>
-                                    ${dots}
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="cp-block-copy">
-                            <div class="cp-block-rule" aria-hidden="true"></div>
-                            <h3 class="cp-block-title">${title}</h3>
-                            ${body ? `<p class="cp-block-body">${body}</p>` : ''}
-                            ${renderHighlights(block.highlights)}
+                        <div class="cp-block-inner">
+                            <div class="cp-block-media">
+                                ${images.length ? `
+                                    <div class="cp-block-carousel" data-cp-carousel>
+                                        <div class="cp-block-carousel-frame">${slides}</div>
+                                        ${dots}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="cp-block-copy">
+                                <div class="cp-block-rule" aria-hidden="true"></div>
+                                <h3 class="cp-block-title">${title}</h3>
+                                ${body ? `<p class="cp-block-body">${body}</p>` : ''}
+                                ${renderHighlights(block.highlights)}
+                            </div>
                         </div>
                     </article>
                 `;
