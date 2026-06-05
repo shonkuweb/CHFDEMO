@@ -186,8 +186,27 @@ FIXED_PLANT_CENTER_HERO_MEDIA = {
         "type": "media",
     },
 }
+FIXED_PLANT_CENTER_EXPERIENCE_MEDIA = {
+    "plant-center/experience/card1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_3e8de862.png?t=1780033750869",
+        "type": "media",
+    },
+    "plant-center/experience/card2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_86eaa2e7.png?t=1780033657351",
+        "type": "media",
+    },
+    "plant-center/experience/card3/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_a5400b81.png?t=1780033636789",
+        "type": "media",
+    },
+    "plant-center/experience/card4/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_e2be27b2.png?t=1780039110785",
+        "type": "media",
+    },
+}
 FIXED_PLANT_CENTER_MEDIA = {
     **FIXED_PLANT_CENTER_HERO_MEDIA,
+    **FIXED_PLANT_CENTER_EXPERIENCE_MEDIA,
     **FIXED_PLANT_CENTER_COLLECT_MEDIA,
     **FIXED_PLANT_CENTER_PHILOSOPHY_MEDIA,
 }
@@ -327,19 +346,19 @@ SITE_CONTENT_DEFAULTS = {
         "type": "media",
     },
     "plant-center/experience/card1/image": {
-        "value": "",
+        "value": FIXED_PLANT_CENTER_EXPERIENCE_MEDIA["plant-center/experience/card1/image"]["value"],
         "type": "media",
     },
     "plant-center/experience/card2/image": {
-        "value": "",
+        "value": FIXED_PLANT_CENTER_EXPERIENCE_MEDIA["plant-center/experience/card2/image"]["value"],
         "type": "media",
     },
     "plant-center/experience/card3/image": {
-        "value": "",
+        "value": FIXED_PLANT_CENTER_EXPERIENCE_MEDIA["plant-center/experience/card3/image"]["value"],
         "type": "media",
     },
     "plant-center/experience/card4/image": {
-        "value": "",
+        "value": FIXED_PLANT_CENTER_EXPERIENCE_MEDIA["plant-center/experience/card4/image"]["value"],
         "type": "media",
     },
     "plant-center/philosophy/image": {

@@ -315,38 +315,82 @@
         .pec-card-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
+            align-items: start;
             border: 1px solid var(--pec-line);
         }
 
         .pec-feature-card {
             position: relative;
-            min-height: 10.8rem;
-            padding: 2.05rem 1.5rem 1.65rem;
             text-align: center;
             border-right: 1px solid var(--pec-line);
+            background: var(--pec-panel-soft);
             overflow: hidden;
         }
 
         .pec-feature-card:last-child { border-right: 0; }
 
-        .pec-feature-card::before {
+        .pec-feature-stage {
+            position: relative;
+            width: 100%;
+            line-height: 0;
+            background: #0b110d;
+        }
+
+        .pec-feature-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .pec-feature-body {
             position: absolute;
             inset: 0;
-            content: "";
-            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.32));
-            opacity: 0.75;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            pointer-events: none;
         }
 
-        .pec-feature-card > * {
+        .pec-feature-copy {
             position: relative;
-            z-index: 2;
+            width: min(100%, 11.75rem);
+            padding: 0.25rem 0.5rem;
+            text-align: center;
+            background: none;
+            box-shadow: none;
         }
 
-        .pec-icon {
-            width: 2rem;
-            height: 2rem;
-            margin: 0 auto 1rem;
-            color: rgba(238, 232, 221, 0.78);
+        .pec-feature-copy::before {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: -1;
+            width: 145%;
+            height: 165%;
+            content: "";
+            transform: translate(-50%, -50%);
+            background: radial-gradient(
+                ellipse at center,
+                rgba(0, 0, 0, 0.58) 0%,
+                rgba(0, 0, 0, 0.32) 42%,
+                rgba(0, 0, 0, 0) 72%
+            );
+            pointer-events: none;
+        }
+
+        .pec-feature-copy h3,
+        .pec-feature-copy p {
+            text-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.9),
+                0 4px 18px rgba(0, 0, 0, 0.75),
+                0 8px 28px rgba(0, 0, 0, 0.45);
+        }
+
+        .pec-feature-card .pec-icon {
+            display: none;
         }
 
         .pec-feature-card h3,
@@ -364,9 +408,9 @@
         }
 
         .pec-feature-card p {
-            width: min(100%, 12rem);
+            width: 100%;
             margin: 0.95rem auto 0;
-            color: rgba(238, 232, 221, 0.72);
+            color: rgba(238, 232, 221, 0.82);
             font-size: 0.72rem;
             font-weight: 600;
             line-height: 1.65;
@@ -737,25 +781,73 @@
             <section class="pec-experience">
                 <p class="pec-section-label">What You'll Experience</p>
                 <div class="pec-card-grid">
-                    <article class="pec-feature-card" data-cms="plant-center/experience/card1/image">
-                        <svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M38 9C22 11 12 21 11 37c16-1 26-12 27-28Z"/><path d="M14 34c8-9 15-15 22-21"/></svg>
-                        <h3>Rare Plant Collections</h3>
-                        <p>Curated tropicals, bonsai, and statement specimens displayed within immersive natural settings.</p>
+                    <article class="pec-feature-card">
+                        <div class="pec-feature-stage">
+                            <img
+                                class="pec-feature-image"
+                                data-cms="plant-center/experience/card1/image"
+                                src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_3e8de862.png?t=1780033750869"
+                                alt="Rare plant collections at the Plant Experience Center"
+                                decoding="async"
+                                loading="lazy">
+                            <div class="pec-feature-body">
+                                <div class="pec-feature-copy">
+                                    <h3>Rare Plant Collections</h3>
+                                    <p>Curated tropicals, bonsai, and statement specimens displayed within immersive natural settings.</p>
+                                </div>
+                            </div>
+                        </div>
                     </article>
-                    <article class="pec-feature-card" data-cms="plant-center/experience/card2/image">
-                        <svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M15 18c0-6 4-10 9-10s9 4 9 10c0 4-2 8-5 10v5h-8v-5c-3-2-5-6-5-10Z"/><path d="M18 40h12M20 33h8"/></svg>
-                        <h3>Sculptural Garden Objects</h3>
-                        <p>Explore artisanal pots, figurines, vessels, and botanical decor curated for refined spaces.</p>
+                    <article class="pec-feature-card">
+                        <div class="pec-feature-stage">
+                            <img
+                                class="pec-feature-image"
+                                data-cms="plant-center/experience/card2/image"
+                                src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_86eaa2e7.png?t=1780033657351"
+                                alt="Sculptural garden objects at the Plant Experience Center"
+                                decoding="async"
+                                loading="lazy">
+                            <div class="pec-feature-body">
+                                <div class="pec-feature-copy">
+                                    <h3>Sculptural Garden Objects</h3>
+                                    <p>Explore artisanal pots, figurines, vessels, and botanical decor curated for refined spaces.</p>
+                                </div>
+                            </div>
+                        </div>
                     </article>
-                    <article class="pec-feature-card" data-cms="plant-center/experience/card3/image">
-                        <svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><path d="M9 31c5-10 10-15 15-15s10 5 15 15"/><path d="M13 31h22"/><path d="M24 16V8M17 20l-5-5M31 20l5-5"/></svg>
-                        <h3>Immersive Landscapes</h3>
-                        <p>Walk through layered gardens, shaded courtyards, and architectural plant environments.</p>
+                    <article class="pec-feature-card">
+                        <div class="pec-feature-stage">
+                            <img
+                                class="pec-feature-image"
+                                data-cms="plant-center/experience/card3/image"
+                                src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_a5400b81.png?t=1780033636789"
+                                alt="Immersive landscapes at the Plant Experience Center"
+                                decoding="async"
+                                loading="lazy">
+                            <div class="pec-feature-body">
+                                <div class="pec-feature-copy">
+                                    <h3>Immersive Landscapes</h3>
+                                    <p>Walk through layered gardens, shaded courtyards, and architectural plant environments.</p>
+                                </div>
+                            </div>
+                        </div>
                     </article>
-                    <article class="pec-feature-card" data-cms="plant-center/experience/card4/image">
-                        <svg class="pec-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.35"><circle cx="24" cy="24" r="7"/><path d="M24 5v8M24 35v8M5 24h8M35 24h8M10.6 10.6l5.6 5.6M31.8 31.8l5.6 5.6M37.4 10.6l-5.6 5.6M16.2 31.8l-5.6 5.6"/></svg>
-                        <h3>Spatial Inspiration</h3>
-                        <p>Designed for homeowners, architects, collectors, and hospitality spaces seeking living design ideas.</p>
+                    <article class="pec-feature-card">
+                        <div class="pec-feature-stage">
+                            <img
+                                class="pec-feature-image"
+                                data-cms="plant-center/experience/card4/image"
+                                src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_e2be27b2.png?t=1780039110785"
+                                alt="Spatial inspiration at the Plant Experience Center"
+                                decoding="async"
+                                loading="lazy">
+                            <div class="pec-feature-body">
+                                <div class="pec-feature-copy">
+                                    <h3>Spatial Inspiration</h3>
+                                    <p>Designed for homeowners, architects, collectors, and hospitality spaces seeking living design ideas.</p>
+                                </div>
+                            </div>
+                        </div>
                     </article>
                 </div>
             </section>
