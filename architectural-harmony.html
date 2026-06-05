@@ -39,30 +39,9 @@
             letter-spacing: -0.03em;
         }
 
-        .ah-media {
+        .ah-media-frame {
             position: relative;
             overflow: hidden;
-            background: #0a0a0a;
-        }
-
-        .ah-media-slot {
-            position: absolute;
-            inset: 0;
-            background-color: #0a0a0a;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        .ah-media-slot::before {
-            position: absolute;
-            inset: 0;
-            content: "";
-            background:
-                linear-gradient(135deg, transparent 48%, rgba(166, 139, 106, 0.14) 49%, rgba(166, 139, 106, 0.14) 51%, transparent 52%),
-                linear-gradient(45deg, transparent 48%, rgba(166, 139, 106, 0.09) 49%, rgba(166, 139, 106, 0.09) 51%, transparent 52%),
-                radial-gradient(circle at 28% 22%, rgba(164, 184, 140, 0.1), transparent 40%);
-            pointer-events: none;
         }
 
         /* —— Intro —— */
@@ -70,7 +49,7 @@
             display: grid;
             grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
             gap: clamp(1.75rem, 3.5vw, 3rem);
-            align-items: stretch;
+            align-items: center;
             padding: clamp(2.75rem, 5.5vw, 4.75rem) clamp(1.35rem, 5vw, 5rem) clamp(2.5rem, 4vw, 3.75rem);
         }
 
@@ -103,7 +82,19 @@
         }
 
         .ah-intro-media {
-            min-height: clamp(20rem, 38vw, 32rem);
+            width: 100%;
+            height: fit-content;
+            display: block;
+            align-self: center;
+            background: transparent;
+        }
+
+        .ah-intro-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
         }
 
         /* —— Collaborative —— */
@@ -126,7 +117,17 @@
             position: relative;
             min-height: clamp(18rem, 32vw, 26rem);
             overflow: hidden;
+            background: transparent;
             box-shadow: 0 1.5rem 3.5rem rgba(0, 0, 0, 0.55);
+        }
+
+        .ah-collab-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: clamp(18rem, 32vw, 26rem);
+            object-fit: cover;
+            object-position: center;
         }
 
         .ah-collab-panel {
@@ -273,6 +274,7 @@
         .ah-timeline-item {
             position: relative;
             min-width: 0;
+            text-align: center;
         }
 
         .ah-timeline-item:first-of-type {
@@ -290,17 +292,27 @@
             z-index: 1;
             aspect-ratio: 16 / 10;
             margin-bottom: 0.85rem;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .ah-timeline-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
         }
 
         .ah-timeline-label {
-            margin: 0;
-            font-size: 0.56rem;
+            margin: 0.35rem 0 0;
+            font-size: clamp(0.78rem, 1.15vw, 0.95rem);
             font-weight: 800;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.18em;
             line-height: 1.4;
-            text-align: left;
+            text-align: center;
             text-transform: uppercase;
-            color: rgba(238, 233, 223, 0.55);
+            color: rgba(238, 233, 223, 0.65);
         }
 
         .ah-timeline-diamond {
@@ -371,7 +383,7 @@
             background: var(--ah-gold);
         }
 
-        .ah-tomorrow-quote {
+        .ah-tomorrow-text .ah-tomorrow-quote {
             margin: 1.15rem 0 0;
             color: var(--ah-leaf);
             font-family: "Noto Serif", serif;
@@ -407,7 +419,6 @@
             }
 
             .ah-intro-media {
-                min-height: 18rem;
                 order: -1;
             }
 
@@ -576,15 +587,27 @@
                     <p data-cms="arch/intro/p2">As consulting horticulturists, we often see thoughtfully designed spaces challenged by plant selections that don't account for scale or maturity. Fast growers are placed where restraint is essential. Foreground hedges are composed of species that eventually outgrow and obscure the very layers they were meant to frame. What appears harmonious on day one can lose its proportion and clarity with time.</p>
                     <p class="ah-intro-callout" data-cms="arch/intro/callout">This is where collaboration becomes critical.</p>
                 </div>
-                <div class="ah-intro-media ah-media">
-                    <div class="ah-media-slot" data-cms="arch/block1/image" role="img" aria-label="Intro image placeholder"></div>
+                <div class="ah-intro-media">
+                    <img
+                        class="ah-intro-image"
+                        data-cms="arch/block1/image"
+                        src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/architectural-harmony/B75F2C1E-AE3A-4A10-9F6E-2F88CD2A0A15.png"
+                        alt="Landscape architecture and horticultural planning"
+                        decoding="async"
+                        loading="eager">
                 </div>
             </section>
 
             <section class="ah-collab" id="collaborative-approach">
                 <div class="ah-collab-layout">
-                    <div class="ah-collab-media ah-media">
-                        <div class="ah-media-slot" data-cms="arch/block3/image" role="img" aria-label="Collaborative approach image placeholder"></div>
+                    <div class="ah-collab-media ah-media-frame">
+                        <img
+                            class="ah-collab-image"
+                            data-cms="arch/block3/image"
+                            src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/architectural-harmony/1B513C2D-3F24-4051-A8AE-DE5EA4609581.png"
+                            alt="Collaborative landscape design approach"
+                            decoding="async"
+                            loading="lazy">
                     </div>
                     <div class="ah-collab-panel">
                         <div class="ah-collab-copy">
@@ -637,14 +660,26 @@
                 <h2 class="ah-serif" data-cms="arch/tomorrow/title">Design with Tomorrow in Mind.</h2>
                 <div class="ah-timeline-stage">
                     <figure class="ah-timeline-item">
-                        <div class="ah-timeline-media ah-media">
-                            <div class="ah-media-slot" data-cms="arch/timeline/year1/image" role="img" aria-label="Year 1 timeline image placeholder"></div>
+                        <div class="ah-timeline-media ah-media-frame">
+                            <img
+                                class="ah-timeline-image"
+                                data-cms="arch/timeline/year1/image"
+                                src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/architectural-harmony/1FC8B58D-15F6-429D-9493-1FBB93608635.png"
+                                alt="Year 1 landscape establishment"
+                                decoding="async"
+                                loading="lazy">
                         </div>
                         <figcaption class="ah-timeline-label" data-cms="arch/timeline/year1/label">Year 1 Establishment</figcaption>
                     </figure>
                     <figure class="ah-timeline-item">
-                        <div class="ah-timeline-media ah-media">
-                            <div class="ah-media-slot" data-cms="arch/timeline/year34/image" role="img" aria-label="Year 3–4 timeline image placeholder"></div>
+                        <div class="ah-timeline-media ah-media-frame">
+                            <img
+                                class="ah-timeline-image"
+                                data-cms="arch/timeline/year34/image"
+                                src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/architectural-harmony/6A9FCFBF-63C2-43B7-8311-81F798D6DC87.png"
+                                alt="Year 3–4 landscape growth and maturation"
+                                decoding="async"
+                                loading="lazy">
                         </div>
                         <figcaption class="ah-timeline-label" data-cms="arch/timeline/year34/label">Year 3–4 Growth &amp; Maturation</figcaption>
                     </figure>

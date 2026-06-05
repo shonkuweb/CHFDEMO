@@ -118,6 +118,8 @@ def fetch_site_content(prefix):
     if prefix == "home":
         data.update(FIXED_HOME_HERO_MEDIA)
         data.update(FIXED_HOME_STAGING_MEDIA)
+    if prefix == "arch":
+        data.update(FIXED_ARCH_MEDIA)
     return data
 
 def clear_cache():
@@ -148,7 +150,30 @@ FIXED_HOME_STAGING_MEDIA = {
         "type": "media",
     },
 }
-PROTECTED_SITE_CONTENT_PATHS = set(FIXED_HOME_HERO_MEDIA) | set(FIXED_HOME_STAGING_MEDIA)
+ARCH_IMAGE_BASE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/architectural-harmony"
+FIXED_ARCH_MEDIA = {
+    "arch/block1/image": {
+        "value": f"{ARCH_IMAGE_BASE}/B75F2C1E-AE3A-4A10-9F6E-2F88CD2A0A15.png",
+        "type": "media",
+    },
+    "arch/block3/image": {
+        "value": f"{ARCH_IMAGE_BASE}/1B513C2D-3F24-4051-A8AE-DE5EA4609581.png",
+        "type": "media",
+    },
+    "arch/timeline/year1/image": {
+        "value": f"{ARCH_IMAGE_BASE}/1FC8B58D-15F6-429D-9493-1FBB93608635.png",
+        "type": "media",
+    },
+    "arch/timeline/year34/image": {
+        "value": f"{ARCH_IMAGE_BASE}/6A9FCFBF-63C2-43B7-8311-81F798D6DC87.png",
+        "type": "media",
+    },
+    "arch/tomorrow/leaf": {
+        "value": "assets/arch-harmony-leaf.png",
+        "type": "media",
+    },
+}
+PROTECTED_SITE_CONTENT_PATHS = set(FIXED_HOME_HERO_MEDIA) | set(FIXED_HOME_STAGING_MEDIA) | set(FIXED_ARCH_MEDIA)
 
 SITE_CONTENT_DEFAULTS = {
     "home/hero/image": {
@@ -340,27 +365,19 @@ SITE_CONTENT_DEFAULTS = {
         "type": "text",
     },
     "arch/block1/image": {
-        "value": "",
-        "type": "media",
-    },
-    "arch/block2/image": {
-        "value": "",
+        "value": f"{ARCH_IMAGE_BASE}/B75F2C1E-AE3A-4A10-9F6E-2F88CD2A0A15.png",
         "type": "media",
     },
     "arch/block3/image": {
-        "value": "",
-        "type": "media",
-    },
-    "arch/block4/image": {
-        "value": "",
+        "value": f"{ARCH_IMAGE_BASE}/1B513C2D-3F24-4051-A8AE-DE5EA4609581.png",
         "type": "media",
     },
     "arch/timeline/year1/image": {
-        "value": "",
+        "value": f"{ARCH_IMAGE_BASE}/1FC8B58D-15F6-429D-9493-1FBB93608635.png",
         "type": "media",
     },
     "arch/timeline/year34/image": {
-        "value": "",
+        "value": f"{ARCH_IMAGE_BASE}/6A9FCFBF-63C2-43B7-8311-81F798D6DC87.png",
         "type": "media",
     },
     "arch/tomorrow/leaf": {
@@ -804,6 +821,38 @@ def migrate_legacy_site_content_keys():
         cur.execute(
             "UPDATE site_content SET value = ? WHERE type = ? AND value LIKE ?",
             ("", "media", pattern),
+        )
+
+    # Architectural Harmony uses a fixed image set. Drop legacy block keys and
+    # purge stale placeholder media so production cannot resurrect old backgrounds.
+    obsolete_arch_paths = (
+        "arch/block2/image",
+        "arch/block2/title",
+        "arch/block2/body",
+        "arch/block4/image",
+        "arch/block4/title",
+        "arch/block4/body",
+        "arch/block1/title",
+        "arch/block3/title",
+        "arch/hero/title",
+    )
+    cur.executemany(
+        "DELETE FROM site_content WHERE path = ?",
+        [(path,) for path in obsolete_arch_paths],
+    )
+    cur.execute(
+        """
+        DELETE FROM site_content
+        WHERE path LIKE 'arch/%'
+          AND type = 'media'
+          AND path NOT IN ({})
+        """.format(",".join("?" * len(FIXED_ARCH_MEDIA))),
+        tuple(FIXED_ARCH_MEDIA.keys()),
+    )
+    for path, payload in FIXED_ARCH_MEDIA.items():
+        cur.execute(
+            "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
+            (path, payload["value"], payload["type"]),
         )
 
     # If a row still exactly matches a bundled default, treat it as seed content,
