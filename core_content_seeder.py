@@ -10,13 +10,17 @@ home_seeds = {
 }
 
 about_seeds = {
-    "about/story/intro": {"value": "Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, and a deep respect for nature. We continue to shape greener spaces with intention and expertise—quietly leading a movement where every plant has a purpose, and every space has the potential to grow.", "type": "longtext"},
     "about/story/title-1": {"value": "The Founding Era (1982)", "type": "text"},
-    "about/philosophy/patience-title": {"value": "Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.", "type": "longtext"},
-    "about/story/title-2": {"value": "The Modern Vision", "type": "text"},
-    "about/philosophy/precision-title": {"value": "Today, the legacy is carried forward by Indra Bose and Apurba Bose, expanding the practice into contemporary formats while staying rooted in its core philosophy.", "type": "longtext"},
-    "about/philosophy/presence-title": {"value": "Cultivating Scale", "type": "text"},
-    "about/philosophy/presence-body": {"value": "With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, we house a rich collection of indoor, outdoor and exotic plants. Our facilities cultivate bonsais, topiaries, and an extensive selection of architectural plants, ensuring we have the perfect specimen for any scale of project.", "type": "longtext"}
+    "about/philosophy/patience-title": {"value": "Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.", "type": "longtext"},
+    "about/story/title-2": {"value": "Design Philosophy", "type": "text"},
+    "about/story/image-2": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/design-philosophy-1d66f8f2.png", "type": "media"},
+    "about/philosophy/precision-title": {"value": "Our work is guided by an intrinsic understanding of plants—ensuring every space is thoughtfully designed, where aesthetics and ecology come together seamlessly. From bespoke residential landscapes to large-scale corporate environments, each project is created to thrive and evolve over time.", "type": "longtext"},
+    "about/philosophy/presence-title": {"value": "Carrying the Legacy Forward", "type": "text"},
+    "about/philosophy/presence-body": {"value": "Today, the legacy is carried forward by Indra Bose and Apurba Bose, expanding the practice into contemporary formats while staying rooted in its core philosophy. Alongside design and consulting, we offer curated plant solutions, gardening essentials, and a diverse range of products tailored for modern green living.", "type": "longtext"},
+    "about/nurseries/title": {"value": "Our Nurseries", "type": "text"},
+    "about/nurseries/body": {"value": "With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, we house a rich collection of indoor, outdoor and exotic plants, along with bonsais, topiaries and an extensive selection of pots and planters. Our plant experience centre in Alipore further brings this vision to life—an immersive space where clients can explore, interact, and engage with plants in thoughtfully curated settings.", "type": "longtext"},
+    "about/nurseries/image-1": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-1-25c9a8f0.png", "type": "media"},
+    "about/nurseries/image-2": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-2-6ff91b68.png", "type": "media"},
 }
 
 global_seeds = {

@@ -155,16 +155,21 @@ seeds = {
     "curated-planters/block4/image3": {"value": "", "type": "media"},
 
     # ── About Us ──
-    "about/story/intro": {"value": "Calcutta Horticultural Farm (CHF) is more than a landscape firm; it is a living legacy—built on a deep, enduring respect for nature. Founded over four decades ago, we began with a simple belief: that plants are not mere decorations, but vital, dynamic entities that breathe life into any space.", "type": "longtext"},
     "about/story/title-1": {"value": "The Founding Era (1982)", "type": "text"},
-    "about/story/image-1": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/about/aboutus_legacy.png", "type": "media"},
-    "about/philosophy/patience-title": {"value": "Rooted in decades of horticultural mastery, CHF was established to bridge the gap between ornamental beauty and environmental harmony. Our early years were dedicated to cultivating rare, resilient plant species, establishing a foundation of trust with purists and enthusiasts alike. This was an era defined by patience, where understanding soil, climate, and growth patterns took precedence over rapid expansion.", "type": "longtext"},
-    "about/story/title-2": {"value": "The Modern Vision", "type": "text"},
-    "about/story/image-2": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/alipore_experience_center.png", "type": "media"},
-    "about/philosophy/precision-title": {"value": "Today, CHF operates at the intersection of horticulture, landscape architecture, and lifestyle design. We curate botanical elements that elevate modern sanctuaries—from expansive estates to minimalist apartments. Our approach integrates rigorous botanical science with high-end aesthetic sensibilities, ensuring that every plant we introduce not only survives, but thrives within its architectural context.", "type": "longtext"},
-    "about/philosophy/presence-title": {"value": "Cultivating Scale", "type": "text"},
-    "about/story/image-3": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/expansive_nursery_muchisha.png", "type": "media"},
-    "about/philosophy/presence-body": {"value": "Our operations are sustained by two expansive nurseries located in Alipore and Muchisha, encompassing acres of meticulously controlled environments. These facilities allow us to nurture full-grown avenue trees, exotic indoor plants, and delicate bonsai under the watchful eyes of expert agronomists. It is here that we prepare our plants for the transition from our care to your sanctuary, ensuring they arrive acclimatised and robust.", "type": "longtext"},
+    "about/story/image-1": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_9c903182.png?t=1780222282232", "type": "media"},
+    "about/philosophy/patience-title": {"value": "Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.", "type": "longtext"},
+    "about/story/title-2": {"value": "Design Philosophy", "type": "text"},
+    "about/story/image-2": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/design-philosophy-1d66f8f2.png", "type": "media"},
+    "about/philosophy/precision-title": {"value": "Our work is guided by an intrinsic understanding of plants—ensuring every space is thoughtfully designed, where aesthetics and ecology come together seamlessly. From bespoke residential landscapes to large-scale corporate environments, each project is created to thrive and evolve over time.", "type": "longtext"},
+    "about/philosophy/presence-title": {"value": "Carrying the Legacy Forward", "type": "text"},
+    "about/story/image-3": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/carrying-legacy-forward-dde8988b.png", "type": "media"},
+    "about/philosophy/presence-body": {"value": "Today, the legacy is carried forward by Indra Bose and Apurba Bose, expanding the practice into contemporary formats while staying rooted in its core philosophy. Alongside design and consulting, we offer curated plant solutions, gardening essentials, and a diverse range of products tailored for modern green living.", "type": "longtext"},
+
+    # ── About Us: Our Nurseries ──
+    "about/nurseries/title": {"value": "Our Nurseries", "type": "text"},
+    "about/nurseries/body": {"value": "With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, we house a rich collection of indoor, outdoor and exotic plants, along with bonsais, topiaries and an extensive selection of pots and planters. Our plant experience centre in Alipore further brings this vision to life—an immersive space where clients can explore, interact, and engage with plants in thoughtfully curated settings.", "type": "longtext"},
+    "about/nurseries/image-1": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-1-25c9a8f0.png", "type": "media"},
+    "about/nurseries/image-2": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-2-6ff91b68.png", "type": "media"},
     
     # ── Global Settings ──
     "global/footer/copyright": {"value": "© 2026 CHF. All rights reserved. Crafted by Team ShonkuWeb", "type": "text"},

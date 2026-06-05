@@ -21,14 +21,173 @@
         html {
             scroll-behavior: smooth;
         }
+
+        html,
+        body.about-page,
+        body.about-page main,
+        body.about-page .site-footer {
+            background-color: #000;
+        }
+
+        body.about-page::before {
+            display: none;
+        }
+
+        body.about-page .bg-surface-dark {
+            background-color: #000;
+        }
+
+        .about-founding-era {
+            width: 100%;
+            max-width: min(56rem, 94vw);
+            margin: 0 auto;
+        }
+
+        .about-founding-era-stage {
+            position: relative;
+            width: 100%;
+        }
+
+        .about-founding-era-media {
+            position: relative;
+            width: 100%;
+            min-height: clamp(22rem, 52vw, 32rem);
+            overflow: hidden;
+            border: none;
+        }
+
+        .about-founding-era-media img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: clamp(22rem, 52vw, 32rem);
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .about-founding-era-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.94) 0%,
+                rgba(0, 0, 0, 0.72) 38%,
+                rgba(0, 0, 0, 0.18) 68%,
+                transparent 100%
+            );
+            pointer-events: none;
+        }
+
+        .about-founding-era-copy {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            padding: clamp(1.75rem, 4vw, 3rem) clamp(1.5rem, 5vw, 3.5rem) clamp(1.5rem, 3.5vw, 2.25rem);
+            text-align: left;
+        }
+
+        .about-legacy-media {
+            position: relative;
+            width: min(68vw, 14.5rem);
+            aspect-ratio: 9 / 16;
+            overflow: hidden;
+            background: #000;
+            flex-shrink: 0;
+            margin: 0 auto;
+        }
+
+        .about-legacy-media img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        @media (min-width: 1024px) {
+            .about-legacy-media {
+                width: min(16rem, 30%);
+                max-width: 16rem;
+                margin: 0;
+            }
+        }
+
+        .about-nurseries-carousel {
+            width: min(68vw, 14.5rem);
+            flex-shrink: 0;
+            margin: 0 auto;
+        }
+
+        .about-nurseries-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .about-nurseries-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.85s ease;
+            pointer-events: none;
+        }
+
+        .about-nurseries-slide.is-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .about-nurseries-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .about-nurseries-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.45rem;
+            margin-top: 0.85rem;
+        }
+
+        .about-nurseries-dot {
+            width: 0.35rem;
+            height: 0.35rem;
+            border: 0;
+            padding: 0;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .about-nurseries-dot.is-active {
+            background: #b8956a;
+            transform: scale(1.15);
+        }
+
+        @media (min-width: 1024px) {
+            .about-nurseries-carousel {
+                width: min(16rem, 30%);
+                max-width: 16rem;
+                margin: 0;
+            }
+        }
     </style>
     
     <!-- Premium Animations -->
-    <link rel="stylesheet" href="assets/animations.css?v=chf-closing-1">
+    <link rel="stylesheet" href="assets/animations.css?v=chf-no-img-zoom-1">
     <script src="assets/animation-core.js" defer></script>
 </head>
 
-<body class="bg-background-dark text-ivory font-display antialiased">
+<body class="about-page bg-black text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
             class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
@@ -201,9 +360,6 @@
 
             <!-- Title Section -->
             <section class="py-24 px-6 lg:px-12 text-center max-w-4xl mx-auto relative">
-                <!-- Abstract ambient glow -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
-                
                 <h1 class="font-serif text-balance text-4xl md:text-6xl text-ivory font-light leading-[1.1] mb-6 relative z-10 reveal reveal-up">
                     Rooted in <span class="text-accent-bronze italic">Legacy</span>,<br>
                     Designed for the <span class="italic">Future</span>.
@@ -213,68 +369,75 @@
                 </p>
             </section>
 
-            <!-- Introduction Section -->
-            <section class="pb-24 px-6 lg:px-12 text-center max-w-3xl mx-auto relative reveal reveal-up stagger-2">
-                 <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="about/story/intro">
-                    Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, and a deep respect for nature. We continue to shape greener spaces with intention and expertise—quietly leading a movement where every plant has a purpose, and every space has the potential to grow.
-                </p>
-            </section>
-
             <!-- Zigzag Content Sections -->
             <section class="pb-32 px-6 lg:px-24 flex flex-col gap-24 lg:gap-32 w-full max-w-7xl mx-auto">
 
                 <!-- Block 1: The Founding Era -->
-                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0 reveal reveal-scale">
-                        <img alt="The Founding Era 1982" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="about/story/image-1" decoding="async" loading="lazy" fetchpriority="low">
+                <div class="about-founding-era reveal reveal-up">
+                    <div class="about-founding-era-stage">
+                        <div class="about-founding-era-media group">
+                            <img alt="The Founding Era 1982" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_9c903182.png?t=1780222282232" data-cms="about/story/image-1" decoding="async" loading="lazy" fetchpriority="low">
+                            <div class="about-founding-era-overlay" aria-hidden="true"></div>
+                        </div>
+                        <div class="about-founding-era-copy reveal reveal-up stagger-1">
+                            <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                            <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/story/title-1">The Founding Era (1982)</h3>
+                            <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base mb-4" data-cms="about/philosophy/patience-title">
+                                Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.
+                            </p>
+                        </div>
                     </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center reveal reveal-up stagger-1">
+                </div>
+
+                <!-- Block 2: Design Philosophy -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-black relative overflow-hidden group flex-shrink-0 reveal reveal-scale stagger-1">
+                        <img alt="Design Philosophy" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/design-philosophy-1d66f8f2.png" class="absolute inset-0 w-full h-full object-cover" data-cms="about/story/image-2" decoding="async" loading="lazy" fetchpriority="low">
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left reveal reveal-up stagger-2">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/story/title-1">The Founding Era (1982)</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base mb-4" data-cms="about/philosophy/patience-title">
-                            Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.
-                        </p>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/story/title-2">Design Philosophy</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="about/philosophy/precision-title">
                             Our work is guided by an intrinsic understanding of plants—ensuring every space is thoughtfully designed, where aesthetics and ecology come together seamlessly. From bespoke residential landscapes to large-scale corporate environments, each project is created to thrive and evolve over time.
                         </p>
                     </div>
                 </div>
 
-                <!-- Block 2: The Modern Vision -->
-                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
-                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0 reveal reveal-scale stagger-1">
-                        <img alt="Alipore Experience Centre" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="about/story/image-2" decoding="async" loading="lazy" fetchpriority="low">
-                    </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left reveal reveal-up stagger-2">
-                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/story/title-2">The Modern Vision</h3>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base mb-4" data-cms="about/philosophy/precision-title">
-                            Today, the legacy is carried forward by Indra Bose and Apurba Bose, expanding the practice into contemporary formats while staying rooted in its core philosophy.
-                        </p>
-                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">
-                            Alongside design and consulting, we offer curated plant solutions, gardening essentials, and a diverse range of products tailored for modern green living. Our plant experience centre in Alipore brings this vision to life—an immersive space where clients can explore, interact, and engage with plants in thoughtfully curated settings.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Mid-page Quote Center -->
-                <div class="py-8 my-4 border-y border-white/5 text-center relative pointer-events-none reveal reveal-up">
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[100px] bg-primary/10 rounded-full blur-[80px]"></div>
-                    <p class="text-ivory text-xl md:text-2xl italic font-serif relative z-10 text-accent-bronze/90">
-                        "Every space has the potential to grow."
-                    </p>
-                </div>
-
-                <!-- Block 3: The Presence (Nurseries) -->
+                <!-- Block 3: Carrying the Legacy Forward -->
                 <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-                    <div class="w-full lg:w-[45%] aspect-[9/16] bg-surface-dark relative border border-white/5 overflow-hidden group flex-shrink-0 reveal reveal-scale stagger-1">
-                        <img alt="Expansive Nurseries in Alipore and Muchisha" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" data-cms="about/story/image-3" decoding="async" loading="lazy" fetchpriority="low">
+                    <div class="about-legacy-media reveal reveal-scale stagger-1">
+                        <img alt="Carrying the Legacy Forward — Indra Bose and Apurba Bose" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/carrying-legacy-forward-dde8988b.png" data-cms="about/story/image-3" decoding="async" loading="lazy" fetchpriority="low">
                     </div>
                     <div class="w-full lg:w-[55%] flex flex-col justify-center reveal reveal-up stagger-2">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/philosophy/presence-title">Cultivating Scale</h3>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/philosophy/presence-title">Carrying the Legacy Forward</h3>
                         <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="about/philosophy/presence-body">
-                            With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, we house a rich collection of indoor, outdoor and exotic plants. Our facilities cultivate bonsais, topiaries, and an extensive selection of architectural plants, ensuring we have the perfect specimen for any scale of project.
+                            Today, the legacy is carried forward by Indra Bose and Apurba Bose, expanding the practice into contemporary formats while staying rooted in its core philosophy. Alongside design and consulting, we offer curated plant solutions, gardening essentials, and a diverse range of products tailored for modern green living.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Block 4: Our Nurseries -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+                    <div class="about-nurseries-carousel reveal reveal-scale stagger-1" data-about-nurseries-carousel>
+                        <div class="about-nurseries-frame">
+                            <div class="about-nurseries-slide is-active" data-about-nurseries-slide>
+                                <img alt="Calcutta Horticultural Farm nursery entrance, Alipore" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-1-25c9a8f0.png" data-cms="about/nurseries/image-1" decoding="async" loading="lazy" fetchpriority="low">
+                            </div>
+                            <div class="about-nurseries-slide" data-about-nurseries-slide>
+                                <img alt="Greenhouse interior at Calcutta Horticultural Farm" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-2-6ff91b68.png" data-cms="about/nurseries/image-2" decoding="async" loading="lazy" fetchpriority="low">
+                            </div>
+                        </div>
+                        <div class="about-nurseries-dots" data-about-nurseries-dots>
+                            <button type="button" class="about-nurseries-dot is-active" data-about-nurseries-dot="0" aria-label="Show nursery image 1"></button>
+                            <button type="button" class="about-nurseries-dot" data-about-nurseries-dot="1" aria-label="Show nursery image 2"></button>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left reveal reveal-up stagger-2">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/nurseries/title">Our Nurseries</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="about/nurseries/body">
+                            With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, we house a rich collection of indoor, outdoor and exotic plants, along with bonsais, topiaries and an extensive selection of pots and planters. Our plant experience centre in Alipore further brings this vision to life—an immersive space where clients can explore, interact, and engage with plants in thoughtfully curated settings.
                         </p>
                     </div>
                 </div>
@@ -284,7 +447,7 @@
 
         </main>
 
-        <footer class="site-footer border-t border-white/10 bg-background-darker">
+        <footer class="site-footer border-t border-white/10 bg-black">
         <div class="footer-inner mx-auto max-w-7xl">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -417,6 +580,40 @@
     
     <!-- Universal CMS Core -->
     <script src="assets/cms-core.js?v=2.4"></script>
+    <script>
+        (function initAboutNurseriesCarousel() {
+            const carousel = document.querySelector('[data-about-nurseries-carousel]');
+            if (!carousel) return;
+
+            const slides = carousel.querySelectorAll('[data-about-nurseries-slide]');
+            const dots = carousel.querySelectorAll('[data-about-nurseries-dot]');
+            if (slides.length < 2) return;
+
+            let index = 0;
+            let timer = null;
+
+            function showSlide(nextIndex) {
+                index = ((nextIndex % slides.length) + slides.length) % slides.length;
+                slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
+                dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+            }
+
+            function restartTimer() {
+                if (timer) clearInterval(timer);
+                timer = setInterval(() => showSlide(index + 1), 4500);
+            }
+
+            dots.forEach((dot) => {
+                dot.addEventListener('click', () => {
+                    showSlide(Number(dot.getAttribute('data-about-nurseries-dot') || 0));
+                    restartTimer();
+                });
+            });
+
+            showSlide(0);
+            restartTimer();
+        })();
+    </script>
 </body>
 
 </html>

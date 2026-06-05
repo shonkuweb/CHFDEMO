@@ -66,10 +66,31 @@ html:not(.cms-ready) #mobile-sidebar [data-cms] {
     transition: transform 1.5s var(--ease-out-expo), filter 0.8s var(--ease-out-expo);
 }
 
-.premium-hover-img:hover img,
-.premium-hover-img:hover .wireframe-cross {
+.portfolio-page .premium-hover-img:hover img,
+.portfolio-page .premium-hover-img:hover .wireframe-cross {
     transform: scale(1.08);
     filter: brightness(1.1);
+}
+
+body:not(.portfolio-page) .premium-hover-img:hover img,
+body:not(.portfolio-page) .premium-hover-img:hover .wireframe-cross {
+    transform: none !important;
+    filter: none !important;
+}
+
+/* Disable image hover zoom site-wide; portfolio keeps its carousel zoom. */
+body:not(.portfolio-page) img:hover,
+body:not(.portfolio-page) video:hover,
+body:not(.portfolio-page) iframe:hover,
+body:not(.portfolio-page) .group:hover img,
+body:not(.portfolio-page) .group:hover video,
+body:not(.portfolio-page) .group:hover iframe,
+body:not(.portfolio-page) .group:hover [data-cms*="image"],
+body:not(.portfolio-page) .about-founding-era-media:hover img,
+body:not(.portfolio-page) .hover\:scale-105:hover,
+body:not(.portfolio-page) .group:hover .group-hover\:scale-105,
+body:not(.portfolio-page) .group:hover .group-hover\:scale-110 {
+    transform: none !important;
 }
 
 /* Service Card Enhancement */

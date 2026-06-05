@@ -122,6 +122,8 @@ def fetch_site_content(prefix):
         data.update(FIXED_ARCH_MEDIA)
     if prefix == "plant-center":
         data.update(FIXED_PLANT_CENTER_MEDIA)
+    if prefix == "about":
+        data.update(FIXED_ABOUT_MEDIA)
     return data
 
 def clear_cache():
@@ -189,10 +191,95 @@ FIXED_HOME_STAGING_MEDIA = {
         "type": "media",
     },
 }
-ASSETS_CACHE_VERSION = "chf-closing-1"
+ASSETS_CACHE_VERSION = "chf-no-img-zoom-1"
 PEC_IMAGE_BASE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20experience%20center"
 PEC_HERO_IMAGE = f"{PEC_IMAGE_BASE}/9BF51B5D-7851-4D44-BF1D-F2B521F61DB2%20(1).png"
 PEC_PHILOSOPHY_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_bcec5110.png?t=1780033476946"
+ABOUT_FOUNDING_ERA_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/media_9c903182.png?t=1780222282232"
+ABOUT_FOUNDING_ERA_COPY = (
+    "Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise, "
+    "and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with "
+    "a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in "
+    "landscape development and pioneering tree transplantation in the city."
+)
+ABOUT_DESIGN_PHILOSOPHY_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/design-philosophy-1d66f8f2.png"
+ABOUT_DESIGN_PHILOSOPHY_COPY = (
+    "Our work is guided by an intrinsic understanding of plants—ensuring every space is thoughtfully "
+    "designed, where aesthetics and ecology come together seamlessly. From bespoke residential landscapes "
+    "to large-scale corporate environments, each project is created to thrive and evolve over time."
+)
+ABOUT_LEGACY_FORWARD_IMAGE = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/carrying-legacy-forward-dde8988b.png"
+ABOUT_LEGACY_FORWARD_TITLE = "Carrying the Legacy Forward"
+ABOUT_LEGACY_FORWARD_COPY = (
+    "Today, the legacy is carried forward by Indra Bose and Apurba Bose, expanding the practice into "
+    "contemporary formats while staying rooted in its core philosophy. Alongside design and consulting, "
+    "we offer curated plant solutions, gardening essentials, and a diverse range of products tailored "
+    "for modern green living."
+)
+ABOUT_NURSERIES_IMAGE_1 = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-1-25c9a8f0.png"
+ABOUT_NURSERIES_IMAGE_2 = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-2-6ff91b68.png"
+ABOUT_NURSERIES_TITLE = "Our Nurseries"
+ABOUT_NURSERIES_COPY = (
+    "With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, "
+    "we house a rich collection of indoor, outdoor and exotic plants, along with bonsais, topiaries "
+    "and an extensive selection of pots and planters. Our plant experience centre in Alipore further "
+    "brings this vision to life—an immersive space where clients can explore, interact, and engage "
+    "with plants in thoughtfully curated settings."
+)
+FIXED_ABOUT_MEDIA = {
+    "about/story/image-1": {
+        "value": ABOUT_FOUNDING_ERA_IMAGE,
+        "type": "media",
+    },
+    "about/story/title-1": {
+        "value": "The Founding Era (1982)",
+        "type": "text",
+    },
+    "about/philosophy/patience-title": {
+        "value": ABOUT_FOUNDING_ERA_COPY,
+        "type": "longtext",
+    },
+    "about/story/image-2": {
+        "value": ABOUT_DESIGN_PHILOSOPHY_IMAGE,
+        "type": "media",
+    },
+    "about/story/title-2": {
+        "value": "Design Philosophy",
+        "type": "text",
+    },
+    "about/philosophy/precision-title": {
+        "value": ABOUT_DESIGN_PHILOSOPHY_COPY,
+        "type": "longtext",
+    },
+    "about/story/image-3": {
+        "value": ABOUT_LEGACY_FORWARD_IMAGE,
+        "type": "media",
+    },
+    "about/philosophy/presence-title": {
+        "value": ABOUT_LEGACY_FORWARD_TITLE,
+        "type": "text",
+    },
+    "about/philosophy/presence-body": {
+        "value": ABOUT_LEGACY_FORWARD_COPY,
+        "type": "longtext",
+    },
+    "about/nurseries/title": {
+        "value": ABOUT_NURSERIES_TITLE,
+        "type": "text",
+    },
+    "about/nurseries/body": {
+        "value": ABOUT_NURSERIES_COPY,
+        "type": "longtext",
+    },
+    "about/nurseries/image-1": {
+        "value": ABOUT_NURSERIES_IMAGE_1,
+        "type": "media",
+    },
+    "about/nurseries/image-2": {
+        "value": ABOUT_NURSERIES_IMAGE_2,
+        "type": "media",
+    },
+}
 FIXED_PLANT_CENTER_COLLECT_MEDIA = {
     "plant-center/collect/plants/image": {
         "value": f"{PEC_IMAGE_BASE}/WhatsApp%20Image%202026-06-03%20at%202.29.19%20AM.jpeg",
@@ -275,7 +362,15 @@ PROTECTED_SITE_CONTENT_PATHS = (
     | set(FIXED_HOME_STAGING_MEDIA)
     | set(FIXED_ARCH_MEDIA)
     | set(FIXED_PLANT_CENTER_MEDIA)
+    | set(FIXED_ABOUT_MEDIA)
 )
+ADMIN_LOCKED_CONTENT_PREFIXES = ("about",)
+
+
+def is_admin_locked_content_path(path: str) -> bool:
+    if not isinstance(path, str):
+        return False
+    return any(path == prefix or path.startswith(f"{prefix}/") for prefix in ADMIN_LOCKED_CONTENT_PREFIXES)
 
 SITE_CONTENT_DEFAULTS = {
     "home/hero/image": {
@@ -416,6 +511,58 @@ SITE_CONTENT_DEFAULTS = {
     },
     "plant-center/collect/garden-objects/image": {
         "value": FIXED_PLANT_CENTER_COLLECT_MEDIA["plant-center/collect/garden-objects/image"]["value"],
+        "type": "media",
+    },
+    "about/story/image-1": {
+        "value": ABOUT_FOUNDING_ERA_IMAGE,
+        "type": "media",
+    },
+    "about/story/title-1": {
+        "value": "The Founding Era (1982)",
+        "type": "text",
+    },
+    "about/philosophy/patience-title": {
+        "value": ABOUT_FOUNDING_ERA_COPY,
+        "type": "longtext",
+    },
+    "about/story/image-2": {
+        "value": ABOUT_DESIGN_PHILOSOPHY_IMAGE,
+        "type": "media",
+    },
+    "about/story/title-2": {
+        "value": "Design Philosophy",
+        "type": "text",
+    },
+    "about/philosophy/precision-title": {
+        "value": ABOUT_DESIGN_PHILOSOPHY_COPY,
+        "type": "longtext",
+    },
+    "about/story/image-3": {
+        "value": ABOUT_LEGACY_FORWARD_IMAGE,
+        "type": "media",
+    },
+    "about/philosophy/presence-title": {
+        "value": ABOUT_LEGACY_FORWARD_TITLE,
+        "type": "text",
+    },
+    "about/philosophy/presence-body": {
+        "value": ABOUT_LEGACY_FORWARD_COPY,
+        "type": "longtext",
+    },
+    "about/nurseries/title": {
+        "value": ABOUT_NURSERIES_TITLE,
+        "type": "text",
+    },
+    "about/nurseries/body": {
+        "value": ABOUT_NURSERIES_COPY,
+        "type": "longtext",
+    },
+    "about/nurseries/image-1": {
+        "value": ABOUT_NURSERIES_IMAGE_1,
+        "type": "media",
+    },
+    "about/nurseries/image-2": {
+        "value": ABOUT_NURSERIES_IMAGE_2,
         "type": "media",
     },
     "arch/block1/body": {
@@ -1527,7 +1674,7 @@ async def save_site_content(request: Request, admin: str = Depends(get_current_a
     updates = {
         path: data
         for path, data in updates.items()
-        if path not in PROTECTED_SITE_CONTENT_PATHS
+        if path not in PROTECTED_SITE_CONTENT_PATHS and not is_admin_locked_content_path(path)
     }
 
     # Determine which page prefixes are being edited in this save payload.
@@ -1536,7 +1683,9 @@ async def save_site_content(request: Request, admin: str = Depends(get_current_a
     for path in updates.keys():
         if not isinstance(path, str) or "/" not in path:
             continue
-        edited_prefixes.add(path.split("/", 1)[0])
+        prefix = path.split("/", 1)[0]
+        if prefix not in ADMIN_LOCKED_CONTENT_PREFIXES:
+            edited_prefixes.add(prefix)
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -1559,7 +1708,7 @@ async def save_site_content(request: Request, admin: str = Depends(get_current_a
             INSERT OR REPLACE INTO site_content (path, value, type)
             VALUES (?, ?, ?)
         ''', (path, data.get('value'), data.get('type')))
-    for path, data in {**FIXED_HOME_HERO_MEDIA, **FIXED_HOME_STAGING_MEDIA}.items():
+    for path, data in {**FIXED_HOME_HERO_MEDIA, **FIXED_HOME_STAGING_MEDIA, **FIXED_ABOUT_MEDIA}.items():
         cursor.execute('''
             INSERT OR REPLACE INTO site_content (path, value, type)
             VALUES (?, ?, ?)

@@ -40,7 +40,7 @@
     </style>
     
     <!-- Premium Animations -->
-    <link rel="stylesheet" href="assets/animations.css?v=chf-closing-1">
+    <link rel="stylesheet" href="assets/animations.css?v=chf-no-img-zoom-1">
     <script src="assets/animation-core.js" defer></script>
 </head>
 <body class="min-h-screen flex text-sm">
@@ -85,11 +85,6 @@
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
                                 currentSelection === 'home' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
                                 Home Page
-                            </button>
-                            <button @click="loadPageContent('about')" 
-                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all', 
-                                currentSelection === 'about' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
-                                About Page
                             </button>
                         </div>
                         </div>
@@ -782,7 +777,6 @@
                     }
                     if (currentSelection.value === 'global') return 'Global Settings';
                     if (currentSelection.value === 'home') return 'Home Page Content';
-                    if (currentSelection.value === 'about') return 'About Page Content';
                     if (currentSelection.value === 'landscaping-design') return 'Landscaping Design & Development';
                     if (currentSelection.value === 'landscape-staging') return 'Landscape Staging';
                     if (currentSelection.value === 'plant-supply') return 'Plant Supply';
@@ -1047,6 +1041,10 @@
                 };
 
                 const loadPageContent = async (page) => {
+                    if (page === 'about') {
+                        showToast('About Us is hardcoded in the site code and cannot be edited from admin.', 'error');
+                        return;
+                    }
                     sidebarOpen.value = false;
                     viewMode.value = 'site-content';
                     currentSelection.value = page;
