@@ -873,6 +873,31 @@ def migrate_legacy_site_content_keys():
         ("curated-planters", "curated-plants")
     )
 
+    cur.execute(
+        "SELECT path, value, type FROM site_content WHERE path LIKE 'curated-planters/block%/image'"
+    )
+    for row in cur.fetchall():
+        match = re.match(r"^curated-planters/block(\d+)/image$", row["path"])
+        if not match:
+            continue
+        idx = match.group(1)
+        image1_path = f"curated-planters/block{idx}/image1"
+        cur.execute("SELECT value FROM site_content WHERE path = ?", (image1_path,))
+        image1_row = cur.fetchone()
+        if not image1_row or not str(image1_row["value"] or "").strip():
+            cur.execute(
+                "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
+                (image1_path, row["value"], row["type"] or "media"),
+            )
+        for suffix, field_type in (("image2", "media"), ("image3", "media"), ("highlights", "longtext")):
+            field_path = f"curated-planters/block{idx}/{suffix}"
+            cur.execute("SELECT 1 FROM site_content WHERE path = ?", (field_path,))
+            if cur.fetchone() is None:
+                cur.execute(
+                    "INSERT INTO site_content (path, value, type) VALUES (?, ?, ?)",
+                    (field_path, "", field_type),
+                )
+
     # The homepage Landscape Staging image slots intentionally start blank.
     # Clear only the earlier built-in defaults; preserve any custom URLs added later.
     stale_staging_images = {

@@ -21,6 +21,7 @@
         .toast-enter-from { opacity: 0; transform: translateY(20px); }
         .toast-leave-to { opacity: 0; transform: translateY(-20px); }
         .glass-surface { background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.08); }
+        .cp-admin-slide-slot { width: 6.25rem; flex-shrink: 0; }
     </style>
     
     <!-- Premium Animations -->
@@ -361,7 +362,7 @@
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
                                 <h3 class="text-[10px] uppercase tracking-widest text-accent-bronze font-bold">{{ structuredBlocksHeading }}</h3>
-                                <p class="text-xs text-gray-500 mt-2">Add or remove the same block structure used in the collection page body.</p>
+                                <p class="text-xs text-gray-500 mt-2">{{ structuredBlocksDescription }}</p>
                             </div>
                             <button @click="addStructuredBlock(currentSelection)" class="text-[10px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/40 px-4 py-2 hover:bg-accent-bronze/5 transition-colors w-fit">
                                 Add New Block
@@ -376,6 +377,54 @@
                             >
                                 Remove Block {{ idx }}
                             </button>
+                        </div>
+                    </section>
+
+                    <section v-if="currentSelection === 'curated-planters'" class="space-y-8">
+                        <div
+                            v-for="block in curatedPlantersBlocksForAdmin"
+                            :key="'curated-planters-block-' + block.idx"
+                            class="bg-surface-dark border border-white/5 rounded p-8 space-y-6"
+                        >
+                            <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                                <span class="font-serif text-xl italic text-accent-bronze">Collection Block {{ block.idx }}</span>
+                                <span class="text-[9px] uppercase tracking-widest text-gray-600">9:16 Slideshow</span>
+                            </div>
+
+                            <div class="flex flex-wrap items-start gap-5">
+                                <div v-for="imageField in block.imageFields" :key="imageField.path" class="cp-admin-slide-slot space-y-2">
+                                    <label class="block text-[9px] uppercase tracking-widest text-gray-500">{{ imageField.label }}</label>
+                                    <div
+                                        @dragover.prevent="dragover = imageField.path"
+                                        @dragleave.prevent="dragover = null"
+                                        @drop.prevent="handleGenericDrop($event, imageField.path)"
+                                        @click="triggerGenericUpload(imageField.path)"
+                                        :class="['upload-zone relative aspect-[9/16] bg-black rounded overflow-hidden cursor-pointer', dragover === imageField.path ? 'dragover' : 'border-white/10']"
+                                    >
+                                        <img v-if="imageField.content.value" :src="imageField.content.value" class="absolute inset-0 w-full h-full object-contain" decoding="async" loading="lazy" fetchpriority="low">
+                                        <div v-else class="absolute inset-0 flex items-center justify-center text-center px-2 text-[8px] uppercase tracking-widest text-gray-600 leading-tight">Upload</div>
+                                    </div>
+                                    <button @click="triggerGenericUpload(imageField.path)" class="w-full text-[9px] uppercase tracking-widest text-accent-bronze border border-accent-bronze/30 px-2 py-1.5 hover:bg-accent-bronze/5 transition-colors">Upload</button>
+                                    <input v-model="imageField.content.value" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-2 py-1 text-[10px] text-white transition-colors" placeholder="URL">
+                                    <input type="file" :id="'file_' + imageField.path.replace(/\//g, '_')" class="hidden" @change="handleGenericFileSelect($event, imageField.path)" accept="image/*">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-5">
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-2">Collection Name</label>
+                                    <input v-model="block.title.value" @input="enforceTextLimit(block.title)" :maxlength="TEXT_LIMITS.text" type="text" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors" placeholder="Collection name">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-2">Body</label>
+                                    <textarea v-model="block.body.value" @input="enforceTextLimit(block.body)" :maxlength="TEXT_LIMITS.longtext" rows="5" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none" placeholder="Collection description"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-2">Collection Highlights</label>
+                                    <textarea v-model="block.highlights.value" @input="enforceTextLimit(block.highlights)" :maxlength="TEXT_LIMITS.longtext" rows="5" class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-white transition-colors resize-none" placeholder="Material &amp; Finish: Hand-finished ceramic surfaces&#10;Design Language: Sculptural forms with quiet restraint"></textarea>
+                                    <p class="mt-2 text-[10px] text-gray-500">One highlight per line. Use <span class="text-accent-bronze/80">Label: description</span> to beautifully emphasize each point.</p>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -671,6 +720,7 @@
                     'home/hero/image',
                     'home/hero/mobile_media'
                 ];
+                const CURATED_PLANTERS_BLOCK_PATH_RE = /^curated-planters\/block\d+\//;
                 const MEDIA_LIMIT_NOTE = 'Accepted: JPG, PNG, WEBP, GIF, MP4, WEBM, MOV (max 80MB). Recommended image: 1920x1080 or 1200x1500.';
                 const currentSelection = ref(null); // id of page or collection
                 const viewMode = ref(null); // 'collections' or 'site-content'
@@ -751,6 +801,12 @@
                 const structuredBlocksHeading = computed(() => (
                     structuredBlocksPageTitles[currentSelection.value] || 'Repeatable Blocks'
                 ));
+                const structuredBlocksDescription = computed(() => {
+                    if (currentSelection.value === 'curated-planters') {
+                        return 'Each block supports 3 portrait images in a looping slideshow, plus collection name, body, and highlights.';
+                    }
+                    return 'Add or remove the same block structure used in the collection page body.';
+                });
 
                 const sortedSiteEntries = computed(() => {
                     const entries = Object.entries(currentSiteData.value || {});
@@ -759,7 +815,8 @@
                 const filteredSiteEntries = computed(() => (
                     sortedSiteEntries.value.filter(([path]) => (
                         !HOME_TRENDS_CARD_PATHS.includes(path) &&
-                        !LOCKED_SITE_CONTENT_PATHS.includes(path)
+                        !LOCKED_SITE_CONTENT_PATHS.includes(path) &&
+                        !CURATED_PLANTERS_BLOCK_PATH_RE.test(path)
                     ))
                 ));
                 const homeTrendCardsForAdmin = computed(() => {
@@ -774,6 +831,56 @@
                             image: currentSiteData.value[`${base}/image`] || { value: '', type: 'media' },
                             title: currentSiteData.value[`${base}/title`] || { value: '', type: 'text' },
                             body: currentSiteData.value[`${base}/body`] || { value: '', type: 'longtext' }
+                        };
+                    });
+                });
+
+                const getSiteContentField = (path, type, fallback = '') => {
+                    if (!currentSiteData.value[path]) {
+                        currentSiteData.value[path] = { value: fallback, type };
+                    }
+                    return currentSiteData.value[path];
+                };
+
+                const getCuratedPlantersBlockIndices = () => {
+                    const data = currentSiteData.value || {};
+                    const seen = new Set();
+                    const re = /^curated-planters\/block(\d+)\/(image1|image2|image3|image|title|body|highlights)$/;
+                    Object.keys(data).forEach((path) => {
+                        const match = path.match(re);
+                        if (match) seen.add(Number(match[1]));
+                    });
+                    return Array.from(seen).sort((a, b) => a - b);
+                };
+
+                const curatedPlantersBlocksForAdmin = computed(() => {
+                    if (currentSelection.value !== 'curated-planters' || !currentSiteData.value) return [];
+                    return getCuratedPlantersBlockIndices().map((idx) => {
+                        const image1 = getSiteContentField(`curated-planters/block${idx}/image1`, 'media');
+                        const legacyImage = getSiteContentField(`curated-planters/block${idx}/image`, 'media');
+                        if (!image1.value && legacyImage.value) image1.value = legacyImage.value;
+                        return {
+                            idx,
+                            title: getSiteContentField(`curated-planters/block${idx}/title`, 'text', `Collection ${idx}`),
+                            body: getSiteContentField(`curated-planters/block${idx}/body`, 'longtext'),
+                            highlights: getSiteContentField(`curated-planters/block${idx}/highlights`, 'longtext'),
+                            imageFields: [
+                                {
+                                    label: 'Slide 1',
+                                    path: `curated-planters/block${idx}/image1`,
+                                    content: image1
+                                },
+                                {
+                                    label: 'Slide 2',
+                                    path: `curated-planters/block${idx}/image2`,
+                                    content: getSiteContentField(`curated-planters/block${idx}/image2`, 'media')
+                                },
+                                {
+                                    label: 'Slide 3',
+                                    path: `curated-planters/block${idx}/image3`,
+                                    content: getSiteContentField(`curated-planters/block${idx}/image3`, 'media')
+                                }
+                            ]
                         };
                     });
                 });
@@ -825,6 +932,7 @@
                 };
 
                 const getStructuredBlockIndices = (prefix) => {
+                    if (prefix === 'curated-planters') return getCuratedPlantersBlockIndices();
                     const data = currentSiteData.value || {};
                     const seen = new Set();
                     const re = new RegExp(`^${prefix}\\/block(\\d+)\\/(image|title|body)$`);
@@ -835,10 +943,42 @@
                     return Array.from(seen).sort((a, b) => a - b);
                 };
 
+                const addCuratedPlantersBlock = (nextIndex) => {
+                    currentSiteData.value[`curated-planters/block${nextIndex}/image1`] = { value: '', type: 'media' };
+                    currentSiteData.value[`curated-planters/block${nextIndex}/image2`] = { value: '', type: 'media' };
+                    currentSiteData.value[`curated-planters/block${nextIndex}/image3`] = { value: '', type: 'media' };
+                    currentSiteData.value[`curated-planters/block${nextIndex}/title`] = {
+                        value: `Collection ${nextIndex}`,
+                        type: 'text'
+                    };
+                    currentSiteData.value[`curated-planters/block${nextIndex}/body`] = {
+                        value: '',
+                        type: 'longtext'
+                    };
+                    currentSiteData.value[`curated-planters/block${nextIndex}/highlights`] = {
+                        value: '',
+                        type: 'longtext'
+                    };
+                };
+
+                const removeCuratedPlantersBlock = (idx) => {
+                    [
+                        'image', 'image1', 'image2', 'image3',
+                        'title', 'body', 'highlights'
+                    ].forEach((field) => {
+                        delete currentSiteData.value[`curated-planters/block${idx}/${field}`];
+                    });
+                };
+
                 const addStructuredBlock = (prefix) => {
                     if (!currentSiteData.value) return;
                     const existing = getStructuredBlockIndices(prefix);
                     const nextIndex = existing.length ? Math.max(...existing) + 1 : 1;
+                    if (prefix === 'curated-planters') {
+                        addCuratedPlantersBlock(nextIndex);
+                        showToast(`Collection block ${nextIndex} added. Save changes to publish.`);
+                        return;
+                    }
                     currentSiteData.value[`${prefix}/block${nextIndex}/image`] = {
                         value: '',
                         type: 'media'
@@ -857,6 +997,11 @@
                 const removeStructuredBlock = (prefix, idx) => {
                     if (!currentSiteData.value) return;
                     if (!confirm(`Remove Block ${idx}?`)) return;
+                    if (prefix === 'curated-planters') {
+                        removeCuratedPlantersBlock(idx);
+                        showToast(`Block ${idx} removed. Save changes to publish.`);
+                        return;
+                    }
                     delete currentSiteData.value[`${prefix}/block${idx}/image`];
                     delete currentSiteData.value[`${prefix}/block${idx}/title`];
                     delete currentSiteData.value[`${prefix}/block${idx}/body`];
@@ -1270,10 +1415,12 @@
                     sortedSiteEntries,
                     filteredSiteEntries,
                     homeTrendCardsForAdmin,
+                    curatedPlantersBlocksForAdmin,
                     selectionDisplay,
                     selectionSubtext,
                     isStructuredBlocksPage,
                     structuredBlocksHeading,
+                    structuredBlocksDescription,
                     loading,
                     saving,
                     changingPassword,
