@@ -39,13 +39,16 @@
 
         .about-founding-era {
             width: 100%;
-            max-width: 100%;
             margin: 0 auto;
+            display: flex;
+            justify-content: center;
         }
 
         .about-founding-era-stage {
             position: relative;
             width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
         }
 
         .about-founding-era-media {
@@ -54,6 +57,7 @@
             overflow: hidden;
             border: none;
             line-height: 0;
+            margin: 0 auto;
         }
 
         .about-founding-era-media img {
@@ -61,8 +65,21 @@
             width: 100%;
             height: auto;
             max-width: 100%;
+            margin: 0 auto;
             object-fit: contain;
             object-position: center;
+        }
+
+        @media (min-width: 768px) {
+            .about-founding-era-stage {
+                max-width: min(90%, 52rem);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .about-founding-era-stage {
+                max-width: min(85%, 50rem);
+            }
         }
 
         .about-founding-era-copy {
