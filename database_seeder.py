@@ -128,7 +128,7 @@ seeds = {
     "indoor/block4/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/arch_zigzag_4.png", "type": "media"},
 
     # ── Curated Planters ──
-    "curated-planters/hero/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/curated-planters/74AE6CC1-6D23-466A-BF14-8217B4A948A6.png", "type": "media"},
+    "curated-planters/hero/image": {"value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/curated-planters/hero-b3d289de.png", "type": "media"},
     "curated-planters/block1/title": {"value": "The Heritage Planter Collection", "type": "text"},
     "curated-planters/block1/body": {"value": "Material & Finish: Hand-finished ceramic and stone surfaces chosen for depth, texture and longevity.\n\nDesign Language: Forms that balance sculptural presence with quiet architectural restraint.\n\nPlant Compatibility: Sized and shaped for indoor specimens, statement palms and curated botanical pairings.\n\nSpatial Aesthetic: Collections composed to integrate seamlessly into residential, hospitality and commercial interiors.", "type": "longtext"},
     "curated-planters/block1/highlights": {"value": "Material & Finish: Heritage glazes and stone surfaces chosen for depth and longevity\nDesign Language: Sculptural forms with quiet architectural restraint\nPlant Compatibility: Sized for statement palms and curated botanical pairings", "type": "longtext"},

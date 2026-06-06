@@ -23,9 +23,9 @@
         }
 
         .cp-hero {
-            --cp-gold: #b8956a;
+            --cp-gold: #c5a059;
             --cp-ivory: #eee9df;
-            --cp-muted: rgba(238, 233, 223, 0.72);
+            --cp-muted: rgba(255, 255, 255, 0.82);
             position: relative;
             margin-bottom: clamp(3rem, 6vw, 5rem);
         }
@@ -52,6 +52,10 @@
             object-position: center;
         }
 
+        .cp-hero-media .cp-fit-image {
+            filter: brightness(1.14) saturate(1.03);
+        }
+
         .cp-fit-image:not([src]),
         .cp-fit-image[src=""] {
             display: none;
@@ -63,8 +67,8 @@
             z-index: 1;
             pointer-events: none;
             background:
-                linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.42) 42%, rgba(0, 0, 0, 0.12) 68%, transparent 100%),
-                linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, transparent 45%);
+                linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.34) 42%, rgba(0, 0, 0, 0.08) 68%, transparent 100%),
+                linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, transparent 45%);
         }
 
         .cp-hero-inner {
@@ -73,80 +77,119 @@
             z-index: 2;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-end;
             align-items: flex-start;
             width: 100%;
             max-width: 80rem;
             margin: 0 auto;
-            padding: clamp(2.5rem, 6vh, 4rem) clamp(1.35rem, 5vw, 5rem);
+            padding: clamp(2.5rem, 6vh, 4rem) clamp(1.35rem, 5vw, 5rem) clamp(4.25rem, 10vh, 6.75rem);
             pointer-events: none;
         }
 
-        .cp-hero-eyebrow {
+        .cp-hero-copy {
             display: flex;
-            align-items: center;
-            gap: clamp(0.75rem, 2vw, 1.25rem);
-            margin: 0 0 clamp(1rem, 2vw, 1.35rem);
-            font-size: clamp(0.55rem, 0.85vw, 0.62rem);
-            font-weight: 700;
-            letter-spacing: 0.32em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.88);
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 30rem;
         }
 
-        .cp-hero-eyebrow-line {
-            width: clamp(2rem, 5vw, 3.5rem);
+        .cp-hero-heading {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            margin: 0 0 clamp(1rem, 2vw, 1.25rem);
+        }
+
+        .cp-hero-eyebrow {
+            margin: 0 0 clamp(0.55rem, 1vw, 0.7rem);
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(0.5625rem, 0.72vw, 0.625rem);
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .cp-hero-rule {
+            display: block;
+            width: clamp(3.25rem, 11vw, 5rem);
             height: 1px;
-            background: rgba(184, 149, 106, 0.8);
+            background: rgba(197, 160, 89, 0.9);
+            border: 0;
+            margin: 0;
+        }
+
+        .cp-hero-rule--after-eyebrow {
+            margin-bottom: clamp(0.65rem, 1.2vw, 0.85rem);
         }
 
         .cp-hero-title {
-            margin: 0 0 clamp(1rem, 2vw, 1.35rem);
-            max-width: 14ch;
+            margin: 0 0 clamp(0.65rem, 1.2vw, 0.85rem);
+            max-width: 11em;
             font-family: "Noto Serif", serif;
-            font-size: clamp(2.15rem, 4.5vw, 3.75rem);
-            font-weight: 300;
-            line-height: 1.08;
-            letter-spacing: -0.03em;
-            color: var(--cp-ivory);
-            text-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+            font-size: clamp(2.35rem, 4.8vw, 4.125rem);
+            font-weight: 400;
+            line-height: 1.02;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+
+        .cp-hero-rule--after-title {
+            margin-bottom: 0;
         }
 
         .cp-hero-body {
-            margin: 0 0 clamp(1.35rem, 2.5vw, 1.85rem);
-            max-width: 34rem;
-            color: var(--cp-muted);
-            font-size: clamp(0.82rem, 1vw, 0.96rem);
+            margin: 0 0 clamp(1.65rem, 3vw, 2.1rem);
+            max-width: 28rem;
+            color: rgba(255, 255, 255, 0.84);
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(1rem, 1.08vw, 1.125rem);
             font-weight: 300;
-            line-height: 1.78;
+            line-height: 1.62;
         }
 
         .cp-hero-features {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: clamp(0.75rem, 2vw, 1.5rem);
-            max-width: 38rem;
-            margin: 0 0 clamp(1.5rem, 3vw, 2rem);
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: flex-start;
+            gap: clamp(1rem, 2vw, 1.35rem);
+            width: 100%;
+            max-width: 28rem;
+            margin: 0 0 clamp(1.65rem, 3vw, 2.1rem);
         }
 
         .cp-hero-feature {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.65rem;
-            padding-right: clamp(0.75rem, 2vw, 1.25rem);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .cp-hero-feature:last-child {
-            border-right: 0;
-            padding-right: 0;
+            flex-direction: row;
+            align-items: center;
+            flex: 0 0 auto;
+            gap: clamp(0.4rem, 0.65vw, 0.5rem);
+            padding: 0;
+            border: 0;
         }
 
         .cp-hero-feature-icon {
-            width: clamp(1.75rem, 3vw, 2.25rem);
-            height: clamp(1.75rem, 3vw, 2.25rem);
+            flex-shrink: 0;
+            width: clamp(1.65rem, 2.1vw, 1.85rem);
+            height: clamp(1.65rem, 2.1vw, 1.85rem);
             color: var(--cp-gold);
+        }
+
+        .cp-hero-feature-icon--handpicked,
+        .cp-hero-feature-icon--premium,
+        .cp-hero-feature-icon--designed {
+            width: clamp(1.65rem, 2.1vw, 1.85rem);
+            height: clamp(1.65rem, 2.1vw, 1.85rem);
+        }
+
+        .cp-hero-feature-icon .cp-hero-feature-icon-img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .cp-hero-feature-icon svg {
@@ -156,34 +199,43 @@
         }
 
         .cp-hero-feature-label {
+            display: flex;
+            flex-direction: column;
             margin: 0;
-            font-size: clamp(0.58rem, 0.85vw, 0.68rem);
-            font-weight: 700;
-            letter-spacing: 0.12em;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(0.625rem, 0.72vw, 0.6875rem);
+            font-weight: 600;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            line-height: 1.35;
-            color: rgba(255, 255, 255, 0.92);
+            line-height: 1.32;
+            color: #ffffff;
         }
 
         .cp-hero-visit {
             pointer-events: auto;
             display: inline-flex;
             align-items: center;
-            gap: 0.65rem;
-            padding: 0.85rem 1.35rem;
-            border: 1px solid rgba(238, 233, 223, 0.38);
-            color: var(--cp-ivory);
+            justify-content: center;
+            gap: 0.7rem;
+            min-height: 3rem;
+            padding: 0.875rem 1.5rem;
+            border: 1px solid var(--cp-gold);
+            color: #ffffff;
             background: transparent;
-            font-size: clamp(0.55rem, 0.85vw, 0.62rem);
-            font-weight: 700;
-            letter-spacing: 0.18em;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(0.625rem, 0.72vw, 0.6875rem);
+            font-weight: 600;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
-            transition: border-color 0.3s ease, color 0.3s ease;
+            line-height: 1.35;
+            text-align: left;
+            transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
         }
 
         .cp-hero-visit:hover {
-            border-color: var(--cp-gold);
-            color: var(--cp-gold);
+            border-color: #d4b06a;
+            color: #ffffff;
+            background: rgba(197, 160, 89, 0.08);
         }
 
         .cp-hero-visit svg {
@@ -194,36 +246,58 @@
 
         @media (max-width: 767px) {
             .cp-hero-inner {
-                justify-content: flex-end;
-                padding-bottom: 2rem;
+                padding-bottom: 2.75rem;
+            }
+
+            .cp-hero-copy {
+                max-width: 100%;
             }
 
             .cp-hero-title {
                 max-width: 100%;
-                font-size: clamp(1.85rem, 8vw, 2.5rem);
+                font-size: clamp(1.95rem, 8vw, 2.65rem);
+                line-height: 1.04;
+            }
+
+            .cp-hero-rule {
+                width: clamp(2.75rem, 18vw, 4rem);
             }
 
             .cp-hero-body {
                 max-width: 100%;
+                font-size: 0.975rem;
+                line-height: 1.58;
             }
 
             .cp-hero-features {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 0.85rem 1rem;
                 max-width: 100%;
             }
 
             .cp-hero-feature {
-                flex-direction: row;
-                align-items: center;
-                gap: 0.85rem;
-                padding-right: 0;
-                border-right: 0;
+                flex: 0 1 auto;
             }
 
-            .cp-hero-feature-icon {
-                width: 1.5rem;
-                height: 1.5rem;
+            .cp-hero-feature-icon,
+            .cp-hero-feature-icon--handpicked,
+            .cp-hero-feature-icon--premium,
+            .cp-hero-feature-icon--designed {
+                width: 1.55rem;
+                height: 1.55rem;
+            }
+
+            .cp-hero-feature-label {
+                font-size: 0.575rem;
+                letter-spacing: 0.09em;
+                line-height: 1.3;
+            }
+
+            .cp-hero-visit {
+                min-height: 2.75rem;
+                padding: 0.8rem 1.25rem;
+                font-size: 0.6rem;
             }
         }
 
@@ -560,7 +634,7 @@
                     <div class="cp-hero-media">
                         <img
                             class="cp-fit-image"
-                            src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/curated-planters/74AE6CC1-6D23-466A-BF14-8217B4A948A6.png"
+                            src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/curated-planters/hero-b3d289de.png"
                             alt="CHF curated planters showroom"
                             decoding="async"
                             loading="eager"
@@ -568,31 +642,53 @@
                     </div>
                     <div class="cp-hero-overlay" aria-hidden="true"></div>
                     <div class="cp-hero-inner">
-                        <p class="cp-hero-eyebrow">
-                            <span class="cp-hero-eyebrow-line" aria-hidden="true"></span>
-                            Curated Planters
-                            <span class="cp-hero-eyebrow-line" aria-hidden="true"></span>
-                        </p>
-                        <h1 class="cp-hero-title">Curated Planters for Every Space</h1>
+                        <div class="cp-hero-copy">
+                        <div class="cp-hero-heading">
+                            <p class="cp-hero-eyebrow">Curated Planters</p>
+                            <span class="cp-hero-rule cp-hero-rule--after-eyebrow" aria-hidden="true"></span>
+                            <h1 class="cp-hero-title">Curated Planters<br>for Every Space</h1>
+                            <span class="cp-hero-rule cp-hero-rule--after-title" aria-hidden="true"></span>
+                        </div>
                         <p class="cp-hero-body">Handpicked collections of ceramic, stone and designer planters chosen for timeless aesthetics, durability and seamless integration into any space.</p>
                         <div class="cp-hero-features">
                             <div class="cp-hero-feature">
-                                <div class="cp-hero-feature-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 15V9"/><path d="M9 12c0-3 1.5-5 3-5s3 2 3 5"/><path d="M8 16c2 2 8 2 8 0"/></svg>
+                                <div class="cp-hero-feature-icon cp-hero-feature-icon--handpicked" aria-hidden="true">
+                                    <img
+                                        class="cp-hero-feature-icon-img"
+                                        src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/curated-planters/icon-handpicked-8d456142.png"
+                                        alt=""
+                                        width="30"
+                                        height="30"
+                                        decoding="async"
+                                        loading="lazy">
                                 </div>
-                                <p class="cp-hero-feature-label">Handpicked Collections</p>
+                                <p class="cp-hero-feature-label"><span>Handpicked</span><span>Collections</span></p>
                             </div>
                             <div class="cp-hero-feature">
-                                <div class="cp-hero-feature-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+                                <div class="cp-hero-feature-icon cp-hero-feature-icon--premium" aria-hidden="true">
+                                    <img
+                                        class="cp-hero-feature-icon-img"
+                                        src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/curated-planters/icon-premium-bd802d8d.png"
+                                        alt=""
+                                        width="30"
+                                        height="30"
+                                        decoding="async"
+                                        loading="lazy">
                                 </div>
-                                <p class="cp-hero-feature-label">Premium Quality</p>
+                                <p class="cp-hero-feature-label"><span>Premium</span><span>Quality</span></p>
                             </div>
                             <div class="cp-hero-feature">
-                                <div class="cp-hero-feature-icon" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 21V11"/><path d="M7 11h10l-1-4H8l-1 4z"/><path d="M10 7V5c0-1 1-2 2-2s2 1 2 2v2"/><path d="M9 14c-2 0-3 1.5-3 3.5"/><path d="M15 14c2 0 3 1.5 3 3.5"/></svg>
+                                <div class="cp-hero-feature-icon cp-hero-feature-icon--designed" aria-hidden="true">
+                                    <img
+                                        class="cp-hero-feature-icon-img"
+                                        src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/curated-planters/icon-designed-8e14f60f.png"
+                                        alt=""
+                                        width="30"
+                                        height="30"
+                                        decoding="async"
+                                        loading="lazy">
                                 </div>
-                                <p class="cp-hero-feature-label">Designed for Every Space</p>
+                                <p class="cp-hero-feature-label"><span>Designed for</span><span>Every Space</span></p>
                             </div>
                         </div>
                         <a
@@ -600,9 +696,10 @@
                             href="https://www.google.com/maps/search/?api=1&amp;query=Calcutta+Horticultural+Farm,+11,+Rakhaldas+Addy+Rd,+Alipore,+Kolkata,+West+Bengal+700027"
                             target="_blank"
                             rel="noopener noreferrer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-                            Visit the Plant Experience Centre
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                            <span>Visit the Plant Experience Centre</span>
                         </a>
+                        </div>
                     </div>
                 </div>
             </section>
