@@ -394,8 +394,16 @@
         .ps-finished-stage { position: relative; width: 100%; }
         .ps-finished-media {
             width: 100%;
+            height: clamp(260px, 22vh, 380px);
             line-height: 0;
             background: #0a0a0a;
+            overflow: hidden;
+        }
+        .ps-finished-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
         }
         .ps-finished-overlay {
             position: absolute;
@@ -413,7 +421,7 @@
             justify-content: center;
             max-width: 80rem;
             margin: 0 auto;
-            padding: clamp(3.5rem, 7vw, 5rem) clamp(1.35rem, 5vw, 5rem);
+            padding: clamp(2rem, 4vh, 3rem) clamp(1.35rem, 5vw, 5rem);
             width: 100%;
             pointer-events: none;
         }
