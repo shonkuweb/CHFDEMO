@@ -50,7 +50,11 @@
             grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
             gap: clamp(1.75rem, 3.5vw, 3rem);
             align-items: center;
-            padding: clamp(2.75rem, 5.5vw, 4.75rem) clamp(1.35rem, 5vw, 5rem) clamp(2.5rem, 4vw, 3.75rem);
+            padding: clamp(2.75rem, 5.5vw, 4.75rem) 0 clamp(2.5rem, 4vw, 3.75rem) clamp(1.35rem, 5vw, 5rem);
+        }
+
+        .ah-intro-copy {
+            padding-right: clamp(1.35rem, 5vw, 5rem);
         }
 
         .ah-intro h1 {
@@ -406,6 +410,11 @@
         @media (max-width: 1024px) {
             .ah-intro {
                 grid-template-columns: 1fr;
+                padding-left: 0;
+            }
+
+            .ah-intro-copy {
+                padding-left: clamp(1.35rem, 5vw, 5rem);
             }
 
             .ah-intro-media {
