@@ -31,7 +31,9 @@
 
 @layer components {
     body > .relative.flex.min-h-screen > header {
-        background-color: transparent !important;
+        background-color: rgba(0, 0, 0, 0.1) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
         box-shadow: none !important;
     }
 

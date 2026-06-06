@@ -52,8 +52,8 @@
         .ps-hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(90deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0.35) 100%),
-                        linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 50%);
+            background: linear-gradient(90deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.1) 100%),
+                        linear-gradient(0deg, rgba(0,0,0,0.4) 0%, transparent 50%);
             z-index: 1;
             pointer-events: none;
         }
@@ -66,9 +66,9 @@
             justify-content: center;
             align-items: flex-start;
             width: 100%;
-            max-width: 80rem;
+            max-width: 90rem;
             margin: 0 auto;
-            padding: clamp(2rem, 5vh, 3.25rem) clamp(1.35rem, 5vw, 5rem);
+            padding: clamp(2rem, 5vh, 3.25rem) clamp(1rem, 2vw, 1.5rem);
             pointer-events: none;
         }
         .ps-hero-actions { pointer-events: auto; }
@@ -80,8 +80,8 @@
         }
         .ps-hero-body {
             margin: 0 0 1.75rem;
-            max-width: 36rem;
-            color: var(--ps-muted);
+            max-width: 30rem;
+            color: rgba(238, 233, 223, 0.85);
             font-size: clamp(0.82rem, 1vw, 0.96rem);
             font-weight: 300;
             line-height: 1.78;
@@ -98,14 +98,14 @@
             text-transform: uppercase;
             transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
-        .ps-btn-solid { background: var(--ps-gold); color: #0a0a0a; }
-        .ps-btn-solid:hover { background: #c5a073; }
+        .ps-btn-solid { background: #4d5d39; color: var(--ps-ivory); }
+        .ps-btn-solid:hover { background: #5b6e43; color: var(--ps-ivory); }
         .ps-btn-outline {
             border: 1px solid rgba(238, 233, 223, 0.35);
             color: var(--ps-ivory);
             background: transparent;
         }
-        .ps-btn-outline:hover { border-color: var(--ps-gold); color: var(--ps-gold); }
+        .ps-btn-outline:hover { border-color: var(--ps-ivory); color: #fff; background: rgba(255, 255, 255, 0.05); }
 
         /* Approach */
         .ps-approach {
@@ -547,20 +547,20 @@
 <body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-0 left-0 z-[70] w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md shadow-xl">
+            class="fixed top-0 left-0 z-[70] w-full bg-transparent">
             <div class="mx-auto flex h-20 items-center justify-between pl-0 pr-8 lg:pl-0 lg:pr-10 w-full">
                 <a href="/" class="flex shrink-0 items-center">
                     <img src="assets/chf_logo_nav.png" alt="CHF Logo" class="nav-logo" decoding="async" loading="eager" fetchpriority="high">
                 </a>
                 <nav class="hidden lg:flex items-center gap-8" style="flex: 1 1 auto; min-width: 0; justify-content: flex-end; gap: clamp(0.35rem, 1.4vw, 1.5rem); overflow: visible; padding-right: 1.5rem; box-sizing: border-box;">
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="plant-experience-center">Plant Experience Centre</a>
                     </div>
 
                     <!-- Collections Dropdown -->
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="javascript:void(0)">
                             Collections
                             <span class="material-symbols-outlined text-sm">expand_more</span>
@@ -579,7 +579,7 @@
 
                     <!-- Services Dropdown -->
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="javascript:void(0)">
                             Services
                             <span class="material-symbols-outlined text-sm">expand_more</span>
@@ -595,11 +595,11 @@
                         </div>
                     </div>
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="portfolio">Portfolio</a>
                     </div>
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-ivory-dim hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="about">About Us</a>
                     </div>
                 </nav>
@@ -712,7 +712,7 @@
             </div>
         </div>
 
-        <main class="ps-page flex-grow pt-20">
+        <main class="ps-page flex-grow ">
             <!--
               Plant Supply image slots (publish via admin):
               Images use object-fit: contain — layout adapts to image size, never cropped.
@@ -737,7 +737,7 @@
                     </div>
                     <div class="ps-hero-overlay" aria-hidden="true"></div>
                     <div class="ps-hero-inner">
-                        <h1 class="ps-hero-title ps-serif" data-cms="plant-supply/hero/title">Plant Supply, Curated for Exceptional Landscapes</h1>
+                        <h1 class="ps-hero-title ps-serif" data-cms="plant-supply/hero/title">Plant Supply, Curated for <span style="white-space: nowrap;">Exceptional Landscapes</span></h1>
                         <p class="ps-hero-body" data-cms="plant-supply/hero/body">From rare specimen trees to climate-adapted planting palettes, we source and deliver premium-quality plant material that transforms design intent into thriving landscapes.</p>
                         <div class="ps-hero-actions">
                             <a href="enquiry" class="ps-btn ps-btn-solid">Discuss Your Project</a>

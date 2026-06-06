@@ -80,7 +80,7 @@
                 if (!href || href.startsWith("http") || href.startsWith("javascript:")) return;
                 if (href === slug || (slug === "index" && href === "/")) {
                     link.classList.add("text-accent-bronze");
-                    link.classList.remove("text-ivory-dim");
+                    link.classList.remove("text-ivory-dim", "text-white");
                 }
             });
         },
