@@ -50,7 +50,7 @@
             grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
             gap: clamp(1.75rem, 3.5vw, 3rem);
             align-items: center;
-            padding: clamp(2.75rem, 5.5vw, 4.75rem) 0 clamp(2.5rem, 4vw, 3.75rem) clamp(1.35rem, 5vw, 5rem);
+            padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(1.5rem, 2vw, 2rem) clamp(1.35rem, 5vw, 5rem);
         }
 
         .ah-intro-copy {
@@ -114,7 +114,7 @@
             column-gap: clamp(1.75rem, 3.5vw, 3.25rem);
             align-items: stretch;
             min-height: clamp(22rem, 38vw, 30rem);
-            padding: clamp(2.5rem, 5vw, 4.25rem) clamp(1.35rem, 4vw, 4rem);
+            padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.35rem, 4vw, 4rem) clamp(1.5rem, 2.5vw, 2.25rem) 0;
         }
 
         .ah-collab-media {
@@ -139,77 +139,50 @@
             flex-direction: column;
             justify-content: center;
             padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.25rem, 2.5vw, 2rem);
-            background: linear-gradient(135deg, rgba(238, 233, 223, 0.04) 0%, rgba(238, 233, 223, 0.01) 48%, transparent 100%);
-            border-left: 1px solid rgba(166, 139, 106, 0.28);
-            box-shadow: inset 1px 0 0 rgba(238, 233, 223, 0.04);
-        }
-
-        .ah-collab-copy::before {
-            content: "How we partner";
-            display: block;
-            margin-bottom: 0.85rem;
-            font-family: "Manrope", sans-serif;
-            font-size: 0.62rem;
-            font-weight: 700;
-            letter-spacing: 0.28em;
-            text-transform: uppercase;
-            color: var(--ah-gold);
+            background: transparent;
+            border: none;
+            box-shadow: none;
         }
 
         .ah-collab-copy h2 {
-            margin: 0 0 0.35rem;
-            font-size: clamp(2rem, 3.2vw, 3rem);
-            line-height: 1.08;
-            letter-spacing: -0.03em;
-        }
-
-        .ah-collab-rule {
-            width: clamp(4rem, 8vw, 6.5rem);
-            height: 2px;
-            margin-bottom: clamp(1.35rem, 2.2vw, 1.85rem);
-            background: linear-gradient(90deg, var(--ah-gold) 0%, rgba(166, 139, 106, 0.15) 100%);
+            margin: 0 0 1rem;
+            font-size: clamp(2rem, 3.2vw, 2.5rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--ah-leaf); /* or match the screenshot's olive/gold */
         }
 
         .ah-collab-copy p {
             margin: 0;
             max-width: none;
             color: rgba(238, 233, 223, 0.84);
-            font-size: clamp(1rem, 1.22vw, 1.125rem);
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(0.9rem, 1vw, 1.05rem);
             font-weight: 300;
-            line-height: 1.85;
-        }
-
-        .ah-collab-copy p::first-letter {
-            float: left;
-            margin: 0.06em 0.14em 0 0;
-            font-family: "Noto Serif", serif;
-            font-size: 3.15em;
-            font-weight: 300;
-            line-height: 0.82;
-            color: var(--ah-gold);
+            line-height: 1.6;
         }
 
         .ah-pillars {
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 0;
-            margin-top: clamp(2.15rem, 3.5vw, 3rem);
+            margin-top: clamp(2.5rem, 4vw, 3.5rem);
         }
 
         .ah-pillar {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            padding: 0 clamp(1.2rem, 2vw, 2rem) 0 0;
-            text-align: left;
+            align-items: center;
+            padding: 0 clamp(0.75rem, 1.5vw, 1.25rem);
+            text-align: center;
             background: transparent;
             border: none;
-            border-right: 1px solid rgba(238, 233, 223, 0.14);
+            border-right: 1px solid rgba(238, 233, 223, 0.2);
             transition: none;
         }
 
-        .ah-pillar:not(:first-child) {
-            padding-left: clamp(1.2rem, 2vw, 2rem);
+        .ah-pillar:first-child {
+            padding-left: 0;
         }
 
         .ah-pillar:last-child {
@@ -225,7 +198,7 @@
         .ah-pillar-icon {
             width: 2.2rem;
             height: 2.2rem;
-            margin: 0 0 1.25rem 0;
+            margin: 0 auto 1.25rem auto;
             padding: 0;
             color: var(--ah-ivory);
             border: none;
@@ -254,18 +227,18 @@
         .ah-pillar p {
             margin: 0;
             max-width: none;
-            color: rgba(238, 233, 223, 0.55);
+            color: rgba(238, 233, 223, 0.65);
             font-family: "Manrope", sans-serif;
             font-size: clamp(0.72rem, 0.86vw, 0.8rem);
             font-weight: 400;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         /* —— Tomorrow —— */
         .ah-tomorrow {
             position: relative;
             overflow: visible;
-            padding: clamp(2.5rem, 4.5vw, 3.75rem) clamp(1.35rem, 4vw, 4rem) clamp(2rem, 3.5vw, 3rem);
+            padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.35rem, 4vw, 4rem) clamp(1rem, 1.5vw, 1.75rem);
             text-align: center;
         }
 
@@ -347,7 +320,7 @@
             position: relative;
             z-index: 2;
             overflow: visible;
-            padding: clamp(2rem, 3.5vw, 3rem) clamp(1.35rem, 4vw, 4rem) clamp(2rem, 3.5vw, 3rem);
+            padding: clamp(1rem, 1.5vw, 1.75rem) clamp(1.35rem, 4vw, 4rem) clamp(1.5rem, 2.5vw, 2rem);
             text-align: left;
         }
 
@@ -424,6 +397,7 @@
             .ah-collab-layout {
                 grid-template-columns: 1fr;
                 min-height: 0;
+                padding-right: 0;
             }
 
             .ah-collab-media {
@@ -433,7 +407,7 @@
             .ah-collab-panel {
                 border-left: 0;
                 border-top: 1px solid rgba(166, 139, 106, 0.28);
-                padding: clamp(2rem, 4vw, 2.75rem) 0 0;
+                padding: clamp(2rem, 4vw, 2.75rem) clamp(1.35rem, 4vw, 4rem) 0;
             }
 
             .ah-pillars {
@@ -618,8 +592,7 @@
                     </div>
                     <div class="ah-collab-panel">
                         <div class="ah-collab-copy">
-                            <h2 class="ah-serif" data-cms="arch/collab/title">Our Collaborative <em class="text-accent-bronze not-italic font-light">Approach</em></h2>
-                            <div class="ah-collab-rule" aria-hidden="true"></div>
+                            <h2 class="ah-serif" data-cms="arch/collab/title">Our Collaborative Approach</h2>
                             <p data-cms="arch/collab/body">With the intent to not redefine but strengthen the designs, we as landscape developers work closely with landscape architects—either as consultants during the design phase or as collaborators during execution—to ensure that plant selections are informed, intentional and future-ready.</p>
                         </div>
                         <div class="ah-pillars">
