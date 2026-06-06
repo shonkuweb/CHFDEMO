@@ -391,20 +391,27 @@
         }
 
         /* Finished landscape banner */
-        .ps-finished { position: relative; }
-        .ps-finished-stage { position: relative; width: 100%; }
-        .ps-finished-media {
+        .ps-finished {
+            position: relative;
             width: 100%;
-            height: clamp(260px, 22vh, 380px);
-            line-height: 0;
+            margin: 0 auto;
+        }
+        .ps-finished-stage {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 5 / 1;
+        }
+        .ps-finished-media {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             background: #0a0a0a;
-            overflow: hidden;
         }
         .ps-finished-media img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: center;
+            object-fit: fill;
         }
         .ps-finished-overlay {
             position: absolute;
@@ -422,12 +429,12 @@
             justify-content: center;
             max-width: 80rem;
             margin: 0 auto;
-            padding: clamp(2rem, 4vh, 3rem) clamp(1.35rem, 5vw, 5rem);
+            padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.35rem, 5vw, 5rem);
             width: 100%;
             pointer-events: none;
         }
         .ps-finished h2 {
-            margin: 0 0 1rem;
+            margin: 0 0 0.75rem;
             max-width: 16ch;
             font-size: clamp(1.75rem, 2.8vw, 2.45rem);
             line-height: 1.12;
@@ -544,6 +551,31 @@
             .ps-quality-item + .ps-quality-item {
                 border-top: 1px solid rgba(238, 233, 223, 0.1);
                 padding-top: 1.15rem;
+            }
+            .ps-finished-stage {
+                aspect-ratio: 2.2 / 1;
+            }
+            .ps-finished-media {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .ps-finished-media img {
+                width: 100%;
+                height: 100%;
+                object-fit: fill;
+            }
+            .ps-finished-inner {
+                padding: clamp(0.8rem, 3vw, 1.5rem) clamp(1.35rem, 5vw, 3rem);
+            }
+            .ps-finished h2 {
+                margin-bottom: 0.5rem;
+                font-size: clamp(1.2rem, 5vw, 1.6rem);
+            }
+            .ps-finished p {
+                font-size: clamp(0.72rem, 2.5vw, 0.85rem);
+                line-height: 1.5;
             }
         }
         @media (max-width: 640px) {
