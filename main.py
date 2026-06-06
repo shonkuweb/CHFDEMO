@@ -666,7 +666,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "media",
     },
     "plant-supply/finished/image": {
-        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20supply/53F55AD3-A8A0-4401-9C10-93292959586A.png",
+        "value": "assets/plant-supply-finished.png",
         "type": "media",
     },
     "plant-supply/hero/title": {
