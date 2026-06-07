@@ -1525,6 +1525,80 @@
                     }
                 };
 
+                const currentPortfolioImages = ref([]);
+                
+                const loadPortfolioTab = async (categoryId) => {
+                    sidebarOpen.value = false;
+                    viewMode.value = 'portfolio';
+                    currentSelection.value = categoryId;
+                    loading.value = true;
+                    try {
+                        const res = await fetch(`/api/portfolio/${categoryId}?t=${Date.now()}`);
+                        if (!res.ok) throw new Error('Failed to load portfolio images');
+                        const data = await res.json();
+                        currentPortfolioImages.value = data.images || [];
+                    } catch (e) {
+                        showToast(e.message, 'error');
+                        currentPortfolioImages.value = [];
+                    } finally {
+                        loading.value = false;
+                    }
+                };
+
+                const addPortfolioImage = () => {
+                    triggerPortfolioFileInput();
+                };
+
+                const removePortfolioImage = (idx) => {
+                    if (confirm("Remove this image?")) {
+                        currentPortfolioImages.value.splice(idx, 1);
+                        showToast("Image removed. Save to apply.");
+                    }
+                };
+
+                const movePortfolioImage = (idx, direction) => {
+                    const newIdx = idx + direction;
+                    if (newIdx < 0 || newIdx >= currentPortfolioImages.value.length) return;
+                    const temp = currentPortfolioImages.value[idx];
+                    currentPortfolioImages.value[idx] = currentPortfolioImages.value[newIdx];
+                    currentPortfolioImages.value[newIdx] = temp;
+                };
+
+                const triggerPortfolioFileInput = () => {
+                    const input = document.getElementById('portfolio-upload');
+                    if (input) input.click();
+                };
+
+                const uploadPortfolioMedia = (file) => {
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                        showToast('Please upload an image file.', 'error');
+                        return;
+                    }
+                    if (file.size > 80 * 1024 * 1024) {
+                        showToast('File too large. Max 80MB.', 'error');
+                        return;
+                    }
+                    showToast('Uploading image...');
+                    uploadMediaChunked(file, '', (url) => {
+                        currentPortfolioImages.value.push(url + '?t=' + Date.now());
+                        showToast('Image uploaded. Save to apply.');
+                    }, () => {});
+                };
+
+                const handlePortfolioFileSelect = (e) => {
+                    const file = e.target.files[0];
+                    uploadPortfolioMedia(file);
+                    e.target.value = '';
+                };
+
+                const handlePortfolioDrop = (e) => {
+                    e.preventDefault();
+                    dragover.value = null;
+                    const file = e.dataTransfer?.files?.[0];
+                    uploadPortfolioMedia(file);
+                };
+
                 return {
                     collections,
                     currentSelection,

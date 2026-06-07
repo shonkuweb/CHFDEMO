@@ -152,6 +152,27 @@ class AdminHTTPRequestHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps(data).encode('utf-8'))
             return
+
+        # API: Portfolio fetching
+        if parsed_path.path.startswith('/api/portfolio/'):
+            cat_id = parsed_path.path.split('/')[-1]
+            if cat_id:
+                path_key = f'portfolio/{cat_id}/images'
+                try:
+                    conn = get_db_connection()
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT value FROM site_content WHERE path = ?", (path_key,))
+                    row = cursor.fetchone()
+                    images = json.loads(row[0]) if row and row[0] else []
+                except Exception as e:
+                    print(f"Error fetching portfolio images: {e}")
+                    images = []
+                    
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({"images": images}).encode('utf-8'))
+                return
             
         super().do_GET()
 
@@ -208,6 +229,36 @@ class AdminHTTPRequestHandler(SimpleHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps({'url': f'assets/images/{unique_name}', 'storage': 'local'}).encode('utf-8'))
+            return
+            
+        # API: Portfolio Save
+        elif self.path.startswith('/api/portfolio/') and self.path.endswith('/save'):
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length).decode('utf-8')
+            cat_id = self.path.split('/')[3]
+            try:
+                payload = json.loads(body)
+                images = payload.get('images', [])
+                path_key = f'portfolio/{cat_id}/images'
+                
+                conn = get_db_connection()
+                cursor = conn.cursor()
+                cursor.execute(
+                    "INSERT INTO site_content (path, value, type) VALUES (?, ?, 'json') "
+                    "ON CONFLICT(path) DO UPDATE SET value=excluded.value",
+                    (path_key, json.dumps(images))
+                )
+                conn.commit()
+                
+                # Invalidate cache if needed
+                fetch_site_content.cache_clear()
+                
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "ok"}).encode('utf-8'))
+            except Exception as e:
+                self.send_error(500, f"Error saving portfolio: {e}")
             return
             
         # SQLite Content Saving
