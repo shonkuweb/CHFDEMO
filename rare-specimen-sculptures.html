@@ -4,10 +4,74 @@
     <link rel="apple-touch-icon" href="assets/chf_logo_nav.png" /><title>Rare Specimen Sculptures - CHF Botanical Luxury</title><link rel="stylesheet" href="assets/tailwind.css?v=navbar-custom-3" /><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Serif:wght@300..700&amp;display=swap" rel="stylesheet" /><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" /><link rel="stylesheet" href="assets/animations.css?v=chf-no-img-zoom-1"><script src="assets/animation-core.js?v=navbar-custom-3" defer></script></head>
 <body class="bg-background-dark text-ivory font-display antialiased">
 <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
-<header class="fixed top-0 left-0 z-[70] w-full bg-transparent"><div class="mx-auto flex h-20 items-center justify-between pl-0 pr-8 lg:pl-0 lg:pr-10 w-full"><a href="/" class="flex shrink-0 items-center"><img src="assets/chf_logo_nav.png" alt="CHF Logo" class="nav-logo" decoding="async" loading="eager" fetchpriority="high"></a><nav class="hidden lg:flex items-center gap-8" style="flex: 1 1 auto; min-width: 0; justify-content: flex-end; gap: clamp(0.35rem, 1.4vw, 1.5rem); overflow: visible; padding-right: 1.5rem; box-sizing: border-box;"><a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;" href="plant-experience-center">Plant Experience Centre</a><a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;" href="portfolio">Portfolio</a><a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;" href="portfolio">Portfolio</a><a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;" href="about">About Us</a></nav><button id="mobile-menu-btn" class="lg:hidden flex items-center text-ivory z-[80] p-2 relative w-10 h-10 justify-center"><span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform -translate-y-[7px] origin-center"></span><span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block opacity-100 origin-center"></span><span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform translate-y-[7px] origin-center"></span></button></div></header>
+<header
+            class="fixed top-0 left-0 z-[70] w-full bg-transparent transition-all duration-500 hover:bg-black/20 hover:backdrop-blur-md hover:shadow-lg">
+            <div class="mx-auto flex h-20 items-center justify-between pl-0 pr-8 lg:pl-0 lg:pr-10 w-full">
+                <a href="/" class="flex shrink-0 items-center">
+                    <img src="assets/chf_logo_nav.png" alt="CHF Logo" class="nav-logo" decoding="async" loading="eager" fetchpriority="high">
+                </a>
+                <nav class="hidden lg:flex items-center gap-8" style="flex: 1 1 auto; min-width: 0; justify-content: flex-end; gap: clamp(0.35rem, 1.4vw, 1.5rem); overflow: visible; padding-right: 1.5rem; box-sizing: border-box;">
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                            href="plant-experience-center">Plant Experience Centre</a>
+                    </div>
+
+                    <!-- Collections Dropdown -->
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                            href="javascript:void(0)">
+                            Collections
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </a>
+                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                            <div class="bg-black/80 border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
+                                <div class="flex flex-col gap-4">
+                                    <a href="full-grown-avenue-trees" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Full Grown Avenue Trees</a>
+                                    <a href="exotic-indoor-plants" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Exotic Indoor Plants</a>
+                                    <a href="bonsai" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Bonsai</a>
+                                    <a href="curated-planters" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Curated Planters</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Dropdown -->
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                            href="javascript:void(0)">
+                            Services
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </a>
+                        <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                            <div class="bg-black/80 border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
+                                <div class="flex flex-col gap-4">
+                                    <a href="landscaping-design-development" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Landscape Design &amp; Developments</a>
+                                    <a href="garden-maintenance" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Garden Maintenance</a>
+                                    <a href="plant-supply" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Plant Supply</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                            href="portfolio">Portfolio</a>
+                    </div>
+                    <div class="relative group">
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                            href="about">About Us</a>
+                    </div>
+                </nav>
+                <button id="mobile-menu-btn"
+                    class="lg:hidden flex items-center text-ivory z-[80] p-2 relative w-10 h-10 justify-center">
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform -translate-y-[7px] origin-center"></span>
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block opacity-100 origin-center"></span>
+                    <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform translate-y-[7px] origin-center"></span>
+                </button>
+            </div>
+        </header>
 <main class="flex-grow pt-32 lg:pt-40">
 <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-24 overflow-hidden"><div class="max-w-3xl"><h2 class="font-serif text-balance text-5xl md:text-7xl text-ivory font-light leading-[1.1] tracking-tight mb-8" data-cms="rare-specimen-sculptures/hero/title">Rare Specimen <span class="text-accent-bronze italic">Sculptures</span></h2><p class="text-gray-400 font-light text-sm leading-relaxed uppercase tracking-[0.15em] border-l border-accent-bronze/30 pl-6" data-cms="rare-specimen-sculptures/hero/subtitle">Singular botanical forms curated as statement pieces for refined residential and hospitality architecture.</p></div></section>
-<section class="max-w-7xl mx-auto px-6 lg:px-8 pb-40"><div class="flex flex-col gap-24"><div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"><div class="lg:col-span-7"><div class="relative aspect-video overflow-hidden bg-surface-dark group"><img alt="Rare specimen visual 1" class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" data-cms="rare-specimen-sculptures/block1/image" decoding="async" loading="lazy" fetchpriority="low"></div></div><div class="lg:col-span-5 lg:pl-12"><h3 class="font-serif text-balance text-4xl mb-6" data-cms="rare-specimen-sculptures/block1/title">Architectural Presence</h3><p class="deep-block-copy" data-cms="rare-specimen-sculptures/block1/body">Each specimen is selected for maturity, silhouette and sculptural character to anchor space with botanical authority.</p></div></div><div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"><div class="lg:col-span-7 lg:order-2"><div class="relative aspect-video overflow-hidden bg-surface-dark group"><img alt="Rare specimen visual 2" class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" data-cms="rare-specimen-sculptures/block2/image" decoding="async" loading="lazy" fetchpriority="low"></div></div><div class="lg:col-span-5 lg:pr-12 lg:order-1"><h3 class="font-serif text-balance text-4xl mb-6" data-cms="rare-specimen-sculptures/block2/title">Collector-Led Curation</h3><p class="deep-block-copy" data-cms="rare-specimen-sculptures/block2/body">We align plant provenance, form and long-term care protocols with each collector's design intent and lifestyle rhythm.</p></div></div></div></section>
+<section class="max-w-7xl mx-auto px-6 lg:px-8 pb-40"><div id="rare-specimen-sculptures-blocks-container" class="flex flex-col gap-24"></div></section>
 <section class="chf-closing"><p class="chf-closing-line">A rare specimen is more than decor.</p><p class="chf-closing-line chf-closing-accent">It becomes the identity of the room.</p></section>
 </main>
 <div id="mobile-backdrop"
@@ -105,6 +169,82 @@
 <script>
 (function(){var mobileBtn=document.getElementById('mobile-menu-btn');var mobileCloseBtn=document.getElementById('mobile-close-btn');var sidebar=document.getElementById('mobile-sidebar');var backdrop=document.getElementById('mobile-backdrop');var mobileLinks=document.querySelectorAll('.mobile-link');var lines=mobileBtn?mobileBtn.querySelectorAll('.hamburger-line'):[];var isOpen=false;function openSidebar(){isOpen=true;sidebar.classList.remove('translate-x-full');sidebar.classList.add('menu-open');backdrop.classList.remove('opacity-0','pointer-events-none');backdrop.classList.add('opacity-100','pointer-events-auto');if(lines.length>=3){lines[0].style.transform='translateY(0) rotate(45deg)';lines[1].style.opacity='0';lines[2].style.transform='translateY(0) rotate(-45deg)';}document.body.style.overflow='hidden';}function closeSidebar(){isOpen=false;sidebar.classList.add('translate-x-full');sidebar.classList.remove('menu-open');backdrop.classList.add('opacity-0','pointer-events-none');backdrop.classList.remove('opacity-100','pointer-events-auto');if(lines.length>=3){lines[0].style.transform='translateY(-7px) rotate(0deg)';lines[1].style.opacity='1';lines[2].style.transform='translateY(7px) rotate(0deg)';}document.body.style.overflow='';}if(mobileBtn&&mobileCloseBtn&&sidebar&&backdrop){mobileBtn.addEventListener('click',function(){return isOpen?closeSidebar():openSidebar();});mobileCloseBtn.addEventListener('click',closeSidebar);backdrop.addEventListener('click',closeSidebar);mobileLinks.forEach(function(link){if(link.tagName==='A')link.addEventListener('click',closeSidebar);});document.querySelectorAll('.sidebar-accordion').forEach(function(btn){btn.addEventListener('click',function(){var panelId=btn.getAttribute('data-target');var panel=panelId?document.getElementById(panelId):null;var chevron=btn.querySelector('.sidebar-chevron');var isExpanded=panel&&panel.style.maxHeight&&panel.style.maxHeight!=='0px';document.querySelectorAll('.sidebar-panel').forEach(function(p){p.style.maxHeight='0px';});document.querySelectorAll('.sidebar-chevron').forEach(function(c){c.style.transform='rotate(0deg)';});if(!isExpanded&&panel){panel.style.maxHeight=panel.scrollHeight+'px';if(chevron)chevron.style.transform='rotate(180deg)';}});});}})();
 </script>
+<script>
+        (function() {
+            const PAGE_SLUG = 'rare-specimen-sculptures';
+            const BLOCK_RE = new RegExp(`^${PAGE_SLUG}/block(\\d+)/(image|title|body)$`);
+            const container = document.getElementById(`${PAGE_SLUG}-blocks-container`);
+            if (!container) return;
+
+            function escapeHtml(value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            function createBlockMarkup(block, index) {
+                const reverse = index % 2 === 1;
+                const image = escapeHtml(block.image || '');
+                const title = escapeHtml(block.title || `Block ${index + 1}`);
+                const body = escapeHtml(block.body || '');
+                return `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        <div class="lg:col-span-7 ${reverse ? 'lg:order-2' : ''}">
+                            <div class="relative aspect-video overflow-hidden bg-surface-dark group">
+                                ${image ? `<img src="${image}" alt="${title}" class="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" decoding="async" loading="lazy" fetchpriority="low">` : ''}
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5 ${reverse ? 'lg:pr-12 lg:order-1' : 'lg:pl-12'}">
+                            <h3 class="font-serif text-balance text-4xl mb-6">${title}</h3>
+                            <p class="deep-block-copy">${body}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async function loadBlocks() {
+                try {
+                    const res = await fetch(`/api/site-content?page=${PAGE_SLUG}&t=${Date.now()}`, { cache: 'no-store' });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const blocks = {};
+
+                    Object.entries(data || {}).forEach(([path, payload]) => {
+                        const match = path.match(BLOCK_RE);
+                        if (!match) return;
+                        const idx = Number(match[1]);
+                        const key = match[2];
+                        if (!blocks[idx]) blocks[idx] = {};
+                        blocks[idx][key] = payload?.value || '';
+                    });
+
+                    const ordered = Object.keys(blocks)
+                        .map((n) => Number(n))
+                        .sort((a, b) => a - b)
+                        .map((idx) => ({ idx, ...blocks[idx] }))
+                        .filter((block) => block.title || block.body || block.image);
+
+                    container.innerHTML = ordered.map((block, index) => createBlockMarkup(block, index)).join('');
+                } catch (_) {}
+            }
+
+            loadBlocks();
+            window.addEventListener('storage', (event) => {
+                if (event.key === 'chf_content_sync') loadBlocks();
+            });
+            window.addEventListener('focus', loadBlocks);
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') loadBlocks();
+            });
+            if ('BroadcastChannel' in window) {
+                const syncChannel = new BroadcastChannel('chf-content-sync');
+                syncChannel.addEventListener('message', () => loadBlocks());
+            }
+        })();
+    </script>
 <script src="assets/cms-core.js?v=2.4"></script>
 </body>
 </html>

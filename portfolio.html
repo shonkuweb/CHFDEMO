@@ -302,12 +302,13 @@
             width: 220px;
             background: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.07);
-            padding: 20px;
+            padding: 8px; /* Reduced padding allows image to naturally fill more space */
             display: flex;
             flex-direction: column;
             align-items: stretch;
             justify-content: center;
             min-height: 120px;
+            overflow: hidden;
             transition: border-color 0.3s;
         }
         .client-card:hover {
@@ -319,12 +320,12 @@
             max-width: 100%;
             object-fit: contain;
             object-position: center;
-            transform: scale(1);
+            transform: scale(1.1); /* Gentle scale to avoid cropping */
             filter: brightness(1.2) contrast(1.15) saturate(1.05);
-            transition: filter 0.3s;
+            transition: transform 0.3s, filter 0.3s;
         }
         .client-card:hover img {
-            transform: scale(1);
+            transform: scale(1.15); /* Gentle hover zoom */
             filter: brightness(1.28) contrast(1.2) saturate(1.08);
         }
         .client-card .review {
@@ -340,7 +341,7 @@
 <body class="portfolio-page bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-0 left-0 z-[70] w-full bg-transparent">
+            class="fixed top-0 left-0 z-[70] w-full bg-transparent transition-all duration-500 hover:bg-black/20 hover:backdrop-blur-md hover:shadow-lg">
             <div class="mx-auto flex h-20 items-center justify-between pl-0 pr-8 lg:pl-0 lg:pr-10 w-full">
                 <a href="/" class="flex shrink-0 items-center">
                     <img src="assets/chf_logo_nav.png" alt="CHF Logo" class="nav-logo" decoding="async" loading="eager" fetchpriority="high">
@@ -359,7 +360,7 @@
                             <span class="material-symbols-outlined text-sm">expand_more</span>
                         </a>
                         <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                            <div class="bg-background-dark border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
+                            <div class="bg-black/80 border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
                                 <div class="flex flex-col gap-4">
                                     <a href="full-grown-avenue-trees" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Full Grown Avenue Trees</a>
                                     <a href="exotic-indoor-plants" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Exotic Indoor Plants</a>
@@ -378,7 +379,7 @@
                             <span class="material-symbols-outlined text-sm">expand_more</span>
                         </a>
                         <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                            <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
+                            <div class="bg-black/80 border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
                                 <div class="flex flex-col gap-4">
                                     <a href="landscaping-design-development" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Landscape Design &amp; Developments</a>
                                     <a href="garden-maintenance" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Garden Maintenance</a>
@@ -555,13 +556,8 @@
                                 <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
                                     <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
                                 </button>
-                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="6" role="list">
-                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/1A8586D8-4B63-45A8-8499-7E6926501953.png" alt="Villa project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/43B31350-DA3C-422D-AFA3-626139C9E578.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/79F1D9E2-1DC6-4BCA-A755-36D5E5585079.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/917D98C1-D55E-459A-82DF-0483C62FF622.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/AD34490C-109A-4FC7-AFDF-F29438D7E0EB.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Villa project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/E6BEDFF8-BD56-445B-B06F-66497110D62B.png" alt="Villa project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                <div class="portfolio-projects-track" data-carousel-track role="list">
+                                    <!-- Dynamic content will be injected here via initPortfolioTabs -->
                                 </div>
                             </div>
                         </div>
@@ -577,18 +573,8 @@
                                 <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
                                     <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
                                 </button>
-                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="11" role="list">
-                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/14C3D11D-6A55-40A0-BDDE-9D87F6778B6D.png" alt="Terrace project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/2DF1E3ED-EC48-45AC-ADDC-890447876E11%20(2).png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/35CEA33A-08DB-4C89-B47F-765BA6246452.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/42185EE8-F3B3-4FA5-A186-CB1A2B557807%20(1).png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/48E40800-D3B8-4BF8-9D1C-F84AF93ADB0D.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/66BD27DB-5C07-40A5-B799-E3BE3A4135C7.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/7CC2240C-F179-411D-94EC-D6161CAE8B00.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/838984EF-9F5B-4FE2-B22C-BB9D9B0ED1A7.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/9CA486C0-6566-489C-B397-149E1E7FF13E%20(2).png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/CA4C5AC3-901D-43B6-8653-69AC16191A6F.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Terrace project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/E33B8408-A13B-4702-9FB6-129F47CCE582.png" alt="Terrace project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                <div class="portfolio-projects-track" data-carousel-track role="list">
+                                    <!-- Dynamic content will be injected here via initPortfolioTabs -->
                                 </div>
                             </div>
                         </div>
@@ -604,10 +590,8 @@
                                 <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
                                     <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
                                 </button>
-                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="3" role="list">
-                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/ACFF5D17-19DC-4EF7-B097-20B8E5FEAC0F.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Housing project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png" alt="Housing project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                <div class="portfolio-projects-track" data-carousel-track role="list">
+                                    <!-- Dynamic content will be injected here via initPortfolioTabs -->
                                 </div>
                             </div>
                         </div>
@@ -623,24 +607,8 @@
                                 <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
                                     <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
                                 </button>
-                                <div class="portfolio-projects-track" data-carousel-track data-slide-count="17" role="list">
-                                    <div class="portfolio-feature-card is-spotlight" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/57A1B243-7B63-41E3-A88C-1F5114F3421F.jpg" alt="Founder's Era project" width="240" height="360" decoding="async" loading="eager" fetchpriority="high" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/5D264EDD-EBE5-4B70-ABB0-DFB0EB41CCEC.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/9D785DE4-1F57-4E99-B579-A8446ED2E812.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/A1682D49-3032-4A43-A1CC-7FFA3A84C344.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/E53541ED-6D22-49D6-8A1A-351BDD6C9A3E.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/0811CD69-AF7D-4729-8E0D-35451B3D2622.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/BEA7806C-3DE7-4786-BCCA-F1C07CEF4D2A.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/74D7D10D-B712-45D3-9B95-1ABFA411C00E.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/98487D03-D11B-430E-8840-1701C3D6E2F9.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/CB26DA90-9EE7-4303-997D-6D13D39D96D8.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/D798C7D7-7389-4038-B49F-04A12F029493.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/D36D8761-203E-42D3-9CD9-F57E432FDA57.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/98440DEA-9647-4996-868C-7D8F636B1190.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/E169FA42-2317-4D97-9F06-2B033E32004E.png" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/486C5605-D4F2-4B9D-8311-28A91BC2CF96.jpg" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/41057253-D0FA-4339-927A-AADC5F94B2F0.jpg" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
-                                    <div class="portfolio-feature-card" role="listitem" aria-label="Founder's Era project"><img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/A6E2C193-9218-46D3-968C-3341F7E4C11F.jpg" alt="Founder's Era project" width="240" height="360" decoding="async" loading="lazy" class="portfolio-card-img"></div>
+                                <div class="portfolio-projects-track" data-carousel-track role="list">
+                                    <!-- Dynamic content will be injected here via initPortfolioTabs -->
                                 </div>
                             </div>
                         </div>
@@ -1167,6 +1135,14 @@
                 var panel = document.querySelector('[data-portfolio-panel="' + id + '"]');
                 if (panel) runBatchForTrack(panel.querySelector('[data-carousel-track]'));
             });
+
+            document.addEventListener('portfolioContentInjected', function (e) {
+                var track = e.detail && e.detail.track;
+                if (track) {
+                    track.dataset.batchStarted = '0'; // reset so it runs again
+                    runBatchForTrack(track);
+                }
+            });
         })();
 
         // ── Portfolio product carousel: rounded path, center spotlight, infinite modular phase ──
@@ -1429,6 +1405,20 @@
                 if (id) onTabChange(id);
             });
 
+            document.addEventListener('portfolioContentUpdated', (e) => {
+                const id = e.detail && e.detail.categoryId;
+                if (!id) return;
+                const panel = document.querySelector('[data-portfolio-panel="' + id + '"]');
+                if (panel) {
+                    delete state[id];
+                    syncStrip(panel);
+                    if (panel.classList.contains('is-active')) {
+                        resetPanelState(panel);
+                        layoutArc(panel, performance.now());
+                    }
+                }
+            });
+
             bootActivePanel();
 
             let resizeRaf = null;
@@ -1463,6 +1453,46 @@
                     panel.setAttribute('aria-hidden', on ? 'false' : 'true');
                 });
                 document.dispatchEvent(new CustomEvent('portfolioTabChange', { detail: { categoryId: categoryId } }));
+
+                const activePanel = document.querySelector('[data-portfolio-panel="' + categoryId + '"]');
+                if (activePanel) {
+                    const track = activePanel.querySelector('[data-carousel-track]');
+                    if (track && track.dataset.loaded !== '1') {
+                        track.dataset.loaded = '1';
+                        fetch('/api/portfolio/' + categoryId + '?t=' + Date.now())
+                            .then(res => res.json())
+                            .then(json => {
+                                const images = json.images || [];
+                                track.innerHTML = '';
+                                track.setAttribute('data-slide-count', images.length);
+                                images.forEach((src, i) => {
+                                    const isSpotlight = i === 0 ? ' is-spotlight' : '';
+                                    const card = document.createElement('div');
+                                    card.className = 'portfolio-feature-card' + isSpotlight;
+                                    card.setAttribute('role', 'listitem');
+                                    card.setAttribute('aria-label', categoryId + ' project');
+
+                                    const img = document.createElement('img');
+                                    img.setAttribute('data-src', src);
+                                    img.className = 'portfolio-card-img opacity-0 transition-opacity duration-700';
+                                    img.setAttribute('decoding', 'async');
+                                    img.setAttribute('loading', i === 0 ? 'eager' : 'lazy');
+                                    if (i === 0) img.setAttribute('fetchpriority', 'high');
+
+                                    card.appendChild(img);
+                                    track.appendChild(card);
+                                });
+                                
+                                document.dispatchEvent(new CustomEvent('portfolioContentUpdated', { detail: { categoryId: categoryId } }));
+                                // Trigger batch loading for the new images
+                                const event = new CustomEvent('portfolioContentInjected', { detail: { track: track } });
+                                document.dispatchEvent(event);
+                            })
+                            .catch(err => {
+                                console.error('Failed to load portfolio images:', err);
+                            });
+                    }
+                }
             }
 
             tabs.forEach((tab) => {

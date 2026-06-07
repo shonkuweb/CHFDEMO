@@ -68,7 +68,7 @@
             width: 100%;
             max-width: 90rem;
             margin: 0 auto;
-            padding: clamp(6rem, 12vh, 8rem) clamp(1rem, 2vw, 1.5rem) clamp(1.5rem, 3vh, 2rem);
+            padding: clamp(6rem, 12vh, 8rem) clamp(1rem, 2vw, 1.5rem) clamp(4.5rem, 10vh, 6.5rem);
             pointer-events: none;
         }
         .ps-hero-actions { pointer-events: auto; }
@@ -110,6 +110,9 @@
         /* Approach */
         .ps-approach {
             padding: clamp(0.5rem, 1vw, 1rem) clamp(1.35rem, 5vw, 5rem) clamp(1.5rem, 3vw, 2.5rem);
+            margin-top: -2%;
+            position: relative;
+            z-index: 10;
         }
         .ps-approach-grid {
             display: grid;
@@ -427,9 +430,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            max-width: 80rem;
-            margin: 0 auto;
-            padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.35rem, 5vw, 5rem);
+            padding: clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 5.5vw, 5.5rem);
             width: 100%;
             pointer-events: none;
         }
@@ -535,6 +536,7 @@
             .ps-quality-copy { padding: clamp(1.5rem, 3vw, 2rem) clamp(1.35rem, 5vw, 3rem); }
             .ps-steps { grid-template-columns: 1fr; gap: 1.5rem; }
             .ps-steps::before { display: none; }
+            .ps-finished-inner { padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.35rem, 5vw, 3rem); }
             .ps-why-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .ps-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
@@ -588,7 +590,7 @@
 <body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-0 left-0 z-[70] w-full bg-transparent">
+            class="fixed top-0 left-0 z-[70] w-full bg-transparent transition-all duration-500 hover:bg-black/20 hover:backdrop-blur-md hover:shadow-lg">
             <div class="mx-auto flex h-20 items-center justify-between pl-0 pr-8 lg:pl-0 lg:pr-10 w-full">
                 <a href="/" class="flex shrink-0 items-center">
                     <img src="assets/chf_logo_nav.png" alt="CHF Logo" class="nav-logo" decoding="async" loading="eager" fetchpriority="high">
@@ -607,7 +609,7 @@
                             <span class="material-symbols-outlined text-sm">expand_more</span>
                         </a>
                         <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                            <div class="bg-background-dark border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
+                            <div class="bg-black/80 border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
                                 <div class="flex flex-col gap-4">
                                     <a href="full-grown-avenue-trees" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Full Grown Avenue Trees</a>
                                     <a href="exotic-indoor-plants" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Exotic Indoor Plants</a>
@@ -626,7 +628,7 @@
                             <span class="material-symbols-outlined text-sm">expand_more</span>
                         </a>
                         <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                            <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
+                            <div class="bg-black/80 border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
                                 <div class="flex flex-col gap-4">
                                     <a href="landscaping-design-development" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Landscape Design &amp; Developments</a>
                                     <a href="garden-maintenance" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Garden Maintenance</a>
@@ -902,7 +904,6 @@
             <!-- Section 6: Our Process -->
             <section class="ps-process" id="our-process">
                 <p class="ps-eyebrow" data-cms="plant-supply/process/label">Our Process</p>
-                <h2 class="ps-serif" data-cms="plant-supply/process/title">From Nursery to Landscape</h2>
                 <div class="ps-steps">
                     <article class="ps-step">
                         <div class="ps-step-num" aria-hidden="true">01</div>

@@ -560,7 +560,7 @@
 <body class="bg-background-dark text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
-            class="fixed top-0 left-0 z-[70] w-full bg-transparent">
+            class="fixed top-0 left-0 z-[70] w-full bg-transparent transition-all duration-500 hover:bg-black/20 hover:backdrop-blur-md hover:shadow-lg">
             <div class="mx-auto flex h-20 items-center justify-between pl-0 pr-8 lg:pl-0 lg:pr-10 w-full">
                 <a href="/" class="flex shrink-0 items-center">
                     <img src="assets/chf_logo_nav.png" alt="CHF Logo" class="nav-logo" decoding="async" loading="eager" fetchpriority="high">
@@ -579,7 +579,7 @@
                             <span class="material-symbols-outlined text-sm">expand_more</span>
                         </a>
                         <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                            <div class="bg-background-dark border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
+                            <div class="bg-black/80 border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
                                 <div class="flex flex-col gap-4">
                                     <a href="full-grown-avenue-trees" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Full Grown Avenue Trees</a>
                                     <a href="exotic-indoor-plants" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Exotic Indoor Plants</a>
@@ -598,7 +598,7 @@
                             <span class="material-symbols-outlined text-sm">expand_more</span>
                         </a>
                         <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                            <div class="bg-background-dark border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
+                            <div class="bg-black/80 border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
                                 <div class="flex flex-col gap-4">
                                     <a href="landscaping-design-development" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Landscape Design &amp; Developments</a>
                                     <a href="garden-maintenance" class="text-[10px] uppercase tracking-widest text-ivory-dim hover:text-accent-bronze transition-colors">Garden Maintenance</a>
@@ -616,7 +616,7 @@
                             href="about">About Us</a>
                     </div>
                 </nav>
-                                <button id="mobile-menu-btn"
+                <button id="mobile-menu-btn"
                     class="lg:hidden flex items-center text-ivory z-[80] p-2 relative w-10 h-10 justify-center">
                     <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block transform -translate-y-[7px] origin-center"></span>
                     <span class="hamburger-line absolute h-[1.5px] w-5 bg-ivory transition-all duration-400 block opacity-100 origin-center"></span>

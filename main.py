@@ -130,42 +130,70 @@ def clear_cache():
     fetch_collection_data.cache_clear()
     fetch_site_content.cache_clear()
 
-FOUNDERS_ERA_MANIFEST_PATH = "portfolio/founders-era/images"
-FOUNDERS_ERA_R2_FOLDER = "assets/portfolio/founders era projects"
-FOUNDERS_ERA_IMAGES = [
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/57A1B243-7B63-41E3-A88C-1F5114F3421F.jpg",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/5D264EDD-EBE5-4B70-ABB0-DFB0EB41CCEC.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/9D785DE4-1F57-4E99-B579-A8446ED2E812.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/A1682D49-3032-4A43-A1CC-7FFA3A84C344.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/E53541ED-6D22-49D6-8A1A-351BDD6C9A3E.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/0811CD69-AF7D-4729-8E0D-35451B3D2622.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/BEA7806C-3DE7-4786-BCCA-F1C07CEF4D2A.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/74D7D10D-B712-45D3-9B95-1ABFA411C00E.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/98487D03-D11B-430E-8840-1701C3D6E2F9.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/CB26DA90-9EE7-4303-997D-6D13D39D96D8.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/D798C7D7-7389-4038-B49F-04A12F029493.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/D36D8761-203E-42D3-9CD9-F57E432FDA57.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/98440DEA-9647-4996-868C-7D8F636B1190.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/E169FA42-2317-4D97-9F06-2B033E32004E.png",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/486C5605-D4F2-4B9D-8311-28A91BC2CF96.jpg",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/41057253-D0FA-4339-927A-AADC5F94B2F0.jpg",
-    "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/A6E2C193-9218-46D3-968C-3341F7E4C11F.jpg",
-]
+PORTFOLIO_TABS = ["villa", "terrace", "housing", "founders-era"]
 
-def fetch_founders_era_manifest() -> list[str]:
+PORTFOLIO_DEFAULT_IMAGES = {
+    "villa": [
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/1A8586D8-4B63-45A8-8499-7E6926501953.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/43B31350-DA3C-422D-AFA3-626139C9E578.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/79F1D9E2-1DC6-4BCA-A755-36D5E5585079.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/917D98C1-D55E-459A-82DF-0483C62FF622.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/AD34490C-109A-4FC7-AFDF-F29438D7E0EB.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/villa%20projects/E6BEDFF8-BD56-445B-B06F-66497110D62B.png"
+    ],
+    "terrace": [
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/14C3D11D-6A55-40A0-BDDE-9D87F6778B6D.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/2DF1E3ED-EC48-45AC-ADDC-890447876E11%20(2).png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/35CEA33A-08DB-4C89-B47F-765BA6246452.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/42185EE8-F3B3-4FA5-A186-CB1A2B557807%20(1).png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/48E40800-D3B8-4BF8-9D1C-F84AF93ADB0D.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/66BD27DB-5C07-40A5-B799-E3BE3A4135C7.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/7CC2240C-F179-411D-94EC-D6161CAE8B00.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/838984EF-9F5B-4FE2-B22C-BB9D9B0ED1A7.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/9CA486C0-6566-489C-B397-149E1E7FF13E%20(2).png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/CA4C5AC3-901D-43B6-8653-69AC16191A6F.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/terrace%20projects/E33B8408-A13B-4702-9FB6-129F47CCE582.png"
+    ],
+    "housing": [
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/ACFF5D17-19DC-4EF7-B097-20B8E5FEAC0F.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/housing%20projects/6292758B-D3AF-47E5-9470-64D584E40FF1.png"
+    ],
+    "founders-era": [
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/57A1B243-7B63-41E3-A88C-1F5114F3421F.jpg",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/5D264EDD-EBE5-4B70-ABB0-DFB0EB41CCEC.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/9D785DE4-1F57-4E99-B579-A8446ED2E812.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/A1682D49-3032-4A43-A1CC-7FFA3A84C344.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/E53541ED-6D22-49D6-8A1A-351BDD6C9A3E.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/0811CD69-AF7D-4729-8E0D-35451B3D2622.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/BEA7806C-3DE7-4786-BCCA-F1C07CEF4D2A.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/74D7D10D-B712-45D3-9B95-1ABFA411C00E.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/98487D03-D11B-430E-8840-1701C3D6E2F9.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/CB26DA90-9EE7-4303-997D-6D13D39D96D8.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/D798C7D7-7389-4038-B49F-04A12F029493.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/D36D8761-203E-42D3-9CD9-F57E432FDA57.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/98440DEA-9647-4996-868C-7D8F636B1190.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/E169FA42-2317-4D97-9F06-2B033E32004E.png",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/486C5605-D4F2-4B9D-8311-28A91BC2CF96.jpg",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/41057253-D0FA-4339-927A-AADC5F94B2F0.jpg",
+        "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/portfolio/founders%20era%20projects/A6E2C193-9218-46D3-968C-3341F7E4C11F.jpg"
+    ]
+}
+
+def fetch_portfolio_manifest(tab: str) -> list[str]:
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT value FROM site_content WHERE path = ?", (FOUNDERS_ERA_MANIFEST_PATH,))
+    cur.execute("SELECT value FROM site_content WHERE path = ?", (f"portfolio/{tab}/images",))
     row = cur.fetchone()
     conn.close()
     if not row or not row["value"]:
-        return list(FOUNDERS_ERA_IMAGES)
+        return list(PORTFOLIO_DEFAULT_IMAGES.get(tab, []))
     try:
         data = json.loads(row["value"])
         urls = [url for url in data if isinstance(url, str) and url.strip()] if isinstance(data, list) else []
-        return urls or list(FOUNDERS_ERA_IMAGES)
+        return urls or list(PORTFOLIO_DEFAULT_IMAGES.get(tab, []))
     except json.JSONDecodeError:
-        return list(FOUNDERS_ERA_IMAGES)
+        return list(PORTFOLIO_DEFAULT_IMAGES.get(tab, []))
 
 FIXED_HOME_HERO_MEDIA = {
     "home/hero/image": {
@@ -415,6 +443,102 @@ SITE_CONTENT_DEFAULTS = {
     },
     "home/trends/card3/body": {
         "value": "Vertical ecosystems that redefine internal boundaries, offering a rhythmic pulse to static architecture.",
+        "type": "longtext",
+    },
+    "home/trends/badge_label": {
+        "value": "The Current Landscape",
+        "type": "text",
+    },
+    "home/trends/title_line1": {
+        "value": "Botanical",
+        "type": "text",
+    },
+    "home/trends/title_highlight": {
+        "value": "Trends",
+        "type": "text",
+    },
+    "home/trends/title_connector": {
+        "value": "for the",
+        "type": "text",
+    },
+    "home/trends/title_line3": {
+        "value": "Modern Collector",
+        "type": "text",
+    },
+    "home/trends/description": {
+        "value": "An editorial exploration of nature's evolving role in high-end design.",
+        "type": "longtext",
+    },
+    "biophilic-workspace/block1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimens.png",
+        "type": "media",
+    },
+    "biophilic-workspace/block1/title": {
+        "value": "Focused Work Zones",
+        "type": "text",
+    },
+    "biophilic-workspace/block1/body": {
+        "value": "Strategic greenery near desks and transition corridors reduces visual fatigue and helps teams sustain deeper focus throughout long work cycles.",
+        "type": "longtext",
+    },
+    "biophilic-workspace/block2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/about/aboutus_legacy.png",
+        "type": "media",
+    },
+    "biophilic-workspace/block2/title": {
+        "value": "Air and Acoustic Balance",
+        "type": "text",
+    },
+    "biophilic-workspace/block2/body": {
+        "value": "Plant-led layering softens hard interiors, improves perceived air quality and contributes to calmer acoustics across open-plan environments.",
+        "type": "longtext",
+    },
+    "rare-specimen-sculptures/block1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/architectural_harmony.png",
+        "type": "media",
+    },
+    "rare-specimen-sculptures/block1/title": {
+        "value": "Architectural Presence",
+        "type": "text",
+    },
+    "rare-specimen-sculptures/block1/body": {
+        "value": "Each specimen is selected for maturity, silhouette and sculptural character to anchor space with botanical authority.",
+        "type": "longtext",
+    },
+    "rare-specimen-sculptures/block2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/garden_maintenance_legacy.png",
+        "type": "media",
+    },
+    "rare-specimen-sculptures/block2/title": {
+        "value": "Collector-Led Curation",
+        "type": "text",
+    },
+    "rare-specimen-sculptures/block2/body": {
+        "value": "We align plant provenance, form and long-term care protocols with each collector's design intent and lifestyle rhythm.",
+        "type": "longtext",
+    },
+    "living-walls/block1/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/about/aboutus_legacy.png",
+        "type": "media",
+    },
+    "living-walls/block1/title": {
+        "value": "Engineered Vertical Ecology",
+        "type": "text",
+    },
+    "living-walls/block1/body": {
+        "value": "We design irrigation, species layering and maintenance access as one integrated system so the wall remains healthy and visually composed over time.",
+        "type": "longtext",
+    },
+    "living-walls/block2/image": {
+        "value": "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/images/services/curated_specimens.png",
+        "type": "media",
+    },
+    "living-walls/block2/title": {
+        "value": "Spatial Softening",
+        "type": "text",
+    },
+    "living-walls/block2/body": {
+        "value": "Living walls soften rigid architecture, improve ambience and create an immersive natural experience in high-value interior environments.",
         "type": "longtext",
     },
     "home/staging/eyebrow": {
@@ -1199,14 +1323,16 @@ def migrate_legacy_site_content_keys():
             (path, payload["value"], payload["type"]),
         )
 
-    cur.execute("SELECT value FROM site_content WHERE path = ?", (FOUNDERS_ERA_MANIFEST_PATH,))
-    founders_row = cur.fetchone()
-    founders_value = (founders_row["value"] if founders_row else "") or ""
-    if founders_row is None or not founders_value.strip() or founders_value.strip() in {"[]", "null"}:
-        cur.execute(
-            "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
-            (FOUNDERS_ERA_MANIFEST_PATH, json.dumps(FOUNDERS_ERA_IMAGES), "json"),
-        )
+    for tab in PORTFOLIO_TABS:
+        path = f"portfolio/{tab}/images"
+        cur.execute("SELECT value FROM site_content WHERE path = ?", (path,))
+        row = cur.fetchone()
+        value = (row["value"] if row else "") or ""
+        if row is None or not value.strip() or value.strip() in {"[]", "null"}:
+            cur.execute(
+                "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
+                (path, json.dumps(PORTFOLIO_DEFAULT_IMAGES[tab]), "json"),
+            )
 
     cur.execute(
         """
@@ -1709,9 +1835,33 @@ async def upload_file(request: Request, admin: str = Depends(get_current_admin))
     url_path = f"uploads/{unique_name}" if UPLOAD_DIR != os.path.join("assets", "images") else f"assets/images/{unique_name}"
     return {"url": url_path, "storage": "local"}
 
-@app.get("/api/portfolio/founders-era")
-async def get_founders_era_images():
-    return {"images": fetch_founders_era_manifest()}
+@app.get("/api/portfolio/{tab}")
+async def get_portfolio_images(tab: str):
+    if tab not in PORTFOLIO_TABS:
+        raise HTTPException(status_code=400, detail="Invalid portfolio tab")
+    return {"images": fetch_portfolio_manifest(tab)}
+
+@app.post("/api/portfolio/{tab}/save")
+async def save_portfolio_images(tab: str, request: Request, admin: str = Depends(get_current_admin)):
+    if tab not in PORTFOLIO_TABS:
+        raise HTTPException(status_code=400, detail="Invalid portfolio tab")
+    data = await request.json()
+    images = data.get('images', [])
+    if not isinstance(images, list):
+        raise HTTPException(status_code=400, detail="Images must be a list")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT OR REPLACE INTO site_content (path, value, type) VALUES (?, ?, ?)",
+        (f"portfolio/{tab}/images", json.dumps(images), "json"),
+    )
+    conn.commit()
+    conn.close()
+    
+    fetch_site_content.cache_clear()
+    version = bump_sync_version()
+    purge_cloudflare_cache()
+    return {"status": "success", "version": version}
 
 @app.post("/api/save")
 async def save_data(request: Request, admin: str = Depends(get_current_admin)):
@@ -1886,7 +2036,7 @@ async def serve_static(request: Request, path: str):
             response.headers["Pragma"] = "no-cache"
             response.headers["Expires"] = "0"
         else:
-            response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=600"
+            response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     return response
 
 if __name__ == "__main__":

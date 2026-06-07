@@ -141,6 +141,24 @@
                     card.style.boxShadow = "";
                 });
             });
+        },
+
+        setupStickyNav: function() {
+            const onScroll = () => {
+                const header = document.querySelector("header");
+                if (!header) return;
+
+                if (window.scrollY > 50) {
+                    header.classList.add("scrolled");
+                    header.classList.remove("hover:bg-black/20", "hover:backdrop-blur-md", "hover:shadow-lg");
+                } else {
+                    header.classList.remove("scrolled");
+                    header.classList.add("hover:bg-black/20", "hover:backdrop-blur-md", "hover:shadow-lg");
+                }
+            };
+
+            window.addEventListener("scroll", onScroll, { passive: true });
+            onScroll();
         }
     };
 
@@ -149,9 +167,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             scrollReveal.init();
             premiumInteractions.init();
+            premiumInteractions.setupStickyNav();
         });
     } else {
         scrollReveal.init();
         premiumInteractions.init();
+        premiumInteractions.setupStickyNav();
     }
 })();

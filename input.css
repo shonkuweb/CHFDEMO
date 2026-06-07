@@ -30,11 +30,13 @@
 }
 
 @layer components {
-    body > .relative.flex.min-h-screen > header {
-        background-color: rgba(0, 0, 0, 0.1) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        box-shadow: none !important;
+
+
+    header.scrolled {
+        background-color: rgba(0, 0, 0, 0.75) !important;
+        backdrop-filter: blur(20px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
     }
 
     header a:has(.nav-logo) {
