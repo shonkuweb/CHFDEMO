@@ -149,11 +149,9 @@
                 if (!header) return;
 
                 if (window.scrollY > 50) {
-                    header.classList.add("scrolled");
-                    header.classList.remove("hover:bg-black/20", "hover:backdrop-blur-md", "hover:shadow-lg");
+                    header.classList.add("bg-black/20", "backdrop-blur-md", "shadow-lg");
                 } else {
-                    header.classList.remove("scrolled");
-                    header.classList.add("hover:bg-black/20", "hover:backdrop-blur-md", "hover:shadow-lg");
+                    header.classList.remove("bg-black/20", "backdrop-blur-md", "shadow-lg");
                 }
             };
 
