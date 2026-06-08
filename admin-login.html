@@ -99,14 +99,12 @@
                     
                     const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value;
 
-                    const formData = new FormData();
-                    formData.append('username', username.value);
-                    formData.append('password', password.value);
-                    if (turnstileResponse) {
-                        formData.append('cf_turnstile_response', turnstileResponse);
-                    }
-
                     try {
+                        const formData = new FormData();
+                        formData.append('username', username.value);
+                        formData.append('password', password.value);
+                        formData.append('cf_turnstile_response', turnstileResponse || '');
+
                         const res = await fetch('/api/login', {
                             method: 'POST',
                             body: formData

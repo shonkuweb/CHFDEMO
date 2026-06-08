@@ -173,14 +173,83 @@ class AdminHTTPRequestHandler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({"images": images}).encode('utf-8'))
                 return
+                
+        # API: Admin Me
+        if parsed_path.path == '/api/admin/me':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'username': 'admin'}).encode('utf-8'))
+            return
             
         super().do_GET()
 
     def do_POST(self):
         content_length = int(self.headers.get('Content-Length', 0))
         
+        # Authentication API
+        if self.path == '/api/login':
+            raw_body = self.rfile.read(content_length).decode('utf-8')
+            try:
+                data = json.loads(raw_body)
+                username = data.get('username')
+                password = data.get('password')
+                
+                conn = get_db_connection()
+                cur = conn.cursor()
+                cur.execute("SELECT password_hash FROM admins WHERE username = ?", (username,))
+                row = cur.fetchone()
+                conn.close()
+                
+                valid = False
+                if row:
+                    pwd_hash = row[0]
+                    if pwd_hash.startswith("sha256$"):
+                        import hashlib
+                        parts = pwd_hash.split("$")
+                        if len(parts) == 3:
+                            salt = parts[1]
+                            expected_hash = parts[2]
+                            if hashlib.sha256((salt + password).encode()).hexdigest() == expected_hash:
+                                valid = True
+                    else:
+                        try:
+                            from passlib.hash import argon2
+                            valid = argon2.verify(password, pwd_hash)
+                        except Exception:
+                            pass
+                            
+                if not valid:
+                    self.send_response(401)
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'detail': 'Invalid credentials'}).encode('utf-8'))
+                    return
+                
+                import uuid
+                token = uuid.uuid4().hex
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Set-Cookie', f'admin_session={token}; HttpOnly; Path=/')
+                self.end_headers()
+                self.wfile.write(json.dumps({'message': 'Success'}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'detail': str(e)}).encode('utf-8'))
+            return
+
+        elif self.path == '/api/logout':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Set-Cookie', 'admin_session=; HttpOnly; Path=/; Max-Age=0')
+            self.end_headers()
+            self.wfile.write(json.dumps({'message': 'Logged out'}).encode('utf-8'))
+            return
+
         # ── High-Speed Upload: R2 first, local fallback ─────────
-        if self.path == '/api/upload':
+        elif self.path == '/api/upload':
             filename_header = self.headers.get('X-Filename', 'uploaded_media.jpg')
             ext = os.path.splitext(filename_header)[1].lower()
             if not ext: ext = '.jpg'
