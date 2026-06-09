@@ -554,7 +554,7 @@ SITE_CONTENT_DEFAULTS = {
         "type": "longtext",
     },
     "home/staging/cta": {
-        "value": "Let's Create Something Living",
+        "value": "EXPLORE THE EXPERIENCE",
         "type": "text",
     },
     "home/staging/feature1/image": {

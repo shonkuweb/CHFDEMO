@@ -33,7 +33,7 @@
         .cp-hero-stage {
             position: relative;
             width: 100%;
-            min-height: clamp(32rem, 56vw, 42rem);
+            min-height: max(32rem, 56vw);
             overflow: hidden;
         }
 
@@ -54,6 +54,7 @@
 
         .cp-hero-media .cp-fit-image {
             filter: brightness(1.14) saturate(1.03);
+            object-position: center bottom;
         }
 
         .cp-fit-image:not([src]),
@@ -82,7 +83,7 @@
             width: 100%;
             max-width: 80rem;
             margin: 0 auto;
-            padding: clamp(2.5rem, 6vh, 4rem) clamp(1.35rem, 5vw, 5rem) clamp(4.25rem, 10vh, 6.75rem);
+            padding: clamp(2.5rem, 6vh, 4rem) clamp(1rem, 2vw, 2rem) clamp(4.25rem, 10vh, 6.75rem);
             pointer-events: none;
         }
 
@@ -1015,7 +1016,15 @@
 
             function createBlockMarkup(block, index) {
                 const reverse = index % 2 === 1;
-                const title = escapeHtml(block.title || `Collection ${index + 1}`);
+                const rawTitle = block.title || `Collection ${index + 1}`;
+                const titleWords = rawTitle.trim().split(/\s+/);
+                let formattedTitle = '';
+                if (titleWords.length >= 2) {
+                    formattedTitle = `<span class="italic">${escapeHtml(titleWords[0])} ${escapeHtml(titleWords[1])}</span> ${escapeHtml(titleWords.slice(2).join(' '))}`;
+                } else if (titleWords.length === 1 && titleWords[0] !== '') {
+                    formattedTitle = `<span class="italic">${escapeHtml(titleWords[0])}</span>`;
+                }
+                const title = escapeHtml(rawTitle);
                 const body = escapeHtml(block.body || '');
                 const images = [block.image1, block.image2, block.image3]
                     .map((url) => String(url || '').trim())
@@ -1047,7 +1056,7 @@
                             </div>
                             <div class="cp-block-copy">
                                 <div class="cp-block-rule" aria-hidden="true"></div>
-                                <h3 class="cp-block-title">${title}</h3>
+                                <h3 class="cp-block-title">${formattedTitle}</h3>
                                 ${body ? `<p class="cp-block-body">${body}</p>` : ''}
                                 ${renderHighlights(block.highlights)}
                             </div>

@@ -248,6 +248,7 @@
             margin: 0;
             font-size: clamp(3.15rem, 6.2vw, 5.7rem);
             line-height: 0.96;
+            text-shadow: 0 4px 32px rgba(0, 0, 0, 0.85);
         }
 
         .pec-hero h1 em {
@@ -269,10 +270,11 @@
 
         .pec-hero-copy {
             margin: 0 0 1.12rem;
-            color: rgba(238, 232, 221, 0.82);
+            color: #ffffff;
             font-size: 0.82rem;
             font-weight: 600;
             line-height: 1.75;
+            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.9);
         }
 
         .pec-button {
@@ -348,8 +350,8 @@
             z-index: 1;
             pointer-events: none;
             background:
-                linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.42) 100%),
-                rgba(0, 0, 0, 0.22);
+                linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.95) 100%),
+                rgba(0, 0, 0, 0.35);
         }
 
         .pec-feature-image {
@@ -382,29 +384,15 @@
         }
 
         .pec-feature-copy::before {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            z-index: -1;
-            width: 155%;
-            height: 175%;
-            content: "";
-            transform: translate(-50%, -50%);
-            background: radial-gradient(
-                ellipse at center,
-                rgba(0, 0, 0, 0.72) 0%,
-                rgba(0, 0, 0, 0.42) 45%,
-                rgba(0, 0, 0, 0) 78%
-            );
-            pointer-events: none;
+            display: none;
         }
 
         .pec-feature-copy h3,
         .pec-feature-copy p {
             text-shadow:
-                0 1px 3px rgba(0, 0, 0, 0.95),
-                0 4px 20px rgba(0, 0, 0, 0.85),
-                0 10px 32px rgba(0, 0, 0, 0.55);
+                0 1px 3px rgba(0, 0, 0, 1),
+                0 4px 20px rgba(0, 0, 0, 0.95),
+                0 10px 32px rgba(0, 0, 0, 0.85);
         }
 
         .pec-feature-card .pec-icon {
@@ -943,7 +931,6 @@
                     <p class="pec-eyebrow">Collect From The Experience</p>
                     <h2 class="pec-serif">Bring Nature<br>Home</h2>
                     <p>Take home curated plants, sculptural vessels, garden objects and living compositions selected from the archive.</p>
-                    <a class="pec-button" href="curated-specimens">Explore Collections →</a>
                 </div>
                 <div class="pec-collection-grid">
                     <article class="pec-collection-card"><div class="pec-bg" data-cms="plant-center/collect/plants/image" aria-hidden="true"></div><h3>Plants</h3></article>

@@ -75,7 +75,7 @@
 
         .hero-home-title {
             font-family: "Noto Serif", serif;
-            font-size: clamp(4.5rem, 9vw, 8rem);
+            font-size: clamp(4rem, 8vw, 7rem);
             line-height: 0.95;
             font-weight: 300;
             letter-spacing: -0.025em;
@@ -92,9 +92,9 @@
         .hero-home-subtitle {
             max-width: 29rem;
             margin-top: clamp(1rem, 2vw, 1.5rem);
-            font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+            font-size: clamp(1.1rem, 1.6vw, 1.45rem);
             line-height: 1.15;
-            font-weight: 300;
+            font-weight: 500;
             text-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
         }
 
@@ -192,12 +192,12 @@
             }
 
             .hero-home-title {
-                font-size: clamp(3rem, 15vw, 4.25rem);
+                font-size: clamp(2.5rem, 12vw, 3.5rem);
             }
 
             .hero-home-subtitle {
                 max-width: 20rem;
-                font-size: clamp(0.8rem, 3.5vw, 1rem);
+                font-size: clamp(1rem, 4.5vw, 1.25rem);
             }
 
             .hero-home-features {
@@ -245,10 +245,9 @@
 
                     <!-- Collections Dropdown -->
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="javascript:void(0)">
                             Collections
-                            <span class="material-symbols-outlined text-sm">expand_more</span>
                         </a>
                         <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
                             <div class="bg-black/80 border border-white/10 p-6 min-w-[240px] shadow-2xl backdrop-blur-xl">
@@ -264,10 +263,9 @@
 
                     <!-- Services Dropdown -->
                     <div class="relative group">
-                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300 flex items-center gap-2" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
+                        <a class="text-[10px] uppercase tracking-widest font-bold text-white hover:text-accent-bronze transition-colors duration-300" style="font-size: clamp(8px, 0.75vw, 10px); letter-spacing: clamp(0.08em, 0.18vw, 0.16em); white-space: nowrap;"
                             href="javascript:void(0)">
                             Services
-                            <span class="material-symbols-outlined text-sm">expand_more</span>
                         </a>
                         <div class="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
                             <div class="bg-black/80 border border-white/10 p-6 min-w-[280px] shadow-2xl backdrop-blur-xl">
@@ -428,7 +426,7 @@
                         Luxury botanical solutions for premium spaces
                     </p>
                     <a href="enquiry" class="hero-home-cta">
-                        EXPLORE THE EXPERIENCE
+                        ENQUIRE NOW
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </a>
                     <div class="hero-home-features">
@@ -476,7 +474,7 @@
                                 data-cms="home/staging/body">Layered landscape compositions that bring structure, softness and living depth into contemporary spaces.</p>
                             <a href="landscape-staging"
                                 class="group inline-flex items-center gap-4 px-0 py-3 text-[10px] uppercase tracking-[0.24em] text-ivory/80 w-fit hover:text-accent-bronze transition-colors">
-                                <span data-cms="home/staging/cta">Let's Create Something Living</span>
+                                <span data-cms="home/staging/cta">EXPLORE THE EXPERIENCE</span>
                                 <span class="text-lg leading-none transition-transform group-hover:translate-x-1">→</span>
                             </a>
                         </div>
@@ -531,7 +529,7 @@
                 </div>
             </section>
             <section
-                class="home-expertise-section bg-black pb-24 md:pb-40 px-6 md:px-12 lg:px-24 border-b border-white/5 relative overflow-hidden">
+                class="home-expertise-section bg-black pb-16 md:pb-24 px-6 md:px-12 lg:px-24 border-b border-white/5 relative overflow-hidden">
                 <!-- Aesthetic background elements -->
                 <div
                     class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent-bronze/5 rounded-full blur-[120px] pointer-events-none">
@@ -948,6 +946,32 @@
     
     <!-- Universal CMS Core (v2 with cache busting) -->
     <script src="assets/cms-core.js?v=2.4"></script>
+
+    <!-- Preload portfolio images in background for instant loading -->
+    <script>
+        window.addEventListener('load', () => {
+            const preloadPortfolio = () => {
+                fetch('/api/portfolio/villa?t=' + Date.now())
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.images) {
+                            data.images.slice(0, 5).forEach(src => {
+                                const link = document.createElement('link');
+                                link.rel = 'preload';
+                                link.as = 'image';
+                                link.href = src;
+                                document.head.appendChild(link);
+                            });
+                        }
+                    }).catch(() => {});
+            };
+            if (window.requestIdleCallback) {
+                requestIdleCallback(preloadPortfolio);
+            } else {
+                setTimeout(preloadPortfolio, 1000);
+            }
+        });
+    </script>
 </body>
 
 </html>

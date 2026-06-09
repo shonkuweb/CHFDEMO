@@ -37,125 +37,47 @@
             background-color: #000;
         }
 
-        .about-founding-era {
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-        }
-
-        .about-founding-era-stage {
-            position: relative;
-            width: 100%;
-            max-width: 100%;
-            margin: 0 auto;
-        }
-
-        .about-founding-era-media {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            border: none;
-            line-height: 0;
-            margin: 0 auto;
-        }
-
-        .about-founding-era-media img {
-            display: block;
-            width: 100%;
-            height: auto;
-            max-width: 100%;
-            margin: 0 auto;
-            object-fit: contain;
-            object-position: center;
-        }
-
-        @media (min-width: 768px) {
-            .about-founding-era-stage {
-                max-width: min(90%, 52rem);
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .about-founding-era-stage {
-                max-width: min(85%, 50rem);
-            }
-        }
-
-        .about-founding-era-copy {
-            position: absolute;
-            left: clamp(1.25rem, 4.5vw, 3.5rem);
-            top: clamp(12%, 13vw, 16%);
-            width: min(88vw, 22rem);
-            max-width: 22rem;
-            z-index: 2;
-            padding: 0;
-            text-align: left;
-            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 2px 28px rgba(0, 0, 0, 0.75);
-        }
-
-        .about-founding-era-copy h3 {
-            margin-bottom: 1.25rem;
-            font-family: "Noto Serif", serif;
-            font-size: clamp(1.8rem, 4.95vw, 3.375rem);
-            font-weight: 400;
-            line-height: 1.08;
-            letter-spacing: -0.02em;
-            color: #eee9df;
-        }
-
-        @media (min-width: 768px) {
-            .about-founding-era-copy {
-                width: min(34%, 24rem);
-                max-width: 24rem;
-                top: 14%;
-            }
-        }
-
         .about-legacy-media {
             position: relative;
-            width: min(68vw, 14.5rem);
-            aspect-ratio: 9 / 16;
+            width: 100%;
+            max-width: 18rem;
             overflow: hidden;
-            background: #000;
+            background: transparent;
             flex-shrink: 0;
             margin: 0 auto;
         }
 
         .about-legacy-media img {
-            position: absolute;
-            inset: 0;
+            display: block;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center top;
+            height: auto;
+            object-fit: contain;
         }
 
         @media (min-width: 1024px) {
             .about-legacy-media {
-                width: min(16rem, 30%);
-                max-width: 16rem;
+                width: auto;
+                max-width: 30%;
                 margin: 0;
             }
         }
 
         .about-nurseries-carousel {
-            width: min(68vw, 14.5rem);
+            width: 100%;
+            max-width: 18rem;
             flex-shrink: 0;
             margin: 0 auto;
         }
 
         .about-nurseries-frame {
-            position: relative;
+            display: grid;
             width: 100%;
-            aspect-ratio: 9 / 16;
             overflow: hidden;
-            background: #000;
+            background: transparent;
         }
 
         .about-nurseries-slide {
-            position: absolute;
-            inset: 0;
+            grid-area: 1 / 1;
             opacity: 0;
             transition: opacity 0.85s ease;
             pointer-events: none;
@@ -169,9 +91,8 @@
         .about-nurseries-slide img {
             display: block;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
+            height: auto;
+            object-fit: contain;
         }
 
         .about-nurseries-dots {
@@ -199,8 +120,8 @@
 
         @media (min-width: 1024px) {
             .about-nurseries-carousel {
-                width: min(16rem, 30%);
-                max-width: 16rem;
+                width: auto;
+                max-width: 30%;
                 margin: 0;
             }
         }
@@ -397,18 +318,16 @@
             <section class="pb-32 px-6 lg:px-24 flex flex-col gap-24 lg:gap-32 w-full max-w-7xl mx-auto">
 
                 <!-- Block 1: The Founding Era -->
-                <div class="about-founding-era reveal reveal-up">
-                    <div class="about-founding-era-stage">
-                        <div class="about-founding-era-media group">
-                            <img alt="The Founding Era 1982 — then and now at Calcutta Horticultural Farm" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/founding-era-68896cb0.png" width="1024" height="682" data-cms="about/story/image-1" decoding="async" loading="eager" fetchpriority="high">
-                        </div>
-                        <div class="about-founding-era-copy reveal reveal-up stagger-1">
-                            <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                            <h3 data-cms="about/story/title-1">The Founding Era (1982)</h3>
-                            <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base mb-4" data-cms="about/philosophy/patience-title">
-                                Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.
-                            </p>
-                        </div>
+                <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="w-full lg:w-[45%] h-64 lg:h-96 bg-black relative overflow-hidden group flex-shrink-0 reveal reveal-scale stagger-1">
+                        <img alt="The Founding Era 1982 — then and now at Calcutta Horticultural Farm" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/founding-era-68896cb0.png" class="absolute inset-0 w-full h-full object-cover" data-cms="about/story/image-1" decoding="async" loading="eager" fetchpriority="high">
+                    </div>
+                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left reveal reveal-up stagger-2">
+                        <div class="w-12 h-px bg-accent-bronze mb-6"></div>
+                        <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/story/title-1">The Founding Era (1982)</h3>
+                        <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="about/philosophy/patience-title">
+                            Calcutta Horticultural Farm is a plant-led design practice rooted in legacy, expertise and a deep respect for nature. Founded in 1982 by Mr. Gautam Bose, the practice began with a vision to integrate greenery into the evolving urban fabric—setting new benchmarks in landscape development and pioneering tree transplantation in the city.
+                        </p>
                     </div>
                 </div>
 
@@ -431,7 +350,7 @@
                     <div class="about-legacy-media reveal reveal-scale stagger-1">
                         <img alt="Carrying the Legacy Forward — Indra Bose and Apurba Bose" src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/carrying-legacy-forward-dde8988b.png" data-cms="about/story/image-3" decoding="async" loading="lazy" fetchpriority="low">
                     </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center reveal reveal-up stagger-2">
+                    <div class="w-full lg:w-auto lg:flex-1 flex flex-col justify-center reveal reveal-up stagger-2">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
                         <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/philosophy/presence-title">Carrying the Legacy Forward</h3>
                         <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="about/philosophy/presence-body">
@@ -456,7 +375,7 @@
                             <button type="button" class="about-nurseries-dot" data-about-nurseries-dot="1" aria-label="Show nursery image 2"></button>
                         </div>
                     </div>
-                    <div class="w-full lg:w-[55%] flex flex-col justify-center lg:items-start lg:text-left reveal reveal-up stagger-2">
+                    <div class="w-full lg:w-auto lg:flex-1 flex flex-col justify-center lg:items-start lg:text-left reveal reveal-up stagger-2">
                         <div class="w-12 h-px bg-accent-bronze mb-6"></div>
                         <h3 class="font-serif text-2xl text-ivory mb-6 font-medium" data-cms="about/nurseries/title">Our Nurseries</h3>
                         <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base" data-cms="about/nurseries/body">

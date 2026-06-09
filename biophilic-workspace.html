@@ -286,7 +286,15 @@
             function createBlockMarkup(block, index) {
                 const reverse = index % 2 === 1;
                 const image = escapeHtml(block.image || '');
-                const title = escapeHtml(block.title || `Block ${index + 1}`);
+                const rawTitle = block.title || `Block ${index + 1}`;
+                const titleWords = rawTitle.trim().split(/\s+/);
+                let formattedTitle = '';
+                if (titleWords.length >= 2) {
+                    formattedTitle = `<span class="italic">${escapeHtml(titleWords[0])} ${escapeHtml(titleWords[1])}</span> ${escapeHtml(titleWords.slice(2).join(' '))}`;
+                } else if (titleWords.length === 1 && titleWords[0] !== '') {
+                    formattedTitle = `<span class="italic">${escapeHtml(titleWords[0])}</span>`;
+                }
+                const title = escapeHtml(rawTitle);
                 const body = escapeHtml(block.body || '');
                 return `
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -296,7 +304,7 @@
                             </div>
                         </div>
                         <div class="lg:col-span-5 ${reverse ? 'lg:pr-12 lg:order-1' : 'lg:pl-12'}">
-                            <h3 class="font-serif text-balance text-4xl mb-6">${title}</h3>
+                            <h3 class="font-serif text-balance text-4xl mb-6">${formattedTitle}</h3>
                             <p class="deep-block-copy">${body}</p>
                         </div>
                     </div>

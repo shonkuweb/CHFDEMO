@@ -39,7 +39,7 @@
             position: absolute;
             top: auto;
             bottom: 0.65rem;
-            z-index: 40;
+            z-index: 300;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -338,7 +338,7 @@
     
 </head>
 
-<body class="portfolio-page bg-background-dark text-ivory font-display antialiased">
+<body class="portfolio-page bg-black text-ivory font-display antialiased">
     <div class="relative flex min-h-screen w-full flex-col overflow-x-clip">
         <header
             class="fixed top-0 left-0 z-[70] w-full bg-transparent transition-all duration-500 hover:bg-black/20 hover:backdrop-blur-md hover:shadow-lg">
@@ -412,7 +412,7 @@
 
         <!-- Mobile Sidebar Drawer -->
         <div id="mobile-sidebar"
-            class="fixed top-0 right-0 h-full w-full bg-[#0a0a0a]/95 backdrop-blur-3xl z-[100] lg:hidden flex flex-col translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] overflow-y-auto"
+            class="fixed top-0 right-0 h-full w-full bg-black/95 backdrop-blur-3xl z-[100] lg:hidden flex flex-col translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] overflow-y-auto"
             style="will-change: transform;">
 
             <!-- Sidebar Header -->
@@ -520,7 +520,7 @@
             </section>
 
             <!-- Category tabs + hero strip (max-w-7xl + gap-8 stack matches site content sections) -->
-            <section class="relative flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 md:pb-16 lg:pb-20 border-b border-white/[0.06] bg-[#070707] -mt-1" aria-labelledby="portfolio-featured-heading">
+            <section class="relative flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 md:pb-16 lg:pb-20 bg-black -mt-1" aria-labelledby="portfolio-featured-heading">
                 <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 flex flex-col gap-5 md:gap-6 pt-4 md:pt-5">
                     <div class="flex flex-wrap justify-center gap-3 md:gap-4 snap-x snap-mandatory" role="tablist" aria-label="Portfolio categories">
                         <button type="button" role="tab" id="tab-villa" aria-controls="panel-villa" aria-selected="true" data-portfolio-tab="villa"
@@ -543,19 +543,19 @@
                 </div>
 
                 <div class="relative w-full overflow-visible portfolio-marquee-scene -mt-2 md:-mt-1">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-32 z-10 bg-gradient-to-r from-[#070707] to-transparent"></div>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-32 z-10 bg-gradient-to-l from-[#070707] to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-32 z-10 bg-gradient-to-r from-black to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-32 z-10 bg-gradient-to-l from-black to-transparent"></div>
 
                     <!-- Villa -->
                     <div id="panel-villa" class="portfolio-strip-panel is-active" role="tabpanel" aria-labelledby="tab-villa" data-portfolio-panel="villa" aria-hidden="false">
+                        <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
+                            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                        </button>
+                        <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
+                            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                        </button>
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
-                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
-                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-                                </button>
-                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
-                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-                                </button>
                                 <div class="portfolio-projects-track" data-carousel-track role="list">
                                     <!-- Dynamic content will be injected here via initPortfolioTabs -->
                                 </div>
@@ -565,14 +565,14 @@
 
                     <!-- Terrace -->
                     <div id="panel-terrace" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-terrace" data-portfolio-panel="terrace" aria-hidden="true">
+                        <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
+                            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                        </button>
+                        <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
+                            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                        </button>
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
-                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
-                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-                                </button>
-                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
-                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-                                </button>
                                 <div class="portfolio-projects-track" data-carousel-track role="list">
                                     <!-- Dynamic content will be injected here via initPortfolioTabs -->
                                 </div>
@@ -582,14 +582,14 @@
 
                     <!-- Housing -->
                     <div id="panel-housing" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-housing" data-portfolio-panel="housing" aria-hidden="true">
+                        <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
+                            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                        </button>
+                        <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
+                            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                        </button>
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
-                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
-                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-                                </button>
-                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
-                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-                                </button>
                                 <div class="portfolio-projects-track" data-carousel-track role="list">
                                     <!-- Dynamic content will be injected here via initPortfolioTabs -->
                                 </div>
@@ -599,14 +599,14 @@
 
                     <!-- Founder's Era -->
                     <div id="panel-founders-era" class="portfolio-strip-panel" role="tabpanel" aria-labelledby="tab-founders-era" data-portfolio-panel="founders-era" aria-hidden="true">
+                        <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
+                            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                        </button>
+                        <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
+                            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                        </button>
                         <div class="portfolio-marquee-stage">
                             <div class="portfolio-carousel-viewport">
-                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-prev" data-carousel-prev aria-label="Previous project">
-                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-                                </button>
-                                <button type="button" class="portfolio-carousel-nav portfolio-carousel-next" data-carousel-next aria-label="Next project">
-                                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-                                </button>
                                 <div class="portfolio-projects-track" data-carousel-track role="list">
                                     <!-- Dynamic content will be injected here via initPortfolioTabs -->
                                 </div>
@@ -617,7 +617,7 @@
             </section>
 
             <!-- Clientele Section -->
-            <section class="py-32 bg-[#0a0a0a] border-t border-white/5 relative overflow-hidden">
+            <section class="pt-24 pb-32 bg-black relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-accent-bronze/5 rounded-full blur-[100px] pointer-events-none"></div>
 
                 <!-- Header -->
@@ -633,8 +633,8 @@
                 <div class="relative w-full overflow-hidden">
 
                     <!-- Fade masks on left & right -->
-                    <div class="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-[#0a0a0a] to-transparent"></div>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-[#0a0a0a] to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-black to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-black to-transparent"></div>
 
                     <!-- ROW 1 — scrolls left -->
                     <div class="flex gap-6 mb-6 marquee-track marquee-left">
@@ -821,7 +821,7 @@
             </section>
 
         </main>
-    <footer class="site-footer border-t border-white/10 bg-background-darker">
+    <footer class="site-footer border-t border-white/10 bg-black">
         <div class="footer-inner mx-auto max-w-7xl">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -1165,6 +1165,7 @@
                     };
                 }
                 bindHoverPause(panel);
+                bindCardHoverZoom(panel);
             }
 
             function shortestOffset(index, phase, total) {
@@ -1290,13 +1291,8 @@
             }
 
             function bindHoverPause(panel) {
-                const panelId = panel.getAttribute('data-portfolio-panel');
-                const st = state[panelId];
-                const viewport = panel.querySelector('.portfolio-carousel-viewport');
-                if (!st || !viewport || st.hoverBound) return;
-                st.hoverBound = true;
-                viewport.addEventListener('pointerenter', () => pausePanel(panel));
-                viewport.addEventListener('pointerleave', () => resumePanel(panel));
+                // Viewport hover pause removed per user request.
+                // The carousel will only pause when directly hovering an image.
             }
 
             function advancePanel(panel, delta) {
@@ -1304,12 +1300,40 @@
                 const st = state[panelId];
                 const cards = panel.querySelectorAll('.portfolio-feature-card');
                 if (!st || !cards.length) return;
-                st.basePhase = (st.basePhase + delta + cards.length) % cards.length;
-                st.startT = performance.now();
-                st.pausedAt = null;
-                layoutArc(panel, performance.now());
-                if (!rafId && panel.classList.contains('is-active')) {
-                    startLoop();
+
+                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const holdMs = reduce ? 1600 : 1000;
+                const moveMs = reduce ? 1800 : 950;
+                const cycleMs = holdMs + moveMs;
+                
+                const now = performance.now();
+                const effectiveNow = st.pausedAt !== null ? st.pausedAt : now;
+                if (st.startT == null) st.startT = effectiveNow;
+                
+                const elapsed = effectiveNow - st.startT;
+                const stepCount = Math.floor(elapsed / cycleMs);
+                const cycleT = elapsed - stepCount * cycleMs;
+                const moveT = cycleT < holdMs ? 0 : (cycleT - holdMs) / moveMs;
+                const easedMove = 1 - Math.pow(1 - Math.min(1, moveT), 3);
+                
+                const currentPhaseIndex = Math.round(stepCount + easedMove);
+                const currentIndex = (st.basePhase + currentPhaseIndex) % cards.length;
+                
+                st.basePhase = (currentIndex + delta + cards.length) % cards.length;
+                
+                // Clear any existing hover zooms to prevent stuck visual states
+                cards.forEach(c => c.classList.remove('is-hover-zoom'));
+                
+                if (st.pausedAt !== null) {
+                    st.startT = now;
+                    st.pausedAt = now;
+                    layoutArc(panel, now);
+                } else {
+                    st.startT = now;
+                    layoutArc(panel, now);
+                    if (!rafId && panel.classList.contains('is-active')) {
+                        startLoop();
+                    }
                 }
             }
 
@@ -1329,19 +1353,25 @@
             function bindCardHoverZoom(panel) {
                 panel.querySelectorAll('.portfolio-feature-card:not([data-hover-bound])').forEach((card) => {
                     card.setAttribute('data-hover-bound', '1');
-                    card.addEventListener('pointerenter', () => {
-                        if (!panel.classList.contains('is-active')) return;
-                        card.classList.add('is-hover-zoom');
-                        pausePanel(panel);
-                        layoutArc(panel, performance.now());
-                    });
-                    card.addEventListener('pointerleave', () => {
-                        card.classList.remove('is-hover-zoom');
-                        if (panel.classList.contains('is-active')) {
+                    const img = card.querySelector('img');
+                    if (img) {
+                        img.addEventListener('pointerenter', () => {
+                            if (!panel.classList.contains('is-active')) return;
+                            if (!card.classList.contains('is-spotlight') && !card.classList.contains('is-hover-zoom')) return;
+                            card.classList.add('is-hover-zoom');
+                            pausePanel(panel);
                             layoutArc(panel, performance.now());
-                            resumePanel(panel);
-                        }
-                    });
+                        });
+                        img.addEventListener('pointerleave', () => {
+                            card.classList.remove('is-hover-zoom');
+                            setTimeout(() => {
+                                if (!panel.querySelector('.is-hover-zoom') && panel.classList.contains('is-active')) {
+                                    layoutArc(panel, performance.now());
+                                    resumePanel(panel);
+                                }
+                            }, 40);
+                        });
+                    }
                 });
             }
 
@@ -1421,6 +1451,13 @@
 
             bootActivePanel();
 
+            document.addEventListener('keydown', (e) => {
+                const active = document.querySelector('[data-portfolio-panel].is-active');
+                if (!active) return;
+                if (e.key === 'ArrowLeft') advancePanel(active, -1);
+                if (e.key === 'ArrowRight') advancePanel(active, 1);
+            });
+
             let resizeRaf = null;
             window.addEventListener('resize', () => {
                 if (resizeRaf) cancelAnimationFrame(resizeRaf);
@@ -1473,11 +1510,15 @@
                                     card.setAttribute('aria-label', categoryId + ' project');
 
                                     const img = document.createElement('img');
-                                    img.setAttribute('data-src', src);
-                                    img.className = 'portfolio-card-img opacity-0 transition-opacity duration-700';
+                                    img.src = src;
+                                    img.className = 'portfolio-card-img transition-opacity duration-700 opacity-100';
                                     img.setAttribute('decoding', 'async');
-                                    img.setAttribute('loading', i === 0 ? 'eager' : 'lazy');
-                                    if (i === 0) img.setAttribute('fetchpriority', 'high');
+                                    if (i < 3) {
+                                        img.setAttribute('loading', 'eager');
+                                        img.setAttribute('fetchpriority', 'high');
+                                    } else {
+                                        img.setAttribute('loading', 'lazy');
+                                    }
 
                                     card.appendChild(img);
                                     track.appendChild(card);

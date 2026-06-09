@@ -381,7 +381,15 @@
             function createBlockMarkup(block, index) {
                 const reverse = index % 2 === 1;
                 const image = escapeHtml(block.image || '');
-                const title = escapeHtml(block.title || `Block ${index + 1}`);
+                const rawTitle = block.title || `Block ${index + 1}`;
+                const titleWords = rawTitle.trim().split(/\s+/);
+                let formattedTitle = '';
+                if (titleWords.length >= 2) {
+                    formattedTitle = `<span class="italic">${escapeHtml(titleWords[0])} ${escapeHtml(titleWords[1])}</span> ${escapeHtml(titleWords.slice(2).join(' '))}`;
+                } else if (titleWords.length === 1 && titleWords[0] !== '') {
+                    formattedTitle = `<span class="italic">${escapeHtml(titleWords[0])}</span>`;
+                }
+                const title = escapeHtml(rawTitle);
                 const body = escapeHtml(block.body || '');
                 return `
                     <div class="flex flex-col ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-10 sm:gap-12 lg:gap-20">
@@ -390,7 +398,7 @@
                         </div>
                         <div class="w-full lg:w-[55%] flex flex-col justify-center ${reverse ? 'lg:items-start lg:text-left' : ''}">
                             <div class="w-12 h-px bg-accent-bronze mb-6"></div>
-                            <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">${title}</h3>
+                            <h3 class="font-serif text-2xl text-ivory mb-6 font-medium">${formattedTitle}</h3>
                             <p class="text-ivory-dim font-light leading-relaxed text-sm md:text-base">${body}</p>
                         </div>
                     </div>
