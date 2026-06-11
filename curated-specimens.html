@@ -21,6 +21,288 @@
         html {
             scroll-behavior: smooth;
         }
+
+        .cs-hero {
+            --cs-gold: #c5a059;
+            --cs-ivory: #eee9df;
+            --cs-muted: rgba(255, 255, 255, 0.82);
+            position: relative;
+            margin-bottom: clamp(3rem, 6vw, 5rem);
+        }
+
+        .cs-hero-stage {
+            position: relative;
+            width: 100%;
+            min-height: max(32rem, 56vw);
+            overflow: hidden;
+        }
+
+        .cs-hero-media {
+            position: absolute;
+            inset: 0;
+            line-height: 0;
+            background: #141210;
+        }
+
+        .cs-fit-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .cs-hero-media .cs-fit-image {
+            filter: brightness(1.14) saturate(1.03);
+            object-position: center bottom;
+        }
+
+        .cs-fit-image:not([src]),
+        .cs-fit-image[src=""] {
+            display: none;
+        }
+
+        .cs-hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.34) 42%, rgba(0, 0, 0, 0.08) 68%, transparent 100%),
+                linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, transparent 45%);
+        }
+
+        .cs-hero-inner {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: clamp(2.5rem, 6vh, 4rem) clamp(1rem, 2vw, 2rem) clamp(8rem, 16vh, 12rem);
+            pointer-events: none;
+        }
+
+        .cs-hero-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 30rem;
+        }
+
+        .cs-hero-heading {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            margin: 0 0 clamp(1rem, 2vw, 1.25rem);
+        }
+
+        .cs-hero-eyebrow {
+            margin: 0 0 clamp(0.55rem, 1vw, 0.7rem);
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(0.5625rem, 0.72vw, 0.625rem);
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .cs-hero-rule {
+            display: block;
+            width: clamp(3.25rem, 11vw, 5rem);
+            height: 1px;
+            background: rgba(197, 160, 89, 0.9);
+            border: 0;
+            margin: 0;
+        }
+
+        .cs-hero-rule--after-eyebrow {
+            margin-bottom: clamp(0.65rem, 1.2vw, 0.85rem);
+        }
+
+        .cs-hero-title {
+            margin: 0 0 clamp(0.65rem, 1.2vw, 0.85rem);
+            max-width: 11em;
+            font-family: "Noto Serif", serif;
+            font-size: clamp(2.35rem, 4.8vw, 4.125rem);
+            font-weight: 400;
+            line-height: 1.02;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+
+        .cs-hero-rule--after-title {
+            margin-bottom: 0;
+        }
+
+        .cs-hero-body {
+            margin: 0 0 clamp(1.65rem, 3vw, 2.1rem);
+            max-width: 28rem;
+            color: rgba(255, 255, 255, 0.84);
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(1rem, 1.08vw, 1.125rem);
+            font-weight: 300;
+            line-height: 1.62;
+        }
+
+        .cs-hero-features {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: flex-start;
+            gap: clamp(1rem, 2vw, 1.35rem);
+            width: 100%;
+            max-width: 28rem;
+            margin: 0 0 clamp(1.65rem, 3vw, 2.1rem);
+        }
+
+        .cs-hero-feature {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex: 0 0 auto;
+            gap: clamp(0.4rem, 0.65vw, 0.5rem);
+            padding: 0;
+            border: 0;
+        }
+
+        .cs-hero-feature-icon {
+            flex-shrink: 0;
+            width: clamp(1.65rem, 2.1vw, 1.85rem);
+            height: clamp(1.65rem, 2.1vw, 1.85rem);
+            color: var(--cs-gold);
+        }
+
+        .cs-hero-feature-icon--handpicked,
+        .cs-hero-feature-icon--premium,
+        .cs-hero-feature-icon--designed {
+            width: clamp(1.65rem, 2.1vw, 1.85rem);
+            height: clamp(1.65rem, 2.1vw, 1.85rem);
+        }
+
+        .cs-hero-feature-icon .cs-hero-feature-icon-img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cs-hero-feature-icon svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .cs-hero-feature-label {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(0.625rem, 0.72vw, 0.6875rem);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            line-height: 1.32;
+            color: #ffffff;
+        }
+
+        .cs-hero-visit {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            min-height: 3rem;
+            padding: 0.875rem 1.5rem;
+            border: 1px solid var(--cs-gold);
+            color: #ffffff;
+            background: transparent;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(0.625rem, 0.72vw, 0.6875rem);
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            line-height: 1.35;
+            text-align: left;
+            transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .cs-hero-visit:hover {
+            border-color: #d4b06a;
+            color: #ffffff;
+            background: rgba(197, 160, 89, 0.08);
+        }
+
+        .cs-hero-visit svg {
+            width: 0.95rem;
+            height: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 767px) {
+            .cs-hero-inner {
+                padding-bottom: 5rem;
+            }
+
+            .cs-hero-copy {
+                max-width: 100%;
+            }
+
+            .cs-hero-title {
+                max-width: 100%;
+                font-size: clamp(1.95rem, 8vw, 2.65rem);
+                line-height: 1.04;
+            }
+
+            .cs-hero-rule {
+                width: clamp(2.75rem, 18vw, 4rem);
+            }
+
+            .cs-hero-body {
+                max-width: 100%;
+                font-size: 0.975rem;
+                line-height: 1.58;
+            }
+
+            .cs-hero-features {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 0.85rem 1rem;
+                max-width: 100%;
+            }
+
+            .cs-hero-feature {
+                flex: 0 1 auto;
+            }
+
+            .cs-hero-feature-icon,
+            .cs-hero-feature-icon--handpicked,
+            .cs-hero-feature-icon--premium,
+            .cs-hero-feature-icon--designed {
+                width: 1.55rem;
+                height: 1.55rem;
+            }
+
+            .cs-hero-feature-label {
+                font-size: 0.575rem;
+                letter-spacing: 0.09em;
+                line-height: 1.3;
+            }
+
+            .cs-hero-visit {
+                min-height: 2.75rem;
+                padding: 0.8rem 1.25rem;
+                font-size: 0.6rem;
+            }
+        }
+
+
     </style>
     
     <!-- Premium Animations -->
@@ -96,31 +378,45 @@
             </div>
         </header>
 
-        <main class="flex-grow pt-32 lg:pt-40">
+        <main class="flex-grow">
 
-            <!-- Page Header -->
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-32 overflow-hidden">
-                <div class="flex flex-col md:flex-row justify-between items-end gap-12">
-                    <div class="max-w-3xl">
-                        <div class="flex items-center gap-4 mb-6">
-                            <span class="w-12 h-px bg-accent-bronze/40"></span>
-                            <span class="text-accent-bronze text-[10px] uppercase tracking-[0.4em] font-bold">Services</span>
-                        </div>
-                        <h2 class="font-serif text-balance text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8" data-cms="deep/hero/title">
-                            Deep <br />
-                            <span class="text-accent-bronze italic font-light drop-shadow-sm">Solitude</span>
-                        </h2>
+            <!-- Hero -->
+            <section class="cs-hero" id="hero">
+                <div class="cs-hero-stage">
+                    <div class="cs-hero-media">
+                        <picture>
+                            <!-- Ultra-Wide Monitors & iMacs (> 1920px) -->
+                            <source media="(min-width: 1921px)" srcset="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/curated%20specimens/e41edc36-5315-4b6d-874e-49fefc833db8.png">
+                            <!-- Large MacBooks & Standard Monitors (1441px - 1920px) -->
+                            <source media="(min-width: 1441px)" srcset="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/curated%20specimens/0e38bb0a-3491-42f6-818a-6144bfb979d8.png">
+                            <!-- Standard MacBooks (up to 1440px) and Mobile -->
+                            <img
+                                class="cs-fit-image"
+                                src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/curated%20specimens/107a275b-87b4-4536-af44-251e33d41a42.png"
+                                alt="CHF curated specimens showroom"
+                                decoding="async"
+                                loading="eager"
+                                fetchpriority="high">
+                        </picture>
                     </div>
-                    <div class="flex flex-col items-start md:items-end gap-6 max-w-xs mb-4">
-                        <p class="text-gray-400 font-light text-sm leading-relaxed uppercase tracking-[0.15em] text-left md:text-right border-l md:border-l-0 md:border-r border-accent-bronze/30 pl-6 md:pl-0 md:pr-6" data-cms="deep/hero/subtitle">
-                            Not added — introduced. Every specimen placed with purpose.
-                        </p>
+                    <div class="cs-hero-overlay" aria-hidden="true"></div>
+                    <div class="cs-hero-inner">
+                        <div class="cs-hero-copy" style="max-width: 48rem;">
+
+                            <h2 class="font-serif text-balance text-5xl md:text-7xl lg:text-8xl text-ivory font-light leading-[1.1] tracking-tight mb-8" data-cms="deep/hero/title" style="text-shadow: 0 4px 20px rgba(0,0,0,0.6);">
+                                Deep <br />
+                                <span class="text-accent-bronze italic font-light drop-shadow-sm">Solitude</span>
+                            </h2>
+                            <p class="text-gray-100 font-light text-sm leading-relaxed uppercase tracking-[0.15em] text-left" data-cms="deep/hero/subtitle" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8); max-width: 24rem;">
+                                Not added — introduced. Every specimen placed with purpose.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <!-- Image + Text Blocks -->
-            <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-40">
+            <section class="max-w-7xl mx-auto px-6 lg:px-8 pt-16 pb-40">
                 <div class="flex flex-col gap-32">
 
                     <!-- Block 1: Image Left — Outdoor Villa -->
@@ -196,8 +492,7 @@
 
             <!-- Closing Statement -->
             <section class="chf-closing">
-                <p class="chf-closing-line">A space that feels alive</p>
-                <p class="chf-closing-line chf-closing-accent">is a space that inspires.</p>
+                <p class="chf-closing-line">A space that feels alive <span class="chf-closing-accent">is a space that inspires.</span></p>
             </section>
 
         </main>
