@@ -217,6 +217,10 @@
             background-position: center;
             background-size: cover;
             background-repeat: no-repeat;
+            image-rendering: high-quality;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
 
         .ls-hero .ls-bg {
@@ -535,8 +539,23 @@
         }
 
         .ls-cta-media .ls-bg {
-            background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/landscape%20staging/landing%20page/9B9DCCE8-2E0F-4F1F-962B-30AED00B160C.png');
+            /* Ultra-Wide Monitors & iMacs (> 1920px) */
+            background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/LANDSCAPESTAGING/edca9b17-5cc1-43ea-bec6-5d38d9042292.png');
             background-position: right center;
+        }
+
+        @media (max-width: 1920px) {
+            /* Large MacBooks & Standard Monitors */
+            .ls-cta-media .ls-bg {
+                background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/LANDSCAPESTAGING/38451749-1ff4-4906-9a4f-182b5a14ce0e.png');
+            }
+        }
+
+        @media (max-width: 1440px) {
+            /* Standard MacBooks (13" & 14") */
+            .ls-cta-media .ls-bg {
+                background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/LANDSCAPESTAGING/60a80a76-6dbb-4572-8fa6-471489b065cf.png');
+            }
         }
 
         .ls-cta::after {
@@ -1095,10 +1114,7 @@
                 </div>
             </section>
 
-            <section class="chf-closing">
-                <p class="chf-closing-line">Every staged landscape should feel effortless.</p>
-                <p class="chf-closing-line chf-closing-accent">We make the living details intentional.</p>
-            </section>
+
         </main>
     </div>
     <script src="assets/cms-core.js?v=2.4"></script>
