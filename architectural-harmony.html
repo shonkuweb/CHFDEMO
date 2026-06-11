@@ -60,9 +60,10 @@
 
         .ah-intro h1 {
             margin: 0 0 1.15rem;
-            font-size: clamp(2rem, 3.6vw, 3.25rem);
+            font-size: clamp(3rem, 5.5vw, 5rem);
             line-height: 1.1;
-            color: var(--ah-leaf);
+            color: var(--ah-ivory);
+            font-weight: 300;
         }
 
         .ah-intro-rule {
@@ -70,6 +71,19 @@
             height: 1px;
             margin-bottom: 1.65rem;
             background: var(--ah-gold);
+        }
+
+        .ah-intro-subtitle {
+            margin: -0.5rem 0 1.5rem;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ah-ivory);
+            opacity: 0.8;
+            max-width: 32rem;
+            line-height: 1.5;
         }
 
         .ah-intro-copy p {
@@ -354,6 +368,7 @@
             max-width: 36rem;
             margin: clamp(0.5rem, 1.5vw, 1.25rem) auto 0;
             padding: 0 clamp(1rem, 2.5vw, 1.5rem);
+            transform: translateY(clamp(2rem, 5vw, 4rem));
         }
 
         .ah-tomorrow-text p {
@@ -460,6 +475,7 @@
             .ah-tomorrow-text {
                 max-width: 28rem;
                 margin-top: clamp(1rem, 3vw, 1.5rem);
+                transform: translateY(clamp(1.5rem, 4vw, 2.5rem));
             }
         }
 
@@ -563,7 +579,11 @@
 
             <section class="ah-intro" id="intro">
                 <div class="ah-intro-copy">
-                    <h1 class="ah-serif" data-cms="arch/intro/headline">Design is Instant. Growth is Inevitable. We Plan for Both.</h1>
+                    <h1 class="ah-serif" data-cms="arch/intro/headline" style="text-shadow: 0 4px 20px rgba(0,0,0,0.6);">
+                        Architectural <br />
+                        <span style="color: var(--ah-gold); font-style: italic;">Harmony</span>
+                    </h1>
+                    <p class="ah-intro-subtitle" data-cms="arch/intro/subtitle">Design is Instant. Growth is Inevitable. We Plan for Both.</p>
                     <div class="ah-intro-rule" aria-hidden="true"></div>
                     <p data-cms="arch/block1/body">In landscape architecture, drawings capture a moment—but gardens don't stand still. They grow, expand, compete and transform. Without a deep understanding of plant behaviour many designs begin to diverge from their original intent.</p>
                     <p data-cms="arch/intro/p2">As consulting horticulturists, we often see thoughtfully designed spaces challenged by plant selections that don't account for scale or maturity. Fast growers are placed where restraint is essential. Foreground hedges are composed of species that eventually outgrow and obscure the very layers they were meant to frame. What appears harmonious on day one can lose its proportion and clarity with time.</p>
@@ -677,14 +697,15 @@
                         <p data-cms="arch/tomorrow/p1">By bringing horticultural depth into the conversation early, we help align design vision with plant behaviour, site conditions and long-term growth patterns.</p>
                         <div class="ah-tomorrow-rule" aria-hidden="true"></div>
                         <p data-cms="arch/tomorrow/body">With a strong foundation in plant knowledge, we ensure that every selection supports lasting architectural harmony—not just immediate visual appeal.</p>
-                        <p class="ah-tomorrow-quote" data-cms="arch/tomorrow/quote">Because a successful landscape is not just about how it looks when installed—it's about how it evolves.</p>
                     </div>
                 </div>
             </section>
 
             <section class="chf-closing" id="arch-closing">
-                <p class="chf-closing-line">The journey doesn’t end when the garden is finished.</p>
-                <p class="chf-closing-line chf-closing-accent">Maintenance ensures it continues to flourish.</p>
+                <div class="max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+                    <p class="chf-closing-line">Because a successful landscape is not just about how it looks when installed—</p>
+                    <p class="chf-closing-line chf-closing-accent">it's about how it evolves.</p>
+                </div>
             </section>
         </main>
 
