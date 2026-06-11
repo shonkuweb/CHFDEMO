@@ -222,6 +222,22 @@
             transform: scale(2);
         }
 
+        body.is-portfolio-hover #portfolio-carousel-section {
+            z-index: 80 !important;
+        }
+        body.is-portfolio-hover #portfolio-hover-backdrop {
+            opacity: 1;
+        }
+        body.is-portfolio-hover .portfolio-feature-card:not(.is-hover-zoom) {
+            filter: blur(8px) brightness(0.5) !important;
+            -webkit-filter: blur(8px) brightness(0.5) !important;
+            opacity: 0.3 !important;
+        }
+        body.is-portfolio-hover .portfolio-carousel-nav {
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .portfolio-strip-panel {
             display: none;
         }
@@ -520,8 +536,8 @@
             </section>
 
             <!-- Category tabs + hero strip (max-w-7xl + gap-8 stack matches site content sections) -->
-            <section class="relative z-20 flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 md:pb-16 lg:pb-20 bg-black -mt-1" aria-labelledby="portfolio-featured-heading">
-                <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 flex flex-col gap-5 md:gap-6 pt-4 md:pt-5">
+            <section id="portfolio-carousel-section" class="relative z-20 flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 md:pb-16 lg:pb-20 bg-black -mt-1 transition-all duration-500" aria-labelledby="portfolio-featured-heading">
+                <div class="max-w-7xl mx-auto w-full px-6 lg:px-12 flex flex-col gap-5 md:gap-6 pt-4 md:pt-5 relative z-10">
                     <div class="flex flex-wrap justify-center gap-3 md:gap-4 snap-x snap-mandatory" role="tablist" aria-label="Portfolio categories">
                         <button type="button" role="tab" id="tab-villa" aria-controls="panel-villa" aria-selected="true" data-portfolio-tab="villa"
                             class="portfolio-tab snap-start shrink-0">
@@ -542,7 +558,9 @@
                     </div>
                 </div>
 
-                <div class="relative w-full overflow-visible portfolio-marquee-scene -mt-2 md:-mt-1">
+                <div id="portfolio-hover-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[15] opacity-0 pointer-events-none transition-opacity duration-500"></div>
+
+                <div class="relative w-full overflow-visible portfolio-marquee-scene -mt-2 md:-mt-1 z-20">
                     <div class="pointer-events-none absolute inset-y-0 left-0 w-20 md:w-32 z-10 bg-gradient-to-r from-black to-transparent"></div>
                     <div class="pointer-events-none absolute inset-y-0 right-0 w-20 md:w-32 z-10 bg-gradient-to-l from-black to-transparent"></div>
 
@@ -1359,6 +1377,7 @@
                             if (!panel.classList.contains('is-active')) return;
                             if (!card.classList.contains('is-spotlight') && !card.classList.contains('is-hover-zoom')) return;
                             card.classList.add('is-hover-zoom');
+                            document.body.classList.add('is-portfolio-hover');
                             pausePanel(panel);
                             layoutArc(panel, performance.now());
                         });
@@ -1366,6 +1385,7 @@
                             card.classList.remove('is-hover-zoom');
                             setTimeout(() => {
                                 if (!panel.querySelector('.is-hover-zoom') && panel.classList.contains('is-active')) {
+                                    document.body.classList.remove('is-portfolio-hover');
                                     layoutArc(panel, performance.now());
                                     resumePanel(panel);
                                 }
