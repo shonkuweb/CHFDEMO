@@ -652,16 +652,15 @@
 
             // Build a premium formatted WhatsApp message
             const text = [
-                '🌿 *New Enquiry — CHF Botanical Luxury*',
-                '─────────────────────────',
-                `👤 *Name:* ${name}`,
-                `📞 *Phone:* ${phone}`,
-                `✉️ *Email:* ${email}`,
-                `📍 *Location:* ${location}`,
-                '─────────────────────────',
-                `💬 *Message:*\n${message}`,
-                '─────────────────────────',
-                '_Sent via chfbotanical.com_'
+                'New Enquiry — CHF Botanical Luxury',
+                '',
+                `Name: ${name}`,
+                `Phone: ${phone}`,
+                `Email: ${email}`,
+                `Location: ${location}`,
+                '',
+                'Message:',
+                `${message}`
             ].join('\n');
 
             const waURL = `https://wa.me/${CHF_WHATSAPP}?text=${encodeURIComponent(text)}`;
