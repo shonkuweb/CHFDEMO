@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/chf_logo_nav.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/chf_logo_nav.png" />
-    <title>CHF Botanical - Admin Dashboard</title>
+    <title>Plant Experience Centre</title>
     <link rel="stylesheet" href="assets/tailwind.css?v=navbar-custom-4" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -127,6 +127,11 @@
                             <span v-else class="text-xs">SP</span>
                         </button>
                         <div v-show="openSections.standaloneServices && !sidebarCollapsed" class="space-y-1">
+                            <button @click="loadPageContent('about')"
+                                :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
+                                currentSelection === 'about' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
+                                About Us
+                            </button>
                             <button @click="loadPageContent('deep')"
                                 :class="['w-full text-left px-4 py-2 rounded-sm transition-all',
                                 currentSelection === 'deep' ? 'bg-white/5 text-accent-bronze' : 'text-gray-500 hover:text-white hover:bg-white/[0.02]']">
@@ -1130,10 +1135,6 @@
                 };
 
                 const loadPageContent = async (page) => {
-                    if (page === 'about') {
-                        showToast('About Us is hardcoded in the site code and cannot be edited from admin.', 'error');
-                        return;
-                    }
                     sidebarOpen.value = false;
                     viewMode.value = 'site-content';
                     currentSelection.value = page;

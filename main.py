@@ -115,15 +115,6 @@ def fetch_site_content(prefix):
     rows = cursor.fetchall()
     conn.close()
     data = {row['path']: {'value': row['value'], 'type': row['type']} for row in rows}
-    if prefix == "home":
-        data.update(FIXED_HOME_HERO_MEDIA)
-        data.update(FIXED_HOME_STAGING_MEDIA)
-    if prefix == "arch":
-        data.update(FIXED_ARCH_MEDIA)
-    if prefix == "plant-center":
-        data.update(FIXED_PLANT_CENTER_MEDIA)
-    if prefix == "about":
-        data.update(FIXED_ABOUT_MEDIA)
     return data
 
 def clear_cache():
@@ -246,6 +237,7 @@ ABOUT_LEGACY_FORWARD_COPY = (
 )
 ABOUT_NURSERIES_IMAGE_1 = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-1-25c9a8f0.png"
 ABOUT_NURSERIES_IMAGE_2 = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/about/our-nurseries-2-6ff91b68.png"
+ABOUT_NURSERIES_IMAGE_3 = "https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/AliporeUnit.png"
 ABOUT_NURSERIES_TITLE = "Our Nurseries"
 ABOUT_NURSERIES_COPY = (
     "With two expansive nurseries in Alipore and Muchisha, spread across acres of cultivated land, "
@@ -305,6 +297,10 @@ FIXED_ABOUT_MEDIA = {
     },
     "about/nurseries/image-2": {
         "value": ABOUT_NURSERIES_IMAGE_2,
+        "type": "media",
+    },
+    "about/nurseries/image-3": {
+        "value": ABOUT_NURSERIES_IMAGE_3,
         "type": "media",
     },
 }
@@ -385,14 +381,8 @@ FIXED_ARCH_MEDIA = {
         "type": "media",
     },
 }
-PROTECTED_SITE_CONTENT_PATHS = (
-    set(FIXED_HOME_HERO_MEDIA)
-    | set(FIXED_HOME_STAGING_MEDIA)
-    | set(FIXED_ARCH_MEDIA)
-    | set(FIXED_PLANT_CENTER_MEDIA)
-    | set(FIXED_ABOUT_MEDIA)
-)
-ADMIN_LOCKED_CONTENT_PREFIXES = ("about",)
+PROTECTED_SITE_CONTENT_PATHS = set()
+ADMIN_LOCKED_CONTENT_PREFIXES = ()
 
 
 def is_admin_locked_content_path(path: str) -> bool:
@@ -687,6 +677,10 @@ SITE_CONTENT_DEFAULTS = {
     },
     "about/nurseries/image-2": {
         "value": ABOUT_NURSERIES_IMAGE_2,
+        "type": "media",
+    },
+    "about/nurseries/image-3": {
+        "value": ABOUT_NURSERIES_IMAGE_3,
         "type": "media",
     },
     "arch/block1/body": {
