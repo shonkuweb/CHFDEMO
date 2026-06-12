@@ -1336,19 +1336,14 @@ def migrate_legacy_site_content_keys():
         """
     )
 
-    # If a row still exactly matches a bundled default, treat it as seed content,
-    # not authored CMS content. This preserves any admin-published value that
-    # differs from the old defaults while preventing old copy from resurfacing.
-    protected_default_prefixes = ("global/", "home/staging/")
+    # Migrate any existing empty values to their actual default values so they show up in the admin panel
     for path, payload in SITE_CONTENT_DEFAULTS.items():
-        if path in PROTECTED_SITE_CONTENT_PATHS or path.startswith(protected_default_prefixes):
-            continue
         default_value = str(payload.get("value") or "")
         if not default_value:
             continue
         cur.execute(
             "UPDATE site_content SET value = ? WHERE path = ? AND value = ?",
-            ("", path, default_value),
+            (default_value, path, ""),
         )
 
     for path, payload in SITE_CONTENT_DEFAULTS.items():
@@ -1364,7 +1359,7 @@ def migrate_legacy_site_content_keys():
         if row is None:
             cur.execute(
                 "INSERT INTO site_content (path, value, type) VALUES (?, ?, ?)",
-                (path, "", payload["type"]),
+                (path, payload["value"], payload["type"]),
             )
             continue
 
