@@ -106,6 +106,7 @@
             margin-top: clamp(1.25rem, 2.5vw, 2rem);
             padding: clamp(0.6rem, 0.9vw, 0.8rem) clamp(1rem, 1.5vw, 1.25rem);
             background: #799644;
+            border: 1px solid transparent;
             color: #e8e4db;
             font-size: clamp(0.55rem, 0.7vw, 0.65rem);
             font-weight: 500;
@@ -116,6 +117,28 @@
 
         .hero-home-cta:hover {
             background: #8aa84d;
+        }
+
+        .hero-home-cta-secondary {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: clamp(1.25rem, 2.5vw, 2rem);
+            padding: clamp(0.6rem, 0.9vw, 0.8rem) clamp(1rem, 1.5vw, 1.25rem);
+            background: transparent;
+            border: 1px solid rgba(184, 156, 93, 0.8);
+            color: #e8e4db;
+            font-size: clamp(0.55rem, 0.7vw, 0.65rem);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .hero-home-cta-secondary:hover {
+            background: rgba(184, 156, 93, 0.1);
+            border-color: rgba(184, 156, 93, 1);
         }
 
         .hero-home-features {
@@ -425,10 +448,15 @@
                     <p class="hero-home-subtitle">
                         Luxury botanical solutions for premium spaces
                     </p>
-                    <a href="enquiry" class="hero-home-cta">
-                        ENQUIRE NOW
-                        <span class="material-symbols-outlined">arrow_forward</span>
-                    </a>
+                    <div class="flex flex-wrap items-stretch gap-4">
+                        <a href="enquiry" class="hero-home-cta">
+                            ENQUIRE NOW
+                        </a>
+                        <a href="https://maps.google.com/?q=Calcutta+Horticultural+Farm+Alipore" target="_blank" rel="noopener noreferrer" class="hero-home-cta-secondary">
+                            <span class="material-symbols-outlined text-[1.1em]">location_on</span>
+                            VISIT US
+                        </a>
+                    </div>
                     <div class="hero-home-features">
                         <div class="hero-home-feature">
                             <span class="material-symbols-outlined">eco</span>
