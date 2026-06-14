@@ -626,33 +626,29 @@
             }
             .ps-why-grid {
                 display: flex;
-                gap: 0; /* Gap is handled by padding-right on tracks */
+                width: max-content;
+                will-change: transform;
+                -webkit-animation: ps-marquee-left 20s linear infinite;
+                animation: ps-marquee-left 20s linear infinite;
                 padding-bottom: 1rem;
             }
-            .ps-why-track {
+            .ps-why-set {
                 display: flex;
                 gap: 1rem;
-                padding-right: 1rem;
+                padding-right: 1rem; /* perfect alignment for -50% */
                 flex-shrink: 0;
-                -webkit-animation: scrollMarquee 20s linear infinite;
-                animation: scrollMarquee 20s linear infinite;
-                will-change: transform;
-                touch-action: pan-y;
-            }
-            .ps-why-clone {
-                display: flex;
             }
             .ps-why-card {
                 width: 75vw;
                 flex-shrink: 0;
             }
-            @-webkit-keyframes scrollMarquee {
+            @-webkit-keyframes ps-marquee-left {
                 0% { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
-                100% { -webkit-transform: translate3d(-100%, 0, 0); transform: translate3d(-100%, 0, 0); }
+                100% { -webkit-transform: translate3d(-50%, 0, 0); transform: translate3d(-50%, 0, 0); }
             }
-            @keyframes scrollMarquee {
+            @keyframes ps-marquee-left {
                 0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(-100%, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
             }
         }
     </style>
@@ -1036,7 +1032,7 @@
                 <p class="ps-eyebrow" data-cms="plant-supply/why/label">Why CHF</p>
                 <h2 class="ps-serif" data-cms="plant-supply/why/title">Why Clients Choose CHF</h2>
                 <div class="ps-why-grid">
-                    <div class="ps-why-track">
+                    <div class="ps-why-set">
                         <article class="ps-why-card">
                             <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 5 8c2 2 2 6 7 8"/><path d="M12 12c0-4 4-6 7-4-2 2-2 6-7 8"/></svg></div>
                             <h3 data-cms="plant-supply/why/card1/title">Extensive Nursery Network</h3>
@@ -1060,7 +1056,7 @@
                     </div>
                     
                     <!-- Cloned Cards for Marquee -->
-                    <div class="ps-why-track ps-why-clone" aria-hidden="true">
+                    <div class="ps-why-set" aria-hidden="true">
                         <article class="ps-why-card">
                             <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 5 8c2 2 2 6 7 8"/><path d="M12 12c0-4 4-6 7-4-2 2-2 6-7 8"/></svg></div>
                             <h3 data-cms="plant-supply/why/card1/title">Extensive Nursery Network</h3>
