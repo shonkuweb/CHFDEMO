@@ -626,21 +626,33 @@
             }
             .ps-why-grid {
                 display: flex;
-                width: max-content;
-                gap: 1rem;
+                gap: 0; /* Gap is handled by padding-right on tracks */
                 padding-bottom: 1rem;
+            }
+            .ps-why-track {
+                display: flex;
+                gap: 1rem;
+                padding-right: 1rem;
+                flex-shrink: 0;
+                -webkit-animation: scrollMarquee 20s linear infinite;
                 animation: scrollMarquee 20s linear infinite;
+                will-change: transform;
+                touch-action: pan-y;
             }
             .ps-why-clone {
-                display: block;
+                display: flex;
             }
             .ps-why-card {
                 width: 75vw;
                 flex-shrink: 0;
             }
+            @-webkit-keyframes scrollMarquee {
+                0% { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+                100% { -webkit-transform: translate3d(-100%, 0, 0); transform: translate3d(-100%, 0, 0); }
+            }
             @keyframes scrollMarquee {
-                0% { transform: translateX(0); }
-                100% { transform: translateX(calc(-50% - 0.5rem)); }
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-100%, 0, 0); }
             }
         }
     </style>
@@ -1024,48 +1036,52 @@
                 <p class="ps-eyebrow" data-cms="plant-supply/why/label">Why CHF</p>
                 <h2 class="ps-serif" data-cms="plant-supply/why/title">Why Clients Choose CHF</h2>
                 <div class="ps-why-grid">
-                    <article class="ps-why-card">
-                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 5 8c2 2 2 6 7 8"/><path d="M12 12c0-4 4-6 7-4-2 2-2 6-7 8"/></svg></div>
-                        <h3 data-cms="plant-supply/why/card1/title">Extensive Nursery Network</h3>
-                        <p data-cms="plant-supply/why/card1/body">Access to premium growers across India.</p>
-                    </article>
-                    <article class="ps-why-card">
-                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-                        <h3 data-cms="plant-supply/why/card2/title">Reliable Supply</h3>
-                        <p data-cms="plant-supply/why/card2/body">Consistent sourcing for projects of all scales.</p>
-                    </article>
-                    <article class="ps-why-card">
-                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
-                        <h3 data-cms="plant-supply/why/card3/title">Design Expertise</h3>
-                        <p data-cms="plant-supply/why/card3/body">Plant selections informed by landscape design principles.</p>
-                    </article>
-                    <article class="ps-why-card">
-                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V10"/><path d="M18 14c1.5-2 1.5-5-3-6-2 1-3 3-3 5"/><path d="M6 14c-1.5-2-1.5-5 3-6 2 1 3 3 3 5"/></svg></div>
-                        <h3 data-cms="plant-supply/why/card4/title">Long-Term Performance</h3>
-                        <p data-cms="plant-supply/why/card4/body">Focus on resilience, adaptability and lifecycle value.</p>
-                    </article>
+                    <div class="ps-why-track">
+                        <article class="ps-why-card">
+                            <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 5 8c2 2 2 6 7 8"/><path d="M12 12c0-4 4-6 7-4-2 2-2 6-7 8"/></svg></div>
+                            <h3 data-cms="plant-supply/why/card1/title">Extensive Nursery Network</h3>
+                            <p data-cms="plant-supply/why/card1/body">Access to premium growers across India.</p>
+                        </article>
+                        <article class="ps-why-card">
+                            <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                            <h3 data-cms="plant-supply/why/card2/title">Reliable Supply</h3>
+                            <p data-cms="plant-supply/why/card2/body">Consistent sourcing for projects of all scales.</p>
+                        </article>
+                        <article class="ps-why-card">
+                            <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+                            <h3 data-cms="plant-supply/why/card3/title">Design Expertise</h3>
+                            <p data-cms="plant-supply/why/card3/body">Plant selections informed by landscape design principles.</p>
+                        </article>
+                        <article class="ps-why-card">
+                            <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V10"/><path d="M18 14c1.5-2 1.5-5-3-6-2 1-3 3-3 5"/><path d="M6 14c-1.5-2-1.5-5 3-6 2 1 3 3 3 5"/></svg></div>
+                            <h3 data-cms="plant-supply/why/card4/title">Long-Term Performance</h3>
+                            <p data-cms="plant-supply/why/card4/body">Focus on resilience, adaptability and lifecycle value.</p>
+                        </article>
+                    </div>
                     
                     <!-- Cloned Cards for Marquee -->
-                    <article class="ps-why-card ps-why-clone" aria-hidden="true">
-                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 5 8c2 2 2 6 7 8"/><path d="M12 12c0-4 4-6 7-4-2 2-2 6-7 8"/></svg></div>
-                        <h3 data-cms="plant-supply/why/card1/title">Extensive Nursery Network</h3>
-                        <p data-cms="plant-supply/why/card1/body">Access to premium growers across India.</p>
-                    </article>
-                    <article class="ps-why-card ps-why-clone" aria-hidden="true">
-                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-                        <h3 data-cms="plant-supply/why/card2/title">Reliable Supply</h3>
-                        <p data-cms="plant-supply/why/card2/body">Consistent sourcing for projects of all scales.</p>
-                    </article>
-                    <article class="ps-why-card ps-why-clone" aria-hidden="true">
-                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
-                        <h3 data-cms="plant-supply/why/card3/title">Design Expertise</h3>
-                        <p data-cms="plant-supply/why/card3/body">Plant selections informed by landscape design principles.</p>
-                    </article>
-                    <article class="ps-why-card ps-why-clone" aria-hidden="true">
-                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V10"/><path d="M18 14c1.5-2 1.5-5-3-6-2 1-3 3-3 5"/><path d="M6 14c-1.5-2-1.5-5 3-6 2 1 3 3 3 5"/></svg></div>
-                        <h3 data-cms="plant-supply/why/card4/title">Long-Term Performance</h3>
-                        <p data-cms="plant-supply/why/card4/body">Focus on resilience, adaptability and lifecycle value.</p>
-                    </article>
+                    <div class="ps-why-track ps-why-clone" aria-hidden="true">
+                        <article class="ps-why-card">
+                            <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 5 8c2 2 2 6 7 8"/><path d="M12 12c0-4 4-6 7-4-2 2-2 6-7 8"/></svg></div>
+                            <h3 data-cms="plant-supply/why/card1/title">Extensive Nursery Network</h3>
+                            <p data-cms="plant-supply/why/card1/body">Access to premium growers across India.</p>
+                        </article>
+                        <article class="ps-why-card">
+                            <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                            <h3 data-cms="plant-supply/why/card2/title">Reliable Supply</h3>
+                            <p data-cms="plant-supply/why/card2/body">Consistent sourcing for projects of all scales.</p>
+                        </article>
+                        <article class="ps-why-card">
+                            <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+                            <h3 data-cms="plant-supply/why/card3/title">Design Expertise</h3>
+                            <p data-cms="plant-supply/why/card3/body">Plant selections informed by landscape design principles.</p>
+                        </article>
+                        <article class="ps-why-card">
+                            <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V10"/><path d="M18 14c1.5-2 1.5-5-3-6-2 1-3 3-3 5"/><path d="M6 14c-1.5-2-1.5-5 3-6 2 1 3 3 3 5"/></svg></div>
+                            <h3 data-cms="plant-supply/why/card4/title">Long-Term Performance</h3>
+                            <p data-cms="plant-supply/why/card4/body">Focus on resilience, adaptability and lifecycle value.</p>
+                        </article>
+                    </div>
                 </div>
             </section>
 
