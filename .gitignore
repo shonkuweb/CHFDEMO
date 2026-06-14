@@ -32,3 +32,4 @@ assets/videos/hero_vid.mp4
 # Local dependencies / environments
 node_modules/
 venv/
+*.pdf

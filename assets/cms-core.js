@@ -396,7 +396,7 @@
                         if (oldVideo) oldVideo.remove();
                         const oldIframe = el.querySelector('iframe.cms-hero-video');
                         if (oldIframe) oldIframe.remove();
-                        el.classList.add('bg-cover', 'bg-center', 'bg-no-repeat', 'bg-fixed');
+                        el.classList.add('bg-cover', 'bg-center', 'bg-no-repeat');
                         el.style.backgroundImage = `url('${val}')`;
                     }
                 }

@@ -739,6 +739,26 @@
             }
         }
 
+        @media (max-width: 767px) {
+            .pec-hero {
+                min-height: 100svh !important;
+                width: 100vw !important;
+                margin: 0 !important;
+                left: calc(-50vw + 50%) !important;
+                position: relative !important;
+            }
+            .pec-hero > .pec-bg {
+                width: 100vw !important;
+                min-height: 100svh !important;
+                height: 100svh !important;
+                background-size: cover !important;
+                background-image: url('https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/klfdsklfmlfdslf.png') !important;
+                margin: 0 !important;
+                left: 0 !important;
+                transform: none !important;
+            }
+        }
+
         @media (max-width: 580px) {
             .pec-logo__mark {
                 font-size: 1.35rem;
@@ -763,13 +783,32 @@
                 padding-right: 1.1rem;
             }
 
-            .pec-card-grid,
             .pec-collection-grid,
             .pec-designed-grid {
                 grid-template-columns: 1fr;
             }
 
-            .pec-feature-card,
+            .pec-card-grid {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                gap: 1rem;
+                padding-bottom: 1rem;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                border: none;
+            }
+            
+            .pec-card-grid::-webkit-scrollbar {
+                display: none;
+            }
+
+            .pec-feature-card {
+                flex: 0 0 85%;
+                scroll-snap-align: center;
+                border: 1px solid var(--pec-line) !important;
+            }
+
             .pec-collection-card,
             .pec-designed-card {
                 border-right: 0;

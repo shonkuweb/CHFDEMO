@@ -246,6 +246,24 @@
         }
 
         @media (max-width: 767px) {
+            .cp-hero-stage {
+                min-height: 100svh !important;
+                width: 100vw !important;
+                margin: 0 !important;
+                left: calc(-50vw + 50%) !important;
+                position: relative !important;
+            }
+
+            .cp-hero-media, .cp-hero-media picture, .cp-fit-image {
+                width: 100vw !important;
+                min-height: 100svh !important;
+                height: 100svh !important;
+                object-fit: cover !important;
+                margin: 0 !important;
+                left: 0 !important;
+                transform: none !important;
+            }
+
             .cp-hero-inner {
                 padding-bottom: 2.75rem;
             }

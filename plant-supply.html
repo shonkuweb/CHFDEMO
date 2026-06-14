@@ -540,6 +540,23 @@
             .ps-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
         @media (max-width: 768px) {
+            .ps-hero-stage {
+                min-height: 100svh !important;
+                width: 100vw !important;
+                margin: 0 !important;
+                left: calc(-50vw + 50%) !important;
+                position: relative !important;
+            }
+
+            .ps-hero-media, .ps-hero-media picture, .ps-hero-media img {
+                width: 100vw !important;
+                min-height: 100svh !important;
+                height: 100svh !important;
+                object-fit: cover !important;
+                margin: 0 !important;
+                left: 0 !important;
+                transform: none !important;
+            }
             .ps-features { grid-template-columns: 1fr; gap: 1.75rem; }
             .ps-feature { padding: 0; }
             .ps-feature + .ps-feature {
