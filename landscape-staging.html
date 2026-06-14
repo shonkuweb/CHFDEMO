@@ -462,11 +462,25 @@
         }
 
         .ls-step {
+            position: relative;
             display: flex;
             flex-direction: column;
             min-height: 11rem;
             padding: 0 clamp(0.85rem, 1.6vw, 1.7rem) 0 0;
             border-right: 1px solid rgba(238, 233, 223, 0.18);
+        }
+
+        .ls-step:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translate(50%, -50%) rotate(45deg);
+            width: 0.65rem;
+            height: 0.65rem;
+            border-top: 1.5px solid var(--ls-olive);
+            border-right: 1.5px solid var(--ls-olive);
+            z-index: 2;
         }
 
         .ls-step + .ls-step {
@@ -707,15 +721,20 @@
 
             .ls-step,
             .ls-step + .ls-step {
-                min-height: auto;
+                padding: 0 0 clamp(1.5rem, 3.5vw, 2.5rem);
                 border-right: 0;
-                border-bottom: 1px solid rgba(238, 233, 223, 0.16);
-                padding: 0 0 1.75rem;
+                border-bottom: 1px solid rgba(238, 233, 223, 0.18);
+            }
+
+            .ls-step:not(:last-child)::before {
+                top: auto;
+                bottom: 0;
+                right: 50%;
+                transform: translate(50%, 50%) rotate(135deg); /* point down */
             }
 
             .ls-step:last-child {
                 border-bottom: 0;
-                padding-bottom: 0;
             }
 
             .ls-step > p:not(.ls-step-number) {

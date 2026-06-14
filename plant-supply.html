@@ -356,6 +356,18 @@
             text-align: center;
             padding: 0 0.35rem;
         }
+        .ps-step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 1.35rem;
+            right: calc(clamp(0.75rem, 1.5vw, 1.25rem) / -2);
+            transform: translate(50%, -50%) rotate(45deg);
+            width: 0.55rem;
+            height: 0.55rem;
+            border-top: 1.5px solid rgba(166, 139, 106, 0.6);
+            border-right: 1.5px solid rgba(166, 139, 106, 0.6);
+            z-index: 2;
+        }
         .ps-step-num {
             width: 2.7rem;
             height: 2.7rem;
@@ -482,6 +494,9 @@
             font-size: clamp(0.88rem, 1.05vw, 1rem);
             font-weight: 400;
         }
+        .ps-why-clone {
+            display: none;
+        }
         .ps-why-card p {
             margin: 0;
             color: rgba(238, 233, 223, 0.58);
@@ -535,6 +550,12 @@
             .ps-quality-copy { padding: clamp(1.5rem, 3vw, 2rem) clamp(1.35rem, 5vw, 3rem); }
             .ps-steps { grid-template-columns: 1fr; gap: 1.5rem; }
             .ps-steps::before { display: none; }
+            .ps-step:not(:last-child)::after {
+                top: auto;
+                bottom: -0.75rem; /* center of the 1.5rem gap */
+                right: 50%;
+                transform: translate(50%, 50%) rotate(135deg); /* point down */
+            }
             .ps-finished-inner { padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.35rem, 5vw, 3rem); }
             .ps-why-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .ps-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -598,8 +619,29 @@
         }
         @media (max-width: 640px) {
             .ps-quality-grid { grid-template-columns: 1fr; }
-            .ps-why-grid,
             .ps-stats-grid { grid-template-columns: 1fr; }
+            
+            .ps-why {
+                overflow: hidden;
+            }
+            .ps-why-grid {
+                display: flex;
+                width: max-content;
+                gap: 1rem;
+                padding-bottom: 1rem;
+                animation: scrollMarquee 20s linear infinite;
+            }
+            .ps-why-clone {
+                display: block;
+            }
+            .ps-why-card {
+                width: 75vw;
+                flex-shrink: 0;
+            }
+            @keyframes scrollMarquee {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-50% - 0.5rem)); }
+            }
         }
     </style>
 </head>
@@ -785,14 +827,17 @@
             <section class="ps-hero" id="hero">
                 <div class="ps-hero-stage">
                     <div class="ps-hero-media">
-                        <img
-                            class="ps-fit-image"
-                            data-cms="plant-supply/hero/image"
-                            src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20supply/C1BC3826-BEC5-4D93-BB44-74EA3345E674.png"
-                            alt="Plant supply nursery hero"
-                            decoding="async"
-                            loading="eager"
-                            fetchpriority="high">
+                        <picture>
+                            <source media="(max-width: 767px)" srcset="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/dfsjkssklscscs.png">
+                            <img
+                                class="ps-fit-image"
+                                data-cms="plant-supply/hero/image"
+                                src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/plant%20supply/C1BC3826-BEC5-4D93-BB44-74EA3345E674.png"
+                                alt="Plant supply nursery hero"
+                                decoding="async"
+                                loading="eager"
+                                fetchpriority="high">
+                        </picture>
                     </div>
                     <div class="ps-hero-overlay" aria-hidden="true"></div>
                     <div class="ps-hero-inner">
@@ -995,6 +1040,28 @@
                         <p data-cms="plant-supply/why/card3/body">Plant selections informed by landscape design principles.</p>
                     </article>
                     <article class="ps-why-card">
+                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V10"/><path d="M18 14c1.5-2 1.5-5-3-6-2 1-3 3-3 5"/><path d="M6 14c-1.5-2-1.5-5 3-6 2 1 3 3 3 5"/></svg></div>
+                        <h3 data-cms="plant-supply/why/card4/title">Long-Term Performance</h3>
+                        <p data-cms="plant-supply/why/card4/body">Focus on resilience, adaptability and lifecycle value.</p>
+                    </article>
+                    
+                    <!-- Cloned Cards for Marquee -->
+                    <article class="ps-why-card ps-why-clone" aria-hidden="true">
+                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 5 8c2 2 2 6 7 8"/><path d="M12 12c0-4 4-6 7-4-2 2-2 6-7 8"/></svg></div>
+                        <h3 data-cms="plant-supply/why/card1/title">Extensive Nursery Network</h3>
+                        <p data-cms="plant-supply/why/card1/body">Access to premium growers across India.</p>
+                    </article>
+                    <article class="ps-why-card ps-why-clone" aria-hidden="true">
+                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                        <h3 data-cms="plant-supply/why/card2/title">Reliable Supply</h3>
+                        <p data-cms="plant-supply/why/card2/body">Consistent sourcing for projects of all scales.</p>
+                    </article>
+                    <article class="ps-why-card ps-why-clone" aria-hidden="true">
+                        <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+                        <h3 data-cms="plant-supply/why/card3/title">Design Expertise</h3>
+                        <p data-cms="plant-supply/why/card3/body">Plant selections informed by landscape design principles.</p>
+                    </article>
+                    <article class="ps-why-card ps-why-clone" aria-hidden="true">
                         <div class="ps-why-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 22V10"/><path d="M18 14c1.5-2 1.5-5-3-6-2 1-3 3-3 5"/><path d="M6 14c-1.5-2-1.5-5 3-6 2 1 3 3 3 5"/></svg></div>
                         <h3 data-cms="plant-supply/why/card4/title">Long-Term Performance</h3>
                         <p data-cms="plant-supply/why/card4/body">Focus on resilience, adaptability and lifecycle value.</p>
