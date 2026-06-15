@@ -603,7 +603,7 @@
                 class="home-expertise-section bg-black pb-16 md:pb-24 px-6 md:px-12 lg:px-24 border-b border-white/5 relative overflow-hidden">
                 <!-- Aesthetic background elements -->
                 <div
-                    class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent-bronze/5 rounded-full blur-[120px] pointer-events-none">
+                    class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent-bronze/5 rounded-full blur-[120px] pointer-events-none hidden md:block">
                 </div>
 
                 <div class="mx-auto max-w-7xl relative z-10 service-heading-container">
@@ -614,15 +614,32 @@
                         <h3 class="font-serif text-balance text-4xl md:text-5xl lg:text-6xl text-ivory font-light drop-shadow-xl">
                             Service as an <span class="italic text-accent-bronze">Art Form</span></h3>
                         <div class="service-heading-divider">
-                            <div class="w-px h-16 bg-gradient-to-b from-accent-bronze/50 to-transparent"></div>
+                            <div class="w-px h-16 bg-gradient-to-b from-accent-bronze/50 to-transparent mx-auto"></div>
                         </div>
                     </div>
 
-                    <div id="services-cards-track" class="w-full max-w-full flex overflow-x-auto overscroll-x-contain touch-pan-x snap-x snap-mandatory md:grid md:grid-cols-3 gap-0 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                    <style>
+                        @media (max-width: 767px) {
+                            .mobile-edge-track {
+                                max-width: none !important;
+                                width: calc(100% + 3rem) !important;
+                                margin-left: -1.5rem !important;
+                                margin-right: -1.5rem !important;
+                                padding: 0 !important;
+                            }
+                            .mobile-first-card {
+                                margin-left: 7vw !important;
+                            }
+                            .mobile-last-card {
+                                margin-right: 7vw !important;
+                            }
+                        }
+                    </style>
+                    <div id="services-cards-track" class="mobile-edge-track w-full max-w-full flex overflow-x-auto overscroll-x-contain touch-pan-x snap-x snap-mandatory md:grid md:grid-cols-3 gap-6 md:gap-px bg-transparent md:bg-white/10 border-transparent md:border md:border-white/10 relative z-10 font-medium [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
 
                         <!-- Curated Specimens Card -->
                         <a href="curated-specimens"
-                            class="service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
+                            class="mobile-first-card service-card reveal reveal-up stagger-2 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[86vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -650,7 +667,7 @@
 
                         <!-- Architectural Harmony Card -->
                         <a href="architectural-harmony"
-                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
+                            class="service-card reveal reveal-up stagger-3 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[86vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -677,9 +694,9 @@
                             </div>
                         </a>
 
-                        <!-- White Glove Service Card -->
-                        <a href="white-glove-service"
-                            class="service-card reveal reveal-up stagger-4 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[85vw] md:min-w-0 shrink-0 snap-center">
+                        <!-- Perpetual Curation Card -->
+                        <a href="perpetual-curation"
+                            class="mobile-last-card service-card reveal reveal-up stagger-4 group block relative z-20 p-10 lg:p-14 bg-black hover:bg-surface-dark transition-all duration-700 flex flex-col items-center text-center border-t border-white/5 md:border-none overflow-hidden isolate min-w-[86vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="absolute inset-0 bg-gradient-to-b from-accent-bronze/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10">
                             </div>
@@ -750,9 +767,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 gap-6 md:gap-12 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+
+                    <div id="trends-cards-track" class="mobile-edge-track flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 gap-6 md:gap-12 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                         <a href="biophilic-workspace"
-                            class="reveal reveal-up stagger-1 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-transparent md:border-none block min-w-[86vw] md:min-w-0 shrink-0 snap-center">
+                            class="mobile-first-card reveal reveal-up stagger-1 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-transparent md:border-none block min-w-[86vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] premium-hover-img wireframe-cross md:border-none shadow-2xl md:shadow-none">
                                 <div data-cms="home/trends/card1/image" class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross bg-cover bg-center bg-no-repeat"></div>
@@ -791,7 +809,7 @@
                                 Editorial</span>
                         </a>
                         <a href="living-walls"
-                            class="reveal reveal-up stagger-3 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block min-w-[86vw] md:min-w-0 shrink-0 snap-center">
+                            class="mobile-last-card reveal reveal-up stagger-3 group cursor-pointer bg-background-dark pt-6 pb-6 md:pt-0 md:pb-0 md:static md:top-auto md:z-auto md:bg-transparent border-t border-white/5 md:border-none shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.8)] md:shadow-none block min-w-[86vw] md:min-w-0 shrink-0 snap-center">
                             <div
                                 class="relative aspect-[3/4] overflow-hidden mb-8 bg-[#1a1a1a] border border-[#444] premium-hover-img wireframe-cross md:border-none shadow-2xl md:shadow-none">
                                 <div data-cms="home/trends/card3/image" class="w-full h-full transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-100 bg-[#1a1a1a] border border-[#444] wireframe-cross bg-cover bg-center bg-no-repeat"></div>
@@ -809,6 +827,15 @@
                                 class="text-accent-bronze text-[10px] uppercase tracking-[0.2em] font-bold border-b border-accent-bronze/30 pb-1">Read
                                 Editorial</span>
                         </a>
+                    </div>
+                    <div id="trends-mobile-dots" class="mt-8 flex items-center justify-center gap-3 md:hidden">
+                        <button type="button" class="trend-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="0" aria-label="Trend slide 1"></button>
+                        <button type="button" class="trend-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="1" aria-label="Trend slide 2"></button>
+                        <button type="button" class="trend-dot h-2.5 w-2.5 rounded-full bg-white/25 transition-all duration-300" data-dot-index="2" aria-label="Trend slide 3"></button>
+                    </div>
+                    <div id="trends-mobile-arrow" class="mt-4 mb-2 flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.22em] text-accent-bronze/90 md:hidden select-none">
+                        <span id="trends-mobile-arrow-icon" class="text-sm leading-none">→</span>
+                        <span id="trends-mobile-arrow-label">Swipe</span>
                     </div>
                 </div>
             </section>
@@ -957,6 +984,73 @@
 
             const dots = Array.from(dotsWrap.querySelectorAll('.service-dot'));
             const cards = Array.from(track.querySelectorAll('.service-card'));
+            if (!dots.length || !cards.length) return;
+
+            const setActiveDot = (idx) => {
+                dots.forEach((dot, i) => {
+                    const active = i === idx;
+                    dot.classList.toggle('bg-accent-bronze', active);
+                    dot.classList.toggle('shadow-[0_0_14px_rgba(166,139,106,0.9)]', active);
+                    dot.classList.toggle('scale-110', active);
+                    dot.classList.toggle('bg-white/25', !active);
+                });
+
+                if (!arrowIcon || !arrowLabel) return;
+                if (idx <= 0) {
+                    arrowIcon.textContent = '→';
+                    arrowLabel.textContent = 'Swipe Right';
+                } else if (idx >= cards.length - 1) {
+                    arrowIcon.textContent = '←';
+                    arrowLabel.textContent = 'Swipe Left';
+                } else {
+                    arrowIcon.textContent = '↔';
+                    arrowLabel.textContent = 'Swipe';
+                }
+            };
+
+            const getClosestCardIndex = () => {
+                const trackCenter = track.getBoundingClientRect().left + (track.clientWidth / 2);
+                let closestIndex = 0;
+                let closestDistance = Infinity;
+                cards.forEach((card, idx) => {
+                    const cardCenter = card.getBoundingClientRect().left + (card.clientWidth / 2);
+                    const dist = Math.abs(cardCenter - trackCenter);
+                    if (dist < closestDistance) {
+                        closestDistance = dist;
+                        closestIndex = idx;
+                    }
+                });
+                return closestIndex;
+            };
+
+            let rafId = null;
+            const onScroll = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => setActiveDot(getClosestCardIndex()));
+            };
+
+            dots.forEach((dot, idx) => {
+                dot.addEventListener('click', () => {
+                    cards[idx]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    setActiveDot(idx);
+                });
+            });
+
+            track.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            setActiveDot(0);
+        })();
+
+        // ── Mobile Trends Dots ────────────────────────────────────────────
+        (function initMobileTrendsDots() {
+            const track = document.getElementById('trends-cards-track');
+            const dotsWrap = document.getElementById('trends-mobile-dots');
+            const arrowIcon = document.getElementById('trends-mobile-arrow-icon');
+            const arrowLabel = document.getElementById('trends-mobile-arrow-label');
+            if (!track || !dotsWrap) return;
+
+            const dots = Array.from(dotsWrap.querySelectorAll('.trend-dot'));
+            const cards = Array.from(track.children).filter(c => c.tagName === 'A');
             if (!dots.length || !cards.length) return;
 
             const setActiveDot = (idx) => {
