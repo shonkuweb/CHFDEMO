@@ -2008,7 +2008,7 @@ async def serve_static(request: Request, path: str):
     if not resolved_path:
         raise HTTPException(status_code=404, detail="Not Found")
         
-    if resolved_path.lower() == "admin.html":
+    if resolved_path.lower() == "admin-dashboard.html":
         token = request.cookies.get("admin_session")
         if not token:
             return RedirectResponse("/admin-login")

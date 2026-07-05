@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Invoice Portal</title>
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="assets/tailwind.css?v=admin-custom-2" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Serif:wght@300..700&display=swap" rel="stylesheet" />
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+</head>
+
+<body class="bg-background-dark text-ivory font-display antialiased min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+    <!-- Ambient Blur -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-bronze/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <div class="w-full max-w-md relative z-10">
+        <!-- Logo -->
+        <div class="flex justify-center mb-12">
+            <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_logo.png" alt="CHF Logo" class="block" style="width: 200px; height: 5rem; object-fit: contain; background: transparent;" decoding="async" loading="eager" fetchpriority="high">
+        </div>
+
+        <div class="bg-surface-dark border border-white/10 p-10 shadow-2xl backdrop-blur-xl text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-bronze/10 mb-4 border border-accent-bronze/20">
+                <span class="material-symbols-outlined text-2xl text-accent-bronze">construction</span>
+            </div>
+            <h3 class="font-serif text-2xl font-light text-ivory mb-2">Coming Soon</h3>
+            <p class="text-xs uppercase tracking-widest text-accent-bronze font-bold mb-6">Under Development</p>
+            <p class="text-sm text-ivory-dim leading-relaxed mb-8">
+                The billing software is currently under development by team ShonkuWeb.
+            </p>
+            <a href="/api/invoice/logout" class="w-full inline-block text-center border border-red-300/20 text-red-300 px-6 py-3 text-xs uppercase tracking-widest font-bold rounded-sm hover:bg-red-500/10 transition-colors mt-4">
+                Logout
+            </a>
+        </div>
+        
+        <p class="text-center text-[10px] uppercase tracking-widest text-gray-600 font-bold mt-8">
+            &copy; 2026 Plant Experience Centre
+        </p>
+    </div>
+</body>
+
+</html>

@@ -2,22 +2,6 @@
 <html lang="en">
 
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18255719349"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'AW-18255719349');
-</script>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WX5PNNWB');</script>
-<!-- End Google Tag Manager -->
     <link rel="preconnect" href="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev" crossorigin>
 
     <meta charset="utf-8" />
@@ -26,7 +10,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="apple-touch-icon" href="assets/chf_logo_nav.png" />
     <title>Plant Experience Centre</title>
     <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="assets/tailwind.css?v=navbar-custom-4" />
+    <link rel="stylesheet" href="assets/tailwind.css?v=admin-custom-2" />
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Serif:wght@300..700&display=swap" rel="stylesheet" />
     <!-- Icons -->
@@ -35,15 +19,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-    
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased min-h-screen flex items-center justify-center p-6 relative overflow-hidden" id="app">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WX5PNNWB"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
     <!-- Ambient Blur -->
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-bronze/5 rounded-full blur-[150px] pointer-events-none"></div>
 
@@ -55,7 +33,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <div class="bg-surface-dark border border-white/10 p-10 shadow-2xl backdrop-blur-xl">
             <div class="text-center mb-8">
-                <h1 class="font-serif text-3xl font-light text-ivory mb-2">Admin Portal</h1>
+                <h1 class="font-serif text-3xl font-light text-ivory mb-2">Invoice Portal</h1>
                 <p class="text-xs uppercase tracking-[0.2em] text-accent-bronze font-bold">Secure Access</p>
             </div>
 
@@ -63,8 +41,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <!-- Username -->
                 <div>
                     <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Username</label>
-                    <input type="text" v-model="username" required
-                        class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
+                    <input type="text" v-model="username" required disabled
+                        class="w-full bg-background-dark/50 border border-white/5 px-4 py-3 text-sm text-gray-500 focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20 cursor-not-allowed"
                         placeholder="Enter username">
                 </div>
 
@@ -99,7 +77,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         
         <p class="text-center text-[10px] uppercase tracking-widest text-gray-600 font-bold mt-8">
-            &copy; 2026 CHF Botanical Luxury
+            &copy; 2026 Plant Experience Centre
         </p>
     </div>
 
@@ -108,7 +86,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         createApp({
             setup() {
-                const username = ref('admin');
+                const username = ref('invoice_admin');
                 const password = ref('');
                 const isLoading = ref(false);
                 const error = ref('');
@@ -125,7 +103,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         formData.append('password', password.value);
                         formData.append('cf_turnstile_response', turnstileResponse || '');
 
-                        const res = await fetch('/api/login', {
+                        const res = await fetch('/api/invoice/login', {
                             method: 'POST',
                             body: formData
                         });
@@ -135,10 +113,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             throw new Error(errData.detail || 'Authentication failed');
                         }
 
-                        // Success! Redirect to admin or requested page.
+                        // Success! Redirect to invoice or requested page.
                         const params = new URLSearchParams(window.location.search);
                         const next = params.get('next');
-                        window.location.href = next ? '/' + next.replace(/^\//, '') : '/admin-dashboard.html';
+                        window.location.href = next ? '/' + next.replace(/^\//, '') : '/invoice.html';
                         
                     } catch (err) {
                         error.value = err.message;
