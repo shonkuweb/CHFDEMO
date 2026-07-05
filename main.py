@@ -1728,6 +1728,34 @@ async def change_admin_password(
     conn.close()
     return {"status": "success", "message": "Password updated"}
 
+@app.post("/api/admin/change-invoice-password")
+async def change_invoice_password(
+    request: Request,
+    admin: str = Depends(get_current_admin)
+):
+    body = await request.json()
+    new_password = body.get("new_password", "")
+    cf_turnstile_response = body.get("cf_turnstile_response")
+
+    verify_turnstile_or_raise(cf_turnstile_response)
+
+    if not new_password:
+        raise HTTPException(status_code=400, detail="New password is required")
+    if len(new_password) < 10:
+        raise HTTPException(status_code=400, detail="New password must be at least 10 characters")
+
+    new_hash = argon2.hash(new_password)
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("UPDATE admins SET password_hash = ? WHERE username = 'invoice_admin'", (new_hash,))
+    if cur.rowcount == 0:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Invoice admin account not found")
+    conn.commit()
+    conn.close()
+    return {"status": "success", "message": "Invoice password updated"}
+
+
 @app.get("/api/site-content")
 async def get_site_content(page: str = ''):
     return fetch_site_content(page)
