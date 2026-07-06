@@ -32,7 +32,7 @@
             <p class="text-sm text-ivory-dim leading-relaxed mb-8">
                 The billing software is currently under development by team ShonkuWeb.
             </p>
-            <a href="/api/invoice/logout" class="w-full inline-block text-center border border-red-300/20 text-red-300 px-6 py-3 text-xs uppercase tracking-widest font-bold rounded-sm hover:bg-red-500/10 transition-colors mt-4">
+            <a href="#" onclick="event.preventDefault(); fetch('/api/logout', {method: 'POST'}).then(() => window.location.href='/invoice-login.html');" class="w-full inline-block text-center border border-red-300/20 text-red-300 px-6 py-3 text-xs uppercase tracking-widest font-bold rounded-sm hover:bg-red-500/10 transition-colors mt-4">
                 Logout
             </a>
         </div>
