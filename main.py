@@ -1747,8 +1747,7 @@ async def change_invoice_password(
     cur = conn.cursor()
     cur.execute("UPDATE admins SET password_hash = ? WHERE username = 'invoice_admin'", (new_hash,))
     if cur.rowcount == 0:
-        conn.close()
-        raise HTTPException(status_code=404, detail="Invoice admin account not found")
+        cur.execute("INSERT INTO admins (username, password_hash) VALUES ('invoice_admin', ?)", (new_hash,))
     conn.commit()
     conn.close()
     return {"status": "success", "message": "Invoice password updated"}
