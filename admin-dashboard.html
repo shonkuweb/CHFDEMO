@@ -320,21 +320,45 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Current Password</label>
-                                <input v-model="passwordForm.currentPassword" type="password"
-                                    class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors"
-                                    placeholder="Current password">
+                                <div class="relative">
+                                    <input v-model="passwordForm.currentPassword" :type="showPasswordSettings ? 'text' : 'password'"
+                                        class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors pr-10"
+                                        placeholder="Current password">
+                                    <button type="button" @click="showPasswordSettings = !showPasswordSettings" tabindex="-1"
+                                        class="absolute inset-y-0 right-0 px-3 flex items-center text-white/50 hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">
+                                            {{ showPasswordSettings ? 'visibility_off' : 'visibility' }}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">New Password</label>
-                                <input v-model="passwordForm.newPassword" type="password"
-                                    class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors"
-                                    placeholder="Letters, numbers & symbols">
+                                <div class="relative">
+                                    <input v-model="passwordForm.newPassword" :type="showPasswordSettings ? 'text' : 'password'"
+                                        class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors pr-10"
+                                        placeholder="Letters, numbers & symbols">
+                                    <button type="button" @click="showPasswordSettings = !showPasswordSettings" tabindex="-1"
+                                        class="absolute inset-y-0 right-0 px-3 flex items-center text-white/50 hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">
+                                            {{ showPasswordSettings ? 'visibility_off' : 'visibility' }}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Confirm New Password</label>
-                                <input v-model="passwordForm.confirmPassword" type="password"
-                                    class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors"
-                                    placeholder="Re-enter new password">
+                                <div class="relative">
+                                    <input v-model="passwordForm.confirmPassword" :type="showPasswordSettings ? 'text' : 'password'"
+                                        class="w-full bg-black/50 border border-white/10 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors pr-10"
+                                        placeholder="Re-enter new password">
+                                    <button type="button" @click="showPasswordSettings = !showPasswordSettings" tabindex="-1"
+                                        class="absolute inset-y-0 right-0 px-3 flex items-center text-white/50 hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">
+                                            {{ showPasswordSettings ? 'visibility_off' : 'visibility' }}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Bot Protection</label>
@@ -369,15 +393,31 @@
                         <div class="space-y-4 relative z-10">
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-accent-bronze/70 mb-2 font-bold">New Invoice Password</label>
-                                <input v-model="invoicePasswordForm.newPassword" type="password"
-                                    class="w-full bg-black/40 border border-accent-bronze/20 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors placeholder:text-white/20"
-                                    placeholder="Letters, numbers & symbols">
+                                <div class="relative">
+                                    <input v-model="invoicePasswordForm.newPassword" :type="showInvoicePassword ? 'text' : 'password'"
+                                        class="w-full bg-black/40 border border-accent-bronze/20 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors placeholder:text-white/20 pr-10"
+                                        placeholder="Letters, numbers & symbols">
+                                    <button type="button" @click="showInvoicePassword = !showInvoicePassword" tabindex="-1"
+                                        class="absolute inset-y-0 right-0 px-3 flex items-center text-white/50 hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">
+                                            {{ showInvoicePassword ? 'visibility_off' : 'visibility' }}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-accent-bronze/70 mb-2 font-bold">Confirm New Password</label>
-                                <input v-model="invoicePasswordForm.confirmPassword" type="password"
-                                    class="w-full bg-black/40 border border-accent-bronze/20 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors placeholder:text-white/20"
-                                    placeholder="Re-enter new password">
+                                <div class="relative">
+                                    <input v-model="invoicePasswordForm.confirmPassword" :type="showInvoicePassword ? 'text' : 'password'"
+                                        class="w-full bg-black/40 border border-accent-bronze/20 rounded focus:border-accent-bronze outline-none px-4 py-3 text-sm text-white transition-colors placeholder:text-white/20 pr-10"
+                                        placeholder="Re-enter new password">
+                                    <button type="button" @click="showInvoicePassword = !showInvoicePassword" tabindex="-1"
+                                        class="absolute inset-y-0 right-0 px-3 flex items-center text-white/50 hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">
+                                            {{ showInvoicePassword ? 'visibility_off' : 'visibility' }}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-accent-bronze/70 mb-2 font-bold">Bot Protection</label>
@@ -913,10 +953,12 @@
                     newPassword: '',
                     confirmPassword: ''
                 });
+                const showPasswordSettings = ref(false);
                 const invoicePasswordForm = ref({
                     newPassword: '',
                     confirmPassword: ''
                 });
+                const showInvoicePassword = ref(false);
 
                 const selectionDisplay = computed(() => {
                     if (viewMode.value === 'collections') {
@@ -1782,13 +1824,15 @@
                     sidebarOpen,
                     sidebarCollapsed,
                     openSections,
+                    passwordForm,
+                    showPasswordSettings,
+                    invoicePasswordForm,
+                    showInvoicePassword,
                     dragover,
                     uploading,
                     uploadProgress,
                     toasts,
                     adminUsername,
-                    passwordForm,
-                    invoicePasswordForm,
                     loadCollection,
                     loadPageContent,
                     saveAll,
