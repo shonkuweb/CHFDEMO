@@ -1705,8 +1705,7 @@ async def change_admin_password(
 
     if not current_password or not new_password:
         raise HTTPException(status_code=400, detail="Current and new passwords are required")
-    if len(new_password) < 10:
-        raise HTTPException(status_code=400, detail="New password must be at least 10 characters")
+
     if new_password == current_password:
         raise HTTPException(status_code=400, detail="New password must be different from current password")
 
@@ -1741,8 +1740,7 @@ async def change_invoice_password(
 
     if not new_password:
         raise HTTPException(status_code=400, detail="New password is required")
-    if len(new_password) < 10:
-        raise HTTPException(status_code=400, detail="New password must be at least 10 characters")
+
 
     new_hash = argon2.hash(new_password)
     conn = get_db_connection()
