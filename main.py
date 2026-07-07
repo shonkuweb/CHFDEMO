@@ -2010,6 +2010,52 @@ async def save_home_trends_section(request: Request, admin: str = Depends(get_cu
     purge_cloudflare_cache()
     return {"status": "success", "version": version}
 
+@app.post("/api/leads")
+async def create_lead(request: Request):
+    try:
+        data = await request.json()
+    except Exception:
+        data = {}
+    name = data.get("name", "")
+    phone = data.get("phone", "")
+    email = data.get("email", "")
+    location = data.get("location", "")
+    message = data.get("message", "")
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        INSERT INTO leads (name, phone, email, location, message)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (name, phone, email, location, message))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.get("/api/admin/leads")
+async def get_leads(admin: str = Depends(get_current_admin)):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM leads ORDER BY created_at DESC")
+    rows = cur.fetchall()
+    conn.close()
+    return {"leads": [dict(row) for row in rows]}
+
+@app.delete("/api/admin/leads")
+async def delete_leads(request: Request, admin: str = Depends(get_current_admin)):
+    data = await request.json()
+    lead_ids = data.get("lead_ids", [])
+    if not lead_ids:
+        return {"status": "success"}
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    placeholders = ",".join("?" * len(lead_ids))
+    cur.execute(f"DELETE FROM leads WHERE id IN ({placeholders})", lead_ids)
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
 @app.get("/{path:path}")
 async def serve_static(request: Request, path: str):
     if not path or path == "/":

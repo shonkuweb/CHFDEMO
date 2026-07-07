@@ -250,6 +250,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <!-- Premium Animations -->
     <link rel="stylesheet" href="assets/animations.css?v=chf-no-img-zoom-1">
     <script src="assets/animation-core.js?v=navbar-custom-4" defer></script>
+
+    <!-- Event snippet for Page view conversion page -->
+    <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+          'send_to': 'AW-18255719349/UtOdCJjWiswcELXXgIFE',
+          'event_callback': callback
+      });
+      return false;
+    }
+    </script>
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased">
@@ -455,7 +471,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
                     <div class="lg:col-span-7">
                         <div class="chf-form-card relative">
-                            <form id="enquiry-form" class="relative z-10" style="display:flex;flex-direction:column;gap:32px;">
+                            <form id="enquiry-form" action="/api/leads" method="POST" class="relative z-10" style="display:flex;flex-direction:column;gap:32px;">
 
                                 <div class="chf-section-hint"><span>Personal Details</span></div>
 
@@ -665,14 +681,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         // ── Enquiry Form → WhatsApp ───────────────────────────────────────
         const CHF_WHATSAPP = '917980783108'; // India +91 79807 83108
 
-        document.getElementById('enquiry-form').addEventListener('submit', function (e) {
+        document.getElementById('enquiry-form').addEventListener('submit', async function (e) {
             e.preventDefault();
+
+            // Trigger Google Ads conversion
+            if (typeof gtag_report_conversion === 'function') {
+                gtag_report_conversion();
+            }
 
             const name     = document.getElementById('name').value.trim();
             const phone    = document.getElementById('phone').value.trim();
             const email    = document.getElementById('email').value.trim();
             const location = document.getElementById('location').value.trim();
             const message  = document.getElementById('message').value.trim();
+
+            // Send lead to backend API
+            try {
+                await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, email, location, message })
+                });
+            } catch (err) {
+                console.error('Failed to log lead', err);
+            }
 
             // Build a premium formatted WhatsApp message
             const text = [

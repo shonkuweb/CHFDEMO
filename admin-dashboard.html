@@ -263,6 +263,14 @@
                         </div>
                     </div>
 
+                    <!-- Leads -->
+                    <div>
+                        <button @click="openLeads" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
+                            <span v-if="!sidebarCollapsed">Leads</span>
+                            <span v-else class="text-xs">LD</span>
+                        </button>
+                    </div>
+
                     <div>
                         <button @click="toggleSection('account')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
                             <span v-if="!sidebarCollapsed">Account</span>
@@ -319,7 +327,7 @@
                 Select a section to edit
             </div>
 
-            <div v-else class="max-w-4xl mx-auto p-5 sm:p-8 lg:p-12">
+            <div v-else :class="['mx-auto p-5 sm:p-8 lg:p-12', viewMode === 'leads' ? 'max-w-6xl' : 'max-w-4xl']">
                 <div class="glass-surface mb-8 px-6 py-4 flex items-center justify-between">
                     <div class="text-[10px] uppercase tracking-[0.25em] text-gray-400">
                         Signed in as <span class="text-accent-bronze">{{ adminUsername || 'admin' }}</span>
@@ -330,7 +338,7 @@
                 </div>
 
                 <!-- Header Actions -->
-                <div v-if="viewMode !== 'settings'" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12 border-b border-white/5 pb-6">
+                <div v-if="viewMode !== 'settings' && viewMode !== 'leads'" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12 border-b border-white/5 pb-6">
                     <div>
                         <h1 class="font-serif text-3xl sm:text-4xl mb-2">{{ selectionDisplay }}</h1>
                         <p class="text-gray-500">{{ selectionSubtext }}</p>
@@ -474,6 +482,87 @@
                             </button>
                         </div>
                     </section>
+                </div>
+                <!-- View Mode: Leads -->
+                <div v-if="viewMode === 'leads'" class="space-y-12">
+                    <section class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6 overflow-hidden">
+                        <div class="flex items-center justify-between mb-6 border-b border-accent-bronze/20 pb-3">
+                            <h3 class="text-xs uppercase tracking-[0.2em] text-accent-bronze font-bold">Recent Leads</h3>
+                            <div class="flex items-center gap-4">
+                                <select v-model="leadTimeFilter" class="bg-black/40 border border-accent-bronze/20 rounded focus:border-accent-bronze outline-none px-3 py-1.5 text-xs text-white">
+                                    <option value="all">All Time</option>
+                                    <option value="7days">Last 7 Days</option>
+                                    <option value="30days">Last 30 Days</option>
+                                    <option value="thismonth">This Month</option>
+                                </select>
+                                <button v-if="selectedLeadIds.length > 0" @click="deleteSelectedLeads" class="text-xs flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors mr-2">
+                                    <span class="material-symbols-outlined text-[14px]">delete</span> Delete Selected
+                                </button>
+                                <button @click="openLeads" class="text-xs flex items-center gap-1 text-gray-400 hover:text-white transition-colors">
+                                    <span class="material-symbols-outlined text-[14px]">refresh</span> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div v-if="loadingLeads" class="text-center py-12 text-gray-500">
+                            Loading leads...
+                        </div>
+                        
+                        <div v-else-if="filteredLeads.length === 0" class="text-center py-12 text-gray-500">
+                            No leads found matching your criteria.
+                        </div>
+                        
+                        <div v-else class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-300">
+                                <thead class="text-[10px] uppercase tracking-widest text-gray-500 bg-black/40">
+                                    <tr>
+                                        <th class="px-4 py-3 font-medium border-b border-accent-bronze/20 w-8">
+                                            <input type="checkbox" @change="toggleAllLeads($event)" :checked="selectedLeadIds.length === filteredLeads.length && filteredLeads.length > 0" class="accent-accent-bronze cursor-pointer" />
+                                        </th>
+                                        <th class="px-4 py-3 font-medium border-b border-accent-bronze/20">Date</th>
+                                        <th class="px-4 py-3 font-medium border-b border-accent-bronze/20">Name</th>
+                                        <th class="px-4 py-3 font-medium border-b border-accent-bronze/20">Contact</th>
+                                        <th class="px-4 py-3 font-medium border-b border-accent-bronze/20">Location</th>
+                                        <th class="px-4 py-3 font-medium border-b border-accent-bronze/20 w-1/3">Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="lead in filteredLeads" :key="lead.id" class="border-b border-accent-bronze/10 hover:bg-white/5 transition-colors">
+                                        <td class="px-4 py-4 w-8">
+                                            <input type="checkbox" :value="lead.id" v-model="selectedLeadIds" class="accent-accent-bronze cursor-pointer" />
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">{{ new Date(lead.created_at).toLocaleString() }}</td>
+                                        <td class="px-4 py-4">{{ lead.name || '-' }}</td>
+                                        <td class="px-4 py-4">
+                                            <div v-if="lead.phone">{{ lead.phone }}</div>
+                                            <div v-if="lead.email" class="text-gray-500">{{ lead.email }}</div>
+                                            <span v-if="!lead.phone && !lead.email">-</span>
+                                        </td>
+                                        <td class="px-4 py-4">{{ lead.location || '-' }}</td>
+                                        <td class="px-4 py-4 text-gray-400 text-xs">
+                                            <div class="flex items-center gap-2 justify-between">
+                                                <div class="truncate max-w-[200px]">{{ lead.message || '-' }}</div>
+                                                <button v-if="lead.message" @click="viewLeadMessage(lead)" class="text-accent-bronze hover:text-white transition-colors flex-shrink-0" title="View Full Message">
+                                                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <!-- Lead Message Modal -->
+                    <div v-if="showLeadMessageModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px);">
+                        <div style="background-color: #0c0c0c; border: 1px solid rgba(193, 155, 118, 0.3); border-radius: 12px; width: 100%; max-width: 450px; position: relative; padding: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+                            <button @click="closeLeadMessageModal" style="position: absolute; top: 1rem; right: 1rem; color: #9ca3af; transition: color 0.2s; cursor: pointer;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#9ca3af'">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
+                            <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #C19B76; margin-bottom: 0.5rem;">Message from</div>
+                            <h3 style="font-size: 1.25rem; font-family: 'Playfair Display', serif; color: white; margin-bottom: 1.5rem; line-height: 1.2;">{{ selectedLead?.name || 'Unknown Sender' }}</h3>
+                            <div style="color: #d1d5db; font-size: 0.875rem; white-space: pre-wrap; background-color: rgba(0,0,0,0.4); padding: 1rem; border-radius: 8px; border: 1px solid rgba(193, 155, 118, 0.1); max-height: 50vh; overflow-y: auto;">{{ selectedLead?.message }}</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- View Mode: Generic Site Content -->
@@ -965,6 +1054,70 @@
                 const viewMode = ref(null); // 'collections' or 'site-content'
                 
                 const currentData = ref(null); // Collection data
+                const leadsData = ref([]); // Leads data
+                const loadingLeads = ref(false);
+                const leadTimeFilter = ref('all');
+                const selectedLead = ref(null);
+                const selectedLeadIds = ref([]);
+                
+                const toggleAllLeads = (e) => {
+                    if (e.target.checked) {
+                        selectedLeadIds.value = filteredLeads.value.map(l => l.id);
+                    } else {
+                        selectedLeadIds.value = [];
+                    }
+                };
+                
+                const deleteSelectedLeads = async () => {
+                    if (!confirm('Are you sure you want to delete the selected leads?')) return;
+                    
+                    try {
+                        const res = await fetch('/api/admin/leads', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ lead_ids: selectedLeadIds.value })
+                        });
+                        const data = await res.json();
+                        if (data.status === 'success') {
+                            selectedLeadIds.value = [];
+                            await openLeads(); // Refresh leads
+                        } else {
+                            alert('Failed to delete leads.');
+                        }
+                    } catch (e) {
+                        alert('Error deleting leads.');
+                        console.error(e);
+                    }
+                };
+                const showLeadMessageModal = ref(false);
+                
+                const viewLeadMessage = (lead) => {
+                    selectedLead.value = lead;
+                    showLeadMessageModal.value = true;
+                };
+                
+                const closeLeadMessageModal = () => {
+                    showLeadMessageModal.value = false;
+                    selectedLead.value = null;
+                };
+                
+                const filteredLeads = computed(() => {
+                    const now = new Date();
+                    return leadsData.value.filter(lead => {
+                        if (leadTimeFilter.value === 'all') return true;
+                        
+                        const leadDate = new Date(lead.created_at);
+                        const diffTime = Math.abs(now - leadDate);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (leadTimeFilter.value === '7days') return diffDays <= 7;
+                        if (leadTimeFilter.value === '30days') return diffDays <= 30;
+                        if (leadTimeFilter.value === 'thismonth') {
+                            return leadDate.getMonth() === now.getMonth() && leadDate.getFullYear() === now.getFullYear();
+                        }
+                        return true;
+                    });
+                });
                 const currentSiteData = ref(null); // Generic site data
                 const homeTrendsData = ref(null); // Dedicated home trends heading table
                 const currentPortfolioImages = ref([]); // Portfolio array of strings
@@ -1031,11 +1184,13 @@
                         if (currentSelection.value === 'founders-era') return 'Founder\'s Era';
                     }
                     if (viewMode.value === 'settings') return 'Settings & Security';
+                    if (currentSelection.value === 'leads') return 'Enquiry Leads';
                     return '';
                 });
 
                 const selectionSubtext = computed(() => {
                     if (viewMode.value === 'collections') return 'Edit the collection blocks for this page.';
+                    if (viewMode.value === 'leads') return 'View and filter incoming customer enquiries.';
                     if (viewMode.value === 'site-content' && ['avenue', 'indoor', 'bonsai', 'curated-planters'].includes(currentSelection.value)) {
                         return 'Add or remove repeatable content blocks; each block syncs to the live page.';
                     }
@@ -1286,6 +1441,21 @@
                         currentData.value = null;
                     } finally {
                         loading.value = false;
+                    }
+                };
+
+                const openLeads = async () => {
+                    viewMode.value = 'leads';
+                    currentSelection.value = 'leads';
+                    loadingLeads.value = true;
+                    try {
+                        const res = await fetch('/api/admin/leads');
+                        const data = await res.json();
+                        leadsData.value = data.leads || [];
+                    } catch (err) {
+                        console.error('Failed to load leads:', err);
+                    } finally {
+                        loadingLeads.value = false;
                     }
                 };
 
@@ -1877,6 +2047,11 @@
                     adminUsername,
                     loadCollection,
                     loadPageContent,
+                    openLeads,
+                    leadsData,
+                    loadingLeads,
+                    leadTimeFilter,
+                    filteredLeads,
                     saveAll,
                     openSettings,
                     toggleSidebar,
@@ -1913,7 +2088,14 @@
                     movePortfolioImage,
                     triggerPortfolioFileInput,
                     handlePortfolioFileSelect,
-                    handlePortfolioDrop
+                    handlePortfolioDrop,
+                    selectedLead,
+                    showLeadMessageModal,
+                    viewLeadMessage,
+                    closeLeadMessageModal,
+                    selectedLeadIds,
+                    toggleAllLeads,
+                    deleteSelectedLeads
                 }
             },
             mounted() {
