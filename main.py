@@ -1380,6 +1380,23 @@ def ensure_sync_state_table():
     conn.commit()
     conn.close()
 
+def ensure_leads_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS leads (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            phone TEXT,
+            email TEXT,
+            location TEXT,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    conn.close()
+
 def ensure_home_trends_section_table():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -1602,6 +1619,7 @@ def startup_init_sync_state():
     migrate_legacy_site_content_keys()
     ensure_sync_state_table()
     ensure_home_trends_section_table()
+    ensure_leads_table()
     migrate_remove_comma_before_and()
     purge_deploy_asset_cache()
 
