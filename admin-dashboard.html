@@ -531,7 +531,7 @@
                                         <td class="px-4 py-4 w-8">
                                             <input type="checkbox" :value="lead.id" v-model="selectedLeadIds" class="accent-accent-bronze cursor-pointer" />
                                         </td>
-                                        <td class="px-4 py-4 whitespace-nowrap">{{ new Date(lead.created_at).toLocaleString() }}</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">{{ formatDateIST(lead.created_at) }}</td>
                                         <td class="px-4 py-4">{{ lead.name || '-' }}</td>
                                         <td class="px-4 py-4">
                                             <div v-if="lead.phone">{{ lead.phone }}</div>
@@ -1100,13 +1100,33 @@
                     showLeadMessageModal.value = false;
                     selectedLead.value = null;
                 };
+
+                const formatDateIST = (dateString) => {
+                    if (!dateString) return '-';
+                    // Append 'Z' to treat SQLite's UTC timestamp correctly if not already present
+                    const utcDateString = dateString.endsWith('Z') ? dateString : dateString.replace(' ', 'T') + 'Z';
+                    const date = new Date(utcDateString);
+                    return date.toLocaleString('en-IN', {
+                        timeZone: 'Asia/Kolkata',
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                };
                 
                 const filteredLeads = computed(() => {
                     const now = new Date();
                     return leadsData.value.filter(lead => {
                         if (leadTimeFilter.value === 'all') return true;
                         
-                        const leadDate = new Date(lead.created_at);
+                        // Parse as UTC if 'Z' is missing
+                        const dateString = lead.created_at;
+                        const utcDateString = dateString.endsWith('Z') ? dateString : dateString.replace(' ', 'T') + 'Z';
+                        const leadDate = new Date(utcDateString);
+                        
                         const diffTime = Math.abs(now - leadDate);
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                         
@@ -2095,7 +2115,8 @@
                     closeLeadMessageModal,
                     selectedLeadIds,
                     toggleAllLeads,
-                    deleteSelectedLeads
+                    deleteSelectedLeads,
+                    formatDateIST
                 }
             },
             mounted() {
