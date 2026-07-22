@@ -34,7 +34,7 @@ services:
     container_name: chf-whatsapp
     restart: always
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3000"
     volumes:
       - whatsapp_data:/app/.wwebjs_auth_v2
 
