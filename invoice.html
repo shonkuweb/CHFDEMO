@@ -4,43 +4,620 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Invoice Portal</title>
+    <title>Invoice System</title>
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="assets/tailwind.css?v=admin-custom-2" />
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Serif:wght@300..700&display=swap" rel="stylesheet" />
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- JsBarcode -->
+    <script src="https://unpkg.com/jsbarcode@latest/dist/JsBarcode.all.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- QRCode.js for Mobile Scanner -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; background-color: #0c0c0c; color: #f5f5f0; }
+        h1, h2, h3, .font-serif { font-family: 'Noto Serif Display', serif; }
+        .view-transition { transition: opacity 0.3s ease; }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
 </head>
 
-<body class="bg-background-dark text-ivory font-display antialiased min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-    <!-- Ambient Blur -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-bronze/5 rounded-full blur-[150px] pointer-events-none"></div>
+<body class="bg-background-dark text-white min-h-screen flex selection:bg-accent-bronze/30">
+    <div id="app" class="flex min-h-screen w-full relative">
+        <!-- Ambient Blur -->
+        <div class="fixed top-1/2 right-0 -translate-y-1/2 translate-x-1/3 w-[800px] h-[800px] bg-accent-bronze/5 rounded-full blur-[150px] pointer-events-none"></div>
 
-    <div class="w-full max-w-md relative z-10">
-        <!-- Logo -->
-        <div class="flex justify-center mb-12">
-            <img src="https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/assets/chf_logo.png" alt="CHF Logo" class="block" style="width: 200px; height: 5rem; object-fit: contain; background: transparent;" decoding="async" loading="eager" fetchpriority="high">
-        </div>
-
-        <div class="bg-surface-dark border border-white/10 p-10 shadow-2xl backdrop-blur-xl text-center">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-bronze/10 mb-4 border border-accent-bronze/20">
-                <span class="material-symbols-outlined text-2xl text-accent-bronze">construction</span>
+        <!-- Sidebar -->
+        <aside class="w-64 border-r border-white/5 bg-[#090909] flex flex-col justify-between h-screen fixed left-0 top-0 z-10 shadow-2xl">
+            <div>
+                <div class="p-8 border-b border-white/5 mb-6">
+                    <h2 class="font-serif text-2xl tracking-wide text-white">Invoice <span class="text-accent-bronze italic text-lg">System</span></h2>
+                </div>
+                <nav class="px-4 space-y-2">
+                    <button @click="currentTab = 'bill'" 
+                        :class="[currentTab === 'bill' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', 'w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all rounded-r-sm']">
+                        <span class="material-symbols-outlined text-[18px]">receipt_long</span>
+                        Generate Bill
+                    </button>
+                    <button @click="currentTab = 'barcodes'" 
+                        :class="[currentTab === 'barcodes' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', 'w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all rounded-r-sm']">
+                        <span class="material-symbols-outlined text-[18px]">barcode_reader</span>
+                        Generate Barcodes
+                    </button>
+                </nav>
             </div>
-            <h3 class="font-serif text-2xl font-light text-ivory mb-2">Coming Soon</h3>
-            <p class="text-xs uppercase tracking-widest text-accent-bronze font-bold mb-6">Under Development</p>
-            <p class="text-sm text-ivory-dim leading-relaxed mb-8">
-                The billing software is currently under development by team ShonkuWeb.
-            </p>
-            <a href="#" onclick="event.preventDefault(); fetch('/api/logout', {method: 'POST'}).then(() => window.location.href='/invoice-login.html');" class="w-full inline-block text-center border border-red-300/20 text-red-300 px-6 py-3 text-xs uppercase tracking-widest font-bold rounded-sm hover:bg-red-500/10 transition-colors mt-4">
-                Logout
-            </a>
-        </div>
-        
-        <p class="text-center text-[10px] uppercase tracking-widest text-gray-600 font-bold mt-8">
-            &copy; 2026 Plant Experience Centre
-        </p>
-    </div>
-</body>
+            
+            <div class="p-6">
+                <button @click="logout" class="w-full inline-flex items-center justify-center gap-2 border border-red-400/20 text-red-400 px-4 py-3 text-[10px] uppercase tracking-widest font-bold rounded-sm hover:bg-red-500/10 transition-colors">
+                    <span class="material-symbols-outlined text-[16px]">logout</span>
+                    Logout
+                </button>
+                <p class="text-center text-[9px] uppercase tracking-widest text-gray-600 font-bold mt-6">
+                    &copy; 2026 Plant Experience
+                </p>
+            </div>
+        </aside>
 
+        <!-- Main Content Area -->
+        <main class="ml-64 flex-1 p-10 lg:p-16 relative z-0">
+            <!-- Generate Bill View -->
+            <div v-if="currentTab === 'bill'" class="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col items-center justify-center min-h-[70vh]">
+                <template v-if="!deviceVerified">
+                    <header class="mb-12 text-center">
+                        <h1 class="font-serif text-4xl font-light text-ivory mb-2">Setup Scanner</h1>
+                        <p class="text-sm text-gray-400">Link your mobile device to scan barcodes directly.</p>
+                    </header>
+                    <div class="bg-surface-dark border border-white/5 p-12 rounded-lg shadow-xl backdrop-blur-md w-full max-w-md text-center flex flex-col items-center">
+                        <div id="setup-qrcode" class="bg-white p-4 w-56 h-56 flex-shrink-0 flex items-center justify-center mb-6"></div>
+                        <p class="text-sm text-gray-400 mb-2">Scan this code to open the scanner.</p>
+                        <p class="text-xs uppercase tracking-widest text-gray-500 font-bold mb-1">Verification PIN</p>
+                        <p class="font-serif text-4xl text-accent-bronze tracking-[0.2em] font-bold">{{ setupPin || '----' }}</p>
+                    </div>
+                </template>
+                <template v-else>
+                    <header class="mb-12 text-center">
+                        <h1 class="font-serif text-4xl font-light text-ivory mb-2">Create Invoice</h1>
+                        <p class="text-sm text-gray-400">Scan barcodes to add items and bill clients directly.</p>
+                    </header>
+                    
+                    <div class="w-full max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 items-start">
+                        <!-- Left Column: Input Form (Client Details & Submission) -->
+                        <div class="flex-1 w-full bg-surface-dark border border-white/5 p-8 rounded-lg shadow-xl backdrop-blur-md">
+                            <h2 class="font-serif text-2xl text-ivory mb-6">Client Details</h2>
+                            <form @submit.prevent="sendInvoice" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Client Name</label>
+                                        <input type="text" v-model="invoiceData.clientName" required
+                                            class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
+                                            placeholder="Enter client name">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">WhatsApp Number</label>
+                                        <input type="text" v-model="invoiceData.phone" required
+                                            class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
+                                            placeholder="e.g. +91 9876543210">
+                                    </div>
+                                </div>
+                                
+
+                                <div class="pt-6 flex items-center justify-end gap-4 border-t border-white/5 mt-8">
+                                    <span v-if="sendSuccess" class="text-green-400 text-sm flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                        Message Sent
+                                    </span>
+                                    <span v-if="sendError" class="text-red-400 text-sm flex items-center gap-1 max-w-xs text-right">
+                                        <span class="material-symbols-outlined text-[18px]">error</span>
+                                        {{ sendError }}
+                                    </span>
+                                    
+                                    <button type="submit" :disabled="sendingInvoice || invoiceData.items.length === 0"
+                                        class="bg-ivory text-background-dark hover:bg-white px-8 py-4 text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 rounded-sm w-full md:w-auto justify-center">
+                                        <span v-if="sendingInvoice" class="material-symbols-outlined text-[18px] animate-spin">refresh</span>
+                                        <span v-else class="material-symbols-outlined text-[18px]">send</span>
+                                        <span>{{ sendingInvoice ? 'Sending...' : 'Generate & Send Invoice' }}</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Scanned Items (The Cart) -->
+                        <div class="w-full xl:w-[480px] flex-shrink-0 bg-background-dark/30 border border-white/5 rounded-lg shadow-2xl flex flex-col relative min-h-[500px] max-h-[70vh] overflow-hidden">
+                            <!-- Header -->
+                            <div class="bg-surface-dark/80 backdrop-blur-md border-b border-white/5 p-6 flex items-center justify-between z-10 relative">
+                                <div>
+                                    <h3 class="font-serif text-xl text-ivory">Scanned Items</h3>
+                                    <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-1">{{ invoiceData.items.length }} Items</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-accent-bronze/10 border border-accent-bronze/30 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-accent-bronze animate-pulse">qr_code_scanner</span>
+                                </div>
+                            </div>
+
+                            <!-- Scrollable Items List -->
+                            <div class="flex-1 overflow-y-auto p-6 space-y-4 relative z-0 hide-scrollbar">
+                                <!-- Empty State -->
+                                <div v-if="invoiceData.items.length === 0" class="flex flex-col items-center justify-center h-full text-center py-12">
+                                    <div class="w-20 h-20 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center mb-6 mt-10">
+                                        <span class="material-symbols-outlined text-4xl text-gray-600">document_scanner</span>
+                                    </div>
+                                    <p class="text-lg font-serif text-ivory mb-2">No items scanned yet</p>
+                                    <p class="text-sm text-gray-500 max-w-[250px] leading-relaxed mx-auto">Use your linked mobile device to scan barcodes. Products will instantly appear here.</p>
+                                </div>
+
+                                <!-- Items -->
+                                <div v-for="(item, index) in invoiceData.items" :key="index" class="group relative bg-surface-dark border border-white/5 p-5 rounded-md hover:border-accent-bronze/30 transition-all">
+                                    <button type="button" @click="removeItem(index)" class="absolute top-4 right-4 text-red-400/50 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-all">
+                                        <span class="material-symbols-outlined text-[18px]">close</span>
+                                    </button>
+                                    <div class="pr-8 mb-4">
+                                        <label class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Product Description</label>
+                                        <input type="text" v-model="item.description" required
+                                            class="w-full bg-transparent border-b border-white/10 py-2 text-base font-serif text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
+                                            placeholder="Product Name">
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-24">
+                                            <label class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Qty</label>
+                                            <input type="number" v-model.number="item.qty" min="1" required
+                                                class="w-full bg-background-dark border border-white/10 px-3 py-2 text-sm text-ivory focus:outline-none focus:border-accent-bronze rounded-sm transition-colors text-center">
+                                        </div>
+                                        <div class="flex-1">
+                                            <label class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Price (₹)</label>
+                                            <input type="number" v-model.number="item.price" min="0" required
+                                                class="w-full bg-background-dark border border-white/10 px-3 py-2 text-sm text-ivory focus:outline-none focus:border-accent-bronze rounded-sm transition-colors">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sticky Footer for Total -->
+                            <div class="bg-surface-dark/95 backdrop-blur-md border-t border-white/5 p-6 relative z-10">
+                                <div class="flex items-end justify-between">
+                                    <div>
+                                        <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Total Amount</p>
+                                        <p class="text-sm text-gray-400">INR (₹)</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-serif text-4xl text-accent-bronze font-light tracking-wide">₹{{ totalAmount.toLocaleString('en-IN') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Generate Barcodes View -->
+            <div v-if="currentTab === 'barcodes'" class="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col items-center justify-center min-h-[70vh]">
+                <header class="mb-12 text-center">
+                    <h1 class="font-serif text-4xl font-light text-ivory mb-2">Generate Barcodes</h1>
+                    <p class="text-sm text-gray-400">Create and print plant barcodes for inventory.</p>
+                </header>
+                
+                <div class="bg-surface-dark border border-white/5 p-8 rounded-lg shadow-xl backdrop-blur-md w-full max-w-4xl flex flex-col md:flex-row gap-8">
+                    <!-- Left: Form -->
+                    <div class="flex-1 space-y-6">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Product SKU / ID <span class="text-red-400">*</span></label>
+                            <input type="text" v-model="barcodeData.sku"
+                                class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
+                                placeholder="e.g. PLANT-001">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Product Name (Optional)</label>
+                            <input type="text" v-model="barcodeData.name"
+                                class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
+                                placeholder="e.g. Monstera Deliciosa">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Quantity</label>
+                            <input type="number" v-model.number="barcodeData.qty" min="1"
+                                class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20">
+                        </div>
+                        <button @click="addToQueue" :disabled="!barcodeData.sku.trim()" class="bg-accent-bronze text-white hover:bg-accent-bronze/80 px-6 py-3 text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 rounded-sm">
+                            <span class="material-symbols-outlined text-[18px]">add</span>
+                            Add to Queue
+                        </button>
+                    </div>
+                    
+                    <!-- Right: Queue -->
+                    <div class="w-full md:w-[400px] bg-background-dark/50 border border-white/5 rounded-sm p-6 flex flex-col relative h-[420px]">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-4">Print Queue ({{ totalQueued }})</p>
+                        
+                        <div class="flex-1 overflow-y-auto space-y-2 pr-2">
+                            <div v-if="barcodeQueue.length === 0" class="text-gray-500 text-sm h-full flex flex-col items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-3xl">queue</span>
+                                Queue is empty
+                            </div>
+                            
+                            <div v-for="(item, index) in barcodeQueue" :key="index" class="bg-surface-dark border border-white/5 p-3 rounded-sm flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-ivory font-bold">{{ item.sku }}</p>
+                                    <p class="text-xs text-gray-400">{{ item.name || 'No Name' }} <span class="text-accent-bronze">(x{{ item.qty }})</span></p>
+                                </div>
+                                <button @click="removeFromQueue(index)" class="text-red-400 hover:text-red-300 p-2 transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button @click="downloadPDF" :disabled="barcodeQueue.length === 0 || isPrinting" class="mt-4 bg-ivory text-background-dark hover:bg-white px-6 py-3 text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 rounded-sm w-full justify-center">
+                            <span v-if="isPrinting" class="material-symbols-outlined text-[18px] animate-spin">refresh</span>
+                            <span v-else class="material-symbols-outlined text-[18px]">download</span>
+                            {{ isPrinting ? 'Generating PDF...' : 'Download PDF' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </main>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, watch, onMounted, onUnmounted } = Vue;
+
+        createApp({
+            setup() {
+                const currentTab = ref('bill');
+
+                // Mobile Scanner First Time Setup
+                const deviceVerified = ref(false);
+                const setupSessionId = ref('');
+                const setupPin = ref('');
+                const setupQrUrl = ref('');
+                let setupPollInterval = null;
+                const lastScannedItem = ref('');
+                let scanPollInterval = null;
+                
+                // Invoice Form State
+                const invoiceData = ref({
+                    clientName: '',
+                    phone: '',
+                    items: [],
+                    notes: ''
+                });
+                
+                // Barcode state
+                const barcodeData = ref({
+                    sku: '',
+                    name: '',
+                    qty: 1
+                });
+                
+                const barcodeQueue = ref([]);
+                const barcodeQueueForPrint = ref([]);
+                const isPrinting = ref(false);
+
+                const totalQueued = computed(() => {
+                    return barcodeQueue.value.reduce((sum, item) => sum + item.qty, 0);
+                });
+
+
+
+                const addToQueue = () => {
+                    if (barcodeData.value.sku.trim()) {
+                        barcodeQueue.value.push({ ...barcodeData.value });
+                        // Reset form
+                        barcodeData.value.sku = '';
+                        barcodeData.value.name = '';
+                        barcodeData.value.qty = 1;
+                    }
+                };
+
+                const removeFromQueue = (index) => {
+                    barcodeQueue.value.splice(index, 1);
+                };
+                
+                const downloadPDF = () => {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    
+                    // Flatten queue based on quantity
+                    let flattened = [];
+                    barcodeQueue.value.forEach(item => {
+                        for(let i=0; i<item.qty; i++) {
+                            flattened.push({ sku: item.sku, name: item.name });
+                        }
+                    });
+                    
+                    if (flattened.length === 0) return;
+                    
+                    isPrinting.value = true;
+                    
+                    // Create a temporary canvas
+                    const canvas = document.createElement('canvas');
+                    
+                    // PDF configuration (A4 is 210 x 297 mm)
+                    const pdfWidth = 210;
+                    const pdfHeight = 297;
+                    const cols = 3;
+                    const marginX = 10;
+                    const marginY = 15;
+                    const colWidth = (pdfWidth - 2 * marginX) / cols;
+                    const rowHeight = 40; // Height of each barcode cell
+                    const maxRows = Math.floor((pdfHeight - 2 * marginY) / rowHeight);
+                    const itemsPerPage = cols * maxRows;
+                    
+                    // Allow UI to show "Generating PDF..."
+                    setTimeout(() => {
+                        try {
+                            flattened.forEach((item, index) => {
+                                if (index > 0 && index % itemsPerPage === 0) {
+                                    doc.addPage();
+                                }
+                                
+                                // Generate barcode on canvas at high resolution
+                                JsBarcode(canvas, item.sku, {
+                                    format: "CODE128",
+                                    lineColor: "#000",
+                                    width: 4,       // High resolution bars
+                                    height: 120,    // High resolution height
+                                    displayValue: true,
+                                    fontSize: 32,   // Larger font for readability
+                                    background: "#ffffff",
+                                    margin: 10
+                                });
+                                
+                                const imgData = canvas.toDataURL('image/png');
+                                
+                                // Calculate position
+                                const pageIndex = index % itemsPerPage;
+                                const col = pageIndex % cols;
+                                const row = Math.floor(pageIndex / cols);
+                                
+                                const x = marginX + col * colWidth;
+                                const y = marginY + row * rowHeight;
+                                
+                                // Calculate image dimensions based on high-res input
+                                const imgProps = doc.getImageProperties(imgData);
+                                
+                                // Maximum allowed dimensions in the cell
+                                const maxW = colWidth - 10;
+                                const maxH = rowHeight - 12; // Leave space for item name
+                                const aspect = imgProps.width / imgProps.height;
+                                
+                                let w = maxW;
+                                let h = w / aspect;
+                                
+                                // If the calculated height exceeds the row limit, scale by height instead
+                                if (h > maxH) {
+                                    h = maxH;
+                                    w = h * aspect;
+                                }
+                                
+                                // Center the barcode horizontally in the column
+                                const imgX = x + (colWidth - w) / 2;
+                                
+                                doc.addImage(imgData, 'PNG', imgX, y, w, h);
+                                
+                                if (item.name) {
+                                    doc.setFontSize(9);
+                                    doc.setTextColor(0, 0, 0);
+                                    const textWidth = doc.getTextWidth(item.name);
+                                    const textX = x + (colWidth - textWidth) / 2;
+                                    // Make sure we draw text in the cell
+                                    doc.text(item.name, textX, y + h + 4);
+                                }
+                            });
+                            
+                            doc.save('inventory_barcodes.pdf');
+                        } catch (e) {
+                            console.error("Error generating PDF:", e);
+                        } finally {
+                            isPrinting.value = false;
+                        }
+                    }, 50);
+                };
+
+                const sendingInvoice = ref(false);
+                const sendSuccess = ref(false);
+                const sendError = ref('');
+
+                const addItem = () => {
+                    invoiceData.value.items.push({ description: '', qty: 1, price: 0 });
+                };
+
+                const removeItem = (index) => {
+                    invoiceData.value.items.splice(index, 1);
+                };
+
+                const totalAmount = computed(() => {
+                    return invoiceData.value.items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+                });
+
+                const sendInvoice = async () => {
+
+                    sendingInvoice.value = true;
+                    sendError.value = '';
+                    sendSuccess.value = false;
+
+                    // Build the WhatsApp message
+                    let message = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
+                    message += `*INVOICE*\n`;
+                    message += `Client: ${invoiceData.value.clientName}\n\n`;
+                    message += `*Items:*\n`;
+                    
+                    invoiceData.value.items.forEach(item => {
+                        message += `- ${item.description} (x${item.qty}) : ₹${(item.qty * item.price).toLocaleString('en-IN')}\n`;
+                    });
+
+                    message += `\n*Total Amount:* ₹${totalAmount.value.toLocaleString('en-IN')}\n`;
+                    
+                    if (invoiceData.value.notes) {
+                        message += `\nNotes: ${invoiceData.value.notes}\n`;
+                    }
+                    
+                    message += `\nThank you for choosing us!`;
+
+                    try {
+                        const res = await fetch('/api/whatsapp/send', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                number: invoiceData.value.phone,
+                                message: message
+                            })
+                        });
+
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.error || 'Failed to send message');
+                        
+                        sendSuccess.value = true;
+                        setTimeout(() => sendSuccess.value = false, 5000);
+                        
+                        // Optionally clear form
+                        // invoiceData.value = { clientName: '', phone: '', items: [{ description: '', qty: 1, price: 0 }], notes: '' };
+                        
+                    } catch (e) {
+                        sendError.value = e.message;
+                    } finally {
+                        sendingInvoice.value = false;
+                    }
+                };
+
+
+                
+                const initDeviceAuth = async () => {
+                    try {
+                        const res = await fetch('/api/scan/auth/init', { method: 'POST' });
+                        const data = await res.json();
+                        setupSessionId.value = data.session_id;
+                        setupPin.value = data.pin;
+                        
+                        let url = '';
+                        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                            const resIp = await fetch('/api/local-ip');
+                            const ipData = await resIp.json();
+                            const ip = ipData.ip || window.location.hostname;
+                            url = `http://${ip}:${window.location.port || 8000}/scan?session_id=${data.session_id}`;
+                        } else {
+                            url = `${window.location.protocol}//${window.location.host}/scan?session_id=${data.session_id}`;
+                        }
+                        
+                        Vue.nextTick(() => {
+                            const qrContainer = document.getElementById('setup-qrcode');
+                            if(qrContainer) {
+                                qrContainer.innerHTML = '';
+                                new QRCode(qrContainer, {
+                                    text: url,
+                                    width: 192,
+                                    height: 192,
+                                    colorDark : "#000000",
+                                    colorLight : "#ffffff",
+                                    correctLevel : QRCode.CorrectLevel.L
+                                });
+                            }
+                        });
+                        
+                        setupPollInterval = setInterval(async () => {
+                            try {
+                                const pollRes = await fetch(`/api/scan/auth/poll?session_id=${data.session_id}`);
+                                const pollData = await pollRes.json();
+                                if (pollData.verified) {
+                                    clearInterval(setupPollInterval);
+                                    deviceVerified.value = true;
+                                    
+                                    if (scanPollInterval) clearInterval(scanPollInterval);
+                                    scanPollInterval = setInterval(async () => {
+                                        try {
+                                            const scanRes = await fetch(`/api/scan/poll?session_id=${data.session_id}`);
+                                            const scanData = await scanRes.json();
+                                            
+                                            if (scanData.error === 'session_disconnected') {
+                                                clearInterval(scanPollInterval);
+                                                deviceVerified.value = false;
+                                                initDeviceAuth();
+                                                return;
+                                            }
+                                            
+                                            if (scanData.sku) {
+                                                lastScannedItem.value = scanData.sku;
+                                                // Auto-add to line items
+                                                invoiceData.value.items.push({
+                                                    description: scanData.sku,
+                                                    qty: 1,
+                                                    price: 0
+                                                });
+                                            }
+                                        } catch(e) {}
+                                    }, 1000);
+                                }
+                            } catch (e) { }
+                        }, 2000);
+                        
+                    } catch (e) {
+                        console.error('Failed to init device auth', e);
+                    }
+                };
+
+                onMounted(() => {
+                    if (!deviceVerified.value && currentTab.value === 'bill') {
+                        initDeviceAuth();
+                    }
+                    
+                    window.addEventListener('beforeunload', () => {
+                        if (setupSessionId.value) {
+                            const blob = new Blob([JSON.stringify({ session_id: setupSessionId.value })], { type: 'application/json' });
+                            navigator.sendBeacon('/api/scan/auth/disconnect', blob);
+                        }
+                    });
+                });
+
+                watch(currentTab, (newTab) => {
+                    if (!deviceVerified.value && newTab === 'bill' && !setupSessionId.value) {
+                        initDeviceAuth();
+                    }
+                });
+
+                const logout = async () => {
+                    try {
+                        await fetch('/api/logout', { method: 'POST' });
+                        window.location.href = '/invoice-login.html';
+                    } catch (e) {
+                        console.error('Logout failed', e);
+                        window.location.href = '/invoice-login.html';
+                    }
+                };
+
+                return {
+                    deviceVerified,
+                    setupPin,
+                    currentTab,
+                    logout,
+                    invoiceData,
+                    addItem,
+                    removeItem,
+                    totalAmount,
+                    sendingInvoice,
+                    sendSuccess,
+                    sendError,
+                    sendInvoice,
+                    barcodeData,
+                    barcodeQueue,
+                    totalQueued,
+                    addToQueue,
+                    removeFromQueue,
+                    downloadPDF,
+                    isPrinting,
+                    lastScannedItem
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
 </html>

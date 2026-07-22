@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CHF Wireless Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        :root {
+            --accent: #C6A87C;
+            --accent-hover: #b3956a;
+            --bg-dark: #0a0a0a;
+            --surface: rgba(25, 25, 25, 0.7);
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            color: white; 
+            font-family: 'Outfit', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Bar */
+        .header { 
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            padding: 20px; 
+            text-align: center; 
+            z-index: 50;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+        }
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        /* PIN Overlay (Glassmorphism) */
+        #pin-overlay { 
+            position: absolute; 
+            inset: 0; 
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 100; 
+            padding: 20px;
+        }
+        .glass-card { 
+            background: rgba(30, 30, 30, 0.4); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 40px 30px; 
+            border-radius: 24px; 
+            border: 1px solid rgba(198, 168, 124, 0.15); 
+            text-align: center; 
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .glass-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .glass-card p {
+            color: #888;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        .pin-input-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        .pin-input { 
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem; 
+            font-weight: 800;
+            padding: 10px; 
+            width: 100%; 
+            text-align: center; 
+            background: transparent; 
+            border: none;
+            border-bottom: 2px solid rgba(198, 168, 124, 0.3);
+            color: var(--accent); 
+            letter-spacing: 15px; 
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .pin-input:focus {
+            border-bottom-color: var(--accent);
+            text-shadow: 0 0 20px rgba(198, 168, 124, 0.5);
+        }
+        .pin-input::placeholder {
+            color: rgba(255,255,255,0.1);
+        }
+        .pin-btn { 
+            background: var(--accent); 
+            color: #000; 
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600; 
+            padding: 16px 24px; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            width: 100%; 
+            transition: transform 0.2s, background 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .pin-btn:active { transform: scale(0.97); }
+        .pin-error { color: #ff5555; margin-top: 15px; min-height: 20px; font-size: 0.9rem; font-weight: 500;}
+
+        #reader-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            overflow: hidden;
+        }
+        #reader { 
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+        }
+        #reader video {
+            width: 100vw !important;
+            height: 100vh !important;
+            object-fit: cover !important;
+        }
+        #reader canvas {
+            display: none !important; /* Hide any canvas the library tries to draw */
+        }
+
+        /* Custom Viewfinder */
+        .viewfinder {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .viewfinder-box {
+            width: 250px;
+            height: 150px;
+            position: relative;
+        }
+        .viewfinder-box::before, .viewfinder-box::after,
+        .viewfinder-box > div::before, .viewfinder-box > div::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: var(--accent);
+            border-style: solid;
+            border-width: 0;
+        }
+        .viewfinder-box::before { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; }
+        .viewfinder-box::after { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; }
+        .viewfinder-box > div::before { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; }
+        .viewfinder-box > div::after { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; }
+        
+        .scan-line {
+            position: absolute;
+            top: 0; left: 10px; right: 10px;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            animation: scan 2s infinite linear alternate;
+            opacity: 0.7;
+        }
+        @keyframes scan {
+            0% { top: 5%; }
+            100% { top: 95%; }
+        }
+
+        /* Status Bar */
+        .status { 
+            position: absolute;
+            bottom: 30px; left: 20px; right: 20px;
+            padding: 16px 20px; 
+            text-align: center; 
+            background: rgba(20, 20, 20, 0.85); 
+            backdrop-filter: blur(10px);
+            font-size: 0.95rem; 
+            color: #aaa; 
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        .status.success {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: rgba(74, 222, 128, 0.3);
+            color: #4ade80;
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.2);
+        }
+        .status.error {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        /* Modal for Local Dev HTTPS Warning */
+        #local-dev-modal {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .local-dev-card {
+            background: #111;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,1);
+        }
+        .local-dev-card h3 {
+            color: #ef4444;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .local-dev-card p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        .local-dev-card .code-block {
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            color: #fff;
+            word-break: break-all;
+            margin: 15px 0;
+            border: 1px solid #333;
+            font-size: 0.85rem;
+        }
+        .local-dev-card button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Scanner</h1>
+    </div>
+    
+    <!-- Local Dev HTTPS Modal -->
+    <div id="local-dev-modal">
+        <div class="local-dev-card">
+            <h3><span class="material-symbols-outlined">no_photography</span> Camera Blocked</h3>
+            <p>Mobile browsers block camera access on local IP addresses for security reasons.</p>
+            <p>To test this locally on your phone, you must allow this IP in Chrome's security flags:</p>
+            <div class="code-block">
+                1. Go to:<br>
+                <span style="color:var(--accent);">chrome://flags/#unsafely-treat-insecure-origin-as-secure</span><br><br>
+                2. Add this URL:<br>
+                <span style="color:#4ade80;" id="current-url-display"></span><br><br>
+                3. Enable it and relaunch Chrome.
+            </div>
+            <button onclick="document.getElementById('local-dev-modal').style.display='none'">I understand</button>
+        </div>
+    </div>
+    
+    <div id="pin-overlay">
+        <div class="glass-card">
+            <h2>Link Device</h2>
+            <p>Enter the 4-digit PIN shown on the desktop screen to authenticate this scanner.</p>
+            <div class="pin-input-container">
+                <input type="text" id="pin-input" class="pin-input" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
+            </div>
+            <button id="verify-btn" class="pin-btn">Authorize</button>
+            <div id="pin-error" class="pin-error"></div>
+        </div>
+    </div>
+    
+    <div id="reader-container">
+        <div id="reader"></div>
+        <div class="viewfinder" id="custom-viewfinder" style="display: none;">
+            <div class="viewfinder-box">
+                <div></div>
+                <div class="scan-line"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status" id="status-text">
+        <span class="material-symbols-outlined">qr_code_scanner</span>
+        Ready to link
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        const statusEl = document.getElementById('status-text');
+
+        if (!sessionId) {
+            statusEl.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span> Ready to link';
+            document.getElementById('pin-overlay').innerHTML = `
+                <div class="glass-card" style="text-align: center;">
+                    <span class="material-symbols-outlined" style="font-size: 48px; color: var(--accent); margin-bottom: 15px; display: block;">photo_camera</span>
+                    <h2>Session Disconnected</h2>
+                    <p style="margin-bottom: 20px; color: #aaa; line-height: 1.5;">Your scanner session has ended.</p>
+                    <p style="margin-bottom: 0px; color: #fff; font-size: 1.1rem; font-weight: 500;">Please close this tab and use your phone's Camera app to scan the new QR code on your desktop.</p>
+                </div>
+            `;
+        } else {
+            // Verify if session exists on load. If we just refreshed, it's dead, so drop the query param.
+            fetch(`/api/scan/auth/poll?session_id=${sessionId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error === 'session_disconnected') {
+                        window.location.href = window.location.pathname;
+                    }
+                });
+                
+            let lastScanned = null;
+            let lastScanTime = 0;
+            
+            // Check for insecure local IP context (HTTP and not localhost)
+            const isLocalIP = window.location.hostname.match(/^[0-9]+.[0-9]+.[0-9]+.[0-9]+$/);
+            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && isLocalIP) {
+                document.getElementById('local-dev-modal').style.display = 'flex';
+                document.getElementById('current-url-display').innerText = `http://${window.location.hostname}:${window.location.port || 80}`;
+            }
+            
+            // PIN Verification Logic
+            const pinBtn = document.getElementById('verify-btn');
+            const pinInput = document.getElementById('pin-input');
+            const pinError = document.getElementById('pin-error');
+            
+            // Auto-focus logic
+            pinInput.focus();
+            
+            pinBtn.addEventListener('click', async () => {
+                const pin = pinInput.value.trim();
+                if (pin.length !== 4) {
+                    pinError.innerText = 'Please enter a 4-digit PIN';
+                    return;
+                }
+                
+                pinBtn.innerText = 'AUTHENTICATING...';
+                pinBtn.disabled = true;
+                pinError.innerText = '';
+                
+                try {
+                    const res = await fetch('/api/scan/auth/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ session_id: sessionId, pin: pin })
+                    });
+                    
+                    if (res.ok) {
+                        // Success! Hide overlay and start scanner
+                        document.getElementById('pin-overlay').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('pin-overlay').style.display = 'none';
+                            startScanner();
+                        }, 300);
+                    } else {
+                        const data = await res.json();
+                        pinError.innerText = data.detail || 'Invalid PIN';
+                        pinBtn.innerText = 'AUTHORIZE';
+                        pinBtn.disabled = false;
+                        pinInput.value = '';
+                        pinInput.focus();
+                    }
+                } catch (e) {
+                    pinError.innerText = 'Network error. Try again.';
+                    pinBtn.innerText = 'AUTHORIZE';
+                    pinBtn.disabled = false;
+                }
+            });
+
+            function startScanner() {
+                statusEl.innerHTML = '<span class="material-symbols-outlined">pending</span> Requesting Camera...';
+                statusEl.className = 'status';
+                
+                const html5QrCode = new Html5Qrcode("reader");
+                
+                const config = { 
+                    fps: 10, 
+                    // No qrbox - prevents the library from drawing a shaded canvas overlay that might blank the screen
+                    formatsToSupport: [
+                        Html5QrcodeSupportedFormats.CODE_128,
+                        Html5QrcodeSupportedFormats.CODE_39,
+                        Html5QrcodeSupportedFormats.EAN_13,
+                        Html5QrcodeSupportedFormats.EAN_8,
+                        Html5QrcodeSupportedFormats.UPC_A,
+                        Html5QrcodeSupportedFormats.UPC_E,
+                        Html5QrcodeSupportedFormats.QR_CODE
+                    ]
+                };
+
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    config,
+                    async (decodedText, decodedResult) => {
+                    // Prevent duplicate rapid scans (debounce 2 seconds)
+                    const now = Date.now();
+                    if (decodedText === lastScanned && (now - lastScanTime) < 2000) {
+                        return;
+                    }
+                    
+                    lastScanned = decodedText;
+                    lastScanTime = now;
+                    
+                    // UI Feedback
+                    statusEl.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Scanned: ${decodedText}`;
+                    statusEl.className = 'status success';
+                    
+                    // Haptic feedback if supported
+                    if (window.navigator && window.navigator.vibrate) {
+                        window.navigator.vibrate(50);
+                    }
+                    
+                    // Submit to backend
+                    try {
+                        const res = await fetch('/api/scan/submit', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ session_id: sessionId, sku: decodedText })
+                        });
+                        
+                        if (res.ok) {
+                            setTimeout(() => {
+                                statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
+                                statusEl.className = 'status';
+                            }, 1500);
+                        } else {
+                            statusEl.innerHTML = '<span class="material-symbols-outlined">error</span> Failed to send';
+                            statusEl.className = 'status error';
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        statusEl.innerHTML = '<span class="material-symbols-outlined">wifi_off</span> Network Error';
+                        statusEl.className = 'status error';
+                    }
+                }, 
+                (errorMessage) => {
+                    // This is just a warning/info for every frame that doesn't have a barcode
+                    if (statusEl.innerText.includes('Requesting')) {
+                        statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
+                        document.getElementById('custom-viewfinder').style.display = 'flex';
+                    }
+                }).catch((err) => {
+                    statusEl.innerHTML = '<span class="material-symbols-outlined">error</span> Camera failed to start';
+                    statusEl.className = 'status error';
+                    console.error("Camera start error", err);
+                });
+                
+                // Poll server to check if desktop is still connected
+                setInterval(async () => {
+                    try {
+                        const res = await fetch(`/api/scan/auth/poll?session_id=${sessionId}`);
+                        const data = await res.json();
+                        if (data.error === 'session_disconnected') {
+                            // Desktop refreshed or disconnected, reset scanner
+                            window.location.href = window.location.pathname;
+                        }
+                    } catch (e) {}
+                }, 1000);
+            }
+            
+            // Tell server when we disconnect
+            const handleDisconnect = () => {
+                if (sessionId) {
+                    const blob = new Blob([JSON.stringify({ session_id: sessionId })], { type: 'application/json' });
+                    navigator.sendBeacon('/api/scan/auth/disconnect', blob);
+                }
+            };
+            
+            window.addEventListener('beforeunload', handleDisconnect);
+            window.addEventListener('pagehide', handleDisconnect);
+        }
+    </script>
+</body>
+</html>

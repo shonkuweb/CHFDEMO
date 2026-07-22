@@ -27,5 +27,17 @@ services:
       retries: 5
       start_period: 20s
 
+  whatsapp:
+    build: 
+      context: .
+      dockerfile: Dockerfile.whatsapp
+    container_name: chf-whatsapp
+    restart: always
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - whatsapp_data:/app/.wwebjs_auth_v2
+
 volumes:
   chf_data:
+  whatsapp_data:

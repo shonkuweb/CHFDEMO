@@ -18,6 +18,8 @@ import hashlib
 from jose import jwt, JWTError
 from typing import Optional
 import time
+import socket
+from pydantic import BaseModel
 
 try:
     from dotenv import load_dotenv
@@ -1397,6 +1399,33 @@ def ensure_leads_table():
     conn.commit()
     conn.close()
 
+def ensure_mobile_scans_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS mobile_scans (
+            session_id TEXT PRIMARY KEY,
+            sku TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+def ensure_device_auth_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS device_auth_sessions (
+            session_id TEXT PRIMARY KEY,
+            pin TEXT,
+            is_verified INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    conn.close()
+
 def ensure_home_trends_section_table():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -1620,6 +1649,8 @@ def startup_init_sync_state():
     ensure_sync_state_table()
     ensure_home_trends_section_table()
     ensure_leads_table()
+    ensure_mobile_scans_table()
+    ensure_device_auth_table()
     migrate_remove_comma_before_and()
     purge_deploy_asset_cache()
 
@@ -2051,13 +2082,147 @@ async def create_lead(request: Request):
     return {"status": "success"}
 
 @app.get("/api/admin/leads")
-async def get_leads(admin: str = Depends(get_current_admin)):
+async def admin_get_leads(admin: str = Depends(get_current_admin)):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM leads ORDER BY created_at DESC")
+    cur.execute("SELECT id, name, email, phone, details, created_at, read FROM leads ORDER BY created_at DESC")
     rows = cur.fetchall()
     conn.close()
-    return {"leads": [dict(row) for row in rows]}
+    return [{"id": r["id"], "name": r["name"], "email": r["email"], "phone": r["phone"], "details": r["details"], "created_at": r["created_at"], "read": bool(r["read"])} for r in rows]
+
+class ScanPayload(BaseModel):
+    session_id: str
+    sku: str
+
+class DeviceAuthVerifyPayload(BaseModel):
+    session_id: str
+    pin: str
+
+@app.get("/api/local-ip")
+async def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('10.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return {"ip": IP}
+
+@app.post("/api/scan/submit")
+async def submit_scan(payload: ScanPayload):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT OR REPLACE INTO mobile_scans (session_id, sku, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)",
+        (payload.session_id, payload.sku)
+    )
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.get("/api/scan/poll")
+async def poll_scan(session_id: str):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    # Garbage collection of old sessions (> 1 hour)
+    cur.execute("DELETE FROM mobile_scans WHERE created_at < datetime('now', '-1 hour')")
+    
+    # Check for this session
+    cur.execute("SELECT sku FROM mobile_scans WHERE session_id = ?", (session_id,))
+    row = cur.fetchone()
+    
+    # Check if session exists in auth_sessions (to detect mobile disconnects)
+    cur.execute("SELECT is_verified FROM device_auth_sessions WHERE session_id = ?", (session_id,))
+    auth_row = cur.fetchone()
+    
+    if not auth_row:
+        conn.close()
+        return {"error": "session_disconnected"}
+    
+    sku = None
+    if row:
+        sku = row["sku"]
+        # Consume the scan
+        cur.execute("DELETE FROM mobile_scans WHERE session_id = ?", (session_id,))
+        
+    conn.commit()
+    conn.close()
+    
+    return {"sku": sku}
+
+import random
+
+@app.post("/api/scan/auth/init")
+async def init_device_auth():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    session_id = "".join(random.choices("abcdefghijklmnopqrstuvwxyz0123456789", k=16))
+    pin = f"{random.randint(0, 9999):04d}"
+    
+    cur.execute(
+        "INSERT INTO device_auth_sessions (session_id, pin, is_verified) VALUES (?, ?, 0)",
+        (session_id, pin)
+    )
+    conn.commit()
+    conn.close()
+    return {"session_id": session_id, "pin": pin}
+
+@app.get("/api/scan/auth/poll")
+async def poll_device_auth(session_id: str):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    # Garbage collection of old sessions (> 1 hour)
+    cur.execute("DELETE FROM device_auth_sessions WHERE created_at < datetime('now', '-1 hour')")
+    
+    cur.execute("SELECT is_verified FROM device_auth_sessions WHERE session_id = ?", (session_id,))
+    row = cur.fetchone()
+    conn.commit()
+    conn.close()
+    
+    if not row:
+        return {"error": "session_disconnected"}
+        
+    is_verified = bool(row["is_verified"])
+    return {"verified": is_verified}
+
+class DisconnectPayload(BaseModel):
+    session_id: str
+
+@app.post("/api/scan/auth/disconnect")
+async def disconnect_device_auth(payload: DisconnectPayload):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM device_auth_sessions WHERE session_id = ?", (payload.session_id,))
+    cur.execute("DELETE FROM mobile_scans WHERE session_id = ?", (payload.session_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.post("/api/scan/auth/verify")
+async def verify_device_auth(payload: DeviceAuthVerifyPayload):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    cur.execute("SELECT pin FROM device_auth_sessions WHERE session_id = ?", (payload.session_id,))
+    row = cur.fetchone()
+    
+    if not row or row["pin"] != payload.pin:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Invalid session or PIN")
+        
+    cur.execute("UPDATE device_auth_sessions SET is_verified = 1 WHERE session_id = ?", (payload.session_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.get("/scan")
+async def serve_scanner_alias():
+    return FileResponse("scanner.html")
 
 @app.delete("/api/admin/leads")
 async def delete_leads(request: Request, admin: str = Depends(get_current_admin)):

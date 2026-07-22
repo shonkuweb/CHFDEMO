@@ -33,3 +33,7 @@ assets/videos/hero_vid.mp4
 node_modules/
 venv/
 *.pdf
+.wwebjs_auth_v2/
+.wwebjs_cache/
+backend.log
+chftemporary.code-workspace

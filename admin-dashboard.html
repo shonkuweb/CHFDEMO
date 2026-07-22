@@ -271,6 +271,14 @@
                         </button>
                     </div>
 
+                    <!-- WhatsApp Login -->
+                    <div>
+                        <button @click="openWhatsAppLogin" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4', currentSelection === 'whatsapp-login' ? 'text-accent-bronze' : '']">
+                            <span v-if="!sidebarCollapsed" class="text-left leading-relaxed">WhatsApp Login for Invoice Message</span>
+                            <span v-else class="text-xs">WA</span>
+                        </button>
+                    </div>
+
                     <div>
                         <button @click="toggleSection('account')" :class="['w-full text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4 mt-8 flex items-center justify-between', sidebarCollapsed ? 'px-0 justify-center' : 'px-4']">
                             <span v-if="!sidebarCollapsed">Account</span>
@@ -483,6 +491,50 @@
                         </div>
                     </section>
                 </div>
+                <!-- View Mode: WhatsApp Login -->
+                <div v-if="viewMode === 'whatsapp-login'" class="space-y-12">
+                    <section class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6 flex flex-col items-center justify-center min-h-[60vh]">
+                        <header class="mb-12 text-center">
+                            <h1 class="font-serif text-4xl font-light text-ivory mb-2">Billing System Login</h1>
+                            <p class="text-sm text-gray-400">Scan the QR Code to link your WhatsApp account.</p>
+                        </header>
+                        
+                        <div class="bg-[#0c0c0c] border border-white/5 p-12 rounded-lg shadow-xl w-full max-w-md text-center">
+                            <div class="mb-8">
+                                <span class="material-symbols-outlined text-4xl mb-4" :class="waReady ? 'text-green-400' : 'text-accent-bronze'">
+                                    {{ waReady ? 'check_circle' : 'qr_code_scanner' }}
+                                </span>
+                                <h3 class="font-serif text-2xl font-light text-ivory">{{ waReady ? 'WhatsApp Connected' : 'Link WhatsApp' }}</h3>
+                            </div>
+                            
+                            <div v-if="waReady" class="flex flex-col items-center gap-6">
+                                <div class="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-sm text-sm w-full">
+                                    Your WhatsApp account is successfully linked. You can now send invoices directly to clients.
+                                </div>
+                                <button @click="logoutWhatsApp" :disabled="loggingOut" class="text-xs uppercase tracking-widest font-bold text-red-400 hover:text-red-300 border border-red-400/20 hover:bg-red-400/10 px-6 py-3 rounded-sm transition-all flex items-center gap-2">
+                                    <span v-if="loggingOut" class="material-symbols-outlined text-[16px] animate-spin">refresh</span>
+                                    <span v-else class="material-symbols-outlined text-[16px]">logout</span>
+                                    {{ loggingOut ? 'Logging out...' : 'Unlink Device' }}
+                                </button>
+                                <p class="text-xs text-red-400 mt-2" v-if="waLogoutError">{{ waLogoutError }}</p>
+                            </div>
+                            
+                            <div v-else-if="waQrUrl" class="flex flex-col items-center">
+                                <div class="bg-white p-4 rounded-xl mb-4 inline-block">
+                                    <img :src="waQrUrl" alt="WhatsApp Login QR Code" class="w-48 h-48">
+                                </div>
+                                <p class="text-xs text-gray-500">Open WhatsApp on your phone, go to Linked Devices, and scan this QR code.</p>
+                            </div>
+                            
+                            <div v-else class="flex flex-col items-center py-8">
+                                <span class="material-symbols-outlined text-3xl text-gray-500 animate-spin mb-4">refresh</span>
+                                <p class="text-sm text-gray-400">Waiting for WhatsApp service...</p>
+                                <p class="text-xs text-red-400 mt-2" v-if="waError">{{ waError }}</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
                 <!-- View Mode: Leads -->
                 <div v-if="viewMode === 'leads'" class="space-y-12">
                     <section class="bg-surface-dark border border-accent-bronze/30 rounded p-8 space-y-6 overflow-hidden">
@@ -1020,7 +1072,7 @@
     </div>
 
     <script>
-        const { createApp, ref, computed } = Vue;
+        const { createApp, ref, computed, watch, onUnmounted } = Vue;
 
         createApp({
             setup() {
@@ -1460,6 +1512,63 @@
                         loading.value = false;
                     }
                 };
+
+                const waReady = ref(false);
+                const waQrUrl = ref(null);
+                const waError = ref('');
+                const waLogoutError = ref('');
+                const loggingOut = ref(false);
+                let pollInterval = null;
+
+                const fetchWaStatus = async () => {
+                    try {
+                        const res = await fetch('/api/whatsapp/status');
+                        const data = await res.json();
+                        waReady.value = data.ready;
+                        waQrUrl.value = data.qr;
+                        waError.value = '';
+                    } catch (e) {
+                        waError.value = "Cannot connect to WhatsApp microservice.";
+                        waReady.value = false;
+                        waQrUrl.value = null;
+                    }
+                };
+
+                const logoutWhatsApp = async () => {
+                    loggingOut.value = true;
+                    waLogoutError.value = '';
+                    try {
+                        const res = await fetch('/api/whatsapp/logout', {
+                            method: 'POST'
+                        });
+                        if (!res.ok) throw new Error('Failed to logout');
+                        waReady.value = false;
+                        waQrUrl.value = null;
+                        // Polling will automatically pick up the new QR code
+                    } catch (e) {
+                        waLogoutError.value = "Failed to disconnect WhatsApp.";
+                    } finally {
+                        loggingOut.value = false;
+                    }
+                };
+
+                const openWhatsAppLogin = () => {
+                    viewMode.value = 'whatsapp-login';
+                    currentSelection.value = 'whatsapp-login';
+                };
+
+                watch(viewMode, (newMode) => {
+                    if (newMode === 'whatsapp-login') {
+                        fetchWaStatus();
+                        pollInterval = setInterval(fetchWaStatus, 3000);
+                    } else {
+                        if (pollInterval) clearInterval(pollInterval);
+                    }
+                });
+
+                onUnmounted(() => {
+                    if (pollInterval) clearInterval(pollInterval);
+                });
 
                 const openLeads = async () => {
                     viewMode.value = 'leads';
@@ -2064,6 +2173,13 @@
                     adminUsername,
                     loadCollection,
                     loadPageContent,
+                    openWhatsAppLogin,
+                    waReady,
+                    waQrUrl,
+                    waError,
+                    waLogoutError,
+                    loggingOut,
+                    logoutWhatsApp,
                     openLeads,
                     leadsData,
                     loadingLeads,
