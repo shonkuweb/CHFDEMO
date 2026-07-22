@@ -2,12 +2,34 @@ const express = require('express');
 const cors = require('cors');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// Clean up stale Chromium lock files before starting
+const authDir = path.join(__dirname, '.wwebjs_auth_v2');
+if (fs.existsSync(authDir)) {
+    try {
+        const sessionDirs = fs.readdirSync(authDir);
+        for (const dir of sessionDirs) {
+            const lockFiles = ['SingletonLock', 'SingletonCookie', 'SingletonSocket'];
+            for (const lf of lockFiles) {
+                const lockFile = path.join(authDir, dir, lf);
+                if (fs.existsSync(lockFile)) {
+                    fs.unlinkSync(lockFile);
+                    console.log(`Removed stale Chromium lock: ${lockFile}`);
+                }
+            }
+        }
+    } catch (e) {
+        console.error('Failed to clean up lock files:', e);
+    }
+}
 
 let qrDataUrl = null;
 let isReady = false;
