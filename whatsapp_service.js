@@ -15,17 +15,20 @@ app.use(express.json());
 const authDir = path.join(__dirname, '.wwebjs_auth_v2');
 if (fs.existsSync(authDir)) {
     try {
-        const sessionDirs = fs.readdirSync(authDir);
-        for (const dir of sessionDirs) {
-            const lockFiles = ['SingletonLock', 'SingletonCookie', 'SingletonSocket'];
-            for (const lf of lockFiles) {
-                const lockFile = path.join(authDir, dir, lf);
-                if (fs.existsSync(lockFile)) {
-                    fs.unlinkSync(lockFile);
-                    console.log(`Removed stale Chromium lock: ${lockFile}`);
+        function cleanLocks(dir) {
+            const files = fs.readdirSync(dir);
+            for (const file of files) {
+                const fullPath = path.join(dir, file);
+                const stat = fs.statSync(fullPath);
+                if (stat.isDirectory()) {
+                    cleanLocks(fullPath);
+                } else if (['SingletonLock', 'SingletonCookie', 'SingletonSocket'].includes(file)) {
+                    fs.unlinkSync(fullPath);
+                    console.log(`Removed stale Chromium lock: ${fullPath}`);
                 }
             }
         }
+        cleanLocks(authDir);
     } catch (e) {
         console.error('Failed to clean up lock files:', e);
     }
