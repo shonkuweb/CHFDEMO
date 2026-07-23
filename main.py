@@ -2239,6 +2239,40 @@ async def delete_leads(request: Request, admin: str = Depends(get_current_admin)
     conn.close()
     return {"status": "success"}
 
+# ── WhatsApp Microservice Proxy Route ─────────────────────
+@app.api_route("/api/whatsapp/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def whatsapp_microservice_proxy(path: str, request: Request):
+    body = await request.body()
+    urls = [
+        f"http://whatsapp:3000/api/whatsapp/{path}",
+        f"http://127.0.0.1:3001/api/whatsapp/{path}"
+    ]
+    
+    headers = {k: v for k, v in request.headers.items() if k.lower() != "host"}
+    
+    for url in urls:
+        try:
+            req = urllib.request.Request(
+                url,
+                data=body if body else None,
+                headers=headers,
+                method=request.method
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                content = resp.read()
+                return Response(
+                    content=content,
+                    status_code=resp.status,
+                    headers=dict(resp.headers)
+                )
+        except Exception:
+            continue
+            
+    return JSONResponse(
+        content={"ready": False, "qr": None, "error": "WhatsApp microservice unreachable"},
+        status_code=502
+    )
+
 @app.get("/{path:path}")
 async def serve_static(request: Request, path: str):
     if not path or path == "/":
