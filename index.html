@@ -302,7 +302,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <!-- Premium Animations -->
     <link rel="stylesheet" href="assets/animations.css?v=chf-no-img-zoom-1">
     <script src="assets/animation-core.js?v=navbar-custom-4" defer></script>
-    
+
+    <!-- Event snippet for Page view conversion page -->
+    <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+          'send_to': 'AW-18255719349/UtOdCJjWiswcELXXgIFE',
+          'event_callback': callback
+      });
+      return false;
+    }
+    </script>
 </head>
 
 <body class="bg-background-dark text-ivory font-display antialiased">
@@ -506,7 +521,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         Luxury botanical solutions for premium spaces
                     </p>
                     <div class="flex flex-wrap items-stretch gap-4">
-                        <a href="enquiry" class="hero-home-cta">
+                        <a href="enquiry" onclick="return gtag_report_conversion('enquiry');" class="hero-home-cta">
                             ENQUIRE NOW
                         </a>
                         <a href="https://maps.google.com/?q=Calcutta+Horticultural+Farm+Alipore" target="_blank" rel="noopener noreferrer" class="hero-home-cta-secondary">
