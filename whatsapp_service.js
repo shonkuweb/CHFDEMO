@@ -16,15 +16,30 @@ const authDir = path.join(__dirname, '.wwebjs_auth_v2');
 if (fs.existsSync(authDir)) {
     try {
         function cleanLocks(dir) {
-            const files = fs.readdirSync(dir);
+            if (!fs.existsSync(dir)) return;
+            let files = [];
+            try {
+                files = fs.readdirSync(dir);
+            } catch (e) {
+                return;
+            }
             for (const file of files) {
                 const fullPath = path.join(dir, file);
-                const stat = fs.statSync(fullPath);
-                if (stat.isDirectory()) {
-                    cleanLocks(fullPath);
-                } else if (['SingletonLock', 'SingletonCookie', 'SingletonSocket'].includes(file)) {
-                    fs.unlinkSync(fullPath);
-                    console.log(`Removed stale Chromium lock: ${fullPath}`);
+                try {
+                    if (['SingletonLock', 'SingletonCookie', 'SingletonSocket'].includes(file)) {
+                        fs.unlinkSync(fullPath);
+                        console.log(`Removed stale Chromium lock: ${fullPath}`);
+                    } else {
+                        const stat = fs.lstatSync(fullPath);
+                        if (stat.isDirectory()) {
+                            cleanLocks(fullPath);
+                        }
+                    }
+                } catch (err) {
+                    console.log(`Bypassed/Removed lock file ${fullPath}: ${err.message}`);
+                    try {
+                        fs.unlinkSync(fullPath);
+                    } catch (_) {}
                 }
             }
         }
