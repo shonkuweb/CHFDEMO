@@ -1426,6 +1426,23 @@ def ensure_device_auth_table():
     conn.commit()
     conn.close()
 
+def ensure_sku_catalog_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS sku_catalog (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sku TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            price REAL DEFAULT 0.0,
+            category TEXT DEFAULT '',
+            description TEXT DEFAULT '',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    conn.close()
+
 def ensure_home_trends_section_table():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -1651,6 +1668,7 @@ def startup_init_sync_state():
     ensure_leads_table()
     ensure_mobile_scans_table()
     ensure_device_auth_table()
+    ensure_sku_catalog_table()
     migrate_remove_comma_before_and()
     purge_deploy_asset_cache()
 
@@ -2219,6 +2237,80 @@ async def verify_device_auth(payload: DeviceAuthVerifyPayload):
     conn.commit()
     conn.close()
     return {"status": "success"}
+
+# ── SKU Management Endpoints ───────────────────────────────
+
+class SKUPayload(BaseModel):
+    id: Optional[int] = None
+    sku: str
+    name: str
+    price: float = 0.0
+    category: Optional[str] = ""
+    description: Optional[str] = ""
+
+@app.get("/api/skus")
+async def list_skus():
+    ensure_sku_catalog_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id, sku, name, price, category, description, created_at FROM sku_catalog ORDER BY created_at DESC")
+    rows = cur.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+@app.post("/api/skus")
+async def save_sku(payload: SKUPayload):
+    ensure_sku_catalog_table()
+    clean_sku = payload.sku.strip().upper()
+    clean_name = payload.name.strip()
+    if not clean_sku or not clean_name:
+        raise HTTPException(status_code=400, detail="SKU code and product name are required")
+        
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    if payload.id:
+        cur.execute("""
+            UPDATE sku_catalog
+            SET sku = ?, name = ?, price = ?, category = ?, description = ?
+            WHERE id = ?
+        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.id))
+    else:
+        cur.execute("""
+            INSERT INTO sku_catalog (sku, name, price, category, description)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(sku) DO UPDATE SET
+                name = excluded.name,
+                price = excluded.price,
+                category = excluded.category,
+                description = excluded.description
+        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or ""))
+        
+    conn.commit()
+    conn.close()
+    return {"status": "success", "sku": clean_sku}
+
+@app.delete("/api/skus/{sku_id}")
+async def delete_sku(sku_id: int):
+    ensure_sku_catalog_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM sku_catalog WHERE id = ?", (sku_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.get("/api/skus/lookup/{sku_code}")
+async def lookup_sku(sku_code: str):
+    ensure_sku_catalog_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id, sku, name, price, category, description FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (sku_code.strip(),))
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return {"found": False}
+    return {"found": True, "sku": dict(row)}
 
 @app.get("/scan")
 async def serve_scanner_alias():
