@@ -59,7 +59,11 @@ function initializeWhatsAppClient() {
     // Setup LocalAuth to persist session so we don't have to scan every time
     client = new Client({
         authStrategy: new LocalAuth({ clientId: 'whatsapp-client-v2', dataPath: './.wwebjs_auth_v2' }),
-        webVersionCache: { type: 'local' },
+        webVersionCache: {
+            type: 'remote',
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/{version}.html'
+        },
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
         puppeteer: {
             headless: true,
             executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null,
@@ -69,9 +73,8 @@ function initializeWhatsAppClient() {
                 '--disable-dev-shm-usage',
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
-                '--no-zygote',
-                '--single-process',
-                '--disable-gpu'
+                '--disable-gpu',
+                '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
             ]
         }
     });
@@ -100,6 +103,16 @@ function initializeWhatsAppClient() {
         console.error('Authentication failure', msg);
         isReady = false;
         qrDataUrl = null;
+        // Clean up failed session data if auth fails
+        const sessionDir = path.join(authDir, 'session-whatsapp-client-v2');
+        if (fs.existsSync(sessionDir)) {
+            try {
+                fs.rmSync(sessionDir, { recursive: true, force: true });
+                console.log('Cleaned up failed session directory.');
+            } catch (e) {
+                console.error('Failed to clean session directory:', e);
+            }
+        }
     });
 
     client.on('disconnected', (reason) => {
