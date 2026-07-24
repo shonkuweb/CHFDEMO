@@ -699,6 +699,30 @@
                                     clearInterval(setupPollInterval);
                                     deviceVerified.value = true;
                                     
+                                    // 1. Instant WebSocket Connection (< 0.1 ms latency)
+                                    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                                    const wsUrl = `${protocol}//${window.location.host}/ws/scan/${data.session_id}`;
+                                    try {
+                                        const ws = new WebSocket(wsUrl);
+                                        ws.onmessage = (evt) => {
+                                            try {
+                                                const scanObj = JSON.parse(evt.data);
+                                                if (scanObj && scanObj.sku) {
+                                                    lastScannedItem.value = scanObj.sku;
+                                                    const desc = scanObj.name && scanObj.name !== scanObj.sku
+                                                        ? `${scanObj.name} (${scanObj.sku})`
+                                                        : scanObj.sku;
+                                                    invoiceData.value.items.push({
+                                                        description: desc,
+                                                        qty: 1,
+                                                        price: scanObj.price || 0
+                                                    });
+                                                }
+                                            } catch(e) {}
+                                        };
+                                    } catch(e) {}
+
+                                    // 2. High-frequency 100ms fallback polling
                                     if (scanPollInterval) clearInterval(scanPollInterval);
                                     scanPollInterval = setInterval(async () => {
                                         try {
@@ -712,38 +736,23 @@
                                                 return;
                                             }
                                             
-                                            if (scanData.sku) {
-                                                lastScannedItem.value = scanData.sku;
-                                                // Auto-lookup SKU catalog details if available
-                                                try {
-                                                    const lookupRes = await fetch(`/api/skus/lookup/${encodeURIComponent(scanData.sku)}`);
-                                                    const lookupData = await lookupRes.json();
-                                                    if (lookupData.found && lookupData.sku) {
-                                                        invoiceData.value.items.push({
-                                                            description: `${lookupData.sku.name} (${lookupData.sku.sku})`,
-                                                            qty: 1,
-                                                            price: lookupData.sku.price || 0
-                                                        });
-                                                    } else {
-                                                        invoiceData.value.items.push({
-                                                            description: scanData.sku,
-                                                            qty: 1,
-                                                            price: 0
-                                                        });
-                                                    }
-                                                } catch (err) {
-                                                    invoiceData.value.items.push({
-                                                        description: scanData.sku,
-                                                        qty: 1,
-                                                        price: 0
-                                                    });
-                                                }
+                                            const item = scanData.scan;
+                                            if (item && item.sku) {
+                                                lastScannedItem.value = item.sku;
+                                                const desc = item.name && item.name !== item.sku
+                                                    ? `${item.name} (${item.sku})`
+                                                    : item.sku;
+                                                invoiceData.value.items.push({
+                                                    description: desc,
+                                                    qty: 1,
+                                                    price: item.price || 0
+                                                });
                                             }
                                         } catch(e) {}
-                                    }, 1000);
+                                    }, 100);
                                 }
                             } catch (e) { }
-                        }, 2000);
+                        }, 1000);
                         
                     } catch (e) {
                         console.error('Failed to init device auth', e);

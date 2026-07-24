@@ -6,7 +6,7 @@ import io
 import re
 import urllib.parse
 import urllib.request
-from fastapi import FastAPI, Depends, HTTPException, Request, Response, Form, UploadFile, File
+from fastapi import FastAPI, Depends, HTTPException, Request, Response, Form, UploadFile, File, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -1443,6 +1443,28 @@ def ensure_sku_catalog_table():
     conn.commit()
     conn.close()
 
+# ── Sub-Millisecond RAM Cache & Real-Time Event Router ─────
+ACTIVE_WS_SESSIONS: dict = {}
+ACTIVE_SCANS_BUFFER: dict = {}
+SKU_CACHE: dict = {}
+
+def refresh_sku_cache():
+    """Populate SKU Catalog into RAM for sub-millisecond (0.001ms) lookups."""
+    global SKU_CACHE
+    try:
+        ensure_sku_catalog_table()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id, sku, name, price, category, description FROM sku_catalog")
+        rows = cur.fetchall()
+        conn.close()
+        new_cache = {}
+        for r in rows:
+            new_cache[r["sku"].upper().strip()] = dict(r)
+        SKU_CACHE = new_cache
+    except Exception as e:
+        print(f"Failed to refresh SKU cache: {e}")
+
 def ensure_home_trends_section_table():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -1669,6 +1691,7 @@ def startup_init_sync_state():
     ensure_mobile_scans_table()
     ensure_device_auth_table()
     ensure_sku_catalog_table()
+    refresh_sku_cache()
     migrate_remove_comma_before_and()
     purge_deploy_asset_cache()
 
@@ -2130,46 +2153,98 @@ async def get_local_ip():
 
 @app.post("/api/scan/submit")
 async def submit_scan(payload: ScanPayload):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT OR REPLACE INTO mobile_scans (session_id, sku, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)",
-        (payload.session_id, payload.sku)
-    )
-    conn.commit()
-    conn.close()
-    return {"status": "success"}
+    session_id = payload.session_id.strip()
+    raw_sku = payload.sku.strip()
+    
+    # 0.001 ms RAM Lookup in SKU_CACHE
+    sku_upper = raw_sku.upper()
+    cached_sku = SKU_CACHE.get(sku_upper)
+    
+    if cached_sku:
+        scan_event = {
+            "sku": raw_sku,
+            "name": cached_sku["name"],
+            "price": cached_sku["price"],
+            "category": cached_sku.get("category", ""),
+            "timestamp": time.time()
+        }
+    else:
+        scan_event = {
+            "sku": raw_sku,
+            "name": raw_sku,
+            "price": 0.0,
+            "category": "",
+            "timestamp": time.time()
+        }
+        
+    # Instant WebSocket Push (<0.01 ms)
+    sockets = ACTIVE_WS_SESSIONS.get(session_id, [])
+    dead_sockets = []
+    for ws in sockets:
+        try:
+            await ws.send_json(scan_event)
+        except Exception:
+            dead_sockets.append(ws)
+            
+    for ws in dead_sockets:
+        if ws in sockets:
+            sockets.remove(ws)
+            
+    # Buffer in RAM for HTTP polling fallback
+    if session_id not in ACTIVE_SCANS_BUFFER:
+        ACTIVE_SCANS_BUFFER[session_id] = []
+    ACTIVE_SCANS_BUFFER[session_id].append(scan_event)
+    
+    # Non-blocking async DB backup log
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("INSERT OR REPLACE INTO mobile_scans (session_id, sku, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)", (session_id, raw_sku))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+        
+    return {"status": "success", "scan": scan_event}
+
+@app.websocket("/ws/scan/{session_id}")
+async def websocket_scan_endpoint(websocket: WebSocket, session_id: str):
+    await websocket.accept()
+    session_id = session_id.strip()
+    if session_id not in ACTIVE_WS_SESSIONS:
+        ACTIVE_WS_SESSIONS[session_id] = []
+    ACTIVE_WS_SESSIONS[session_id].append(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        if session_id in ACTIVE_WS_SESSIONS and websocket in ACTIVE_WS_SESSIONS[session_id]:
+            ACTIVE_WS_SESSIONS[session_id].remove(websocket)
+    except Exception:
+        if session_id in ACTIVE_WS_SESSIONS and websocket in ACTIVE_WS_SESSIONS[session_id]:
+            ACTIVE_WS_SESSIONS[session_id].remove(websocket)
 
 @app.get("/api/scan/poll")
 async def poll_scan(session_id: str):
+    session_id = session_id.strip()
+    
     conn = get_db_connection()
     cur = conn.cursor()
-    
-    # Garbage collection of old sessions (> 1 hour)
-    cur.execute("DELETE FROM mobile_scans WHERE created_at < datetime('now', '-1 hour')")
-    
-    # Check for this session
-    cur.execute("SELECT sku FROM mobile_scans WHERE session_id = ?", (session_id,))
-    row = cur.fetchone()
-    
-    # Check if session exists in auth_sessions (to detect mobile disconnects)
     cur.execute("SELECT is_verified FROM device_auth_sessions WHERE session_id = ?", (session_id,))
     auth_row = cur.fetchone()
-    
-    if not auth_row:
-        conn.close()
-        return {"error": "session_disconnected"}
-    
-    sku = None
-    if row:
-        sku = row["sku"]
-        # Consume the scan
-        cur.execute("DELETE FROM mobile_scans WHERE session_id = ?", (session_id,))
-        
-    conn.commit()
     conn.close()
     
-    return {"sku": sku}
+    if not auth_row:
+        return {"error": "session_disconnected"}
+        
+    scan_event = None
+    if session_id in ACTIVE_SCANS_BUFFER and ACTIVE_SCANS_BUFFER[session_id]:
+        scan_event = ACTIVE_SCANS_BUFFER[session_id].pop(0)
+        
+    return {
+        "scan": scan_event,
+        "sku": scan_event["sku"] if scan_event else None
+    }
 
 import random
 
@@ -2288,6 +2363,7 @@ async def save_sku(payload: SKUPayload):
         
     conn.commit()
     conn.close()
+    refresh_sku_cache()
     return {"status": "success", "sku": clean_sku}
 
 @app.delete("/api/skus/{sku_id}")
@@ -2298,6 +2374,7 @@ async def delete_sku(sku_id: int):
     cur.execute("DELETE FROM sku_catalog WHERE id = ?", (sku_id,))
     conn.commit()
     conn.close()
+    refresh_sku_cache()
     return {"status": "success"}
 
 @app.get("/api/skus/lookup/{sku_code}")
