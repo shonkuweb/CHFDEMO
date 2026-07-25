@@ -2,243 +2,416 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CHF Wireless Scanner</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
         :root {
             --accent: #C6A87C;
+            --accent-glow: rgba(198, 168, 124, 0.45);
             --accent-hover: #b3956a;
-            --bg-dark: #0a0a0a;
-            --surface: rgba(25, 25, 25, 0.7);
+            --bg-dark: #070707;
+            --surface: rgba(20, 20, 20, 0.75);
+            --success: #4ade80;
+            --success-glow: rgba(74, 222, 128, 0.45);
+            --error: #f87171;
         }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            background-color: var(--bg-dark); 
-            color: white; 
-            font-family: 'Outfit', sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh;
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Outfit', sans-serif;
             overflow: hidden;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
             -webkit-font-smoothing: antialiased;
+        }
+
+        /* App Layout Container */
+        .app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         /* Top Bar */
         .header { 
             position: absolute;
             top: 0; left: 0; right: 0;
-            padding: 20px; 
-            text-align: center; 
+            padding: calc(env(safe-area-inset-top, 0px) + 16px) 20px 20px 20px; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             z-index: 50;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .header-title-group {
+            display: flex;
+            flex-direction: column;
         }
         .header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             letter-spacing: 2px;
             color: var(--accent);
             text-transform: uppercase;
+            font-weight: 600;
+        }
+        .header-subtitle {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .icon-btn {
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .icon-btn:active {
+            transform: scale(0.92);
+            background: rgba(198, 168, 124, 0.25);
+            border-color: var(--accent);
+        }
+        .icon-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
         }
 
         /* PIN Overlay (Glassmorphism) */
         #pin-overlay { 
             position: absolute; 
             inset: 0; 
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            background: radial-gradient(circle at center, #181818 0%, #050505 100%);
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
             z-index: 100; 
-            padding: 20px;
+            padding: 24px;
+            transition: opacity 0.3s ease;
         }
         .glass-card { 
-            background: rgba(30, 30, 30, 0.4); 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 40px 30px; 
+            background: rgba(28, 28, 28, 0.65); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 36px 28px; 
             border-radius: 24px; 
-            border: 1px solid rgba(198, 168, 124, 0.15); 
+            border: 1px solid rgba(198, 168, 124, 0.2); 
             text-align: center; 
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            max-width: 380px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.08);
         }
         .glass-card h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
+            font-size: 1.75rem;
             color: white;
             margin-bottom: 10px;
         }
         .glass-card p {
-            color: #888;
-            font-size: 0.95rem;
+            color: #999;
+            font-size: 0.92rem;
             line-height: 1.5;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
         .pin-input-container {
             position: relative;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
         .pin-input { 
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem; 
+            font-size: 2.8rem; 
             font-weight: 800;
-            padding: 10px; 
+            padding: 12px; 
             width: 100%; 
             text-align: center; 
-            background: transparent; 
-            border: none;
-            border-bottom: 2px solid rgba(198, 168, 124, 0.3);
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid rgba(198, 168, 124, 0.3);
+            border-radius: 16px;
             color: var(--accent); 
-            letter-spacing: 15px; 
+            letter-spacing: 14px; 
             outline: none;
             transition: all 0.3s ease;
+            user-select: text; -webkit-user-select: text;
         }
         .pin-input:focus {
-            border-bottom-color: var(--accent);
-            text-shadow: 0 0 20px rgba(198, 168, 124, 0.5);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(198, 168, 124, 0.3);
+            background: rgba(0,0,0,0.5);
         }
         .pin-input::placeholder {
-            color: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.15);
         }
         .pin-btn { 
-            background: var(--accent); 
-            color: #000; 
+            background: linear-gradient(135deg, #d4b589 0%, #C6A87C 100%); 
+            color: #0d0d0d; 
             font-family: 'Outfit', sans-serif;
-            font-weight: 600; 
+            font-weight: 700; 
             padding: 16px 24px; 
             border: none; 
-            border-radius: 12px; 
-            font-size: 1.1rem; 
+            border-radius: 14px; 
+            font-size: 1.05rem; 
             cursor: pointer; 
             width: 100%; 
-            transition: transform 0.2s, background 0.2s;
+            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            box-shadow: 0 8px 20px rgba(198, 168, 124, 0.3);
         }
         .pin-btn:active { transform: scale(0.97); }
-        .pin-error { color: #ff5555; margin-top: 15px; min-height: 20px; font-size: 0.9rem; font-weight: 500;}
+        .pin-error { color: #ff5555; margin-top: 14px; min-height: 20px; font-size: 0.88rem; font-weight: 500;}
 
+        /* Camera Reader Viewport */
         #reader-container {
-            flex: 1;
-            position: relative;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #000;
-            overflow: hidden;
         }
         #reader { 
             position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100% !important;
+            height: 100% !important;
         }
         #reader video {
-            width: 100vw !important;
-            height: 100vh !important;
+            width: 100% !important;
+            height: 100% !important;
             object-fit: cover !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
         }
         #reader canvas {
-            display: none !important; /* Hide any canvas the library tries to draw */
+            display: none !important;
         }
 
-        /* Custom Viewfinder */
-        .viewfinder {
+        /* Viewfinder Overlay Mask & Centered Reticle */
+        .scanner-viewfinder-overlay {
             position: absolute;
             inset: 0;
-            pointer-events: none;
             z-index: 10;
+            pointer-events: none;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-        .viewfinder-box {
-            width: 250px;
-            height: 150px;
+
+        /* Dark vignetted mask box */
+        .viewfinder-mask-box {
+            width: clamp(250px, 76vw, 320px);
+            height: clamp(160px, 48vw, 210px);
             position: relative;
+            border-radius: 20px;
+            box-shadow: 0 0 0 9999px rgba(5, 5, 5, 0.65);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .viewfinder-box::before, .viewfinder-box::after,
-        .viewfinder-box > div::before, .viewfinder-box > div::after {
-            content: '';
+        .viewfinder-mask-box.scan-success {
+            box-shadow: 0 0 0 9999px rgba(5, 5, 5, 0.75), 0 0 35px var(--success-glow);
+        }
+
+        /* Corner Brackets */
+        .corner-bracket {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-color: var(--accent);
             border-style: solid;
             border-width: 0;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 6px rgba(198, 168, 124, 0.6));
         }
-        .viewfinder-box::before { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; }
-        .viewfinder-box::after { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; }
-        .viewfinder-box > div::before { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; }
-        .viewfinder-box > div::after { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; }
-        
-        .scan-line {
-            position: absolute;
-            top: 0; left: 10px; right: 10px;
-            height: 2px;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
-            animation: scan 2s infinite linear alternate;
-            opacity: 0.7;
-        }
-        @keyframes scan {
-            0% { top: 5%; }
-            100% { top: 95%; }
+        .top-left { top: -2px; left: -2px; border-top-width: 4px; border-left-width: 4px; border-top-left-radius: 18px; }
+        .top-right { top: -2px; right: -2px; border-top-width: 4px; border-right-width: 4px; border-top-right-radius: 18px; }
+        .bottom-left { bottom: -2px; left: -2px; border-bottom-width: 4px; border-left-width: 4px; border-bottom-left-radius: 18px; }
+        .bottom-right { bottom: -2px; right: -2px; border-bottom-width: 4px; border-right-width: 4px; border-bottom-right-radius: 18px; }
+
+        .viewfinder-mask-box.scan-success .corner-bracket {
+            border-color: var(--success);
+            filter: drop-shadow(0 0 12px var(--success-glow));
         }
 
-        /* Status Bar */
-        .status { 
+        /* Animated Scan Laser Line */
+        .scan-laser-line {
             position: absolute;
-            bottom: 30px; left: 20px; right: 20px;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(198, 168, 124, 0) 0%, var(--accent) 50%, rgba(198, 168, 124, 0) 100%);
+            box-shadow: 0 0 12px var(--accent), 0 0 4px #ffffff;
+            border-radius: 3px;
+            animation: laserScan 2.2s infinite ease-in-out alternate;
+            opacity: 0.85;
+        }
+        @keyframes laserScan {
+            0% { top: 12px; opacity: 0.9; }
+            50% { opacity: 1; }
+            100% { top: calc(100% - 15px); opacity: 0.9; }
+        }
+
+        .viewfinder-mask-box.scan-success .scan-laser-line {
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0) 0%, var(--success) 50%, rgba(74, 222, 128, 0) 100%);
+            box-shadow: 0 0 16px var(--success), 0 0 6px #ffffff;
+            animation: none;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Exact Center Reticle / Crosshair Indicator */
+        .center-reticle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.65;
+            transition: all 0.3s ease;
+        }
+        .center-reticle::before, .center-reticle::after {
+            content: '';
+            position: absolute;
+            background: var(--accent);
+            box-shadow: 0 0 4px var(--accent);
+        }
+        .center-reticle::before { width: 14px; height: 2px; }
+        .center-reticle::after { width: 2px; height: 14px; }
+        
+        .reticle-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulseDot 1.8s infinite ease-in-out;
+        }
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.4); opacity: 1; }
+        }
+
+        .viewfinder-mask-box.scan-success .center-reticle::before,
+        .viewfinder-mask-box.scan-success .center-reticle::after,
+        .viewfinder-mask-box.scan-success .reticle-dot {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        /* Instruction Hint below viewfinder */
+        .scan-instruction-hint {
+            margin-top: 24px;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.75);
+            background: rgba(0, 0, 0, 0.55);
+            padding: 6px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        /* Bottom Floating HUD */
+        .status-hud { 
+            position: absolute;
+            bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+            left: 20px; right: 20px;
             padding: 16px 20px; 
             text-align: center; 
-            background: rgba(20, 20, 20, 0.85); 
-            backdrop-filter: blur(10px);
+            background: rgba(18, 18, 18, 0.85); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             font-size: 0.95rem; 
-            color: #aaa; 
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
+            color: #ddd; 
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
             z-index: 50;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             transition: all 0.3s ease;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            font-weight: 500;
         }
-        .status.success {
-            background: rgba(74, 222, 128, 0.15);
-            border-color: rgba(74, 222, 128, 0.3);
-            color: #4ade80;
-            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.2);
+        .status-hud .material-symbols-outlined {
+            font-size: 22px;
         }
-        .status.error {
-            background: rgba(239, 68, 68, 0.15);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #f87171;
+        .status-hud.success {
+            background: rgba(16, 40, 24, 0.9);
+            border-color: rgba(74, 222, 128, 0.4);
+            color: var(--success);
+            box-shadow: 0 15px 35px rgba(74, 222, 128, 0.2);
+        }
+        .status-hud.error {
+            background: rgba(45, 15, 15, 0.9);
+            border-color: rgba(248, 113, 113, 0.4);
+            color: var(--error);
         }
 
-        /* Modal for Local Dev HTTPS Warning */
+        /* Local Dev Modal */
         #local-dev-modal {
             display: none;
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.92);
             z-index: 999;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 24px;
         }
         .local-dev-card {
-            background: #111;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: #121212;
+            border: 1px solid rgba(239, 68, 68, 0.35);
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 24px;
             max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0,0,0,1);
+            box-shadow: 0 25px 60px rgba(0,0,0,1);
         }
         .local-dev-card h3 {
             color: #ef4444;
@@ -253,12 +426,12 @@
             color: #ccc;
             line-height: 1.6;
             margin-bottom: 15px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
         .local-dev-card .code-block {
             background: #000;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 12px;
             font-family: monospace;
             color: #fff;
             word-break: break-all;
@@ -270,9 +443,9 @@
             background: #ef4444;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             width: 100%;
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: 600;
             font-family: 'Outfit', sans-serif;
             margin-top: 10px;
@@ -281,58 +454,143 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Scanner</h1>
-    </div>
-    
-    <!-- Local Dev HTTPS Modal -->
-    <div id="local-dev-modal">
-        <div class="local-dev-card">
-            <h3><span class="material-symbols-outlined">no_photography</span> Camera Blocked</h3>
-            <p>Mobile browsers block camera access on local IP addresses for security reasons.</p>
-            <p>To test this locally on your phone, you must allow this IP in Chrome's security flags:</p>
-            <div class="code-block">
-                1. Go to:<br>
-                <span style="color:var(--accent);">chrome://flags/#unsafely-treat-insecure-origin-as-secure</span><br><br>
-                2. Add this URL:<br>
-                <span style="color:#4ade80;" id="current-url-display"></span><br><br>
-                3. Enable it and relaunch Chrome.
+    <div class="app-container">
+        <!-- Top Bar -->
+        <div class="header">
+            <div class="header-title-group">
+                <h1>CHF Scanner</h1>
+                <div class="header-subtitle" id="connection-subtitle">Wireless Barcode Terminal</div>
             </div>
-            <button onclick="document.getElementById('local-dev-modal').style.display='none'">I understand</button>
-        </div>
-    </div>
-    
-    <div id="pin-overlay">
-        <div class="glass-card">
-            <h2>Link Device</h2>
-            <p>Enter the 4-digit PIN shown on the desktop screen to authenticate this scanner.</p>
-            <div class="pin-input-container">
-                <input type="text" id="pin-input" class="pin-input" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
-            </div>
-            <button id="verify-btn" class="pin-btn">Authorize</button>
-            <div id="pin-error" class="pin-error"></div>
-        </div>
-    </div>
-    
-    <div id="reader-container">
-        <div id="reader"></div>
-        <div class="viewfinder" id="custom-viewfinder" style="display: none;">
-            <div class="viewfinder-box">
-                <div></div>
-                <div class="scan-line"></div>
+            <div class="header-actions">
+                <button id="torch-btn" class="icon-btn" title="Toggle Flashlight" onclick="toggleTorch()" style="display: none;">
+                    <span class="material-symbols-outlined">flashlight_on</span>
+                </button>
             </div>
         </div>
-    </div>
-    
-    <div class="status" id="status-text">
-        <span class="material-symbols-outlined">qr_code_scanner</span>
-        Ready to link
+        
+        <!-- Local Dev HTTPS Modal -->
+        <div id="local-dev-modal">
+            <div class="local-dev-card">
+                <h3><span class="material-symbols-outlined">no_photography</span> Camera Blocked</h3>
+                <p>Mobile browsers block camera access on local IP addresses for security reasons.</p>
+                <p>To test this locally on your phone, you must allow this IP in Chrome's security flags:</p>
+                <div class="code-block">
+                    1. Go to:<br>
+                    <span style="color:var(--accent);">chrome://flags/#unsafely-treat-insecure-origin-as-secure</span><br><br>
+                    2. Add this URL:<br>
+                    <span style="color:#4ade80;" id="current-url-display"></span><br><br>
+                    3. Enable it and relaunch Chrome.
+                </div>
+                <button onclick="document.getElementById('local-dev-modal').style.display='none'">I understand</button>
+            </div>
+        </div>
+        
+        <!-- PIN Authorization Overlay -->
+        <div id="pin-overlay">
+            <div class="glass-card">
+                <h2>Link Device</h2>
+                <p>Enter the 4-digit PIN shown on the desktop screen to authenticate this scanner.</p>
+                <div class="pin-input-container">
+                    <input type="text" id="pin-input" class="pin-input" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
+                </div>
+                <button id="verify-btn" class="pin-btn">Authorize</button>
+                <div id="pin-error" class="pin-error"></div>
+            </div>
+        </div>
+        
+        <!-- Scanner Camera Viewport -->
+        <div id="reader-container">
+            <div id="reader"></div>
+
+            <!-- Viewfinder Overlay & Centered Target Box -->
+            <div class="scanner-viewfinder-overlay" id="custom-viewfinder" style="display: none;">
+                <div class="viewfinder-mask-box" id="mask-box">
+                    <div class="corner-bracket top-left"></div>
+                    <div class="corner-bracket top-right"></div>
+                    <div class="corner-bracket bottom-left"></div>
+                    <div class="corner-bracket bottom-right"></div>
+                    
+                    <!-- Center Reticle Indicator -->
+                    <div class="center-reticle">
+                        <div class="reticle-dot"></div>
+                    </div>
+                    
+                    <!-- Animated Laser Scan Line -->
+                    <div class="scan-laser-line"></div>
+                </div>
+
+                <!-- Guidance Hint -->
+                <div class="scan-instruction-hint">
+                    <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent);">center_focus_strong</span>
+                    Position barcode in center target
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status HUD -->
+        <div class="status-hud" id="status-text">
+            <span class="material-symbols-outlined">qr_code_scanner</span>
+            Ready to link
+        </div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
         const statusEl = document.getElementById('status-text');
+        let html5QrCodeInstance = null;
+        let isTorchOn = false;
+
+        // Sound Feedback using Web Audio API
+        function playScanSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1046.5, ctx.currentTime); // C6 tone
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.15);
+            } catch (e) {}
+        }
+
+        // Torch / Flashlight Toggle Function
+        async function toggleTorch() {
+            if (!html5QrCodeInstance) return;
+            isTorchOn = !isTorchOn;
+            const torchBtn = document.getElementById('torch-btn');
+            
+            try {
+                // Try html5QrCode applyVideoConstraints API
+                await html5QrCodeInstance.applyVideoConstraints({
+                    advanced: [{ torch: isTorchOn }]
+                });
+                if (torchBtn) torchBtn.classList.toggle('active', isTorchOn);
+            } catch (e) {
+                // Fallback to direct stream tracks
+                try {
+                    const videoElem = document.querySelector('#reader video');
+                    if (videoElem && videoElem.srcObject) {
+                        const track = videoElem.srcObject.getVideoTracks()[0];
+                        if (track && track.applyConstraints) {
+                            await track.applyConstraints({ advanced: [{ torch: isTorchOn }] });
+                            if (torchBtn) torchBtn.classList.toggle('active', isTorchOn);
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Torch constraint not supported', err);
+                }
+            }
+        }
 
         if (!sessionId) {
             statusEl.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span> Ready to link';
@@ -341,11 +599,11 @@
                     <span class="material-symbols-outlined" style="font-size: 48px; color: var(--accent); margin-bottom: 15px; display: block;">photo_camera</span>
                     <h2>Session Disconnected</h2>
                     <p style="margin-bottom: 20px; color: #aaa; line-height: 1.5;">Your scanner session has ended.</p>
-                    <p style="margin-bottom: 0px; color: #fff; font-size: 1.1rem; font-weight: 500;">Please close this tab and use your phone's Camera app to scan the new QR code on your desktop.</p>
+                    <p style="margin-bottom: 0px; color: #fff; font-size: 1.05rem; font-weight: 500;">Please close this tab and use your phone's Camera app to scan the new QR code on your desktop.</p>
                 </div>
             `;
         } else {
-            // Verify if session exists on load. If we just refreshed, it's dead, so drop the query param.
+            // Verify if session exists on load
             fetch(`/api/scan/auth/poll?session_id=${sessionId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -369,7 +627,7 @@
             const pinInput = document.getElementById('pin-input');
             const pinError = document.getElementById('pin-error');
             
-            // Auto-focus logic
+            // Auto-focus input
             pinInput.focus();
             
             pinBtn.addEventListener('click', async () => {
@@ -412,15 +670,30 @@
                 }
             });
 
-            function startScanner() {
+            async function startScanner() {
                 statusEl.innerHTML = '<span class="material-symbols-outlined">pending</span> Requesting Camera...';
-                statusEl.className = 'status';
+                statusEl.className = 'status-hud';
                 
-                const html5QrCode = new Html5Qrcode("reader");
+                // Check if mediaDevices API is supported in current browser context
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    statusEl.innerHTML = '<span class="material-symbols-outlined">no_photography</span> Camera API Blocked (Insecure HTTP Context)';
+                    statusEl.className = 'status-hud error';
+                    document.getElementById('local-dev-modal').style.display = 'flex';
+                    const currentUrl = `http://${window.location.hostname}:${window.location.port || 80}`;
+                    document.getElementById('current-url-display').innerText = currentUrl;
+                    return;
+                }
+
+                const html5QrCode = new Html5Qrcode("reader", { experimentalFeatures: { useBarCodeDetectorIfSupported: true } });
+                html5QrCodeInstance = html5QrCode;
                 
                 const config = { 
-                    fps: 30, 
-                    // No qrbox - prevents the library from drawing a shaded canvas overlay that might blank the screen
+                    fps: 30,
+                    qrbox: (viewfinderWidth, viewfinderHeight) => {
+                        const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.82), 320);
+                        const boxHeight = Math.min(Math.floor(boxWidth * 0.65), 210);
+                        return { width: boxWidth, height: boxHeight };
+                    },
                     formatsToSupport: [
                         Html5QrcodeSupportedFormats.CODE_128,
                         Html5QrcodeSupportedFormats.CODE_39,
@@ -432,11 +705,7 @@
                     ]
                 };
 
-                html5QrCode.start(
-                    { facingMode: "environment" },
-                    config,
-                    async (decodedText, decodedResult) => {
-                    // Prevent duplicate rapid scans (debounce 2 seconds)
+                const onScanSuccess = async (decodedText, decodedResult) => {
                     const now = Date.now();
                     if (decodedText === lastScanned && (now - lastScanTime) < 2000) {
                         return;
@@ -445,16 +714,17 @@
                     lastScanned = decodedText;
                     lastScanTime = now;
                     
-                    // UI Feedback
-                    statusEl.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Scanned: ${decodedText}`;
-                    statusEl.className = 'status success';
-                    
-                    // Haptic feedback if supported
+                    playScanSound();
                     if (window.navigator && window.navigator.vibrate) {
-                        window.navigator.vibrate(50);
+                        window.navigator.vibrate([40, 30, 40]);
                     }
+
+                    const maskBox = document.getElementById('mask-box');
+                    if (maskBox) maskBox.classList.add('scan-success');
                     
-                    // Submit to backend
+                    statusEl.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Scanned: ${decodedText}`;
+                    statusEl.className = 'status-hud success';
+                    
                     try {
                         const res = await fetch('/api/scan/submit', {
                             method: 'POST',
@@ -465,29 +735,71 @@
                         if (res.ok) {
                             setTimeout(() => {
                                 statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
-                                statusEl.className = 'status';
+                                statusEl.className = 'status-hud';
+                                if (maskBox) maskBox.classList.remove('scan-success');
                             }, 1500);
                         } else {
                             statusEl.innerHTML = '<span class="material-symbols-outlined">error</span> Failed to send';
-                            statusEl.className = 'status error';
+                            statusEl.className = 'status-hud error';
+                            if (maskBox) maskBox.classList.remove('scan-success');
                         }
                     } catch (e) {
                         console.error(e);
                         statusEl.innerHTML = '<span class="material-symbols-outlined">wifi_off</span> Network Error';
-                        statusEl.className = 'status error';
+                        statusEl.className = 'status-hud error';
+                        if (maskBox) maskBox.classList.remove('scan-success');
                     }
-                }, 
-                (errorMessage) => {
-                    // This is just a warning/info for every frame that doesn't have a barcode
+                };
+
+                const onScanFrame = (errorMessage) => {
                     if (statusEl.innerText.includes('Requesting')) {
                         statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
                         document.getElementById('custom-viewfinder').style.display = 'flex';
+                        
+                        try {
+                            const capabilities = html5QrCode.getRunningTrackCapabilities();
+                            if (capabilities && capabilities.torch) {
+                                document.getElementById('torch-btn').style.display = 'flex';
+                            }
+                        } catch (e) {
+                            document.getElementById('torch-btn').style.display = 'flex';
+                        }
                     }
-                }).catch((err) => {
-                    statusEl.innerHTML = '<span class="material-symbols-outlined">error</span> Camera failed to start';
-                    statusEl.className = 'status error';
-                    console.error("Camera start error", err);
-                });
+                };
+
+                // Multi-tier camera start fallback chain
+                try {
+                    // Attempt 1: Back camera (facingMode: environment)
+                    await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
+                } catch (envErr) {
+                    console.warn("facingMode: environment failed, trying camera device list...", envErr);
+                    try {
+                        // Attempt 2: Get available video input devices
+                        const devices = await Html5Qrcode.getCameras();
+                        if (devices && devices.length > 0) {
+                            const backCam = devices.find(d => 
+                                d.label.toLowerCase().includes('back') || 
+                                d.label.toLowerCase().includes('rear') || 
+                                d.label.toLowerCase().includes('environment')
+                            );
+                            const selectedId = backCam ? backCam.id : devices[0].id;
+                            await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
+                        } else {
+                            // Attempt 3: User camera (front / integrated webcam)
+                            await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
+                        }
+                    } catch (fallbackErr) {
+                        console.error("Camera start fallback error:", fallbackErr);
+                        statusEl.innerHTML = `<span class="material-symbols-outlined">error</span> Camera failed: ${fallbackErr.name || 'Denied'}`;
+                        statusEl.className = 'status-hud error';
+                        
+                        const isLocalIP = window.location.hostname.match(/^[0-9]+.[0-9]+.[0-9]+.[0-9]+$/);
+                        if (window.location.protocol !== 'https:' && isLocalIP) {
+                            document.getElementById('local-dev-modal').style.display = 'flex';
+                            document.getElementById('current-url-display').innerText = `http://${window.location.hostname}:${window.location.port || 80}`;
+                        }
+                    }
+                }
                 
                 // Poll server to check if desktop is still connected
                 setInterval(async () => {
@@ -495,7 +807,6 @@
                         const res = await fetch(`/api/scan/auth/poll?session_id=${sessionId}`);
                         const data = await res.json();
                         if (data.error === 'session_disconnected') {
-                            // Desktop refreshed or disconnected, reset scanner
                             window.location.href = window.location.pathname;
                         }
                     } catch (e) {}

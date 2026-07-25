@@ -8,7 +8,7 @@
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="assets/tailwind.css?v=admin-custom-2" />
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Serif:wght@300..700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Serif:wght@300..700&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <!-- Vue.js -->
@@ -20,17 +20,110 @@
     <!-- QRCode.js for Mobile Scanner -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { font-family: 'Manrope', sans-serif; background-color: #0c0c0c; color: #f5f5f0; }
-        h1, h2, h3, .font-serif { font-family: 'Noto Serif Display', serif; }
+        :root {
+            --accent-gold: #C6A87C;
+            --accent-gold-glow: rgba(198, 168, 124, 0.35);
+            --bg-dark: #080808;
+        }
+
+        body { font-family: 'Inter', 'Manrope', sans-serif; background-color: var(--bg-dark); color: #f5f5f0; }
+        h1, h2, h3, .font-serif, .serif-title { font-family: 'Playfair Display', 'Noto Serif', serif !important; }
         .view-transition { transition: opacity 0.3s ease; }
-        
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
+
+        .bg-card-bg { background-color: #0A0A0A !important; }
+        .border-border-gray { border-color: #1F1F1F !important; }
+        .text-gold-accent { color: #C5A073 !important; }
+        .bg-gold-accent { background-color: #C5A073 !important; }
+        .text-text-muted { color: #A1A1AA !important; }
+
+        /* Targeted Dark Luxury Form Inputs */
+        .dark-luxury-input {
+            background-color: #121212 !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            border-radius: 12px !important;
+            padding: 12px 16px !important;
+            font-family: 'Manrope', sans-serif !important;
+            font-size: 0.88rem !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            outline: none !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+            -webkit-appearance: none !important;
+            appearance: none !important;
         }
-        .hide-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+
+        input.dark-luxury-input.input-with-icon-left {
+            padding-left: 2.8rem !important;
         }
+
+        /* Input Focus State */
+        .dark-luxury-input:focus {
+            border-color: var(--accent-gold) !important;
+            box-shadow: 0 0 20px var(--accent-gold-glow), inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* Input Placeholders */
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.35) !important;
+            opacity: 1 !important;
+        }
+
+        /* Select Dropdown Styling */
+        select {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23C6A87C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 14px center !important;
+            background-size: 16px !important;
+            padding-right: 40px !important;
+            cursor: pointer !important;
+        }
+
+        select option {
+            background-color: #141414 !important;
+            color: #ffffff !important;
+            padding: 12px !important;
+        }
+
+        /* Glass Panel Cards */
+        .glass-panel {
+            background: rgba(16, 16, 16, 0.82) !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75) !important;
+            border-radius: 20px !important;
+        }
+
+        /* Gold Gradient Button */
+        .btn-gold {
+            background: linear-gradient(135deg, #d4b589 0%, #C6A87C 100%) !important;
+            color: #080808 !important;
+            font-weight: 700 !important;
+            letter-spacing: 1.5px !important;
+            text-transform: uppercase !important;
+            box-shadow: 0 8px 25px rgba(198, 168, 124, 0.25) !important;
+            border: none !important;
+            border-radius: 12px !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            cursor: pointer !important;
+        }
+        .btn-gold:hover {
+            box-shadow: 0 12px 35px rgba(198, 168, 124, 0.45) !important;
+            transform: translateY(-2px) !important;
+            background: linear-gradient(135deg, #e0c296 0%, #d4b589 100%) !important;
+        }
+        .btn-gold:active {
+            transform: translateY(0) !important;
+        }
+
+        /* Scrollbars */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(198, 168, 124, 0.3); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(198, 168, 124, 0.6); }
     </style>
 </head>
 
@@ -76,31 +169,42 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="ml-64 flex-1 p-10 lg:p-16 relative z-0">
+        <main class="ml-64 flex-1 p-8 lg:p-12 relative z-0">
             <!-- Generate Bill View -->
-            <div v-if="currentTab === 'bill'" class="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col items-center justify-center min-h-[70vh]">
+            <div v-if="currentTab === 'bill'" class="animate-in fade-in slide-in-from-bottom-4 duration-300 w-full max-w-7xl mx-auto space-y-8">
                 <template v-if="!deviceVerified">
-                    <header class="mb-12 text-center">
-                        <h1 class="font-serif text-4xl font-light text-ivory mb-2">Setup Scanner</h1>
-                        <p class="text-sm text-gray-400">Link your mobile device to scan barcodes directly.</p>
-                    </header>
-                    <div class="bg-surface-dark border border-white/5 p-12 rounded-lg shadow-xl backdrop-blur-md w-full max-w-md text-center flex flex-col items-center">
-                        <div id="setup-qrcode" class="bg-white p-4 w-56 h-56 flex-shrink-0 flex items-center justify-center mb-6"></div>
-                        <p class="text-sm text-gray-400 mb-2">Scan this code to open the scanner.</p>
-                        <p class="text-xs uppercase tracking-widest text-gray-500 font-bold mb-1">Verification PIN</p>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-bronze/10 border border-accent-bronze/20 text-accent-bronze text-[11px] font-semibold uppercase tracking-wider mb-2">
+                                <span class="material-symbols-outlined text-xs">qr_code_scanner</span> Scanner Setup
+                            </div>
+                            <h1 class="font-serif text-3xl md:text-4xl text-ivory font-normal">Link Scanner Device</h1>
+                            <p class="text-xs text-gray-400 mt-1">Link your mobile device camera to scan plant barcodes directly.</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-10 rounded-2xl w-full max-w-md mx-auto text-center flex flex-col items-center my-8">
+                        <div id="setup-qrcode" class="bg-white p-4 w-56 h-56 flex-shrink-0 flex items-center justify-center mb-6 rounded-xl shadow-lg"></div>
+                        <p class="text-sm text-gray-300 mb-2">Scan this QR code with your mobile camera to launch the scanner.</p>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 mt-4">Verification PIN</p>
                         <p class="font-serif text-4xl text-accent-bronze tracking-[0.2em] font-bold">{{ setupPin || '----' }}</p>
                     </div>
                 </template>
                 <template v-else>
-                    <header class="mb-12 text-center">
-                        <h1 class="font-serif text-4xl font-light text-ivory mb-2">Create Invoice</h1>
-                        <p class="text-sm text-gray-400">Scan barcodes to add items and bill clients directly.</p>
-                    </header>
+                    <!-- Page Top Header -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-bronze/10 border border-accent-bronze/20 text-accent-bronze text-[11px] font-semibold uppercase tracking-wider mb-2">
+                                <span class="material-symbols-outlined text-xs">receipt_long</span> Billing Console
+                            </div>
+                            <h1 class="font-serif text-3xl md:text-4xl text-ivory font-normal">Create Invoice</h1>
+                            <p class="text-xs text-gray-400 mt-1">Scan plant barcodes to add items and send digital invoices via WhatsApp.</p>
+                        </div>
+                    </div>
                     
                     <div class="w-full max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 items-start">
                         <!-- Left Column: Input Form (Client Details & Submission) -->
-                        <div class="flex-1 w-full bg-surface-dark border border-white/5 p-8 rounded-lg shadow-xl backdrop-blur-md">
-                            <h2 class="font-serif text-2xl text-ivory mb-6">Client Details</h2>
+                        <div class="flex-1 w-full glass-panel p-8 rounded-2xl">
+                            <h2 class="font-serif text-xl text-ivory font-semibold mb-6">Client Details</h2>
                             <form @submit.prevent="sendInvoice" class="space-y-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
@@ -206,165 +310,220 @@
             </div>
 
             <!-- Manage SKUs View -->
-            <div v-if="currentTab === 'skus'" class="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col items-center min-h-[70vh]">
-                <header class="mb-10 text-center">
-                    <h1 class="font-serif text-4xl font-light text-ivory mb-2">SKU Catalog & Inventory</h1>
-                    <p class="text-sm text-gray-400">Add, update, and manage product SKUs for automatic barcode billing.</p>
+            <div v-if="currentTab === 'skus'" class="animate-in fade-in slide-in-from-bottom-4 duration-300 w-full max-w-7xl mx-auto space-y-10">
+                <!-- BEGIN: PageHeader -->
+                <header class="mb-8" data-purpose="main-header">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+                        <div>
+                            <div class="inline-flex items-center px-3 py-1 mb-4 rounded-full border border-gold-accent/30 bg-gold-accent/5">
+                                <span class="material-symbols-outlined text-sm text-gold-accent mr-2">inventory_2</span>
+                                <span class="text-[10px] uppercase tracking-widest text-gold-accent font-semibold">Catalog Manager</span>
+                            </div>
+                            <h1 class="serif-title text-4xl md:text-5xl font-normal mb-2 text-white">Products & Inventory</h1>
+                            <p class="text-text-muted text-sm">Manage botanical items and pricing. SKUs are generated automatically upon saving.</p>
+                        </div>
+                        <button type="button" @click="showCategoryModal = true" class="flex items-center px-4 py-2 border border-white/10 bg-white/5 hover:bg-white/10 transition-colors text-sm rounded-sm text-white">
+                            <span class="material-symbols-outlined text-gold-accent text-sm mr-2">tune</span>
+                            Manage Categories ({{ categories.length }})
+                        </button>
+                    </div>
+                    <div class="w-full h-px bg-white/10 mt-6"></div>
                 </header>
+                <!-- END: PageHeader -->
 
-                <div class="w-full max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 items-start">
-                    <!-- Left: Form for Add/Edit SKU -->
-                    <div class="w-full xl:w-[420px] flex-shrink-0 bg-surface-dark border border-white/5 p-8 rounded-lg shadow-xl backdrop-blur-md">
-                        <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
-                            <h2 class="font-serif text-2xl text-ivory">{{ editingSkuId ? 'Edit SKU' : 'Add New SKU' }}</h2>
-                            <button v-if="editingSkuId" @click="resetSkuForm" class="text-xs text-gray-400 hover:text-white flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">cancel</span>
-                                Cancel Edit
+                <!-- BEGIN: StatsRow -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" data-purpose="statistics-overview">
+                    <!-- Total Products -->
+                    <div class="bg-card-bg border border-border-gray p-6 rounded-2xl flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-widest text-text-muted font-bold mb-1">Total Products</p>
+                            <p class="serif-title text-4xl text-white">{{ skus.length }}</p>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center border border-white/10 rounded-lg text-gold-accent">
+                            <span class="material-symbols-outlined text-2xl">eco</span>
+                        </div>
+                    </div>
+                    <!-- Active Categories -->
+                    <div class="bg-card-bg border border-border-gray p-6 rounded-2xl flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-widest text-text-muted font-bold mb-1">Active Categories</p>
+                            <p class="serif-title text-4xl text-white">{{ categories.length }}</p>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center border border-white/10 rounded-lg text-white/80">
+                            <span class="material-symbols-outlined text-2xl">category</span>
+                        </div>
+                    </div>
+                    <!-- Catalog Value -->
+                    <div class="bg-card-bg border border-border-gray p-6 rounded-2xl flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-widest text-text-muted font-bold mb-1">Catalog Value</p>
+                            <p class="serif-title text-4xl text-white">₹{{ (catalogTotalValue || 0).toLocaleString('en-IN') }}</p>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center border border-white/10 rounded-lg text-white/80">
+                            <span class="material-symbols-outlined text-2xl">payments</span>
+                        </div>
+                    </div>
+                </section>
+                <!-- END: StatsRow -->
+
+                <!-- BEGIN: AddNewProductForm -->
+                <section class="bg-card-bg border border-border-gray rounded-2xl p-6 md:p-8 mb-8" data-purpose="product-creation-form">
+                    <div class="flex items-center justify-between mb-1">
+                        <div>
+                            <h2 class="serif-title text-2xl mb-1 text-white">{{ editingSkuId ? 'Edit Product' : 'Add New Product' }}</h2>
+                            <p class="text-text-muted text-xs">{{ editingSkuId ? 'Update catalog item' : 'Create new catalog entry' }}</p>
+                        </div>
+                        <button type="button" v-if="editingSkuId" @click="resetSkuForm" class="text-xs text-text-muted hover:text-white flex items-center gap-1 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 transition-colors">
+                            <span class="material-symbols-outlined text-xs">cancel</span>
+                            Cancel
+                        </button>
+                    </div>
+                    <hr class="border-border-gray my-6"/>
+                    <form @submit.prevent="saveSku" class="space-y-6">
+                        <!-- Product Name -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest font-bold text-white/90 block">Product Name <span class="text-red-500">*</span></label>
+                            <input v-model="skuForm.name" required class="w-full bg-transparent border border-border-gray rounded-lg p-3 text-sm text-white placeholder:text-white/20 focus:border-gold-accent outline-none transition-colors" placeholder="e.g. Ficus Bonsai Tree" type="text"/>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Price -->
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest font-bold text-white/90 block">Price (₹) <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-sm">₹</span>
+                                    <input v-model.number="skuForm.price" min="0" step="0.01" required class="w-full bg-transparent border border-border-gray rounded-lg p-3 pl-10 text-sm text-white focus:border-gold-accent outline-none transition-colors" type="number" placeholder="0"/>
+                                </div>
+                            </div>
+                            <!-- Category -->
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest font-bold text-white/90 block">Category</label>
+                                <select v-model="skuForm.category" @change="onCategorySelectChange" class="w-full bg-transparent border border-border-gray rounded-lg p-3 text-sm text-white focus:border-gold-accent outline-none transition-colors appearance-none">
+                                    <option disabled selected value="">Select Category</option>
+                                    <option v-for="cat in categories" :key="cat" :value="cat" class="bg-[#0A0A0A] text-white">{{ cat }}</option>
+                                    <option value="__ADD_NEW__" class="bg-[#0A0A0A] text-gold-accent font-bold">+ Manage Categories...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Description -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest font-bold text-white/90 block">Description / Care Notes</label>
+                            <textarea v-model="skuForm.description" class="w-full bg-transparent border border-border-gray rounded-lg p-3 text-sm text-white placeholder:text-white/20 focus:border-gold-accent outline-none transition-colors" placeholder="Optional care notes, dimensions, or details..." rows="4"></textarea>
+                        </div>
+
+                        <!-- Feedback Alerts -->
+                        <div v-if="skuSaveSuccess" class="text-emerald-400 text-xs font-semibold flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 rounded-xl">
+                            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Product Saved Successfully
+                        </div>
+                        <div v-if="skuSaveError" class="text-red-400 text-xs font-semibold flex items-center gap-2 bg-red-500/10 border border-red-500/20 px-4 py-3 rounded-xl">
+                            <span class="material-symbols-outlined text-[18px]">error</span>
+                            {{ skuSaveError }}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button :disabled="savingSku" class="w-full bg-gold-accent hover:bg-gold-accent/90 text-black font-bold text-[10px] uppercase tracking-[0.2em] py-4 rounded-full flex items-center justify-center transition-all shadow-lg active:scale-[0.99] disabled:opacity-50" type="submit">
+                            <span v-if="savingSku" class="material-symbols-outlined text-[18px] animate-spin mr-2">refresh</span>
+                            <span v-else class="material-symbols-outlined text-[18px] mr-2">{{ editingSkuId ? 'save' : 'add' }}</span>
+                            <span>{{ savingSku ? 'Saving...' : (editingSkuId ? 'Update Product' : 'Add Product to Catalog') }}</span>
+                        </button>
+                    </form>
+                </section>
+                <!-- END: AddNewProductForm -->
+
+                <!-- BEGIN: InventoryCatalog -->
+                <section class="bg-card-bg border border-border-gray rounded-2xl overflow-hidden" data-purpose="inventory-list">
+                    <!-- Catalog Header -->
+                    <div class="p-6 md:p-8">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                            <div>
+                                <h2 class="serif-title text-2xl mb-1 leading-tight text-white">Inventory<br/>Catalog</h2>
+                                <p class="text-text-muted text-[10px] font-medium">Showing {{ filteredSkus.length }} of {{ skus.length }} items</p>
+                            </div>
+                            <div class="w-full md:max-w-xl relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-lg pointer-events-none">search</span>
+                                <input v-model="skuSearchQuery" class="w-full bg-transparent border border-border-gray rounded-full p-3 pl-12 text-sm text-white placeholder:text-white/20 focus:border-gold-accent outline-none transition-colors" placeholder="Search product or SKU..." type="text"/>
+                            </div>
+                        </div>
+                        <!-- Filters -->
+                        <div class="flex gap-2 mt-6 overflow-x-auto pb-2 hide-scrollbar">
+                            <button type="button" @click="selectedCategoryFilter = ''"
+                                :class="[selectedCategoryFilter === '' ? 'bg-gold-accent/20 border-gold-accent/40 text-gold-accent' : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white', 'px-4 py-1.5 border text-[10px] font-bold rounded-full transition-colors whitespace-nowrap']">
+                                All Categories ({{ skus.length }})
+                            </button>
+                            <button type="button" v-for="cat in categories" :key="cat" @click="selectedCategoryFilter = cat"
+                                :class="[selectedCategoryFilter === cat ? 'bg-gold-accent/20 border-gold-accent/40 text-gold-accent' : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white', 'px-4 py-1.5 border text-[10px] font-bold rounded-full transition-colors whitespace-nowrap']">
+                                {{ cat }}
                             </button>
                         </div>
-                        
-                        <form @submit.prevent="saveSku" class="space-y-5">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <label class="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">SKU / Barcode Code <span class="text-red-400">*</span></label>
-                                    <button type="button" @click="autoGenerateSkuCode" class="text-[10px] uppercase tracking-wider text-accent-bronze hover:underline font-bold">Auto-Generate</button>
-                                </div>
-                                <input type="text" v-model="skuForm.sku" required
-                                    class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20 uppercase"
-                                    placeholder="e.g. PLANT-001">
-                            </div>
-
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Product Name <span class="text-red-400">*</span></label>
-                                <input type="text" v-model="skuForm.name" required
-                                    class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
-                                    placeholder="e.g. Monstera Deliciosa">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Price (₹)</label>
-                                    <input type="number" v-model.number="skuForm.price" min="0" step="0.01" required
-                                        class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
-                                        placeholder="0.00">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Category</label>
-                                    <select v-model="skuForm.category"
-                                        class="w-full bg-background-dark border border-white/10 px-3 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors">
-                                        <option value="Indoor Plant">Indoor Plant</option>
-                                        <option value="Outdoor Plant">Outdoor Plant</option>
-                                        <option value="Bonsai">Bonsai</option>
-                                        <option value="Planter / Pot">Planter / Pot</option>
-                                        <option value="Accessory">Accessory</option>
-                                        <option value="Service">Service</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Description / Notes</label>
-                                <textarea v-model="skuForm.description" rows="2"
-                                    class="w-full bg-background-dark border border-white/10 px-4 py-3 text-sm text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
-                                    placeholder="Optional product details..."></textarea>
-                            </div>
-
-                            <div class="pt-4 flex flex-col gap-3">
-                                <span v-if="skuSaveSuccess" class="text-green-400 text-xs flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                                    SKU Saved Successfully
-                                </span>
-                                <span v-if="skuSaveError" class="text-red-400 text-xs flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">error</span>
-                                    {{ skuSaveError }}
-                                </span>
-
-                                <button type="submit" :disabled="savingSku"
-                                    class="w-full bg-accent-bronze text-white hover:bg-accent-bronze/90 px-6 py-3.5 text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 rounded-sm">
-                                    <span v-if="savingSku" class="material-symbols-outlined text-[18px] animate-spin">refresh</span>
-                                    <span v-else class="material-symbols-outlined text-[18px]">{{ editingSkuId ? 'save' : 'add_box' }}</span>
-                                    <span>{{ savingSku ? 'Saving...' : (editingSkuId ? 'Update SKU' : 'Add SKU to Catalog') }}</span>
-                                </button>
-                            </div>
-                        </form>
                     </div>
 
-                    <!-- Right: Table of SKUs -->
-                    <div class="flex-1 w-full bg-surface-dark border border-white/5 p-8 rounded-lg shadow-xl backdrop-blur-md min-h-[500px]">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-white/5 pb-4">
-                            <div>
-                                <h3 class="font-serif text-2xl text-ivory">Saved SKUs</h3>
-                                <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-1">{{ filteredSkus.length }} Total Products</p>
-                            </div>
-                            <!-- Search filter -->
-                            <div class="relative w-full sm:w-64">
-                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
-                                <input type="text" v-model="skuSearchQuery"
-                                    class="w-full bg-background-dark border border-white/10 pl-9 pr-4 py-2 text-xs text-ivory focus:outline-none focus:border-accent-bronze rounded-sm"
-                                    placeholder="Search SKU or Name...">
-                            </div>
-                        </div>
-
-                        <!-- SKU List Table -->
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs text-gray-300">
-                                <thead>
-                                    <tr class="border-b border-white/10 text-[9px] uppercase tracking-widest text-gray-500 font-bold">
-                                        <th class="py-3 px-3">SKU Code</th>
-                                        <th class="py-3 px-3">Product Name</th>
-                                        <th class="py-3 px-3">Category</th>
-                                        <th class="py-3 px-3">Price</th>
-                                        <th class="py-3 px-3 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-if="loadingSkus">
-                                        <td colspan="5" class="py-12 text-center text-gray-500">
-                                            <span class="material-symbols-outlined animate-spin text-2xl mb-2">refresh</span>
-                                            <p>Loading SKU Catalog...</p>
-                                        </td>
-                                    </tr>
-                                    <tr v-else-if="filteredSkus.length === 0">
-                                        <td colspan="5" class="py-12 text-center text-gray-500">
-                                            <span class="material-symbols-outlined text-3xl mb-2">inventory</span>
-                                            <p>No SKUs found. Create your first SKU using the form on the left.</p>
-                                        </td>
-                                    </tr>
-                                    <tr v-for="item in filteredSkus" :key="item.id" class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
-                                        <td class="py-3.5 px-3">
-                                            <span class="font-mono text-accent-bronze font-bold bg-accent-bronze/10 border border-accent-bronze/20 px-2 py-1 rounded text-xs">{{ item.sku }}</span>
-                                        </td>
-                                        <td class="py-3.5 px-3 font-medium text-ivory">
-                                            <div>{{ item.name }}</div>
-                                            <div v-if="item.description" class="text-[10px] text-gray-500 truncate max-w-xs">{{ item.description }}</div>
-                                        </td>
-                                        <td class="py-3.5 px-3 text-gray-400">
-                                            <span class="bg-white/5 px-2 py-0.5 rounded text-[10px] border border-white/5">{{ item.category || 'General' }}</span>
-                                        </td>
-                                        <td class="py-3.5 px-3 font-serif text-sm text-ivory font-bold">
-                                            ₹{{ Number(item.price).toLocaleString('en-IN') }}
-                                        </td>
-                                        <td class="py-3.5 px-3 text-right space-x-1">
-                                            <button @click="addToBillDirectly(item)" title="Add to current Invoice" class="p-1.5 hover:bg-green-500/10 text-green-400 rounded transition-colors">
-                                                <span class="material-symbols-outlined text-[16px]">post_add</span>
-                                            </button>
-                                            <button @click="sendSkuToBarcodeQueue(item)" title="Add to Barcode Print Queue" class="p-1.5 hover:bg-white/10 text-accent-bronze rounded transition-colors">
-                                                <span class="material-symbols-outlined text-[16px]">barcode</span>
-                                            </button>
-                                            <button @click="editSku(item)" title="Edit SKU" class="p-1.5 hover:bg-white/10 text-gray-300 rounded transition-colors">
-                                                <span class="material-symbols-outlined text-[16px]">edit</span>
-                                            </button>
-                                            <button @click="deleteSku(item.id)" title="Delete SKU" class="p-1.5 hover:bg-red-500/10 text-red-400 rounded transition-colors">
-                                                <span class="material-symbols-outlined text-[16px]">delete</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <!-- Table Body -->
+                    <div class="w-full border-t border-border-gray overflow-x-auto">
+                        <table class="w-full text-left text-[10px] uppercase tracking-wider font-bold">
+                            <thead>
+                                <tr class="text-white/40 border-b border-border-gray bg-white/[0.02]">
+                                    <th class="px-6 py-4 font-bold">SKU Code</th>
+                                    <th class="px-6 py-4 font-bold">Product Name</th>
+                                    <th class="px-6 py-4 font-bold">Category</th>
+                                    <th class="px-6 py-4 font-bold">Price</th>
+                                    <th class="px-6 py-4 font-bold text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border-gray">
+                                <!-- Loading State -->
+                                <tr v-if="loadingSkus">
+                                    <td class="py-20 text-center text-text-muted" colspan="5">
+                                        <span class="material-symbols-outlined animate-spin text-3xl text-gold-accent mb-2">refresh</span>
+                                        <p class="text-sm normal-case font-normal">Loading Catalog...</p>
+                                    </td>
+                                </tr>
+                                <!-- Empty State -->
+                                <tr v-else-if="filteredSkus.length === 0">
+                                    <td class="py-20 text-center" colspan="5">
+                                        <div class="flex flex-col items-center justify-center">
+                                            <div class="w-12 h-12 mb-4 flex items-center justify-center border border-white/10 rounded-full text-white/20 bg-white/5">
+                                                <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                                            </div>
+                                            <h3 class="text-white text-base font-bold mb-1 normal-case serif-title">No Products Found</h3>
+                                            <p class="text-text-muted text-xs normal-case font-normal">Add a product using the form above.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Data Rows -->
+                                <tr v-for="item in filteredSkus" :key="item.id" class="hover:bg-white/[0.02] transition-colors">
+                                    <td class="px-6 py-4">
+                                        <span class="font-mono text-gold-accent font-bold bg-gold-accent/10 border border-gold-accent/25 px-2.5 py-1 rounded-md text-xs tracking-wider inline-block">{{ item.sku }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 normal-case font-normal text-white">
+                                        <div class="text-sm font-semibold text-white">{{ item.name }}</div>
+                                        <div v-if="item.description" class="text-xs text-text-muted truncate max-w-xs mt-0.5">{{ item.description }}</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="bg-white/5 text-white/80 px-3 py-1 rounded-full text-[10px] font-bold border border-white/10 inline-block uppercase">{{ item.category || 'General' }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 serif-title text-base text-white font-bold normal-case">
+                                        ₹{{ Number(item.price).toLocaleString('en-IN') }}
+                                    </td>
+                                    <td class="px-6 py-4 text-right space-x-1 whitespace-nowrap">
+                                        <button type="button" @click="addToBillDirectly(item)" title="Add to current Invoice" class="p-2 hover:bg-emerald-500/15 text-emerald-400 rounded-lg transition-colors border border-transparent hover:border-emerald-500/30">
+                                            <span class="material-symbols-outlined text-[18px]">post_add</span>
+                                        </button>
+                                        <button type="button" @click="sendSkuToBarcodeQueue(item)" title="Add to Barcode Print Queue" class="p-2 hover:bg-gold-accent/15 text-gold-accent rounded-lg transition-colors border border-transparent hover:border-gold-accent/30">
+                                            <span class="material-symbols-outlined text-[18px]">barcode</span>
+                                        </button>
+                                        <button type="button" @click="editSku(item)" title="Edit Product" class="p-2 hover:bg-white/10 text-white/70 rounded-lg transition-colors border border-transparent hover:border-white/15">
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        </button>
+                                        <button type="button" @click="deleteSku(item.id)" title="Delete Product" class="p-2 hover:bg-red-500/15 text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/30">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
+                </section>
+                <!-- END: InventoryCatalog -->
             </div>
 
             <!-- Generate Barcodes View -->
@@ -431,6 +590,58 @@
             </div>
 
 
+
+            <!-- Manage Categories Modal -->
+            <div v-if="showCategoryModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+                <div class="bg-surface-dark border border-white/10 rounded-xl p-6 w-full max-w-md shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                        <h3 class="font-serif text-xl text-ivory flex items-center gap-2">
+                            <span class="material-symbols-outlined text-accent-bronze">category</span>
+                            Manage Categories
+                        </h3>
+                        <button type="button" @click="showCategoryModal = false" class="text-gray-400 hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+
+                    <!-- Add Category Form -->
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2 font-medium">Add New Category</label>
+                        <div class="flex gap-2">
+                            <input type="text" v-model="newCategoryInput" @keyup.enter="addNewCategory"
+                                class="flex-1 dark-luxury-input border border-white/10 px-4 py-2.5 text-sm rounded focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
+                                placeholder="e.g. Succulents, Fertilizers...">
+                            <button type="button" @click="addNewCategory" :disabled="!newCategoryInput.trim()"
+                                class="bg-accent-bronze hover:bg-accent-bronze/80 text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                Add
+                            </button>
+                        </div>
+                        <p v-if="categoryModalError" class="text-red-400 text-xs mt-1.5">{{ categoryModalError }}</p>
+                    </div>
+
+                    <!-- Category List -->
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2 font-medium">Active Categories ({{ categories.length }})</label>
+                        <div class="max-h-60 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                            <div v-for="cat in categories" :key="cat"
+                                class="flex items-center justify-between bg-white/5 border border-white/5 px-4 py-2.5 rounded text-sm text-ivory hover:border-white/10 transition-all group">
+                                <span class="font-medium">{{ cat }}</span>
+                                <button type="button" @click="removeCategory(cat)"
+                                    class="text-gray-500 hover:text-red-400 p-1 rounded hover:bg-white/5 transition-colors"
+                                    title="Remove category">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex justify-end">
+                        <button type="button" @click="showCategoryModal = false" class="bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded transition-colors">
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
 
         </main>
     </div>
@@ -607,31 +818,76 @@
                     return invoiceData.value.items.reduce((sum, item) => sum + (item.qty * item.price), 0);
                 });
 
-                const sendInvoice = async () => {
+                const currentPaymentLink = ref('');
+                const currentPaymentStatus = ref('UNPAID');
 
+                const checkPaymentStatus = async (invId) => {
+                    if (!invId) return;
+                    try {
+                        const res = await fetch(`/api/payment/status/${invId}`);
+                        const data = await res.json();
+                        if (data && data.payment_status) {
+                            currentPaymentStatus.value = data.payment_status;
+                            if (data.payment_link) {
+                                currentPaymentLink.value = data.payment_link;
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Failed to check payment status:', e);
+                    }
+                };
+
+                const sendInvoice = async () => {
                     sendingInvoice.value = true;
                     sendError.value = '';
                     sendSuccess.value = false;
 
-                    // Build the WhatsApp message
-                    let message = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
-                    message += `*INVOICE*\n`;
-                    message += `Client: ${invoiceData.value.clientName}\n\n`;
-                    message += `*Items:*\n`;
-                    
-                    invoiceData.value.items.forEach(item => {
-                        message += `- ${item.description} (x${item.qty}) : ₹${(item.qty * item.price).toLocaleString('en-IN')}\n`;
-                    });
-
-                    message += `\n*Total Amount:* ₹${totalAmount.value.toLocaleString('en-IN')}\n`;
-                    
-                    if (invoiceData.value.notes) {
-                        message += `\nNotes: ${invoiceData.value.notes}\n`;
-                    }
-                    
-                    message += `\nThank you for choosing us!`;
+                    const invId = invoiceData.value.number || `INV-${Date.now().toString().slice(-6)}`;
+                    invoiceData.value.number = invId;
 
                     try {
+                        // 1. Generate CCAvenue Payment Link
+                        const linkRes = await fetch('/api/payment/create-link', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                invoice_id: invId,
+                                client_name: invoiceData.value.clientName,
+                                phone: invoiceData.value.phone,
+                                amount: totalAmount.value,
+                                notes: invoiceData.value.notes || ''
+                            })
+                        });
+
+                        const linkData = await linkRes.json();
+                        if (linkRes.ok && linkData.payment_link) {
+                            currentPaymentLink.value = linkData.payment_link;
+                            currentPaymentStatus.value = linkData.payment_status || 'PENDING';
+                        }
+
+                        // 2. Build the WhatsApp message including CCAvenue Payment Link
+                        let message = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
+                        message += `*INVOICE #${invId}*\n`;
+                        message += `Client: ${invoiceData.value.clientName}\n\n`;
+                        message += `*Items:*\n`;
+                        
+                        invoiceData.value.items.forEach(item => {
+                            message += `- ${item.description} (x${item.qty}) : ₹${(item.qty * item.price).toLocaleString('en-IN')}\n`;
+                        });
+
+                        message += `\n*Total Amount:* ₹${totalAmount.value.toLocaleString('en-IN')}\n`;
+
+                        if (currentPaymentLink.value) {
+                            message += `\n💳 *Pay Online (CCAvenue):*\n${currentPaymentLink.value}\n`;
+                        }
+                        
+                        if (invoiceData.value.notes) {
+                            message += `\nNotes: ${invoiceData.value.notes}\n`;
+                        }
+                        
+                        message += `\nThank you for choosing us!`;
+
+                        // 3. Send WhatsApp message
                         const res = await fetch('/api/whatsapp/send', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -646,9 +902,6 @@
                         
                         sendSuccess.value = true;
                         setTimeout(() => sendSuccess.value = false, 5000);
-                        
-                        // Optionally clear form
-                        // invoiceData.value = { clientName: '', phone: '', items: [{ description: '', qty: 1, price: 0 }], notes: '' };
                         
                     } catch (e) {
                         sendError.value = e.message;
@@ -789,14 +1042,27 @@
                     }
                 };
 
+                const selectedCategoryFilter = ref('');
+
+                const catalogTotalValue = computed(() => {
+                    return skus.value.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+                });
+
                 const filteredSkus = computed(() => {
-                    if (!skuSearchQuery.value.trim()) return skus.value;
-                    const q = skuSearchQuery.value.toLowerCase();
-                    return skus.value.filter(s => 
-                        (s.sku && s.sku.toLowerCase().includes(q)) || 
-                        (s.name && s.name.toLowerCase().includes(q)) || 
-                        (s.category && s.category.toLowerCase().includes(q))
-                    );
+                    let result = skus.value;
+                    if (selectedCategoryFilter.value) {
+                        result = result.filter(s => (s.category || '').toLowerCase() === selectedCategoryFilter.value.toLowerCase());
+                    }
+                    if (skuSearchQuery.value.trim()) {
+                        const q = skuSearchQuery.value.toLowerCase();
+                        result = result.filter(s => 
+                            (s.sku && s.sku.toLowerCase().includes(q)) || 
+                            (s.name && s.name.toLowerCase().includes(q)) || 
+                            (s.category && s.category.toLowerCase().includes(q)) ||
+                            (s.description && s.description.toLowerCase().includes(q))
+                        );
+                    }
+                    return result;
                 });
 
                 const resetSkuForm = () => {
@@ -819,7 +1085,10 @@
                 };
 
                 const saveSku = async () => {
-                    if (!skuForm.value.sku.trim() || !skuForm.value.name.trim()) return;
+                    if (!skuForm.value.sku || !skuForm.value.sku.trim()) {
+                        autoGenerateSkuCode();
+                    }
+                    if (!skuForm.value.name.trim()) return;
                     savingSku.value = true;
                     skuSaveError.value = '';
                     skuSaveSuccess.value = false;
@@ -891,7 +1160,83 @@
                     currentTab.value = 'barcodes';
                 };
 
+                // Dynamic Category Management State & Logic
+                const categories = ref(['Indoor Plant', 'Outdoor Plant', 'Bonsai', 'Planter / Pot', 'Accessory', 'Service', 'Other']);
+                const showCategoryModal = ref(false);
+                const newCategoryInput = ref('');
+                const categoryModalError = ref('');
+
+                const fetchCategories = async () => {
+                    try {
+                        const res = await fetch('/api/categories');
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (Array.isArray(data) && data.length > 0) {
+                                categories.value = data;
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Failed to fetch categories', e);
+                    }
+                };
+
+                const onCategorySelectChange = () => {
+                    if (skuForm.value.category === '__ADD_NEW__') {
+                        showCategoryModal.value = true;
+                        skuForm.value.category = categories.value[0] || 'Indoor Plant';
+                    }
+                };
+
+                const addNewCategory = async () => {
+                    const name = newCategoryInput.value.trim();
+                    if (!name) return;
+                    categoryModalError.value = '';
+                    if (categories.value.some(c => c.toLowerCase() === name.toLowerCase())) {
+                        categoryModalError.value = 'Category already exists';
+                        return;
+                    }
+                    try {
+                        const res = await fetch('/api/categories', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name })
+                        });
+                        if (res.ok) {
+                            categories.value.push(name);
+                            skuForm.value.category = name;
+                            newCategoryInput.value = '';
+                        } else {
+                            const err = await res.json();
+                            categoryModalError.value = err.detail || 'Failed to add category';
+                        }
+                    } catch (e) {
+                        categoryModalError.value = 'Failed to connect to server';
+                    }
+                };
+
+                const removeCategory = async (catName) => {
+                    if (categories.value.length <= 1) {
+                        alert('You must keep at least one category.');
+                        return;
+                    }
+                    if (!confirm(`Are you sure you want to remove category "${catName}"?`)) return;
+                    try {
+                        const res = await fetch(`/api/categories/${encodeURIComponent(catName)}`, {
+                            method: 'DELETE'
+                        });
+                        if (res.ok) {
+                            categories.value = categories.value.filter(c => c !== catName);
+                            if (skuForm.value.category === catName) {
+                                skuForm.value.category = categories.value[0] || 'Indoor Plant';
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Failed to remove category', e);
+                    }
+                };
+
                 onMounted(() => {
+                    fetchCategories();
                     fetchSkus();
                     if (!deviceVerified.value && currentTab.value === 'bill') {
                         initDeviceAuth();
@@ -907,6 +1252,7 @@
 
                 watch(currentTab, (newTab) => {
                     if (newTab === 'skus') {
+                        fetchCategories();
                         fetchSkus();
                     }
                     if (!deviceVerified.value && newTab === 'bill' && !setupSessionId.value) {
@@ -937,6 +1283,9 @@
                     sendSuccess,
                     sendError,
                     sendInvoice,
+                    currentPaymentLink,
+                    currentPaymentStatus,
+                    checkPaymentStatus,
                     barcodeData,
                     barcodeQueue,
                     totalQueued,
@@ -946,10 +1295,22 @@
                     isPrinting,
                     lastScannedItem,
 
+                    // Category Management exports
+                    categories,
+                    showCategoryModal,
+                    newCategoryInput,
+                    categoryModalError,
+                    fetchCategories,
+                    onCategorySelectChange,
+                    addNewCategory,
+                    removeCategory,
+
                     // SKU Catalog exports
                     skus,
                     loadingSkus,
                     skuSearchQuery,
+                    selectedCategoryFilter,
+                    catalogTotalValue,
                     filteredSkus,
                     editingSkuId,
                     savingSku,

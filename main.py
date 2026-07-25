@@ -7,7 +7,7 @@ import re
 import urllib.parse
 import urllib.request
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, Form, UploadFile, File, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -20,6 +20,7 @@ from typing import Optional
 import time
 import socket
 from pydantic import BaseModel
+import ccavenue_utils
 
 try:
     from dotenv import load_dotenv
@@ -1682,6 +1683,27 @@ def purge_deploy_asset_cache():
         ]
     )
 
+def ensure_invoice_payments_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS invoice_payments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            invoice_id TEXT UNIQUE NOT NULL,
+            order_id TEXT UNIQUE NOT NULL,
+            client_name TEXT DEFAULT '',
+            phone TEXT DEFAULT '',
+            amount REAL DEFAULT 0.0,
+            payment_status TEXT DEFAULT 'PENDING',
+            payment_link TEXT DEFAULT '',
+            ccavenue_ref_no TEXT DEFAULT '',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    conn.close()
+
 @app.on_event("startup")
 def startup_init_sync_state():
     migrate_legacy_site_content_keys()
@@ -1691,6 +1713,7 @@ def startup_init_sync_state():
     ensure_mobile_scans_table()
     ensure_device_auth_table()
     ensure_sku_catalog_table()
+    ensure_invoice_payments_table()
     refresh_sku_cache()
     migrate_remove_comma_before_and()
     purge_deploy_asset_cache()
@@ -2313,11 +2336,71 @@ async def verify_device_auth(payload: DeviceAuthVerifyPayload):
     conn.close()
     return {"status": "success"}
 
+# ── Category Management Endpoints ─────────────────────────
+
+def ensure_sku_categories_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS sku_categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL
+        )
+    """)
+    cur.execute("SELECT COUNT(*) as cnt FROM sku_categories")
+    row = cur.fetchone()
+    if row and row["cnt"] == 0:
+        defaults = ["Indoor Plant", "Outdoor Plant", "Bonsai", "Planter / Pot", "Accessory", "Service", "Other"]
+        for cat in defaults:
+            cur.execute("INSERT OR IGNORE INTO sku_categories (name) VALUES (?)", (cat,))
+    conn.commit()
+    conn.close()
+
+class CategoryPayload(BaseModel):
+    name: str
+
+@app.get("/api/categories")
+async def list_categories():
+    ensure_sku_categories_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM sku_categories ORDER BY id ASC")
+    rows = cur.fetchall()
+    conn.close()
+    return [r["name"] for r in rows]
+
+@app.post("/api/categories")
+async def add_category(payload: CategoryPayload):
+    ensure_sku_categories_table()
+    clean_name = payload.name.strip()
+    if not clean_name:
+        raise HTTPException(status_code=400, detail="Category name cannot be empty")
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO sku_categories (name) VALUES (?)", (clean_name,))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        pass
+    finally:
+        conn.close()
+    return {"status": "success", "name": clean_name}
+
+@app.delete("/api/categories/{category_name}")
+async def delete_category(category_name: str):
+    ensure_sku_categories_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM sku_categories WHERE UPPER(name) = UPPER(?)", (category_name.strip(),))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
 # ── SKU Management Endpoints ───────────────────────────────
 
 class SKUPayload(BaseModel):
     id: Optional[int] = None
-    sku: str
+    sku: Optional[str] = ""
     name: str
     price: float = 0.0
     category: Optional[str] = ""
@@ -2336,10 +2419,14 @@ async def list_skus():
 @app.post("/api/skus")
 async def save_sku(payload: SKUPayload):
     ensure_sku_catalog_table()
-    clean_sku = payload.sku.strip().upper()
     clean_name = payload.name.strip()
-    if not clean_sku or not clean_name:
-        raise HTTPException(status_code=400, detail="SKU code and product name are required")
+    clean_sku = (payload.sku or "").strip().upper()
+    if not clean_sku:
+        prefix = (payload.category or "SKU")[:3].upper()
+        import random
+        clean_sku = f"{prefix}-{random.randint(1000, 9999)}"
+    if not clean_name:
+        raise HTTPException(status_code=400, detail="Product name is required")
         
     conn = get_db_connection()
     cur = conn.cursor()
@@ -2407,6 +2494,254 @@ async def delete_leads(request: Request, admin: str = Depends(get_current_admin)
     conn.commit()
     conn.close()
     return {"status": "success"}
+
+# ── CCAvenue Payment Link & Status Verification ────────────────
+class CreatePaymentLinkRequest(BaseModel):
+    invoice_id: str
+    client_name: str = ""
+    phone: str = ""
+    amount: float
+    notes: str = ""
+
+@app.post("/api/payment/create-link")
+async def create_payment_link(payload: CreatePaymentLinkRequest, request: Request):
+    ensure_invoice_payments_table()
+    invoice_id = payload.invoice_id.strip()
+    if not invoice_id:
+        raise HTTPException(status_code=400, detail="invoice_id is required")
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM invoice_payments WHERE invoice_id = ?", (invoice_id,))
+    existing = cur.fetchone()
+
+    if existing:
+        order_id = existing["order_id"]
+        payment_status = existing["payment_status"]
+    else:
+        order_id = f"ORD-{invoice_id}-{uuid.uuid4().hex[:6]}"
+        payment_status = "PENDING"
+
+    base_url = str(request.base_url).rstrip("/")
+    redirect_url = f"{base_url}/api/payment/ccavenue/response"
+    
+    working_key = os.environ.get("CCAVENUE_WORKING_KEY", "dummy_key")
+    access_code = os.environ.get("CCAVENUE_ACCESS_CODE", "dummy_code")
+
+    plain_payload = ccavenue_utils.build_payment_payload(
+        order_id=order_id,
+        amount=payload.amount,
+        currency="INR",
+        redirect_url=redirect_url,
+        cancel_url=redirect_url,
+        client_name=payload.client_name,
+        client_phone=payload.phone
+    )
+    enc_request = ccavenue_utils.encrypt_ccavenue(plain_payload, working_key) if working_key else ""
+
+    payment_link = f"{base_url}/pay/{invoice_id}"
+
+    if existing:
+        cur.execute("""
+            UPDATE invoice_payments
+            SET client_name = ?, phone = ?, amount = ?, payment_link = ?, updated_at = CURRENT_TIMESTAMP
+            WHERE invoice_id = ?
+        """, (payload.client_name, payload.phone, payload.amount, payment_link, invoice_id))
+    else:
+        cur.execute("""
+            INSERT INTO invoice_payments (invoice_id, order_id, client_name, phone, amount, payment_status, payment_link)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (invoice_id, order_id, payload.client_name, payload.phone, payload.amount, payment_status, payment_link))
+    
+    conn.commit()
+    conn.close()
+
+    return {
+        "success": True,
+        "invoice_id": invoice_id,
+        "order_id": order_id,
+        "amount": payload.amount,
+        "payment_link": payment_link,
+        "payment_status": payment_status,
+        "enc_request": enc_request,
+        "access_code": access_code
+    }
+
+@app.get("/pay/{invoice_id}")
+async def pay_invoice_page(invoice_id: str, request: Request):
+    ensure_invoice_payments_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM invoice_payments WHERE invoice_id = ?", (invoice_id,))
+    row = cur.fetchone()
+    conn.close()
+
+    if not row:
+        return HTMLResponse(content="<h1 style='color:red;text-align:center;'>Invoice not found</h1>", status_code=404)
+
+    payment_status = row["payment_status"]
+    amount = float(row["amount"])
+    client_name = row["client_name"]
+    order_id = row["order_id"]
+
+    working_key = os.environ.get("CCAVENUE_WORKING_KEY", "")
+    access_code = os.environ.get("CCAVENUE_ACCESS_CODE", "")
+    ccavenue_url = os.environ.get("CCAVENUE_GATEWAY_URL", "https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction")
+
+    base_url = str(request.base_url).rstrip("/")
+    redirect_url = f"{base_url}/api/payment/ccavenue/response"
+    
+    plain_payload = ccavenue_utils.build_payment_payload(
+        order_id=order_id,
+        amount=amount,
+        currency="INR",
+        redirect_url=redirect_url,
+        cancel_url=redirect_url,
+        client_name=client_name,
+        client_phone=row["phone"]
+    )
+    enc_request = ccavenue_utils.encrypt_ccavenue(plain_payload, working_key) if working_key else ""
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment — Plant Experience Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {{ font-family: 'Inter', sans-serif; background-color: #080808; color: #ffffff; }}
+        .serif-title {{ font-family: 'Playfair Display', serif; }}
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-[#121212] border border-white/10 rounded-2xl p-8 text-center space-y-6 shadow-2xl">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/30 text-[#C5A073] mb-2">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+        </div>
+        <div>
+            <span class="text-[10px] uppercase tracking-widest text-[#C5A073] font-bold">PLANT EXPERIENCE CENTRE</span>
+            <h1 class="serif-title text-3xl font-normal mt-1">Invoice Payment</h1>
+            <p class="text-xs text-gray-400 mt-1">Invoice #{invoice_id}</p>
+        </div>
+
+        <div class="bg-black/50 border border-white/5 p-5 rounded-xl space-y-3">
+            <div class="flex justify-between text-xs text-gray-400">
+                <span>Customer</span>
+                <span class="text-white font-medium">{client_name or 'Valued Customer'}</span>
+            </div>
+            <div class="flex justify-between text-xs text-gray-400">
+                <span>Status</span>
+                <span class="font-bold uppercase {'text-emerald-400' if payment_status == 'SUCCESS' else 'text-amber-400'}">{payment_status}</span>
+            </div>
+            <div class="border-t border-white/10 pt-3 flex justify-between items-center">
+                <span class="text-xs uppercase tracking-wider font-bold text-gray-300">Total Amount</span>
+                <span class="serif-title text-2xl font-bold text-[#C5A073]">₹{amount:,.2f}</span>
+            </div>
+        </div>
+
+        {"<div class='bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-4 rounded-xl text-sm font-semibold'>✓ Payment Completed Successfully</div>" if payment_status == "SUCCESS" else f'''
+        <form action="{ccavenue_url}" method="POST" id="ccavenue_form">
+            <input type="hidden" name="encRequest" value="{enc_request}">
+            <input type="hidden" name="access_code" value="{access_code}">
+            <button type="submit" class="w-full bg-[#C5A073] hover:bg-[#b08c62] text-black font-bold text-xs uppercase tracking-widest py-4 rounded-full transition-all shadow-lg">
+                Pay via CCAvenue (₹{amount:,.2f})
+            </button>
+        </form>
+        '''}
+        
+        <p class="text-[11px] text-gray-500">Secured via CCAvenue SSL Encrypted Gateway</p>
+    </div>
+</body>
+</html>"""
+    return HTMLResponse(content=html_content)
+
+@app.api_route("/api/payment/ccavenue/response", methods=["GET", "POST"])
+async def ccavenue_response_callback(request: Request):
+    ensure_invoice_payments_table()
+    data = {}
+    if request.method == "POST":
+        try:
+            form = await request.form()
+            data = dict(form)
+        except Exception:
+            try:
+                data = await request.json()
+            except Exception:
+                pass
+    else:
+        data = dict(request.query_params)
+
+    enc_resp = data.get("encResp", "")
+    working_key = os.environ.get("CCAVENUE_WORKING_KEY", "")
+
+    decrypted_text = ccavenue_utils.decrypt_ccavenue(enc_resp, working_key) if (enc_resp and working_key) else ""
+    parsed_resp = ccavenue_utils.parse_ccavenue_response(decrypted_text)
+
+    order_id = parsed_resp.get("order_id", data.get("order_id", ""))
+    order_status = parsed_resp.get("order_status", data.get("order_status", "Success"))
+    tracking_id = parsed_resp.get("tracking_id", data.get("tracking_id", ""))
+
+    status_upper = str(order_status).upper()
+    payment_status = "SUCCESS" if status_upper in {"SUCCESS", "PAID"} else "FAILED"
+
+    if order_id:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE invoice_payments
+            SET payment_status = ?, ccavenue_ref_no = ?, updated_at = CURRENT_TIMESTAMP
+            WHERE order_id = ? OR invoice_id = ?
+        """, (payment_status, tracking_id, order_id, order_id))
+        conn.commit()
+        conn.close()
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Status — Plant Experience Centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#080808] text-white min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-[#121212] border border-white/10 rounded-2xl p-8 text-center space-y-5">
+        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center {'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' if payment_status == 'SUCCESS' else 'bg-red-500/10 text-red-400 border border-red-500/30'}">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{'M5 13l4 4L19 7' if payment_status == 'SUCCESS' else 'M6 18L18 6M6 6l12 12'}"></path></svg>
+        </div>
+        <h1 class="text-2xl font-bold">Payment {'Successful!' if payment_status == 'SUCCESS' else 'Failed'}</h1>
+        <p class="text-xs text-gray-400">Order Ref: {order_id}</p>
+        {f'<p class="text-xs text-gray-400">CCAvenue Ref: {tracking_id}</p>' if tracking_id else ''}
+        <div class="pt-4">
+            <a href="/invoice" class="inline-block bg-white/10 hover:bg-white/20 text-white font-semibold text-xs px-6 py-3 rounded-full transition-colors">Return to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>"""
+    return HTMLResponse(content=html_content)
+
+@app.get("/api/payment/status/{invoice_id}")
+async def get_payment_status(invoice_id: str):
+    ensure_invoice_payments_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM invoice_payments WHERE invoice_id = ?", (invoice_id,))
+    row = cur.fetchone()
+    conn.close()
+
+    if not row:
+        return {"invoice_id": invoice_id, "payment_status": "UNPAID", "amount": 0.0}
+
+    return {
+        "invoice_id": row["invoice_id"],
+        "order_id": row["order_id"],
+        "amount": row["amount"],
+        "payment_status": row["payment_status"],
+        "payment_link": row["payment_link"],
+        "ccavenue_ref_no": row["ccavenue_ref_no"],
+        "updated_at": row["updated_at"]
+    }
 
 # ── WhatsApp Microservice Proxy Route ─────────────────────
 @app.api_route("/api/whatsapp/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
