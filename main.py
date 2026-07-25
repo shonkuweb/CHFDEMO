@@ -2522,7 +2522,12 @@ async def create_payment_link(payload: CreatePaymentLinkRequest, request: Reques
         order_id = f"ORD-{invoice_id}-{uuid.uuid4().hex[:6]}"
         payment_status = "PENDING"
 
-    base_url = str(request.base_url).rstrip("/")
+    site_origin = os.environ.get("SITE_PUBLIC_ORIGIN", "").strip()
+    if site_origin:
+        base_url = site_origin.rstrip("/")
+    else:
+        base_url = str(request.base_url).rstrip("/")
+
     redirect_url = f"{base_url}/api/payment/ccavenue/response"
     
     working_key = os.environ.get("CCAVENUE_WORKING_KEY", "dummy_key")
@@ -2588,7 +2593,12 @@ async def pay_invoice_page(invoice_id: str, request: Request):
     access_code = os.environ.get("CCAVENUE_ACCESS_CODE", "")
     ccavenue_url = os.environ.get("CCAVENUE_GATEWAY_URL", "https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction")
 
-    base_url = str(request.base_url).rstrip("/")
+    site_origin = os.environ.get("SITE_PUBLIC_ORIGIN", "").strip()
+    if site_origin:
+        base_url = site_origin.rstrip("/")
+    else:
+        base_url = str(request.base_url).rstrip("/")
+
     redirect_url = f"{base_url}/api/payment/ccavenue/response"
     
     plain_payload = ccavenue_utils.build_payment_payload(
