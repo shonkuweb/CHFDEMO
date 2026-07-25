@@ -2586,7 +2586,7 @@ async def pay_invoice_page(invoice_id: str, request: Request):
 
     working_key = os.environ.get("CCAVENUE_WORKING_KEY", "")
     access_code = os.environ.get("CCAVENUE_ACCESS_CODE", "")
-    ccavenue_url = os.environ.get("CCAVENUE_GATEWAY_URL", "https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction")
+    ccavenue_url = os.environ.get("CCAVENUE_GATEWAY_URL", "https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction")
 
     base_url = str(request.base_url).rstrip("/")
     redirect_url = f"{base_url}/api/payment/ccavenue/response"
