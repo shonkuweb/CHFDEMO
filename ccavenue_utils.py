@@ -99,22 +99,26 @@ def get_ccavenue_credentials() -> dict:
 
 def build_payment_payload(order_id: str, amount: float, currency: str = "INR", redirect_url: str = "", cancel_url: str = "", client_name: str = "", client_phone: str = "", merchant_id: str = "") -> str:
     """
-    Constructs standard key-value query string payload for CCAvenue request.
+    Constructs standard key-value query string payload for CCAvenue request matching official CCAvenue SDK formatting.
     """
     if not merchant_id:
         creds = get_ccavenue_credentials()
         merchant_id = creds["merchant_id"]
     
-    params = {
-        "merchant_id": merchant_id,
-        "order_id": order_id,
-        "currency": currency,
-        "amount": f"{amount:.2f}",
-        "redirect_url": redirect_url,
-        "cancel_url": cancel_url,
-        "language": "EN",
-        "billing_name": client_name or "Customer",
-        "billing_tel": client_phone or "",
-    }
+    name = (client_name or "Customer").strip()
+    phone = (client_phone or "").strip()
     
-    return urllib.parse.urlencode(params)
+    # Official CCAvenue Integration Kit builds raw un-encoded parameter string
+    payload_parts = [
+        f"merchant_id={merchant_id}",
+        f"order_id={order_id}",
+        f"currency={currency}",
+        f"amount={amount:.2f}",
+        f"redirect_url={redirect_url}",
+        f"cancel_url={cancel_url}",
+        f"language=EN",
+        f"billing_name={name}",
+        f"billing_tel={phone}"
+    ]
+    
+    return "&".join(payload_parts)
