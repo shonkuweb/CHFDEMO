@@ -610,209 +610,171 @@
                     if (data.error === 'session_disconnected') {
                         window.location.href = window.location.pathname;
                     }
-                });
-                
-            let lastScanned = null;
-            let lastScanTime = 0;
-            
-            // Check for insecure local IP context (HTTP and not localhost)
+                torchBtn.style.color = isTorchOn ? '#ffeb3b' : 'var(--accent)';
+            } catch (e) {
+                console.error("Torch toggle error", e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
             const isLocalIP = window.location.hostname.match(/^[0-9]+.[0-9]+.[0-9]+.[0-9]+$/);
             if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && isLocalIP) {
-                document.getElementById('local-dev-modal').style.display = 'flex';
                 document.getElementById('current-url-display').innerText = `http://${window.location.hostname}:${window.location.port || 80}`;
             }
-            
-            // PIN Verification Logic
-            const pinBtn = document.getElementById('verify-btn');
-            const pinInput = document.getElementById('pin-input');
-            const pinError = document.getElementById('pin-error');
-            
-            // Auto-focus input
-            pinInput.focus();
-            
-            pinBtn.addEventListener('click', async () => {
-                const pin = pinInput.value.trim();
-                if (pin.length !== 4) {
-                    pinError.innerText = 'Please enter a 4-digit PIN';
-                    return;
-                }
-                
-                pinBtn.innerText = 'AUTHENTICATING...';
-                pinBtn.disabled = true;
-                pinError.innerText = '';
-                
-                try {
-                    const res = await fetch('/api/scan/auth/verify', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ session_id: sessionId, pin: pin })
-                    });
-                    
-                    if (res.ok) {
-                        // Success! Hide overlay and start scanner
-                        document.getElementById('pin-overlay').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('pin-overlay').style.display = 'none';
-                            startScanner();
-                        }, 300);
-                    } else {
-                        const data = await res.json();
-                        pinError.innerText = data.detail || 'Invalid PIN';
-                        pinBtn.innerText = 'AUTHORIZE';
-                        pinBtn.disabled = false;
-                        pinInput.value = '';
-                        pinInput.focus();
-                    }
-                } catch (e) {
-                    pinError.innerText = 'Network error. Try again.';
-                    pinBtn.innerText = 'AUTHORIZE';
-                    pinBtn.disabled = false;
-                }
-            });
 
-            async function startScanner() {
-                statusEl.innerHTML = '<span class="material-symbols-outlined">pending</span> Requesting Camera...';
-                statusEl.className = 'status-hud';
-                
-                // Check if mediaDevices API is supported in current browser context
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    statusEl.innerHTML = '<span class="material-symbols-outlined">no_photography</span> Camera API Blocked (Insecure HTTP Context)';
-                    statusEl.className = 'status-hud error';
-                    document.getElementById('local-dev-modal').style.display = 'flex';
-                    const currentUrl = `http://${window.location.hostname}:${window.location.port || 80}`;
-                    document.getElementById('current-url-display').innerText = currentUrl;
-                    return;
-                }
-
-                const html5QrCode = new Html5Qrcode("reader", { experimentalFeatures: { useBarCodeDetectorIfSupported: true } });
-                html5QrCodeInstance = html5QrCode;
-                
-                const config = { 
-                    fps: 30,
-                    qrbox: (viewfinderWidth, viewfinderHeight) => {
-                        const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.82), 320);
-                        const boxHeight = Math.min(Math.floor(boxWidth * 0.65), 210);
-                        return { width: boxWidth, height: boxHeight };
-                    },
-                    formatsToSupport: [
-                        Html5QrcodeSupportedFormats.CODE_128,
-                        Html5QrcodeSupportedFormats.CODE_39,
-                        Html5QrcodeSupportedFormats.EAN_13,
-                        Html5QrcodeSupportedFormats.EAN_8,
-                        Html5QrcodeSupportedFormats.UPC_A,
-                        Html5QrcodeSupportedFormats.UPC_E,
-                        Html5QrcodeSupportedFormats.QR_CODE
-                    ]
-                };
-
-                const onScanSuccess = async (decodedText, decodedResult) => {
-                    const now = Date.now();
-                    if (decodedText === lastScanned && (now - lastScanTime) < 2000) {
-                        return;
-                    }
-                    
-                    lastScanned = decodedText;
-                    lastScanTime = now;
-                    
-                    playScanSound();
-                    if (window.navigator && window.navigator.vibrate) {
-                        window.navigator.vibrate([40, 30, 40]);
-                    }
-
-                    const maskBox = document.getElementById('mask-box');
-                    if (maskBox) maskBox.classList.add('scan-success');
-                    
-                    statusEl.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Scanned: ${decodedText}`;
-                    statusEl.className = 'status-hud success';
-                    
-                    try {
-                        const res = await fetch('/api/scan/submit', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ session_id: sessionId, sku: decodedText })
-                        });
-                        
-                        if (res.ok) {
-                            setTimeout(() => {
-                                statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
-                                statusEl.className = 'status-hud';
-                                if (maskBox) maskBox.classList.remove('scan-success');
-                            }, 1500);
-                        } else {
-                            statusEl.innerHTML = '<span class="material-symbols-outlined">error</span> Failed to send';
-                            statusEl.className = 'status-hud error';
-                            if (maskBox) maskBox.classList.remove('scan-success');
-                        }
-                    } catch (e) {
-                        console.error(e);
-                        statusEl.innerHTML = '<span class="material-symbols-outlined">wifi_off</span> Network Error';
-                        statusEl.className = 'status-hud error';
-                        if (maskBox) maskBox.classList.remove('scan-success');
-                    }
-                };
-
-                const onScanFrame = (errorMessage) => {
-                    if (statusEl.innerText.includes('Requesting')) {
-                        statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
-                        document.getElementById('custom-viewfinder').style.display = 'flex';
-                        
-                        try {
-                            const capabilities = html5QrCode.getRunningTrackCapabilities();
-                            if (capabilities && capabilities.torch) {
-                                document.getElementById('torch-btn').style.display = 'flex';
-                            }
-                        } catch (e) {
-                            document.getElementById('torch-btn').style.display = 'flex';
-                        }
-                    }
-                };
-
-                // Multi-tier camera start fallback chain
-                try {
-                    // Attempt 1: Back camera (facingMode: environment)
-                    await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
-                } catch (envErr) {
-                    console.warn("facingMode: environment failed, trying camera device list...", envErr);
-                    try {
-                        // Attempt 2: Get available video input devices
-                        const devices = await Html5Qrcode.getCameras();
-                        if (devices && devices.length > 0) {
-                            const backCam = devices.find(d => 
-                                d.label.toLowerCase().includes('back') || 
-                                d.label.toLowerCase().includes('rear') || 
-                                d.label.toLowerCase().includes('environment')
-                            );
-                            const selectedId = backCam ? backCam.id : devices[0].id;
-                            await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
-                        } else {
-                            // Attempt 3: User camera (front / integrated webcam)
-                            await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
-                        }
-                    } catch (fallbackErr) {
-                        console.error("Camera start fallback error:", fallbackErr);
-                        statusEl.innerHTML = `<span class="material-symbols-outlined">error</span> Camera failed: ${fallbackErr.name || 'Denied'}`;
-                        statusEl.className = 'status-hud error';
-                        
-                        const isLocalIP = window.location.hostname.match(/^[0-9]+.[0-9]+.[0-9]+.[0-9]+$/);
-                        if (window.location.protocol !== 'https:' && isLocalIP) {
-                            document.getElementById('local-dev-modal').style.display = 'flex';
-                            document.getElementById('current-url-display').innerText = `http://${window.location.hostname}:${window.location.port || 80}`;
-                        }
-                    }
-                }
-                
-                // Poll server to check if desktop is still connected
-                setInterval(async () => {
-                    try {
-                        const res = await fetch(`/api/scan/auth/poll?session_id=${sessionId}`);
-                        const data = await res.json();
+            if (!sessionId) {
+                statusEl.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span> Ready to link';
+                document.getElementById('pin-overlay').innerHTML = `
+                    <div class="glass-card" style="text-align: center;">
+                        <span class="material-symbols-outlined" style="font-size: 48px; color: var(--accent); margin-bottom: 15px; display: block;">photo_camera</span>
+                        <h2>Session Disconnected</h2>
+                        <p style="margin-bottom: 20px; color: #aaa; line-height: 1.5;">Your scanner session has ended.</p>
+                        <p style="margin-bottom: 0px; color: #fff; font-size: 1.05rem; font-weight: 500;">Please close this tab and use your phone's Camera app to scan the new QR code on your desktop.</p>
+                    </div>
+                `;
+            } else {
+                fetch(`/api/scan/auth/poll?session_id=${sessionId}`)
+                    .then(res => res.json())
+                    .then(data => {
                         if (data.error === 'session_disconnected') {
                             window.location.href = window.location.pathname;
                         }
-                    } catch (e) {}
-                }, 1000);
+                    });
+                    
+                let lastScanned = null;
+                let lastScanTime = 0;
+                
+                const pinBtn = document.getElementById('verify-btn');
+                const pinInput = document.getElementById('pin-input');
+                const pinError = document.getElementById('pin-error');
+                
+                pinInput.focus();
+                
+                pinBtn.addEventListener('click', async () => {
+                    const pin = pinInput.value.trim();
+                    if (pin.length !== 4) {
+                        pinError.innerText = 'Please enter a 4-digit PIN';
+                        return;
+                    }
+                    
+                    pinBtn.innerText = 'AUTHENTICATING...';
+                    pinBtn.disabled = true;
+                    pinError.innerText = '';
+                    
+                    try {
+                        const res = await fetch('/api/scan/auth/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ session_id: sessionId, pin: pin })
+                        });
+                        
+                        if (res.ok) {
+                            document.getElementById('pin-overlay').style.opacity = '0';
+                            setTimeout(() => {
+                                document.getElementById('pin-overlay').style.display = 'none';
+                                startScanner();
+                            }, 300);
+                        } else {
+                            const data = await res.json();
+                            pinError.innerText = data.detail || 'Invalid PIN';
+                            pinBtn.innerText = 'AUTHORIZE';
+                            pinBtn.disabled = false;
+                            pinInput.value = '';
+                            pinInput.focus();
+                        }
+                    } catch (e) {
+                        pinError.innerText = 'Network error. Try again.';
+                        pinBtn.innerText = 'AUTHORIZE';
+                        pinBtn.disabled = false;
+                    }
+                });
+
+                async function startScanner() {
+                    statusEl.innerHTML = '<span class="material-symbols-outlined">pending</span> Requesting Camera...';
+                    statusEl.className = 'status-hud';
+
+                    const html5QrCode = new Html5Qrcode("reader", { experimentalFeatures: { useBarCodeDetectorIfSupported: true } });
+                    html5QrCodeInstance = html5QrCode;
+                    
+                    const config = { 
+                        fps: 30,
+                        qrbox: (viewfinderWidth, viewfinderHeight) => {
+                            const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.82), 320);
+                            const boxHeight = Math.min(Math.floor(boxWidth * 0.65), 210);
+                            return { width: boxWidth, height: boxHeight };
+                        },
+                        formatsToSupport: [
+                            Html5QrcodeSupportedFormats.CODE_128,
+                            Html5QrcodeSupportedFormats.CODE_39,
+                            Html5QrcodeSupportedFormats.EAN_13,
+                            Html5QrcodeSupportedFormats.EAN_8,
+                            Html5QrcodeSupportedFormats.UPC_A,
+                            Html5QrcodeSupportedFormats.UPC_E,
+                            Html5QrcodeSupportedFormats.QR_CODE
+                        ]
+                    };
+
+                    const onScanSuccess = (decodedText) => {
+                        const now = Date.now();
+                        if (decodedText === lastScanned && (now - lastScanTime) < 2000) return;
+                        lastScanned = decodedText;
+                        lastScanTime = now;
+                        submitSkuToBackend(decodedText);
+                    };
+
+                    const onScanFrame = (errorMessage) => {
+                        if (statusEl.innerText.includes('Requesting')) {
+                            statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
+                            document.getElementById('custom-viewfinder').style.display = 'flex';
+                            try {
+                                const capabilities = html5QrCode.getRunningTrackCapabilities();
+                                if (capabilities && capabilities.torch) {
+                                    document.getElementById('torch-btn').style.display = 'flex';
+                                }
+                            } catch (e) {
+                                document.getElementById('torch-btn').style.display = 'flex';
+                            }
+                        }
+                    };
+
+                    // Multi-tier camera start fallback chain
+                    try {
+                        await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
+                    } catch (envErr) {
+                        console.warn("facingMode: environment failed, trying camera device list...", envErr);
+                        try {
+                            const devices = await Html5Qrcode.getCameras();
+                            if (devices && devices.length > 0) {
+                                const backCam = devices.find(d => 
+                                    d.label.toLowerCase().includes('back') || 
+                                    d.label.toLowerCase().includes('rear') || 
+                                    d.label.toLowerCase().includes('environment')
+                                );
+                                const selectedId = backCam ? backCam.id : devices[0].id;
+                                await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
+                            } else {
+                                await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
+                            }
+                        } catch (fallbackErr) {
+                            console.error("Camera start fallback error:", fallbackErr);
+                            statusEl.innerHTML = `<span class="material-symbols-outlined">center_focus_strong</span> Camera unavailable — Use Photo Upload or Manual SKU below`;
+                            statusEl.className = 'status-hud';
+                        }
+                    }
+
+                    // Poll server to check if desktop is still connected
+                    setInterval(async () => {
+                        try {
+                            const res = await fetch(`/api/scan/auth/poll?session_id=${sessionId}`);
+                            const data = await res.json();
+                            if (data.error === 'session_disconnected') {
+                                window.location.href = window.location.pathname;
+                            }
+                        } catch (e) {}
+                    }, 1000);
+                }
             }
-            
+
             // Tell server when we disconnect
             const handleDisconnect = () => {
                 if (sessionId) {
@@ -823,7 +785,7 @@
             
             window.addEventListener('beforeunload', handleDisconnect);
             window.addEventListener('pagehide', handleDisconnect);
-        }
+        });
     </script>
 </body>
 </html>
