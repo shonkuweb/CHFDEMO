@@ -18,6 +18,12 @@ services:
       - DB_PATH=/app/data/chf_archive.db
       - UPLOAD_DIR=/app/data/uploads
       - HTTPS_ENABLED=true
+      - SITE_PUBLIC_ORIGIN=${SITE_PUBLIC_ORIGIN:-https://www.chfexperience.com}
+      - CCAVENUE_MODE=${CCAVENUE_MODE:-PRODUCTION}
+      - CCAVENUE_MERCHANT_ID=${CCAVENUE_MERCHANT_ID:-2934389}
+      - CCAVENUE_ACCESS_CODE=${CCAVENUE_ACCESS_CODE:-AVFG94NG06AF44GFFA}
+      - CCAVENUE_WORKING_KEY=${CCAVENUE_WORKING_KEY:-F87E75A5907420050076D82F20AF1FCE}
+      - CCAVENUE_GATEWAY_URL=${CCAVENUE_GATEWAY_URL:-https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction}
     volumes:
       - chf_data:/app/data
     healthcheck:
