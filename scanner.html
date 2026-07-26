@@ -681,73 +681,90 @@
                     statusEl.innerHTML = '<span class="material-symbols-outlined">pending</span> Requesting Camera...';
                     statusEl.className = 'status-hud';
 
-                    const html5QrCode = new Html5Qrcode("reader", { experimentalFeatures: { useBarCodeDetectorIfSupported: true } });
-                    html5QrCodeInstance = html5QrCode;
-                    
-                    const config = { 
-                        fps: 30,
-                        qrbox: (viewfinderWidth, viewfinderHeight) => {
-                            const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.82), 320);
-                            const boxHeight = Math.min(Math.floor(boxWidth * 0.65), 210);
-                            return { width: boxWidth, height: boxHeight };
-                        },
-                        formatsToSupport: [
-                            Html5QrcodeSupportedFormats.CODE_128,
-                            Html5QrcodeSupportedFormats.CODE_39,
-                            Html5QrcodeSupportedFormats.EAN_13,
-                            Html5QrcodeSupportedFormats.EAN_8,
-                            Html5QrcodeSupportedFormats.UPC_A,
-                            Html5QrcodeSupportedFormats.UPC_E,
-                            Html5QrcodeSupportedFormats.QR_CODE
-                        ]
-                    };
+                    try {
+                        if (typeof Html5Qrcode === 'undefined') {
+                            statusEl.innerHTML = '<span class="material-symbols-outlined">error</span> Scanner library loading... retry in a moment';
+                            return;
+                        }
 
-                    const onScanSuccess = (decodedText) => {
-                        const now = Date.now();
-                        if (decodedText === lastScanned && (now - lastScanTime) < 2000) return;
-                        lastScanned = decodedText;
-                        lastScanTime = now;
-                        submitSkuToBackend(decodedText);
-                    };
+                        const html5QrCode = new Html5Qrcode("reader");
+                        html5QrCodeInstance = html5QrCode;
+                        
+                        let formatsList = undefined;
+                        if (typeof Html5QrcodeSupportedFormats !== 'undefined') {
+                            formatsList = [
+                                Html5QrcodeSupportedFormats.CODE_128,
+                                Html5QrcodeSupportedFormats.CODE_39,
+                                Html5QrcodeSupportedFormats.EAN_13,
+                                Html5QrcodeSupportedFormats.EAN_8,
+                                Html5QrcodeSupportedFormats.UPC_A,
+                                Html5QrcodeSupportedFormats.UPC_E,
+                                Html5QrcodeSupportedFormats.QR_CODE
+                            ];
+                        }
 
-                    const onScanFrame = (errorMessage) => {
-                        if (statusEl.innerText.includes('Requesting')) {
-                            statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
-                            document.getElementById('custom-viewfinder').style.display = 'flex';
-                            try {
-                                const capabilities = html5QrCode.getRunningTrackCapabilities();
-                                if (capabilities && capabilities.torch) {
+                        const config = { 
+                            fps: 30,
+                            qrbox: (viewfinderWidth, viewfinderHeight) => {
+                                const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.82), 320);
+                                const boxHeight = Math.min(Math.floor(boxWidth * 0.65), 210);
+                                return { width: boxWidth, height: boxHeight };
+                            }
+                        };
+                        if (formatsList) {
+                            config.formatsToSupport = formatsList;
+                        }
+
+                        const onScanSuccess = (decodedText) => {
+                            const now = Date.now();
+                            if (decodedText === lastScanned && (now - lastScanTime) < 2000) return;
+                            lastScanned = decodedText;
+                            lastScanTime = now;
+                            submitSkuToBackend(decodedText);
+                        };
+
+                        const onScanFrame = (errorMessage) => {
+                            if (statusEl.innerText.includes('Requesting') || statusEl.innerText.includes('Tap')) {
+                                statusEl.innerHTML = '<span class="material-symbols-outlined">center_focus_strong</span> Scanning...';
+                                document.getElementById('custom-viewfinder').style.display = 'flex';
+                                try {
+                                    const capabilities = html5QrCode.getRunningTrackCapabilities();
+                                    if (capabilities && capabilities.torch) {
+                                        document.getElementById('torch-btn').style.display = 'flex';
+                                    }
+                                } catch (e) {
                                     document.getElementById('torch-btn').style.display = 'flex';
                                 }
-                            } catch (e) {
-                                document.getElementById('torch-btn').style.display = 'flex';
                             }
-                        }
-                    };
+                        };
 
-                    // Multi-tier camera start fallback chain
-                    try {
-                        await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
-                    } catch (envErr) {
-                        console.warn("facingMode: environment failed, trying camera device list...", envErr);
+                        // Multi-tier camera start fallback chain
                         try {
-                            const devices = await Html5Qrcode.getCameras();
-                            if (devices && devices.length > 0) {
-                                const backCam = devices.find(d => 
-                                    d.label.toLowerCase().includes('back') || 
-                                    d.label.toLowerCase().includes('rear') || 
-                                    d.label.toLowerCase().includes('environment')
-                                );
-                                const selectedId = backCam ? backCam.id : devices[0].id;
-                                await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
-                            } else {
-                                await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
+                            await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
+                        } catch (envErr) {
+                            console.warn("facingMode: environment failed, trying camera device list...", envErr);
+                            try {
+                                const devices = await Html5Qrcode.getCameras();
+                                if (devices && devices.length > 0) {
+                                    const backCam = devices.find(d => 
+                                        d.label.toLowerCase().includes('back') || 
+                                        d.label.toLowerCase().includes('rear') || 
+                                        d.label.toLowerCase().includes('environment')
+                                    );
+                                    const selectedId = backCam ? backCam.id : devices[0].id;
+                                    await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
+                                } else {
+                                    await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
+                                }
+                            } catch (fallbackErr) {
+                                console.error("Camera start fallback error:", fallbackErr);
+                                statusEl.innerHTML = `<span class="material-symbols-outlined">videocam_off</span> Camera blocked — Tap "Photo Upload" or enter SKU manually below`;
+                                statusEl.className = 'status-hud';
                             }
-                        } catch (fallbackErr) {
-                            console.error("Camera start fallback error:", fallbackErr);
-                            statusEl.innerHTML = `<span class="material-symbols-outlined">center_focus_strong</span> Camera unavailable — Use Photo Upload or Manual SKU below`;
-                            statusEl.className = 'status-hud';
                         }
+                    } catch (globalErr) {
+                        console.error("Scanner startup error:", globalErr);
+                        statusEl.innerHTML = `<span class="material-symbols-outlined">warning</span> Camera error: ${globalErr.message || 'Permission denied'}`;
                     }
 
                     // Poll server to check if desktop is still connected
