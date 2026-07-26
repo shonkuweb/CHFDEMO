@@ -672,13 +672,6 @@
                                 document.getElementById('pin-overlay').style.display = 'none';
                                 startScanner();
                             });
-                            // Auto-trigger launch
-                            setTimeout(() => {
-                                if (document.getElementById('pin-overlay')) {
-                                    document.getElementById('pin-overlay').style.display = 'none';
-                                    startScanner();
-                                }
-                            }, 500);
                         } else {
                             const data = await res.json();
                             pinError.innerText = data.detail || 'Invalid PIN';
