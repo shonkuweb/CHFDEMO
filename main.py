@@ -2530,8 +2530,9 @@ async def create_payment_link(payload: CreatePaymentLinkRequest, request: Reques
 
     redirect_url = f"{base_url}/api/payment/ccavenue/response"
     
-    working_key = os.environ.get("CCAVENUE_WORKING_KEY", "dummy_key")
-    access_code = os.environ.get("CCAVENUE_ACCESS_CODE", "dummy_code")
+    creds = ccavenue_utils.get_ccavenue_credentials()
+    working_key = creds["working_key"]
+    access_code = creds["access_code"]
 
     plain_payload = ccavenue_utils.build_payment_payload(
         order_id=order_id,
@@ -2540,7 +2541,8 @@ async def create_payment_link(payload: CreatePaymentLinkRequest, request: Reques
         redirect_url=redirect_url,
         cancel_url=redirect_url,
         client_name=payload.client_name,
-        client_phone=payload.phone
+        client_phone=payload.phone,
+        merchant_id=creds["merchant_id"]
     )
     enc_request = ccavenue_utils.encrypt_ccavenue(plain_payload, working_key) if working_key else ""
 
@@ -2569,7 +2571,8 @@ async def create_payment_link(payload: CreatePaymentLinkRequest, request: Reques
         "payment_link": payment_link,
         "payment_status": payment_status,
         "enc_request": enc_request,
-        "access_code": access_code
+        "access_code": access_code,
+        "mode": creds["mode"]
     }
 
 @app.get("/pay/{invoice_id}")
@@ -2589,9 +2592,11 @@ async def pay_invoice_page(invoice_id: str, request: Request):
     client_name = row["client_name"]
     order_id = row["order_id"]
 
-    working_key = os.environ.get("CCAVENUE_WORKING_KEY", "")
-    access_code = os.environ.get("CCAVENUE_ACCESS_CODE", "")
-    ccavenue_url = os.environ.get("CCAVENUE_GATEWAY_URL", "https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction")
+    creds = ccavenue_utils.get_ccavenue_credentials()
+    working_key = creds["working_key"]
+    access_code = creds["access_code"]
+    ccavenue_url = creds["gateway_url"]
+    mode = creds["mode"]
 
     site_origin = os.environ.get("SITE_PUBLIC_ORIGIN", "").strip()
     if site_origin:
@@ -2608,9 +2613,27 @@ async def pay_invoice_page(invoice_id: str, request: Request):
         redirect_url=redirect_url,
         cancel_url=redirect_url,
         client_name=client_name,
-        client_phone=row["phone"]
+        client_phone=row["phone"],
+        merchant_id=creds["merchant_id"]
     )
     enc_request = ccavenue_utils.encrypt_ccavenue(plain_payload, working_key) if working_key else ""
+
+    test_simulator_html = f"""
+    <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-center space-y-3">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[10px] uppercase font-bold tracking-widest">
+            <span>🧪</span> TEST / SANDBOX MODE
+        </div>
+        <p class="text-[11px] text-gray-400 leading-relaxed">System is running in local test mode. You can test CCAvenue redirect or simulate instant payment success below:</p>
+        <form action="/api/payment/ccavenue/response" method="POST" class="pt-1">
+            <input type="hidden" name="order_id" value="{order_id}">
+            <input type="hidden" name="order_status" value="Success">
+            <input type="hidden" name="tracking_id" value="TEST_SIMULATED_{uuid.uuid4().hex[:8].upper()}">
+            <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-xs uppercase tracking-widest py-3.5 rounded-full transition-all shadow-md">
+                Simulate Payment Success (Local Test)
+            </button>
+        </form>
+    </div>
+    """ if mode == "TEST" else ""
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -2651,17 +2674,19 @@ async def pay_invoice_page(invoice_id: str, request: Request):
             </div>
         </div>
 
+        {test_simulator_html}
+
         {"<div class='bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-4 rounded-xl text-sm font-semibold'>✓ Payment Completed Successfully</div>" if payment_status == "SUCCESS" else f'''
         <form action="{ccavenue_url}" method="POST" id="ccavenue_form">
             <input type="hidden" name="encRequest" value="{enc_request}">
             <input type="hidden" name="access_code" value="{access_code}">
             <button type="submit" class="w-full bg-[#C5A073] hover:bg-[#b08c62] text-black font-bold text-xs uppercase tracking-widest py-4 rounded-full transition-all shadow-lg">
-                Pay via CCAvenue (₹{amount:,.2f})
+                Pay via CCAvenue Gateway (₹{amount:,.2f})
             </button>
         </form>
         '''}
         
-        <p class="text-[11px] text-gray-500">Secured via CCAvenue SSL Encrypted Gateway</p>
+        <p class="text-[11px] text-gray-500">Secured via CCAvenue SSL Encrypted Gateway ({mode} Mode)</p>
     </div>
 </body>
 </html>"""

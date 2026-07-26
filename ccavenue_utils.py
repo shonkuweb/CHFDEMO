@@ -66,11 +66,33 @@ def parse_ccavenue_response(decrypted_text: str) -> dict:
     # Convert query dict arrays to single values
     return {k: v[0] if isinstance(v, list) and len(v) > 0 else v for k, v in parsed.items()}
 
-def build_payment_payload(order_id: str, amount: float, currency: str = "INR", redirect_url: str = "", cancel_url: str = "", client_name: str = "", client_phone: str = "") -> str:
+def get_ccavenue_credentials() -> dict:
+    """Returns active CCAvenue credentials based on CCAVENUE_MODE env var (TEST or PRODUCTION)."""
+    mode = os.environ.get("CCAVENUE_MODE", "TEST").strip().upper()
+    if mode == "PRODUCTION":
+        return {
+            "mode": "PRODUCTION",
+            "merchant_id": os.environ.get("CCAVENUE_PROD_MERCHANT_ID", os.environ.get("CCAVENUE_MERCHANT_ID", "2934389")),
+            "access_code": os.environ.get("CCAVENUE_PROD_ACCESS_CODE", os.environ.get("CCAVENUE_ACCESS_CODE", "ATFG94NG06AF44GFFA")),
+            "working_key": os.environ.get("CCAVENUE_PROD_WORKING_KEY", os.environ.get("CCAVENUE_WORKING_KEY", "F87E75A5907420050076D82F20AF1FCE")),
+            "gateway_url": os.environ.get("CCAVENUE_PROD_GATEWAY_URL", "https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction")
+        }
+    else:
+        return {
+            "mode": "TEST",
+            "merchant_id": os.environ.get("CCAVENUE_TEST_MERCHANT_ID", os.environ.get("CCAVENUE_MERCHANT_ID", "2934389")),
+            "access_code": os.environ.get("CCAVENUE_TEST_ACCESS_CODE", os.environ.get("CCAVENUE_ACCESS_CODE", "ATFG94NG06AF44GFFA")),
+            "working_key": os.environ.get("CCAVENUE_TEST_WORKING_KEY", os.environ.get("CCAVENUE_WORKING_KEY", "F87E75A5907420050076D82F20AF1FCE")),
+            "gateway_url": os.environ.get("CCAVENUE_TEST_GATEWAY_URL", "https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction")
+        }
+
+def build_payment_payload(order_id: str, amount: float, currency: str = "INR", redirect_url: str = "", cancel_url: str = "", client_name: str = "", client_phone: str = "", merchant_id: str = "") -> str:
     """
     Constructs standard key-value query string payload for CCAvenue request.
     """
-    merchant_id = os.environ.get("CCAVENUE_MERCHANT_ID", "DEMO_MERCHANT")
+    if not merchant_id:
+        creds = get_ccavenue_credentials()
+        merchant_id = creds["merchant_id"]
     
     params = {
         "merchant_id": merchant_id,
