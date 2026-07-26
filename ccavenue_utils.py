@@ -84,7 +84,7 @@ def get_ccavenue_credentials() -> dict:
         return {
             "mode": "PRODUCTION",
             "merchant_id": os.environ.get("CCAVENUE_PROD_MERCHANT_ID", os.environ.get("CCAVENUE_MERCHANT_ID", "2934389")),
-            "access_code": os.environ.get("CCAVENUE_PROD_ACCESS_CODE", os.environ.get("CCAVENUE_ACCESS_CODE", "ATFG94NG06AF44GFFA")),
+            "access_code": os.environ.get("CCAVENUE_PROD_ACCESS_CODE", os.environ.get("CCAVENUE_ACCESS_CODE", "AVFG94NG06AF44GFFA")),
             "working_key": os.environ.get("CCAVENUE_PROD_WORKING_KEY", os.environ.get("CCAVENUE_WORKING_KEY", "F87E75A5907420050076D82F20AF1FCE")),
             "gateway_url": os.environ.get("CCAVENUE_PROD_GATEWAY_URL", os.environ.get("CCAVENUE_GATEWAY_URL", "https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction"))
         }
@@ -92,7 +92,7 @@ def get_ccavenue_credentials() -> dict:
         return {
             "mode": "TEST",
             "merchant_id": os.environ.get("CCAVENUE_TEST_MERCHANT_ID", os.environ.get("CCAVENUE_MERCHANT_ID", "2934389")),
-            "access_code": os.environ.get("CCAVENUE_TEST_ACCESS_CODE", os.environ.get("CCAVENUE_ACCESS_CODE", "ATFG94NG06AF44GFFA")),
+            "access_code": os.environ.get("CCAVENUE_TEST_ACCESS_CODE", os.environ.get("CCAVENUE_ACCESS_CODE", "AVFG94NG06AF44GFFA")),
             "working_key": os.environ.get("CCAVENUE_TEST_WORKING_KEY", os.environ.get("CCAVENUE_WORKING_KEY", "F87E75A5907420050076D82F20AF1FCE")),
             "gateway_url": os.environ.get("CCAVENUE_TEST_GATEWAY_URL", os.environ.get("CCAVENUE_GATEWAY_URL", "https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction"))
         }
