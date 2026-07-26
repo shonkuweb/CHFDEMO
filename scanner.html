@@ -657,11 +657,28 @@
                         });
                         
                         if (res.ok) {
-                            document.getElementById('pin-overlay').style.opacity = '0';
-                            setTimeout(() => {
+                            document.getElementById('pin-overlay').innerHTML = `
+                                <div class="glass-card" style="text-align: center;">
+                                    <span class="material-symbols-outlined" style="font-size: 54px; color: var(--success); margin-bottom: 12px; display: block;">verified</span>
+                                    <h2>Device Authorized!</h2>
+                                    <p style="margin-bottom: 24px; color: #ccc; font-size: 0.95rem;">Tap below to launch your mobile camera barcode scanner:</p>
+                                    <button id="manual-start-cam-btn" class="pin-btn" style="background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%); color: #000; font-size: 1.1rem; padding: 18px;">
+                                        📷 LAUNCH CAMERA SCANNER
+                                    </button>
+                                </div>
+                            `;
+                            const launchBtn = document.getElementById('manual-start-cam-btn');
+                            launchBtn.addEventListener('click', () => {
                                 document.getElementById('pin-overlay').style.display = 'none';
                                 startScanner();
-                            }, 300);
+                            });
+                            // Auto-trigger launch
+                            setTimeout(() => {
+                                if (document.getElementById('pin-overlay')) {
+                                    document.getElementById('pin-overlay').style.display = 'none';
+                                    startScanner();
+                                }
+                            }, 500);
                         } else {
                             const data = await res.json();
                             pinError.innerText = data.detail || 'Invalid PIN';
@@ -683,8 +700,12 @@
 
                     try {
                         if (typeof Html5Qrcode === 'undefined') {
-                            statusEl.innerHTML = '<span class="material-symbols-outlined">error</span> Scanner library loading... retry in a moment';
+                            statusEl.innerHTML = '<span class="material-symbols-outlined">error</span> Scanner library loading... <button onclick="location.reload()" style="margin-left: 6px; padding: 2px 8px; background: var(--accent); color: black; border: none; border-radius: 4px;">Reload</button>';
                             return;
+                        }
+
+                        if (html5QrCodeInstance) {
+                            try { await html5QrCodeInstance.stop(); } catch(e) {}
                         }
 
                         const html5QrCode = new Html5Qrcode("reader");
@@ -758,13 +779,13 @@
                                 }
                             } catch (fallbackErr) {
                                 console.error("Camera start fallback error:", fallbackErr);
-                                statusEl.innerHTML = `<span class="material-symbols-outlined">videocam_off</span> Camera blocked — Tap "Photo Upload" or enter SKU manually below`;
+                                statusEl.innerHTML = `<span class="material-symbols-outlined">videocam_off</span> Camera blocked — <button onclick="startScanner()" style="margin-left: 6px; padding: 4px 10px; background: var(--accent); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📷 Open Camera</button>`;
                                 statusEl.className = 'status-hud';
                             }
                         }
                     } catch (globalErr) {
                         console.error("Scanner startup error:", globalErr);
-                        statusEl.innerHTML = `<span class="material-symbols-outlined">warning</span> Camera error: ${globalErr.message || 'Permission denied'}`;
+                        statusEl.innerHTML = `<span class="material-symbols-outlined">warning</span> <button onclick="startScanner()" style="margin-left: 6px; padding: 4px 10px; background: var(--accent); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📷 Open Camera</button>`;
                     }
 
                     // Poll server to check if desktop is still connected
