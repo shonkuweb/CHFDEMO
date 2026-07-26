@@ -602,18 +602,6 @@
                     <p style="margin-bottom: 0px; color: #fff; font-size: 1.05rem; font-weight: 500;">Please close this tab and use your phone's Camera app to scan the new QR code on your desktop.</p>
                 </div>
             `;
-        } else {
-            // Verify if session exists on load
-            fetch(`/api/scan/auth/poll?session_id=${sessionId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.error === 'session_disconnected') {
-                        window.location.href = window.location.pathname;
-                    }
-                torchBtn.style.color = isTorchOn ? '#ffeb3b' : 'var(--accent)';
-            } catch (e) {
-                console.error("Torch toggle error", e);
-            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
