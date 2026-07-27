@@ -408,10 +408,30 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- Product Image (Uploaded to Cloudflare R2 under /billingfolder) -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest font-bold text-white/90 block">Product Image (Cloudflare R2: /billingfolder)</label>
+                            <div class="flex items-center gap-4">
+                                <div v-if="skuForm.image_url" class="w-16 h-16 rounded-lg bg-black/40 border border-gold-accent/40 overflow-hidden flex-shrink-0 relative group">
+                                    <img :src="skuForm.image_url" alt="Product Image" class="w-full h-full object-cover"/>
+                                    <button type="button" @click="skuForm.image_url = ''" class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex items-center justify-center text-red-400 transition-opacity">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
+                                </div>
+                                <div class="flex-1 relative">
+                                    <input type="file" ref="productImageInput" @change="uploadProductImage" accept="image/*" class="hidden" id="sku-image-upload-input"/>
+                                    <label for="sku-image-upload-input" class="w-full bg-transparent border border-dashed border-border-gray hover:border-gold-accent/60 rounded-lg p-3 text-xs text-white/70 hover:text-white flex items-center justify-center gap-2 cursor-pointer transition-colors">
+                                        <span class="material-symbols-outlined text-gold-accent text-base" :class="{'animate-spin': uploadingProductImage}">{{ uploadingProductImage ? 'refresh' : 'cloud_upload' }}</span>
+                                        <span>{{ uploadingProductImage ? 'Uploading to R2...' : (skuForm.image_url ? 'Change Image' : 'Upload Product Image') }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <p v-if="skuForm.image_url" class="text-[10px] text-gold-accent truncate font-mono mt-1">{{ skuForm.image_url }}</p>
+                        </div>
                         <!-- Description -->
                         <div class="space-y-2">
                             <label class="text-[10px] uppercase tracking-widest font-bold text-white/90 block">Description / Care Notes</label>
-                            <textarea v-model="skuForm.description" class="w-full bg-transparent border border-border-gray rounded-lg p-3 text-sm text-white placeholder:text-white/20 focus:border-gold-accent outline-none transition-colors" placeholder="Optional care notes, dimensions, or details..." rows="4"></textarea>
+                            <textarea v-model="skuForm.description" class="w-full bg-transparent border border-border-gray rounded-lg p-3 text-sm text-white placeholder:text-white/20 focus:border-gold-accent outline-none transition-colors" placeholder="Optional care notes, dimensions, or details..." rows="3"></textarea>
                         </div>
 
                         <!-- Feedback Alerts -->
@@ -466,6 +486,7 @@
                         <table class="w-full text-left text-[10px] uppercase tracking-wider font-bold">
                             <thead>
                                 <tr class="text-white/40 border-b border-border-gray bg-white/[0.02]">
+                                    <th class="px-6 py-4 font-bold">Image</th>
                                     <th class="px-6 py-4 font-bold">SKU Code</th>
                                     <th class="px-6 py-4 font-bold">Product Name</th>
                                     <th class="px-6 py-4 font-bold">Category</th>
@@ -476,14 +497,14 @@
                             <tbody class="divide-y divide-border-gray">
                                 <!-- Loading State -->
                                 <tr v-if="loadingSkus">
-                                    <td class="py-20 text-center text-text-muted" colspan="5">
+                                    <td class="py-20 text-center text-text-muted" colspan="6">
                                         <span class="material-symbols-outlined animate-spin text-3xl text-gold-accent mb-2">refresh</span>
                                         <p class="text-sm normal-case font-normal">Loading Catalog...</p>
                                     </td>
                                 </tr>
                                 <!-- Empty State -->
                                 <tr v-else-if="filteredSkus.length === 0">
-                                    <td class="py-20 text-center" colspan="5">
+                                    <td class="py-20 text-center" colspan="6">
                                         <div class="flex flex-col items-center justify-center">
                                             <div class="w-12 h-12 mb-4 flex items-center justify-center border border-white/10 rounded-full text-white/20 bg-white/5">
                                                 <span class="material-symbols-outlined text-2xl">inventory_2</span>
@@ -495,6 +516,14 @@
                                 </tr>
                                 <!-- Data Rows -->
                                 <tr v-for="item in filteredSkus" :key="item.id" class="hover:bg-white/[0.02] transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div v-if="item.image_url" class="w-10 h-10 rounded-lg bg-black/40 border border-white/10 overflow-hidden flex-shrink-0">
+                                            <img :src="item.image_url" alt="Product" class="w-full h-full object-cover"/>
+                                        </div>
+                                        <div v-else class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/20">
+                                            <span class="material-symbols-outlined text-lg">image</span>
+                                        </div>
+                                    </td>
                                     <td class="px-6 py-4">
                                         <span class="font-mono text-gold-accent font-bold bg-gold-accent/10 border border-gold-accent/25 px-2.5 py-1 rounded-md text-xs tracking-wider inline-block">{{ item.sku }}</span>
                                     </td>
@@ -1044,49 +1073,42 @@
                 const skuSaveSuccess = ref(false);
                 const skuSaveError = ref('');
 
+                const uploadingProductImage = ref(false);
+
                 const skuForm = ref({
                     sku: '',
                     name: '',
                     price: 0,
                     category: 'Indoor Plant',
-                    description: ''
+                    description: '',
+                    image_url: ''
                 });
 
-                const fetchSkus = async () => {
-                    loadingSkus.value = true;
+                const uploadProductImage = async (event) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    uploadingProductImage.value = true;
+                    skuSaveError.value = '';
                     try {
-                        const res = await fetch('/api/skus');
+                        const res = await fetch('/api/upload', {
+                            method: 'POST',
+                            headers: {
+                                'X-Filename': file.name,
+                                'X-Folder': 'billingfolder'
+                            },
+                            body: file
+                        });
                         const data = await res.json();
-                        skus.value = Array.isArray(data) ? data : [];
+                        if (!res.ok) throw new Error(data.detail || 'Image upload failed');
+                        skuForm.value.image_url = data.url;
                     } catch (e) {
-                        console.error('Failed to fetch SKUs', e);
+                        skuSaveError.value = 'Image upload failed: ' + e.message;
                     } finally {
-                        loadingSkus.value = false;
+                        uploadingProductImage.value = false;
+                        if (event.target) event.target.value = '';
                     }
                 };
-
-                const selectedCategoryFilter = ref('');
-
-                const catalogTotalValue = computed(() => {
-                    return skus.value.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
-                });
-
-                const filteredSkus = computed(() => {
-                    let result = skus.value;
-                    if (selectedCategoryFilter.value) {
-                        result = result.filter(s => (s.category || '').toLowerCase() === selectedCategoryFilter.value.toLowerCase());
-                    }
-                    if (skuSearchQuery.value.trim()) {
-                        const q = skuSearchQuery.value.toLowerCase();
-                        result = result.filter(s => 
-                            (s.sku && s.sku.toLowerCase().includes(q)) || 
-                            (s.name && s.name.toLowerCase().includes(q)) || 
-                            (s.category && s.category.toLowerCase().includes(q)) ||
-                            (s.description && s.description.toLowerCase().includes(q))
-                        );
-                    }
-                    return result;
-                });
 
                 const resetSkuForm = () => {
                     editingSkuId.value = null;
@@ -1095,7 +1117,8 @@
                         name: '',
                         price: 0,
                         category: 'Indoor Plant',
-                        description: ''
+                        description: '',
+                        image_url: ''
                     };
                     skuSaveSuccess.value = false;
                     skuSaveError.value = '';
@@ -1125,7 +1148,8 @@
                                 name: skuForm.value.name,
                                 price: Number(skuForm.value.price) || 0,
                                 category: skuForm.value.category,
-                                description: skuForm.value.description
+                                description: skuForm.value.description,
+                                image_url: skuForm.value.image_url || ''
                             })
                         });
                         const data = await res.json();
@@ -1149,7 +1173,8 @@
                         name: item.name,
                         price: item.price,
                         category: item.category || 'Indoor Plant',
-                        description: item.description || ''
+                        description: item.description || '',
+                        image_url: item.image_url || ''
                     };
                     skuSaveSuccess.value = false;
                     skuSaveError.value = '';
@@ -1341,6 +1366,8 @@
                     skuSaveSuccess,
                     skuSaveError,
                     skuForm,
+                    uploadingProductImage,
+                    uploadProductImage,
                     fetchSkus,
                     resetSkuForm,
                     autoGenerateSkuCode,

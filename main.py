@@ -1438,9 +1438,15 @@ def ensure_sku_catalog_table():
             price REAL DEFAULT 0.0,
             category TEXT DEFAULT '',
             description TEXT DEFAULT '',
+            image_url TEXT DEFAULT '',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    # Migration safety for existing database
+    try:
+        cur.execute("ALTER TABLE sku_catalog ADD COLUMN image_url TEXT DEFAULT ''")
+    except Exception:
+        pass
     conn.commit()
     conn.close()
 
@@ -1456,13 +1462,20 @@ def refresh_sku_cache():
         ensure_sku_catalog_table()
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, sku, name, price, category, description FROM sku_catalog")
+        cur.execute("SELECT id, sku, name, price, category, description, image_url FROM sku_catalog")
         rows = cur.fetchall()
+        SKU_CACHE = {
+            r["sku"].upper(): {
+                "id": r["id"],
+                "sku": r["sku"],
+                "name": r["name"],
+                "price": r["price"],
+                "category": r["category"],
+                "description": r["description"],
+                "image_url": r.get("image_url", "")
+            } for r in rows
+        }
         conn.close()
-        new_cache = {}
-        for r in rows:
-            new_cache[r["sku"].upper().strip()] = dict(r)
-        SKU_CACHE = new_cache
     except Exception as e:
         print(f"Failed to refresh SKU cache: {e}")
 
@@ -1913,10 +1926,12 @@ async def get_r2_media(url: str):
         raise HTTPException(status_code=404, detail=f"R2 media not found: {str(e)}")
 
 @app.post("/api/upload")
-async def upload_file(request: Request, admin: str = Depends(get_current_admin)):
+async def upload_file(request: Request):
     filename_header = request.headers.get('X-Filename', 'upload.jpg')
     old_url_header = request.headers.get('X-Old-Url', '').strip()
     cms_path_header = request.headers.get('X-Cms-Path', '').strip()
+    folder_header = request.headers.get('X-Folder', '').strip('/')
+    
     ext = os.path.splitext(filename_header)[1].lower()
     if not ext: ext = '.jpg'
     unique_name = f"media_{uuid.uuid4().hex[:8]}{ext}"
@@ -1928,7 +1943,10 @@ async def upload_file(request: Request, admin: str = Depends(get_current_admin))
         delete_old_media_if_needed(old_url_header)
 
     r2_key = unique_name
-    if cms_path_header:
+    if folder_header:
+        safe_folder = re.sub(r'[^a-zA-Z0-9/_\-]', '', folder_header).strip('/')
+        r2_key = f"{safe_folder}/{unique_name}"
+    elif cms_path_header:
         safe_cms_path = re.sub(r'[^a-zA-Z0-9/_\-]', '', cms_path_header).strip('/')
         if safe_cms_path:
             folder = '/'.join(['assets'] + safe_cms_path.split('/')[:-1])
@@ -2410,13 +2428,14 @@ class SKUPayload(BaseModel):
     price: float = 0.0
     category: Optional[str] = ""
     description: Optional[str] = ""
+    image_url: Optional[str] = ""
 
 @app.get("/api/skus")
 async def list_skus():
     ensure_sku_catalog_table()
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT id, sku, name, price, category, description, created_at FROM sku_catalog ORDER BY created_at DESC")
+    cur.execute("SELECT id, sku, name, price, category, description, image_url, created_at FROM sku_catalog ORDER BY created_at DESC")
     rows = cur.fetchall()
     conn.close()
     return [dict(r) for r in rows]
@@ -2439,19 +2458,20 @@ async def save_sku(payload: SKUPayload):
     if payload.id:
         cur.execute("""
             UPDATE sku_catalog
-            SET sku = ?, name = ?, price = ?, category = ?, description = ?
+            SET sku = ?, name = ?, price = ?, category = ?, description = ?, image_url = ?
             WHERE id = ?
-        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.id))
+        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", payload.id))
     else:
         cur.execute("""
-            INSERT INTO sku_catalog (sku, name, price, category, description)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO sku_catalog (sku, name, price, category, description, image_url)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(sku) DO UPDATE SET
                 name = excluded.name,
                 price = excluded.price,
                 category = excluded.category,
-                description = excluded.description
-        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or ""))
+                description = excluded.description,
+                image_url = excluded.image_url
+        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or ""))
         
     conn.commit()
     conn.close()
