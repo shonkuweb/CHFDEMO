@@ -2156,7 +2156,12 @@ async def admin_get_leads(admin: str = Depends(get_current_admin)):
 
 class ScanPayload(BaseModel):
     session_id: str
-    sku: str
+    sku: Optional[str] = None
+    raw_sku: Optional[str] = None
+
+    @property
+    def get_sku(self) -> str:
+        return (self.sku or self.raw_sku or "").strip()
 
 class DeviceAuthVerifyPayload(BaseModel):
     session_id: str
@@ -2177,7 +2182,7 @@ async def get_local_ip():
 @app.post("/api/scan/submit")
 async def submit_scan(payload: ScanPayload):
     session_id = payload.session_id.strip()
-    raw_sku = payload.sku.strip()
+    raw_sku = payload.get_sku
     
     # 0.001 ms RAM Lookup in SKU_CACHE
     sku_upper = raw_sku.upper()
