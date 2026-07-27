@@ -399,18 +399,19 @@
         .mobile-scan-sheet {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: rgba(18, 18, 18, 0.95);
+            background: rgba(18, 18, 18, 0.96);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border-top: 1px solid rgba(198, 168, 124, 0.3);
+            border-top: 1px solid rgba(198, 168, 124, 0.35);
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
             z-index: 60;
             padding: 16px 20px calc(env(safe-area-inset-bottom, 0px) + 16px) 20px;
             display: none;
             flex-direction: column;
-            gap: 14px;
-            box-shadow: 0 -15px 40px rgba(0,0,0,0.8);
+            gap: 12px;
+            max-height: 55vh;
+            box-shadow: 0 -15px 40px rgba(0,0,0,0.85);
             animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         @keyframes slideUp {
@@ -429,6 +430,35 @@
             letter-spacing: 1.5px;
             color: var(--accent);
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sheet-badge {
+            background: rgba(198, 168, 124, 0.2);
+            border: 1px solid rgba(198, 168, 124, 0.4);
+            color: var(--accent);
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .scanned-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .scanned-items-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scanned-items-list::-webkit-scrollbar-thumb {
+            background: rgba(198, 168, 124, 0.3);
+            border-radius: 4px;
         }
 
         .scanned-item-card {
@@ -682,25 +712,15 @@
         <!-- Scanned Product Bottom Sheet Drawer -->
         <div class="mobile-scan-sheet" id="scan-sheet">
             <div class="sheet-header">
-                <span class="sheet-title">Scanned Product</span>
-                <span class="material-symbols-outlined" style="color: var(--accent); font-size: 20px;">inventory_2</span>
+                <span class="sheet-title">
+                    <span>Scanned Products</span>
+                    <span class="sheet-badge" id="sheet-item-count">0 ITEMS</span>
+                </span>
+                <button type="button" id="clear-sheet-btn" style="background: none; border: none; color: #888; font-size: 0.75rem; cursor: pointer;">Clear All</button>
             </div>
             
-            <div class="scanned-item-card">
-                <div class="item-img-box" id="sheet-img-box">
-                    <span class="material-symbols-outlined" style="color: #666; font-size: 24px;">image</span>
-                </div>
-                <div class="item-details">
-                    <div class="item-name" id="sheet-item-name">Loading Product...</div>
-                    <div class="item-sku" id="sheet-item-sku">SKU: --</div>
-                    <div class="item-url-text" id="sheet-item-url">Image URL: None</div>
-                </div>
-                
-                <div class="qty-controls">
-                    <button class="qty-btn" id="qty-minus-btn" type="button">−</button>
-                    <span class="qty-val" id="sheet-qty-val">1</span>
-                    <button class="qty-btn" id="qty-plus-btn" type="button">+</button>
-                </div>
+            <div class="scanned-items-list" id="scanned-items-container">
+                <!-- Dynamically populated scanned product cards -->
             </div>
 
             <button class="send-billing-btn" id="send-to-billing-btn" type="button">
@@ -718,25 +738,39 @@
         let isTorchOn = false;
 
         // Sound Feedback using Web Audio API
+        let audioCtxInstance = null;
+        function getAudioContext() {
+            if (!audioCtxInstance) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) audioCtxInstance = new AudioCtx();
+            }
+            if (audioCtxInstance && audioCtxInstance.state === 'suspended') {
+                audioCtxInstance.resume().catch(() => {});
+            }
+            return audioCtxInstance;
+        }
+
         function playScanSound() {
             try {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (!AudioCtx) return;
-                const ctx = new AudioCtx();
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(1046.5, ctx.currentTime); // C6 tone
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+                osc.frequency.setValueAtTime(1046.5, ctx.currentTime); // High C6 tone
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
                 
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 
-                osc.start();
-                osc.stop(ctx.currentTime + 0.15);
-            } catch (e) {}
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.18);
+            } catch (e) {
+                console.warn('Audio playback failed:', e);
+            }
         }
 
         // Torch / Flashlight Toggle Function
@@ -905,52 +939,89 @@
                             config.formatsToSupport = formatsList;
                         }
 
-                        let currentScannedProduct = null;
+                        let scannedProductsList = [];
 
                         // UI references for bottom scan sheet
                         const scanSheet = document.getElementById('scan-sheet');
-                        const sheetImgBox = document.getElementById('sheet-img-box');
-                        const sheetItemName = document.getElementById('sheet-item-name');
-                        const sheetItemSku = document.getElementById('sheet-item-sku');
-                        const sheetItemUrl = document.getElementById('sheet-item-url');
-                        const sheetQtyVal = document.getElementById('sheet-qty-val');
-                        const minusBtn = document.getElementById('qty-minus-btn');
-                        const plusBtn = document.getElementById('qty-plus-btn');
+                        const sheetItemCount = document.getElementById('sheet-item-count');
+                        const itemsContainer = document.getElementById('scanned-items-container');
                         const sendBillingBtn = document.getElementById('send-to-billing-btn');
+                        const clearSheetBtn = document.getElementById('clear-sheet-btn');
 
-                        minusBtn.addEventListener('click', () => {
-                            if (!currentScannedProduct) return;
-                            if (currentScannedProduct.qty > 1) {
-                                currentScannedProduct.qty -= 1;
-                                sheetQtyVal.innerText = currentScannedProduct.qty;
+                        if (clearSheetBtn) {
+                            clearSheetBtn.addEventListener('click', () => {
+                                scannedProductsList = [];
+                                renderScannedProductsList();
+                            });
+                        }
+
+                        function updateProductQty(index, delta) {
+                            if (!scannedProductsList[index]) return;
+                            scannedProductsList[index].qty += delta;
+                            if (scannedProductsList[index].qty <= 0) {
+                                scannedProductsList.splice(index, 1);
                             }
-                        });
+                            renderScannedProductsList();
+                        }
 
-                        plusBtn.addEventListener('click', () => {
-                            if (!currentScannedProduct) return;
-                            currentScannedProduct.qty += 1;
-                            sheetQtyVal.innerText = currentScannedProduct.qty;
-                        });
+                        function renderScannedProductsList() {
+                            if (scannedProductsList.length === 0) {
+                                scanSheet.style.display = 'none';
+                                sheetItemCount.innerText = '0 ITEMS';
+                                itemsContainer.innerHTML = '';
+                                return;
+                            }
+
+                            const totalItemsCount = scannedProductsList.reduce((acc, item) => acc + item.qty, 0);
+                            sheetItemCount.innerText = `${totalItemsCount} ITEM${totalItemsCount > 1 ? 'S' : ''}`;
+
+                            itemsContainer.innerHTML = scannedProductsList.map((item, idx) => `
+                                <div class="scanned-item-card">
+                                    <div class="item-img-box">
+                                        ${item.image_url 
+                                            ? `<img src="${item.image_url}" alt="Product Preview" />` 
+                                            : `<span class="material-symbols-outlined" style="color: #666; font-size: 24px;">image</span>`}
+                                    </div>
+                                    <div class="item-details">
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-sku">SKU: ${item.sku}</div>
+                                        <div class="item-url-text">${item.image_url ? `R2: ${item.image_url}` : 'No R2 Image Attached'}</div>
+                                    </div>
+                                    <div class="qty-controls">
+                                        <button class="qty-btn" onclick="updateProductQty(${idx}, -1)" type="button">−</button>
+                                        <span class="qty-val">${item.qty}</span>
+                                        <button class="qty-btn" onclick="updateProductQty(${idx}, 1)" type="button">+</button>
+                                    </div>
+                                </div>
+                            `).join('');
+
+                            scanSheet.style.display = 'flex';
+                        }
+
+                        window.updateProductQty = updateProductQty;
 
                         sendBillingBtn.addEventListener('click', async () => {
-                            if (!currentScannedProduct) return;
+                            if (scannedProductsList.length === 0) return;
                             sendBillingBtn.disabled = true;
                             sendBillingBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">refresh</span> Sending...`;
 
                             try {
-                                // Send the product with its final configured quantity to desktop
-                                for (let i = 0; i < currentScannedProduct.qty; i++) {
-                                    await fetch('/api/scan/submit', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ session_id: sessionId, raw_sku: currentScannedProduct.sku })
-                                    });
+                                let totalUnitsSent = 0;
+                                for (const item of scannedProductsList) {
+                                    for (let i = 0; i < item.qty; i++) {
+                                        await fetch('/api/scan/submit', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ session_id: sessionId, raw_sku: item.sku })
+                                        });
+                                        totalUnitsSent++;
+                                    }
                                 }
 
-                                statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Sent ${currentScannedProduct.qty}x ${currentScannedProduct.sku} to Billing!`;
+                                statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Sent ${totalUnitsSent} item(s) to Desktop Billing!`;
                                 statusEl.className = 'status-hud success';
-                                scanSheet.style.display = 'none';
-                                currentScannedProduct = null;
+                                scannedProductsList = [];
+                                renderScannedProductsList();
                             } catch (e) {
                                 statusEl.innerHTML = `<span class="material-symbols-outlined">wifi_off</span> Failed to send`;
                                 statusEl.className = 'status-hud error';
@@ -961,7 +1032,9 @@
                         });
 
                         async function processProductScan(sku) {
+                            // 1. Unconditional Sound Feedback on Every Successful Scan
                             playScanSound();
+
                             const maskBox = document.getElementById('mask-box');
                             if (maskBox) {
                                 maskBox.classList.add('scan-success');
@@ -971,7 +1044,7 @@
                             statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${sku}</strong>`;
                             statusEl.className = 'status-hud success';
 
-                            // Lookup product details via catalog lookup endpoint or local fallback
+                            // 2. Lookup product details via catalog lookup endpoint
                             let prodName = sku;
                             let imgUrl = '';
                             try {
@@ -983,31 +1056,25 @@
                                 }
                             } catch (e) {}
 
-                            currentScannedProduct = {
-                                sku: sku,
-                                name: prodName,
-                                image_url: imgUrl,
-                                qty: 1
-                            };
-
-                            // Update Mobile Bottom Sheet
-                            sheetItemName.innerText = prodName;
-                            sheetItemSku.innerText = `SKU: ${sku}`;
-                            sheetItemUrl.innerText = imgUrl ? `R2 URL: ${imgUrl}` : 'Image URL: No Image Attached';
-                            sheetQtyVal.innerText = '1';
-
-                            if (imgUrl) {
-                                sheetImgBox.innerHTML = `<img src="${imgUrl}" alt="Product Preview" />`;
+                            // 3. Add to mobile browser cart array (increment qty if existing, or push new item card)
+                            const existingIndex = scannedProductsList.findIndex(i => i.sku.toUpperCase() === sku.toUpperCase());
+                            if (existingIndex !== -1) {
+                                scannedProductsList[existingIndex].qty += 1;
                             } else {
-                                sheetImgBox.innerHTML = `<span class="material-symbols-outlined" style="color: #666; font-size: 24px;">image</span>`;
+                                scannedProductsList.push({
+                                    sku: sku,
+                                    name: prodName,
+                                    image_url: imgUrl,
+                                    qty: 1
+                                });
                             }
 
-                            scanSheet.style.display = 'flex';
+                            renderScannedProductsList();
                         }
 
                         const onScanSuccess = (decodedText) => {
                             const now = Date.now();
-                            if (decodedText === lastScanned && (now - lastScanTime) < 3000) return;
+                            if (decodedText === lastScanned && (now - lastScanTime) < 1500) return;
                             lastScanned = decodedText;
                             lastScanTime = now;
                             processProductScan(decodedText);
