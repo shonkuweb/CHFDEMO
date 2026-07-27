@@ -988,6 +988,31 @@
                                     clearInterval(setupPollInterval);
                                     deviceVerified.value = true;
                                     
+                                    // Helper to add or increment item in invoice cart
+                                    const processIncomingScan = (item) => {
+                                        if (!item || !item.sku) return;
+                                        lastScannedItem.value = item.sku;
+                                        const skuCode = item.sku.trim();
+                                        const itemDesc = item.name && item.name !== item.sku
+                                            ? `${item.name} (${skuCode})`
+                                            : skuCode;
+                                        
+                                        // Check if item already exists in cart
+                                        const existingIndex = invoiceData.value.items.findIndex(
+                                            i => i.description.includes(`(${skuCode})`) || i.description === skuCode || i.description === itemDesc
+                                        );
+                                        
+                                        if (existingIndex !== -1) {
+                                            invoiceData.value.items[existingIndex].qty += 1;
+                                        } else {
+                                            invoiceData.value.items.push({
+                                                description: itemDesc,
+                                                qty: 1,
+                                                price: item.price || 0
+                                            });
+                                        }
+                                    };
+                                    
                                     // 1. Instant WebSocket Connection (< 0.1 ms latency)
                                     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
                                     const wsUrl = `${protocol}//${window.location.host}/ws/scan/${data.session_id}`;
@@ -996,17 +1021,7 @@
                                         ws.onmessage = (evt) => {
                                             try {
                                                 const scanObj = JSON.parse(evt.data);
-                                                if (scanObj && scanObj.sku) {
-                                                    lastScannedItem.value = scanObj.sku;
-                                                    const desc = scanObj.name && scanObj.name !== scanObj.sku
-                                                        ? `${scanObj.name} (${scanObj.sku})`
-                                                        : scanObj.sku;
-                                                    invoiceData.value.items.push({
-                                                        description: desc,
-                                                        qty: 1,
-                                                        price: scanObj.price || 0
-                                                    });
-                                                }
+                                                processIncomingScan(scanObj);
                                             } catch(e) {}
                                         };
                                     } catch(e) {}
@@ -1025,17 +1040,8 @@
                                                 return;
                                             }
                                             
-                                            const item = scanData.scan;
-                                            if (item && item.sku) {
-                                                lastScannedItem.value = item.sku;
-                                                const desc = item.name && item.name !== item.sku
-                                                    ? `${item.name} (${item.sku})`
-                                                    : item.sku;
-                                                invoiceData.value.items.push({
-                                                    description: desc,
-                                                    qty: 1,
-                                                    price: item.price || 0
-                                                });
+                                            if (scanData.scan) {
+                                                processIncomingScan(scanData.scan);
                                             }
                                         } catch(e) {}
                                     }, 100);

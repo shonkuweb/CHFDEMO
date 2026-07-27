@@ -2212,6 +2212,7 @@ async def submit_scan(payload: ScanPayload):
             "name": cached_sku["name"],
             "price": cached_sku["price"],
             "category": cached_sku.get("category", ""),
+            "image_url": cached_sku.get("image_url", ""),
             "timestamp": time.time()
         }
     else:
@@ -2220,6 +2221,7 @@ async def submit_scan(payload: ScanPayload):
             "name": raw_sku,
             "price": 0.0,
             "category": "",
+            "image_url": "",
             "timestamp": time.time()
         }
         
@@ -2492,14 +2494,20 @@ async def delete_sku(sku_id: int):
 @app.get("/api/skus/lookup/{sku_code}")
 async def lookup_sku(sku_code: str):
     ensure_sku_catalog_table()
+    code_upper = sku_code.strip().upper()
+    cached = SKU_CACHE.get(code_upper)
+    if cached:
+        return {"found": True, "sku": cached["sku"], "name": cached["name"], "price": cached["price"], "category": cached.get("category", ""), "image_url": cached.get("image_url", "")}
+        
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT id, sku, name, price, category, description FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (sku_code.strip(),))
+    cur.execute("SELECT id, sku, name, price, category, description, image_url FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (code_upper,))
     row = cur.fetchone()
     conn.close()
     if not row:
-        return {"found": False}
-    return {"found": True, "sku": dict(row)}
+        return {"found": False, "sku": sku_code, "name": sku_code, "price": 0.0, "image_url": ""}
+    d = dict(row)
+    return {"found": True, "sku": d["sku"], "name": d["name"], "price": d["price"], "category": d.get("category", ""), "image_url": d.get("image_url", "")}
 
 @app.get("/scan")
 async def serve_scanner_alias():

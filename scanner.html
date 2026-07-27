@@ -362,12 +362,12 @@
             position: absolute;
             bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
             left: 20px; right: 20px;
-            padding: 16px 20px; 
+            padding: 14px 18px; 
             text-align: center; 
             background: rgba(18, 18, 18, 0.85); 
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            font-size: 0.95rem; 
+            font-size: 0.92rem; 
             color: #ddd; 
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 20px;
@@ -375,7 +375,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             transition: all 0.3s ease;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             font-weight: 500;
@@ -393,6 +393,152 @@
             background: rgba(45, 15, 15, 0.9);
             border-color: rgba(248, 113, 113, 0.4);
             color: var(--error);
+        }
+
+        /* Scanned Product Sheet Drawer (Bottom of Browser) */
+        .mobile-scan-sheet {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(198, 168, 124, 0.3);
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            z-index: 60;
+            padding: 16px 20px calc(env(safe-area-inset-bottom, 0px) + 16px) 20px;
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 -15px 40px rgba(0,0,0,0.8);
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .sheet-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sheet-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .scanned-item-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 12px;
+        }
+        .item-img-box {
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            background: #000;
+            border: 1px solid rgba(255,255,255,0.15);
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .item-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+        .item-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .item-sku {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-family: monospace;
+            margin-top: 2px;
+        }
+        .item-url-text {
+            font-size: 0.68rem;
+            color: #888;
+            word-break: break-all;
+            margin-top: 3px;
+        }
+
+        /* Quantity controls */
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 4px 8px;
+        }
+        .qty-btn {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .qty-btn:active {
+            background: var(--accent);
+            color: #000;
+        }
+        .qty-val {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .send-billing-btn {
+            background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+            color: #000;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(74, 222, 128, 0.3);
+        }
+        .send-billing-btn:active {
+            transform: scale(0.98);
         }
 
         /* Local Dev Modal */
@@ -531,6 +677,36 @@
         <div class="status-hud" id="status-text">
             <span class="material-symbols-outlined">qr_code_scanner</span>
             Ready to link
+        </div>
+
+        <!-- Scanned Product Bottom Sheet Drawer -->
+        <div class="mobile-scan-sheet" id="scan-sheet">
+            <div class="sheet-header">
+                <span class="sheet-title">Scanned Product</span>
+                <span class="material-symbols-outlined" style="color: var(--accent); font-size: 20px;">inventory_2</span>
+            </div>
+            
+            <div class="scanned-item-card">
+                <div class="item-img-box" id="sheet-img-box">
+                    <span class="material-symbols-outlined" style="color: #666; font-size: 24px;">image</span>
+                </div>
+                <div class="item-details">
+                    <div class="item-name" id="sheet-item-name">Loading Product...</div>
+                    <div class="item-sku" id="sheet-item-sku">SKU: --</div>
+                    <div class="item-url-text" id="sheet-item-url">Image URL: None</div>
+                </div>
+                
+                <div class="qty-controls">
+                    <button class="qty-btn" id="qty-minus-btn" type="button">−</button>
+                    <span class="qty-val" id="sheet-qty-val">1</span>
+                    <button class="qty-btn" id="qty-plus-btn" type="button">+</button>
+                </div>
+            </div>
+
+            <button class="send-billing-btn" id="send-to-billing-btn" type="button">
+                <span class="material-symbols-outlined">send</span>
+                Send To Desktop Billing
+            </button>
         </div>
     </div>
 
@@ -729,40 +905,112 @@
                             config.formatsToSupport = formatsList;
                         }
 
-                        async function submitSkuToBackend(sku) {
+                        let currentScannedProduct = null;
+
+                        // UI references for bottom scan sheet
+                        const scanSheet = document.getElementById('scan-sheet');
+                        const sheetImgBox = document.getElementById('sheet-img-box');
+                        const sheetItemName = document.getElementById('sheet-item-name');
+                        const sheetItemSku = document.getElementById('sheet-item-sku');
+                        const sheetItemUrl = document.getElementById('sheet-item-url');
+                        const sheetQtyVal = document.getElementById('sheet-qty-val');
+                        const minusBtn = document.getElementById('qty-minus-btn');
+                        const plusBtn = document.getElementById('qty-plus-btn');
+                        const sendBillingBtn = document.getElementById('send-to-billing-btn');
+
+                        minusBtn.addEventListener('click', () => {
+                            if (!currentScannedProduct) return;
+                            if (currentScannedProduct.qty > 1) {
+                                currentScannedProduct.qty -= 1;
+                                sheetQtyVal.innerText = currentScannedProduct.qty;
+                            }
+                        });
+
+                        plusBtn.addEventListener('click', () => {
+                            if (!currentScannedProduct) return;
+                            currentScannedProduct.qty += 1;
+                            sheetQtyVal.innerText = currentScannedProduct.qty;
+                        });
+
+                        sendBillingBtn.addEventListener('click', async () => {
+                            if (!currentScannedProduct) return;
+                            sendBillingBtn.disabled = true;
+                            sendBillingBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">refresh</span> Sending...`;
+
+                            try {
+                                // Send the product with its final configured quantity to desktop
+                                for (let i = 0; i < currentScannedProduct.qty; i++) {
+                                    await fetch('/api/scan/submit', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ session_id: sessionId, raw_sku: currentScannedProduct.sku })
+                                    });
+                                }
+
+                                statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Sent ${currentScannedProduct.qty}x ${currentScannedProduct.sku} to Billing!`;
+                                statusEl.className = 'status-hud success';
+                                scanSheet.style.display = 'none';
+                                currentScannedProduct = null;
+                            } catch (e) {
+                                statusEl.innerHTML = `<span class="material-symbols-outlined">wifi_off</span> Failed to send`;
+                                statusEl.className = 'status-hud error';
+                            } finally {
+                                sendBillingBtn.disabled = false;
+                                sendBillingBtn.innerHTML = `<span class="material-symbols-outlined">send</span> Send To Desktop Billing`;
+                            }
+                        });
+
+                        async function processProductScan(sku) {
                             playScanSound();
                             const maskBox = document.getElementById('mask-box');
                             if (maskBox) {
                                 maskBox.classList.add('scan-success');
                                 setTimeout(() => maskBox.classList.remove('scan-success'), 1200);
                             }
-                            
+
                             statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${sku}</strong>`;
                             statusEl.className = 'status-hud success';
-                            
+
+                            // Lookup product details via catalog lookup endpoint or local fallback
+                            let prodName = sku;
+                            let imgUrl = '';
                             try {
-                                const res = await fetch('/api/scan/submit', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ session_id: sessionId, raw_sku: sku })
-                                });
-                                const data = await res.json();
-                                if (!res.ok) {
-                                    statusEl.innerHTML = `<span class="material-symbols-outlined">error</span> Error sending scan`;
-                                    statusEl.className = 'status-hud error';
+                                const lookupRes = await fetch(`/api/skus/lookup/${encodeURIComponent(sku)}`);
+                                if (lookupRes.ok) {
+                                    const prodData = await lookupRes.json();
+                                    prodName = prodData.name || sku;
+                                    imgUrl = prodData.image_url || '';
                                 }
-                            } catch (e) {
-                                statusEl.innerHTML = `<span class="material-symbols-outlined">wifi_off</span> Network Error`;
-                                statusEl.className = 'status-hud error';
+                            } catch (e) {}
+
+                            currentScannedProduct = {
+                                sku: sku,
+                                name: prodName,
+                                image_url: imgUrl,
+                                qty: 1
+                            };
+
+                            // Update Mobile Bottom Sheet
+                            sheetItemName.innerText = prodName;
+                            sheetItemSku.innerText = `SKU: ${sku}`;
+                            sheetItemUrl.innerText = imgUrl ? `R2 URL: ${imgUrl}` : 'Image URL: No Image Attached';
+                            sheetQtyVal.innerText = '1';
+
+                            if (imgUrl) {
+                                sheetImgBox.innerHTML = `<img src="${imgUrl}" alt="Product Preview" />`;
+                            } else {
+                                sheetImgBox.innerHTML = `<span class="material-symbols-outlined" style="color: #666; font-size: 24px;">image</span>`;
                             }
+
+                            scanSheet.style.display = 'flex';
                         }
 
                         const onScanSuccess = (decodedText) => {
                             const now = Date.now();
-                            if (decodedText === lastScanned && (now - lastScanTime) < 2000) return;
+                            if (decodedText === lastScanned && (now - lastScanTime) < 3000) return;
                             lastScanned = decodedText;
                             lastScanTime = now;
-                            submitSkuToBackend(decodedText);
+                            processProductScan(decodedText);
                         };
 
                         const onScanFrame = (errorMessage) => {
