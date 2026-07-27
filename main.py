@@ -2709,7 +2709,8 @@ async def ccavenue_response_callback(request: Request):
         data = dict(request.query_params)
 
     enc_resp = data.get("encResp", "")
-    working_key = os.environ.get("CCAVENUE_WORKING_KEY", "")
+    creds = ccavenue_utils.get_ccavenue_credentials()
+    working_key = creds["working_key"]
 
     decrypted_text = ccavenue_utils.decrypt_ccavenue(enc_resp, working_key) if (enc_resp and working_key) else ""
     parsed_resp = ccavenue_utils.parse_ccavenue_response(decrypted_text)

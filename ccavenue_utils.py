@@ -1,4 +1,6 @@
 import os
+import time
+import re
 import hashlib
 import binascii
 import urllib.parse
@@ -105,20 +107,29 @@ def build_payment_payload(order_id: str, amount: float, currency: str = "INR", r
         creds = get_ccavenue_credentials()
         merchant_id = creds["merchant_id"]
     
-    name = (client_name or "Customer").strip()
-    phone = (client_phone or "").strip()
+    # Sanitize billing_name: Alphabets and space only (max 60)
+    raw_name = (client_name or "Customer").strip()
+    clean_name = re.sub(r'[^a-zA-Z\s]', '', raw_name)[:60].strip() or "Customer"
     
-    # Official CCAvenue Integration Kit builds raw un-encoded parameter string
+    # Sanitize billing_tel: Digits only (max 20)
+    raw_phone = (client_phone or "").strip()
+    clean_phone = re.sub(r'\D', '', raw_phone)[:20] or "9999999999"
+    
+    # Generate unique numeric tid (17-digit timestamp)
+    tid = str(int(time.time() * 1000))
+    
+    # Official CCAvenue Integration Kit parameter list
     payload_parts = [
+        f"tid={tid}",
         f"merchant_id={merchant_id}",
         f"order_id={order_id}",
         f"currency={currency}",
         f"amount={amount:.2f}",
         f"redirect_url={redirect_url}",
         f"cancel_url={cancel_url}",
-        f"language=EN",
-        f"billing_name={name}",
-        f"billing_tel={phone}"
+        f"language=en",
+        f"billing_name={clean_name}",
+        f"billing_tel={clean_phone}"
     ]
     
     return "&".join(payload_parts)

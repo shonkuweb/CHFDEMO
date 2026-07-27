@@ -248,11 +248,15 @@
                             <div class="bg-surface-dark/80 backdrop-blur-md border-b border-white/5 p-6 flex items-center justify-between z-10 relative">
                                 <div>
                                     <h3 class="font-serif text-xl text-ivory">Scanned Items</h3>
-                                    <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-1">{{ invoiceData.items.length }} Items</p>
+                                    <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold mt-1 flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                        Mobile Scanner Active ({{ invoiceData.items.length }} Items)
+                                    </p>
                                 </div>
-                                <div class="w-10 h-10 rounded-full bg-accent-bronze/10 border border-accent-bronze/30 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-accent-bronze animate-pulse">qr_code_scanner</span>
-                                </div>
+                                <button type="button" @click="resetScanner" class="px-3 py-1.5 rounded-full bg-accent-bronze/10 border border-accent-bronze/30 text-accent-bronze hover:bg-accent-bronze/20 text-[11px] font-semibold transition-all flex items-center gap-1" title="Re-link Mobile Device">
+                                    <span class="material-symbols-outlined text-sm">qr_code_scanner</span>
+                                    <span>Re-link</span>
+                                </button>
                             </div>
 
                             <!-- Scrollable Items List -->
@@ -929,9 +933,9 @@
                             url = `${window.location.protocol}//${window.location.host}/scan?session_id=${data.session_id}`;
                         }
                         
-                        Vue.nextTick(() => {
+                        const renderQR = (attempts = 0) => {
                             const qrContainer = document.getElementById('setup-qrcode');
-                            if(qrContainer) {
+                            if (qrContainer) {
                                 qrContainer.innerHTML = '';
                                 new QRCode(qrContainer, {
                                     text: url,
@@ -941,8 +945,11 @@
                                     colorLight : "#ffffff",
                                     correctLevel : QRCode.CorrectLevel.L
                                 });
+                            } else if (attempts < 10) {
+                                setTimeout(() => renderQR(attempts + 1), 100);
                             }
-                        });
+                        };
+                        Vue.nextTick(() => renderQR());
                         
                         setupPollInterval = setInterval(async () => {
                             try {
@@ -1010,6 +1017,22 @@
                     } catch (e) {
                         console.error('Failed to init device auth', e);
                     }
+                };
+
+                const resetScanner = () => {
+                    if (setupPollInterval) clearInterval(setupPollInterval);
+                    if (scanPollInterval) clearInterval(scanPollInterval);
+                    if (setupSessionId.value) {
+                        fetch('/api/scan/auth/disconnect', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ session_id: setupSessionId.value })
+                        }).catch(() => {});
+                    }
+                    setupSessionId.value = '';
+                    setupPin.value = '';
+                    deviceVerified.value = false;
+                    initDeviceAuth();
                 };
 
                 // SKU Catalog State & Logic
@@ -1273,6 +1296,7 @@
                 return {
                     deviceVerified,
                     setupPin,
+                    resetScanner,
                     currentTab,
                     logout,
                     invoiceData,

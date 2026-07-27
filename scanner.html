@@ -729,6 +729,34 @@
                             config.formatsToSupport = formatsList;
                         }
 
+                        async function submitSkuToBackend(sku) {
+                            playScanSound();
+                            const maskBox = document.getElementById('mask-box');
+                            if (maskBox) {
+                                maskBox.classList.add('scan-success');
+                                setTimeout(() => maskBox.classList.remove('scan-success'), 1200);
+                            }
+                            
+                            statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${sku}</strong>`;
+                            statusEl.className = 'status-hud success';
+                            
+                            try {
+                                const res = await fetch('/api/scan/submit', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ session_id: sessionId, raw_sku: sku })
+                                });
+                                const data = await res.json();
+                                if (!res.ok) {
+                                    statusEl.innerHTML = `<span class="material-symbols-outlined">error</span> Error sending scan`;
+                                    statusEl.className = 'status-hud error';
+                                }
+                            } catch (e) {
+                                statusEl.innerHTML = `<span class="material-symbols-outlined">wifi_off</span> Network Error`;
+                                statusEl.className = 'status-hud error';
+                            }
+                        }
+
                         const onScanSuccess = (decodedText) => {
                             const now = Date.now();
                             if (decodedText === lastScanned && (now - lastScanTime) < 2000) return;
