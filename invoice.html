@@ -1068,10 +1068,45 @@
                 const skus = ref([]);
                 const loadingSkus = ref(false);
                 const skuSearchQuery = ref('');
+                const selectedCategoryFilter = ref('');
                 const editingSkuId = ref(null);
                 const savingSku = ref(false);
                 const skuSaveSuccess = ref(false);
                 const skuSaveError = ref('');
+
+                const fetchSkus = async () => {
+                    loadingSkus.value = true;
+                    try {
+                        const res = await fetch('/api/skus');
+                        const data = await res.json();
+                        skus.value = Array.isArray(data) ? data : [];
+                    } catch (e) {
+                        console.error('Failed to fetch SKUs', e);
+                    } finally {
+                        loadingSkus.value = false;
+                    }
+                };
+
+                const catalogTotalValue = computed(() => {
+                    return skus.value.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+                });
+
+                const filteredSkus = computed(() => {
+                    let result = skus.value;
+                    if (selectedCategoryFilter.value) {
+                        result = result.filter(s => (s.category || '').toLowerCase() === selectedCategoryFilter.value.toLowerCase());
+                    }
+                    if (skuSearchQuery.value.trim()) {
+                        const q = skuSearchQuery.value.toLowerCase();
+                        result = result.filter(s => 
+                            (s.sku && s.sku.toLowerCase().includes(q)) || 
+                            (s.name && s.name.toLowerCase().includes(q)) || 
+                            (s.category && s.category.toLowerCase().includes(q)) ||
+                            (s.description && s.description.toLowerCase().includes(q))
+                        );
+                    }
+                    return result;
+                });
 
                 const uploadingProductImage = ref(false);
 
