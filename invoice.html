@@ -1231,6 +1231,28 @@
 
 
                 
+                const currentQrUrl = ref('');
+
+                const renderQR = (attempts = 0) => {
+                    if (!currentQrUrl.value) return;
+                    Vue.nextTick(() => {
+                        const qrContainer = document.getElementById('setup-qrcode');
+                        if (qrContainer) {
+                            qrContainer.innerHTML = '';
+                            new QRCode(qrContainer, {
+                                text: currentQrUrl.value,
+                                width: 192,
+                                height: 192,
+                                colorDark : "#000000",
+                                colorLight : "#ffffff",
+                                correctLevel : QRCode.CorrectLevel.L
+                            });
+                        } else if (attempts < 10) {
+                            setTimeout(() => renderQR(attempts + 1), 100);
+                        }
+                    });
+                };
+
                 const initDeviceAuth = async () => {
                     try {
                         const res = await fetch('/api/scan/auth/init', { method: 'POST' });
@@ -1248,23 +1270,8 @@
                             url = `${window.location.protocol}//${window.location.host}/scan?session_id=${data.session_id}`;
                         }
                         
-                        const renderQR = (attempts = 0) => {
-                            const qrContainer = document.getElementById('setup-qrcode');
-                            if (qrContainer) {
-                                qrContainer.innerHTML = '';
-                                new QRCode(qrContainer, {
-                                    text: url,
-                                    width: 192,
-                                    height: 192,
-                                    colorDark : "#000000",
-                                    colorLight : "#ffffff",
-                                    correctLevel : QRCode.CorrectLevel.L
-                                });
-                            } else if (attempts < 10) {
-                                setTimeout(() => renderQR(attempts + 1), 100);
-                            }
-                        };
-                        Vue.nextTick(() => renderQR());
+                        currentQrUrl.value = url;
+                        renderQR();
                         
                         setupPollInterval = setInterval(async () => {
                             try {
@@ -1352,6 +1359,7 @@
                     }
                     setupSessionId.value = '';
                     setupPin.value = '';
+                    currentQrUrl.value = '';
                     deviceVerified.value = false;
                     initDeviceAuth();
                 };
@@ -1630,8 +1638,12 @@
                         fetchCategories();
                         fetchSkus();
                     }
-                    if (!deviceVerified.value && newTab === 'bill' && !setupSessionId.value) {
-                        initDeviceAuth();
+                    if (!deviceVerified.value && newTab === 'bill') {
+                        if (!setupSessionId.value) {
+                            initDeviceAuth();
+                        } else {
+                            renderQR();
+                        }
                     }
                 });
 
