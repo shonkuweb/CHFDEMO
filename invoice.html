@@ -676,6 +676,113 @@
                 </div>
             </div>
 
+            <!-- Live CCAvenue Payment Status Popup Modal (Plant Experience Centre) -->
+            <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
+                <div class="relative w-full max-w-lg bg-[#0d0d0d] border border-[#C5A073]/30 rounded-3xl p-8 shadow-2xl text-center overflow-hidden">
+                    
+                    <!-- Background Ambient Glow -->
+                    <div class="absolute -top-24 -left-24 w-60 h-60 bg-[#C5A073]/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -bottom-24 -right-24 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <!-- Manual Close Button -->
+                    <button type="button" @click="manualClosePaymentModal" class="absolute top-5 right-5 text-gray-400 hover:text-white p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all z-10" title="Close Pop-up">
+                        <span class="material-symbols-outlined text-lg">close</span>
+                    </button>
+
+                    <!-- Brand Header -->
+                    <div class="mb-6">
+                        <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/30 text-[#C5A073] text-[10px] font-bold uppercase tracking-[0.25em]">
+                            🌿 PLANT EXPERIENCE CENTRE
+                        </span>
+                        <h2 class="serif-title text-2xl md:text-3xl text-white font-normal mt-3">Live Payment Status</h2>
+                        <p class="text-xs text-gray-400 mt-1">Invoice #{{ paymentModalInvoiceId }} • {{ paymentModalClientName }}</p>
+                    </div>
+
+                    <!-- Animated Live Visual Area -->
+                    <div class="my-6 py-6 px-4 bg-black/50 border border-white/5 rounded-2xl relative flex flex-col items-center justify-center min-h-[220px]">
+                        
+                        <!-- PENDING STATE: Live Radar / Pulsing Rings Animation -->
+                        <template v-if="paymentModalStatus === 'PENDING'">
+                            <div class="relative w-28 h-28 flex items-center justify-center mb-4">
+                                <div class="absolute inset-0 rounded-full border-2 border-[#C5A073]/40 animate-ping opacity-75"></div>
+                                <div class="absolute inset-2 rounded-full border border-[#C5A073]/20 animate-pulse"></div>
+                                <div class="w-20 h-20 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/50 flex items-center justify-center text-[#C5A073] shadow-[0_0_30px_rgba(197,160,115,0.3)]">
+                                    <span class="material-symbols-outlined text-4xl animate-bounce">contactless</span>
+                                </div>
+                            </div>
+
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                                Awaiting Customer Payment...
+                            </div>
+                            <p class="text-[11px] text-gray-400 max-w-xs leading-relaxed">
+                                WhatsApp invoice with CCAvenue link was sent to customer. Monitoring CCAvenue status live...
+                            </p>
+                        </template>
+
+                        <!-- SUCCESS STATE: Glowing Checkmark & Celebration Animation -->
+                        <template v-else-if="paymentModalStatus === 'SUCCESS'">
+                            <div class="relative w-28 h-28 flex items-center justify-center mb-4">
+                                <div class="absolute inset-0 rounded-full border-2 border-emerald-400/50 animate-ping opacity-50"></div>
+                                <div class="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.5)]">
+                                    <span class="material-symbols-outlined text-4xl font-bold">check</span>
+                                </div>
+                            </div>
+
+                            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+                                ✓ PAYMENT RECEIVED
+                            </div>
+                            <h3 class="serif-title text-xl text-emerald-300 font-semibold mb-1">Transaction Successful!</h3>
+                            <p v-if="paymentModalRefNo" class="text-[11px] text-gray-400">CCAvenue Ref: {{ paymentModalRefNo }}</p>
+                            <p class="text-[11px] text-emerald-400/90 mt-3 font-semibold animate-pulse">
+                                Closing window & resetting console to make next bill...
+                            </p>
+                        </template>
+
+                        <!-- FAILED STATE -->
+                        <template v-else-if="paymentModalStatus === 'FAILED'">
+                            <div class="w-20 h-20 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 mb-4 shadow-[0_0_30px_rgba(239,68,68,0.3)]">
+                                <span class="material-symbols-outlined text-4xl">error_outline</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 text-xs font-bold uppercase tracking-wider mb-2">
+                                Payment Unsuccessful
+                            </div>
+                            <p class="text-[11px] text-gray-400">The customer attempted payment but transaction failed or was cancelled.</p>
+                        </template>
+                    </div>
+
+                    <!-- Total Amount Card -->
+                    <div class="bg-gradient-to-r from-[#171410] via-[#1f1a14] to-[#171410] border border-[#C5A073]/20 rounded-xl p-4 flex items-center justify-between mb-6">
+                        <div class="text-left">
+                            <span class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Total Bill Amount</span>
+                            <span class="text-xs text-gray-300">Invoice #{{ paymentModalInvoiceId }}</span>
+                        </div>
+                        <span class="serif-title text-2xl font-bold text-[#C5A073]">₹{{ Number(paymentModalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                    </div>
+
+                    <!-- Action Links & Testing Utilities -->
+                    <div class="space-y-3">
+                        <div class="flex gap-2">
+                            <button type="button" @click="copyPaymentLink" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                <span class="material-symbols-outlined text-sm text-[#C5A073]">{{ paymentModalCopied ? 'check' : 'content_copy' }}</span>
+                                <span>{{ paymentModalCopied ? 'Link Copied!' : 'Copy Payment Link' }}</span>
+                            </button>
+                            <a :href="paymentModalLink" target="_blank" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                <span class="material-symbols-outlined text-sm text-[#C5A073]">open_in_new</span>
+                                <span>Open Pay Page</span>
+                            </a>
+                        </div>
+
+                        <!-- Testing Quick Action: Simulate Payment Success -->
+                        <button v-if="paymentModalStatus === 'PENDING'" type="button" @click="simulatePaymentSuccess" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                            <span class="material-symbols-outlined text-sm">science</span>
+                            <span>Simulate Payment Success (Local Test)</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -870,6 +977,115 @@
                     }
                 };
 
+                // Live CCAvenue Payment Status Modal State
+                const showPaymentModal = ref(false);
+                const paymentModalInvoiceId = ref('');
+                const paymentModalClientName = ref('');
+                const paymentModalAmount = ref(0);
+                const paymentModalLink = ref('');
+                const paymentModalStatus = ref('PENDING'); // PENDING, SUCCESS, FAILED
+                const paymentModalRefNo = ref('');
+                const paymentModalOrderNo = ref('');
+                const paymentModalCopied = ref(false);
+                const paymentAutoCloseTimer = ref(null);
+                let paymentPollInterval = null;
+
+                const startPaymentPolling = (invId) => {
+                    if (paymentPollInterval) clearInterval(paymentPollInterval);
+                    checkModalPaymentStatus(invId);
+                    paymentPollInterval = setInterval(() => {
+                        checkModalPaymentStatus(invId);
+                    }, 2000);
+                };
+
+                const checkModalPaymentStatus = async (invId) => {
+                    if (!invId) return;
+                    try {
+                        const res = await fetch(`/api/payment/status/${invId}`);
+                        const data = await res.json();
+                        if (data && data.payment_status) {
+                            paymentModalStatus.value = data.payment_status;
+                            currentPaymentStatus.value = data.payment_status;
+                            if (data.order_id) paymentModalOrderNo.value = data.order_id;
+                            if (data.ccavenue_ref_no) paymentModalRefNo.value = data.ccavenue_ref_no;
+
+                            if (data.payment_status === 'SUCCESS' || data.payment_status === 'PAID') {
+                                paymentModalStatus.value = 'SUCCESS';
+                                if (paymentPollInterval) {
+                                    clearInterval(paymentPollInterval);
+                                    paymentPollInterval = null;
+                                }
+                                if (!paymentAutoCloseTimer.value) {
+                                    paymentAutoCloseTimer.value = setTimeout(() => {
+                                        closePaymentModalAndResetBill();
+                                    }, 3500);
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Failed to poll payment status:', e);
+                    }
+                };
+
+                const closePaymentModalAndResetBill = () => {
+                    showPaymentModal.value = false;
+                    if (paymentPollInterval) {
+                        clearInterval(paymentPollInterval);
+                        paymentPollInterval = null;
+                    }
+                    if (paymentAutoCloseTimer.value) {
+                        clearTimeout(paymentAutoCloseTimer.value);
+                        paymentAutoCloseTimer.value = null;
+                    }
+                    // Reset Invoice Form to make next bill
+                    invoiceData.value = {
+                        number: '',
+                        clientName: '',
+                        phone: '',
+                        notes: '',
+                        items: []
+                    };
+                    currentPaymentLink.value = '';
+                    currentPaymentStatus.value = 'UNPAID';
+                    paymentModalStatus.value = 'PENDING';
+                };
+
+                const manualClosePaymentModal = () => {
+                    showPaymentModal.value = false;
+                    if (paymentPollInterval) {
+                        clearInterval(paymentPollInterval);
+                        paymentPollInterval = null;
+                    }
+                    if (paymentAutoCloseTimer.value) {
+                        clearTimeout(paymentAutoCloseTimer.value);
+                        paymentAutoCloseTimer.value = null;
+                    }
+                };
+
+                const copyPaymentLink = () => {
+                    if (!paymentModalLink.value) return;
+                    navigator.clipboard.writeText(paymentModalLink.value);
+                    paymentModalCopied.value = true;
+                    setTimeout(() => paymentModalCopied.value = false, 2500);
+                };
+
+                const simulatePaymentSuccess = async () => {
+                    try {
+                        await fetch('/api/payment/ccavenue/response', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({
+                                order_id: paymentModalOrderNo.value || paymentModalInvoiceId.value,
+                                order_status: 'Success',
+                                tracking_id: 'SIMULATED_' + Math.random().toString(36).substring(2, 10).toUpperCase()
+                            })
+                        });
+                        checkModalPaymentStatus(paymentModalInvoiceId.value);
+                    } catch(e) {
+                        console.error('Simulate payment failed', e);
+                    }
+                };
+
                 const sendInvoice = async () => {
                     sendingInvoice.value = true;
                     sendError.value = '';
@@ -935,6 +1151,21 @@
                         
                         sendSuccess.value = true;
                         setTimeout(() => sendSuccess.value = false, 5000);
+
+                        // 4. Trigger Live CCAvenue Payment Status Pop-up Modal
+                        paymentModalInvoiceId.value = invId;
+                        paymentModalClientName.value = invoiceData.value.clientName;
+                        paymentModalAmount.value = totalAmount.value;
+                        paymentModalLink.value = currentPaymentLink.value;
+                        paymentModalOrderNo.value = (linkData && linkData.order_id) ? linkData.order_id : invId;
+                        paymentModalStatus.value = 'PENDING';
+                        paymentModalRefNo.value = '';
+                        if (paymentAutoCloseTimer.value) {
+                            clearTimeout(paymentAutoCloseTimer.value);
+                            paymentAutoCloseTimer.value = null;
+                        }
+                        showPaymentModal.value = true;
+                        startPaymentPolling(invId);
                         
                     } catch (e) {
                         sendError.value = e.message;
@@ -1376,6 +1607,17 @@
                     currentPaymentLink,
                     currentPaymentStatus,
                     checkPaymentStatus,
+                    showPaymentModal,
+                    paymentModalInvoiceId,
+                    paymentModalClientName,
+                    paymentModalAmount,
+                    paymentModalLink,
+                    paymentModalStatus,
+                    paymentModalRefNo,
+                    paymentModalCopied,
+                    manualClosePaymentModal,
+                    copyPaymentLink,
+                    simulatePaymentSuccess,
                     barcodeData,
                     barcodeQueue,
                     totalQueued,
