@@ -135,8 +135,8 @@
         <!-- Mobile Sidebar Backdrop -->
         <div v-if="isSidebarOpen" @click="isSidebarOpen = false" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-10 lg:hidden"></div>
 
-        <!-- Floating Sidebar Open Button (When Sidebar is Collapsed) -->
-        <button v-if="!isSidebarOpen" @click="isSidebarOpen = true" class="fixed top-5 left-5 z-30 bg-[#121212] border border-[#C5A073]/30 text-[#C5A073] p-2.5 rounded-xl hover:bg-white/10 transition-all shadow-2xl flex items-center justify-center group" title="Open Sidebar">
+        <!-- Floating Sidebar Open Button (Mobile Only when Sidebar is Closed) -->
+        <button v-if="!isSidebarOpen" @click="isSidebarOpen = true" class="lg:hidden fixed top-5 left-5 z-30 bg-[#121212] border border-[#C5A073]/30 text-[#C5A073] p-2.5 rounded-xl hover:bg-white/10 transition-all shadow-2xl flex items-center justify-center group" title="Open Sidebar">
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">menu</span>
         </button>
 
@@ -144,11 +144,11 @@
         <aside :class="[isSidebarOpen ? 'w-64 translate-x-0' : '-translate-x-full lg:w-20 lg:translate-x-0', 'border-r border-white/5 bg-[#090909] flex flex-col justify-between h-screen fixed left-0 top-0 z-20 shadow-2xl transition-all duration-300']">
             <div>
                 <!-- Sidebar Header with Toggle Button -->
-                <div class="p-6 border-b border-white/5 mb-6 flex items-center justify-between">
+                <div :class="[isSidebarOpen ? 'justify-between px-6' : 'justify-center px-2', 'py-6 border-b border-white/5 mb-6 flex items-center h-20 transition-all']">
                     <h2 v-if="isSidebarOpen" class="font-serif text-2xl tracking-wide text-white whitespace-nowrap overflow-hidden transition-all">
                         Invoice <span class="text-accent-bronze italic text-lg">System</span>
                     </h2>
-                    <button @click="isSidebarOpen = !isSidebarOpen" class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors mx-auto lg:mx-0" :title="isSidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar'">
+                    <button @click="isSidebarOpen = !isSidebarOpen" class="text-gray-400 hover:text-accent-bronze p-2 rounded-xl hover:bg-white/5 transition-colors flex items-center justify-center" :title="isSidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar'">
                         <span class="material-symbols-outlined text-xl">{{ isSidebarOpen ? 'menu_open' : 'menu' }}</span>
                     </button>
                 </div>
