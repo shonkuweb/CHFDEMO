@@ -2818,6 +2818,7 @@ async def whatsapp_microservice_proxy(path: str, request: Request):
     body = await request.body()
     urls = [
         f"http://whatsapp:3000/api/whatsapp/{path}",
+        f"http://127.0.0.1:3000/api/whatsapp/{path}",
         f"http://127.0.0.1:3001/api/whatsapp/{path}"
     ]
     
