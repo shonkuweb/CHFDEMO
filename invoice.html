@@ -1154,7 +1154,7 @@
                         message += `\nThank you for choosing us!`;
 
                         // 3. Send WhatsApp message
-                        let whatsappErrorMsg = null;
+                        let whatsappNotice = null;
                         try {
                             const res = await fetch('/api/whatsapp/send', {
                                 method: 'POST',
@@ -1166,11 +1166,14 @@
                             });
 
                             const data = await safeFetchJson(res);
-                            sendSuccess.value = true;
-                            setTimeout(() => sendSuccess.value = false, 5000);
+                            if (data && data.success) {
+                                sendSuccess.value = true;
+                                setTimeout(() => sendSuccess.value = false, 5000);
+                            } else if (data && data.error) {
+                                whatsappNotice = data.error;
+                            }
                         } catch (waErr) {
-                            console.warn('WhatsApp service notice:', waErr.message);
-                            whatsappErrorMsg = waErr.message;
+                            whatsappNotice = waErr.message;
                         }
 
                         // 4. Trigger Live CCAvenue Payment Status Pop-up Modal
@@ -1188,8 +1191,8 @@
                         showPaymentModal.value = true;
                         startPaymentPolling(invId);
 
-                        if (whatsappErrorMsg) {
-                            sendError.value = `Note: ${whatsappErrorMsg}`;
+                        if (whatsappNotice) {
+                            sendError.value = whatsappNotice;
                         }
                         
                     } catch (e) {

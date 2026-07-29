@@ -2817,12 +2817,15 @@ async def get_payment_status(invoice_id: str):
 async def whatsapp_microservice_proxy(path: str, request: Request):
     body = await request.body()
     urls = [
+        f"http://chf-whatsapp:3000/api/whatsapp/{path}",
         f"http://whatsapp:3000/api/whatsapp/{path}",
         f"http://127.0.0.1:3000/api/whatsapp/{path}",
-        f"http://127.0.0.1:3001/api/whatsapp/{path}"
+        f"http://127.0.0.1:3001/api/whatsapp/{path}",
+        f"http://localhost:3000/api/whatsapp/{path}",
+        f"http://localhost:3001/api/whatsapp/{path}"
     ]
     
-    headers = {k: v for k, v in request.headers.items() if k.lower() != "host"}
+    headers = {k: v for k, v in request.headers.items() if k.lower() not in {"host", "content-length"}}
     
     for url in urls:
         try:
@@ -2832,7 +2835,7 @@ async def whatsapp_microservice_proxy(path: str, request: Request):
                 headers=headers,
                 method=request.method
             )
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            with urllib.request.urlopen(req, timeout=6) as resp:
                 content = resp.read()
                 return Response(
                     content=content,
@@ -2843,8 +2846,13 @@ async def whatsapp_microservice_proxy(path: str, request: Request):
             continue
             
     return JSONResponse(
-        content={"ready": False, "qr": None, "error": "WhatsApp microservice unreachable"},
-        status_code=502
+        content={
+            "success": False,
+            "ready": False,
+            "qr": None,
+            "error": "WhatsApp service is currently initializing or offline. Pay link created below."
+        },
+        status_code=200
     )
 
 @app.get("/{path:path}")

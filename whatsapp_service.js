@@ -51,11 +51,19 @@ if (fs.existsSync(authDir)) {
 
 let qrDataUrl = null;
 let isReady = false;
+let isInitializing = false;
 let client = null;
 
 function initializeWhatsAppClient() {
+    if (isInitializing) return;
+    isInitializing = true;
     console.log('Initializing WhatsApp Client...');
     
+    if (client) {
+        try { client.destroy(); } catch (e) {}
+        client = null;
+    }
+
     // Setup LocalAuth to persist session so we don't have to scan every time
     client = new Client({
         authStrategy: new LocalAuth({ clientId: 'whatsapp-client-v2', dataPath: './.wwebjs_auth_v2' }),
@@ -84,6 +92,7 @@ function initializeWhatsAppClient() {
         try {
             qrDataUrl = await qrcode.toDataURL(qr);
             isReady = false;
+            isInitializing = false;
         } catch (err) {
             console.error('Error generating QR code data URL', err);
         }
@@ -92,6 +101,7 @@ function initializeWhatsAppClient() {
     client.on('ready', () => {
         console.log('WhatsApp Client is ready!');
         isReady = true;
+        isInitializing = false;
         qrDataUrl = null;
     });
 
@@ -102,6 +112,7 @@ function initializeWhatsAppClient() {
     client.on('auth_failure', msg => {
         console.error('Authentication failure', msg);
         isReady = false;
+        isInitializing = false;
         qrDataUrl = null;
         // Clean up failed session data if auth fails
         const sessionDir = path.join(authDir, 'session-whatsapp-client-v2');
@@ -118,6 +129,7 @@ function initializeWhatsAppClient() {
     client.on('disconnected', (reason) => {
         console.log('WhatsApp Client was disconnected', reason);
         isReady = false;
+        isInitializing = false;
         qrDataUrl = null;
         // Re-initialize client on disconnect
         setTimeout(initializeWhatsAppClient, 5000);
