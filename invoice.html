@@ -132,44 +132,66 @@
         <!-- Ambient Blur -->
         <div class="fixed top-1/2 right-0 -translate-y-1/2 translate-x-1/3 w-[800px] h-[800px] bg-accent-bronze/5 rounded-full blur-[150px] pointer-events-none"></div>
 
+        <!-- Mobile Sidebar Backdrop -->
+        <div v-if="isSidebarOpen" @click="isSidebarOpen = false" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-10 lg:hidden"></div>
+
+        <!-- Floating Sidebar Open Button (When Sidebar is Collapsed) -->
+        <button v-if="!isSidebarOpen" @click="isSidebarOpen = true" class="fixed top-5 left-5 z-30 bg-[#121212] border border-[#C5A073]/30 text-[#C5A073] p-2.5 rounded-xl hover:bg-white/10 transition-all shadow-2xl flex items-center justify-center group" title="Open Sidebar">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">menu</span>
+        </button>
+
         <!-- Sidebar -->
-        <aside class="w-64 border-r border-white/5 bg-[#090909] flex flex-col justify-between h-screen fixed left-0 top-0 z-10 shadow-2xl">
+        <aside :class="[isSidebarOpen ? 'w-64 translate-x-0' : '-translate-x-full lg:w-20 lg:translate-x-0', 'border-r border-white/5 bg-[#090909] flex flex-col justify-between h-screen fixed left-0 top-0 z-20 shadow-2xl transition-all duration-300']">
             <div>
-                <div class="p-8 border-b border-white/5 mb-6">
-                    <h2 class="font-serif text-2xl tracking-wide text-white">Invoice <span class="text-accent-bronze italic text-lg">System</span></h2>
+                <!-- Sidebar Header with Toggle Button -->
+                <div class="p-6 border-b border-white/5 mb-6 flex items-center justify-between">
+                    <h2 v-if="isSidebarOpen" class="font-serif text-2xl tracking-wide text-white whitespace-nowrap overflow-hidden transition-all">
+                        Invoice <span class="text-accent-bronze italic text-lg">System</span>
+                    </h2>
+                    <button @click="isSidebarOpen = !isSidebarOpen" class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors mx-auto lg:mx-0" :title="isSidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar'">
+                        <span class="material-symbols-outlined text-xl">{{ isSidebarOpen ? 'menu_open' : 'menu' }}</span>
+                    </button>
                 </div>
-                <nav class="px-4 space-y-2">
+
+                <!-- Nav Menu Items -->
+                <nav class="px-3 space-y-2">
                     <button @click="currentTab = 'bill'" 
-                        :class="[currentTab === 'bill' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', 'w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all rounded-r-sm']">
-                        <span class="material-symbols-outlined text-[18px]">receipt_long</span>
-                        Generate Bill
+                        :title="!isSidebarOpen ? 'Generate Bill' : ''"
+                        :class="[currentTab === 'bill' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', isSidebarOpen ? 'justify-start px-4 py-3 gap-3' : 'justify-center p-3', 'w-full flex items-center text-sm font-medium transition-all rounded-r-sm']">
+                        <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                        <span v-if="isSidebarOpen" class="whitespace-nowrap">Generate Bill</span>
                     </button>
                     <button @click="currentTab = 'skus'" 
-                        :class="[currentTab === 'skus' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', 'w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all rounded-r-sm']">
-                        <span class="material-symbols-outlined text-[18px]">inventory_2</span>
-                        Manage SKUs
+                        :title="!isSidebarOpen ? 'Manage SKUs' : ''"
+                        :class="[currentTab === 'skus' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', isSidebarOpen ? 'justify-start px-4 py-3 gap-3' : 'justify-center p-3', 'w-full flex items-center text-sm font-medium transition-all rounded-r-sm']">
+                        <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                        <span v-if="isSidebarOpen" class="whitespace-nowrap">Manage SKUs</span>
                     </button>
                     <button @click="currentTab = 'barcodes'" 
-                        :class="[currentTab === 'barcodes' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', 'w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all rounded-r-sm']">
-                        <span class="material-symbols-outlined text-[18px]">barcode_reader</span>
-                        Generate Barcodes
+                        :title="!isSidebarOpen ? 'Generate Barcodes' : ''"
+                        :class="[currentTab === 'barcodes' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', isSidebarOpen ? 'justify-start px-4 py-3 gap-3' : 'justify-center p-3', 'w-full flex items-center text-sm font-medium transition-all rounded-r-sm']">
+                        <span class="material-symbols-outlined text-[20px]">barcode_reader</span>
+                        <span v-if="isSidebarOpen" class="whitespace-nowrap">Generate Barcodes</span>
                     </button>
                 </nav>
             </div>
             
-            <div class="p-6">
-                <button @click="logout" class="w-full inline-flex items-center justify-center gap-2 border border-red-400/20 text-red-400 px-4 py-3 text-[10px] uppercase tracking-widest font-bold rounded-sm hover:bg-red-500/10 transition-colors">
-                    <span class="material-symbols-outlined text-[16px]">logout</span>
-                    Logout
+            <!-- Sidebar Footer / Logout -->
+            <div class="p-4 lg:p-6">
+                <button @click="logout" 
+                    :title="!isSidebarOpen ? 'Logout' : ''"
+                    :class="[isSidebarOpen ? 'px-4 py-3 gap-2' : 'p-3 justify-center', 'w-full inline-flex items-center justify-center border border-red-400/20 text-red-400 text-[10px] uppercase tracking-widest font-bold rounded-sm hover:bg-red-500/10 transition-colors']">
+                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                    <span v-if="isSidebarOpen" class="whitespace-nowrap">Logout</span>
                 </button>
-                <p class="text-center text-[9px] uppercase tracking-widest text-gray-600 font-bold mt-6">
+                <p v-if="isSidebarOpen" class="text-center text-[9px] uppercase tracking-widest text-gray-600 font-bold mt-6 whitespace-nowrap">
                     &copy; 2026 Plant Experience
                 </p>
             </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class="ml-64 flex-1 p-8 lg:p-12 relative z-0">
+        <main :class="[isSidebarOpen ? 'ml-64' : 'ml-0 lg:ml-20', 'flex-1 p-6 md:p-8 lg:p-12 relative z-0 transition-all duration-300']">
             <!-- Generate Bill View -->
             <div v-if="currentTab === 'bill'" class="animate-in fade-in slide-in-from-bottom-4 duration-300 w-full max-w-7xl mx-auto space-y-8">
                 <template v-if="!deviceVerified">
@@ -792,6 +814,11 @@
         createApp({
             setup() {
                 const currentTab = ref('bill');
+                const isSidebarOpen = ref(localStorage.getItem('sidebar_open') !== 'false');
+
+                watch(isSidebarOpen, (val) => {
+                    localStorage.setItem('sidebar_open', val ? 'true' : 'false');
+                });
 
                 // Mobile Scanner First Time Setup
                 const deviceVerified = ref(false);
@@ -1619,6 +1646,7 @@
                 };
 
                 return {
+                    isSidebarOpen,
                     deviceVerified,
                     setupPin,
                     resetScanner,
