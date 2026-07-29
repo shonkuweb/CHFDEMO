@@ -169,16 +169,22 @@ app.post('/api/whatsapp/send', async (req, res) => {
             cleanNumber = '91' + cleanNumber;
         }
 
+        // Format number to WhatsApp JID (@c.us)
         const chatId = `${cleanNumber}@c.us`;
         
-        // Check if the number is registered on WhatsApp
-        const registered = await client.isRegisteredUser(chatId);
-        if (!registered) {
-            return res.status(400).json({ error: `The number ${cleanNumber} is not registered on WhatsApp.` });
+        // Optional registered check with fallback to allow direct delivery
+        try {
+            const registered = await client.isRegisteredUser(chatId);
+            if (!registered) {
+                console.warn(`isRegisteredUser returned false for ${cleanNumber}, proceeding with direct delivery...`);
+            }
+        } catch (regErr) {
+            console.warn('isRegisteredUser check bypassed:', regErr.message);
         }
         
         const response = await client.sendMessage(chatId, message);
-        res.json({ success: true });
+        console.log(`WhatsApp message successfully sent to ${chatId}`);
+        return res.json({ success: true, messageId: response.id ? response.id._serialized : null });
     } catch (error) {
         console.error('Error sending message:', error);
         res.status(500).json({ error: 'Failed to send message on WhatsApp. Make sure your phone is connected.', details: error.toString() });

@@ -6,6 +6,8 @@ import io
 import re
 import urllib.parse
 import urllib.request
+import urllib.error
+import requests
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, Form, UploadFile, File, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -2825,23 +2827,22 @@ async def whatsapp_microservice_proxy(path: str, request: Request):
         f"http://localhost:3001/api/whatsapp/{path}"
     ]
     
-    headers = {k: v for k, v in request.headers.items() if k.lower() not in {"host", "content-length"}}
+    headers = {k: v for k, v in request.headers.items() if k.lower() not in {"host", "content-length", "accept-encoding"}}
     
     for url in urls:
         try:
-            req = urllib.request.Request(
-                url,
+            r = requests.request(
+                method=request.method,
+                url=url,
                 data=body if body else None,
                 headers=headers,
-                method=request.method
+                timeout=8
             )
-            with urllib.request.urlopen(req, timeout=6) as resp:
-                content = resp.read()
-                return Response(
-                    content=content,
-                    status_code=resp.status,
-                    headers=dict(resp.headers)
-                )
+            return Response(
+                content=r.content,
+                status_code=r.status_code,
+                headers={k: v for k, v in r.headers.items() if k.lower() not in {"content-encoding", "transfer-encoding", "content-length"}}
+            )
         except Exception:
             continue
             
@@ -2850,7 +2851,7 @@ async def whatsapp_microservice_proxy(path: str, request: Request):
             "success": False,
             "ready": False,
             "qr": None,
-            "error": "WhatsApp service is currently initializing or offline. Pay link created below."
+            "error": "WhatsApp service is currently offline or connecting. Pay link created below."
         },
         status_code=200
     )
