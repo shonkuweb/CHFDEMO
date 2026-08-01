@@ -13,8 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <!-- Vue.js (Production Build) -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <!-- JsBarcode -->
-    <script src="https://unpkg.com/jsbarcode@latest/dist/JsBarcode.all.min.js"></script>
     <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- QRCode.js for Mobile Scanner -->
@@ -213,10 +211,10 @@
                         <span v-if="isSidebarOpen" class="whitespace-nowrap">Manage SKUs</span>
                     </button>
                     <button @click="currentTab = 'barcodes'" 
-                        :title="!isSidebarOpen ? 'Generate Barcodes' : ''"
+                        :title="!isSidebarOpen ? 'Generate QR Codes' : ''"
                         :class="[currentTab === 'barcodes' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', isSidebarOpen ? 'justify-start px-4 py-3 gap-3' : 'justify-center p-3', 'w-full flex items-center text-sm font-medium transition-all rounded-r-sm']">
-                        <span class="material-symbols-outlined text-[20px]">barcode_reader</span>
-                        <span v-if="isSidebarOpen" class="whitespace-nowrap">Generate Barcodes</span>
+                        <span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+                        <span v-if="isSidebarOpen" class="whitespace-nowrap">Generate QR Codes</span>
                     </button>
                 </nav>
             </div>
@@ -246,7 +244,7 @@
                                 <span class="material-symbols-outlined text-xs">qr_code_scanner</span> Scanner Setup
                             </div>
                             <h1 class="font-serif text-3xl md:text-4xl text-ivory font-normal">Link Scanner Device</h1>
-                            <p class="text-xs text-gray-400 mt-1">Link your mobile device camera to scan plant barcodes directly.</p>
+                            <p class="text-xs text-gray-400 mt-1">Link your mobile device camera to scan plant QR codes directly.</p>
                         </div>
                     </div>
                     <div class="glass-panel p-10 rounded-2xl w-full max-w-md mx-auto text-center flex flex-col items-center my-8">
@@ -264,7 +262,7 @@
                                 <span class="material-symbols-outlined text-xs">receipt_long</span> Billing Console
                             </div>
                             <h1 class="font-serif text-3xl md:text-4xl text-ivory font-normal">Create Invoice</h1>
-                            <p class="text-xs text-gray-400 mt-1">Scan plant barcodes to add items and send digital invoices via WhatsApp.</p>
+                            <p class="text-xs text-gray-400 mt-1">Scan plant QR codes to add items and send digital invoices via WhatsApp.</p>
                         </div>
                     </div>
                     
@@ -334,7 +332,7 @@
                                         <span class="material-symbols-outlined text-4xl text-gray-600">document_scanner</span>
                                     </div>
                                     <p class="text-lg font-serif text-ivory mb-2">No items scanned yet</p>
-                                    <p class="text-sm text-gray-500 max-w-[250px] leading-relaxed mx-auto">Use your linked mobile device to scan barcodes. Products will instantly appear here.</p>
+                                    <p class="text-sm text-gray-500 max-w-[250px] leading-relaxed mx-auto">Use your linked mobile device to scan QR codes. Products will instantly appear here.</p>
                                 </div>
 
                                 <!-- Items -->
@@ -571,7 +569,7 @@
                                 </button>
                                 <button type="button" @click="sendSkuToBarcodeQueue(item)" 
                                     class="flex-1 inline-flex items-center justify-center gap-1 py-1 px-2 rounded bg-[#C5A073]/10 border border-[#C5A073]/30 text-[#C5A073] font-medium hover:bg-[#C5A073]/20 transition-all text-[10px]">
-                                    <span class="material-symbols-outlined text-xs">barcode</span>
+                                    <span class="material-symbols-outlined text-xs">qr_code_2</span>
                                     <span>+ Print</span>
                                 </button>
                             </div>
@@ -713,8 +711,8 @@
                                     <span v-if="showName" class="truncate text-gray-900 font-sans">{{ barcodeData.name || barcodeData.sku }}</span>
                                     <span v-if="showPrice && barcodeData.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(barcodeData.price).toLocaleString('en-IN') }}</span>
                                 </div>
-                                <div class="w-full my-2 flex items-center justify-center min-h-[42px]">
-                                    <canvas :ref="el => setBarcodeCanvasRef(el, barcodeData.sku, barcodeSymbology)" class="w-full max-h-[40px] object-contain"></canvas>
+                                <div class="w-full my-2 flex items-center justify-center min-h-[90px]">
+                                    <canvas :ref="el => setQrCanvasRef(el, barcodeData)" class="max-w-[90px] max-h-[90px] object-contain"></canvas>
                                 </div>
                                 <div class="w-full text-center">
                                     <span class="font-mono text-[10px] font-bold tracking-widest text-gray-800">SKU: {{ barcodeData.sku }}</span>
@@ -839,9 +837,9 @@
                                                     <span v-if="showPrice && item.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(item.price).toLocaleString('en-IN') }}</span>
                                                 </div>
 
-                                                <!-- Barcode Graphic Canvas -->
-                                                <div class="w-full my-1.5 flex items-center justify-center min-h-[40px]">
-                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item.sku, barcodeSymbology)" class="w-full max-h-[38px] object-contain"></canvas>
+                                                <!-- QR Code Graphic Canvas -->
+                                                <div class="w-full my-1.5 flex items-center justify-center min-h-[70px]">
+                                                    <canvas :ref="el => setQrCanvasRef(el, item)" class="max-w-[70px] max-h-[70px] object-contain"></canvas>
                                                 </div>
 
                                                 <!-- SKU String Code Footer -->
@@ -1407,18 +1405,28 @@
                     showBarcodeSearchDropdown.value = false;
                 };
 
-                const setBarcodeCanvasRef = (canvasEl, skuCode, symbology = 'CODE128') => {
-                    if (!canvasEl || !skuCode) return;
+                const setQrCanvasRef = async (canvasEl, itemData) => {
+                    if (!canvasEl || !itemData || !itemData.sku) return;
                     try {
-                        JsBarcode(canvasEl, skuCode, {
-                            format: symbology || "CODE128",
-                            lineColor: "#000000",
-                            width: 2,
-                            height: 44,
-                            displayValue: false,
-                            margin: 6,
-                            background: "#ffffff"
+                        const payload = JSON.stringify({
+                            sku: String(itemData.sku).trim(),
+                            name: String(itemData.name || itemData.sku).trim(),
+                            price: Number(itemData.price) || 0
                         });
+                        const dataUrl = await generateQRCodeDataUrl(payload);
+                        if (!dataUrl || !canvasEl) return;
+                        const img = new Image();
+                        img.onload = () => {
+                            if (!canvasEl) return;
+                            const ctx = canvasEl.getContext('2d');
+                            if (ctx) {
+                                canvasEl.width = 160;
+                                canvasEl.height = 160;
+                                ctx.clearRect(0, 0, 160, 160);
+                                ctx.drawImage(img, 0, 0, 160, 160);
+                            }
+                        };
+                        img.src = dataUrl;
                     } catch(e) {}
                 };
 
@@ -1596,46 +1604,28 @@
                                 }
                             }
 
-                            // 3. Generate QR Code (if enabled)
-                            let barcodeLeft = x + 3;
-                            let barcodeW = colWidth - 6;
-                            if (showQRCode.value) {
-                                const qrPayload = JSON.stringify({
-                                    sku: item.sku,
-                                    name: item.name,
-                                    price: item.price
-                                });
-                                const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
-                                if (qrDataUrl) {
-                                    doc.addImage(qrDataUrl, 'PNG', x + 3, y + topOffset + 6.5, 14, 14);
-                                    barcodeLeft = x + 19;
-                                    barcodeW = colWidth - 21;
-                                }
+                            // 3. Generate high-res 2D QR Code graphic carrying Name, Price, and SKU payload
+                            const qrPayload = JSON.stringify({
+                                sku: item.sku,
+                                name: item.name || item.sku,
+                                price: Number(item.price) || 0
+                            });
+                            const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                            if (qrDataUrl) {
+                                const qrSize = cols === 2 ? 24 : (cols === 3 ? 20 : 16);
+                                const qrX = x + (colWidth - qrSize) / 2;
+                                const qrY = y + topOffset + 5.5;
+                                doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
                             }
 
-                            // 4. Generate high-res 1D barcode graphic
-                            JsBarcode(canvas, item.sku, {
-                                format: barcodeSymbology.value || "CODE128",
-                                lineColor: "#000000",
-                                width: 3,
-                                height: 70,
-                                displayValue: false,
-                                margin: 6,
-                                background: "#ffffff"
-                            });
-
-                            const barcodeDataUrl = canvas.toDataURL('image/png');
-                            const barcodeH = cols === 2 ? 20 : 15;
-                            doc.addImage(barcodeDataUrl, 'PNG', barcodeLeft, y + topOffset + 6.5, barcodeW, barcodeH);
-
-                            // 5. SKU Code Footer
+                            // 4. SKU Code Footer
                             doc.setFontSize(cols === 2 ? 8 : 7);
                             doc.setFont('courier', 'bold');
                             doc.setTextColor(30, 30, 30);
                             doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + rowHeight - 2.5, { align: 'center' });
                         }
                         
-                        doc.save(`chf_inventory_barcodes_${cols}col.pdf`);
+                        doc.save(`chf_inventory_qrcodes_${cols}col.pdf`);
                     } catch (e) {
                         console.error("Error generating PDF:", e);
                     } finally {
@@ -2680,7 +2670,7 @@
                     selectSkuForBarcode,
                     selectCustomSkuForBarcode,
                     clearSelectedSku,
-                    setBarcodeCanvasRef,
+                    setQrCanvasRef,
                     addToQueue,
                     removeFromQueue,
                     printBarcodes,

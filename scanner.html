@@ -634,8 +634,8 @@
         <!-- Top Bar -->
         <div class="header">
             <div class="header-title-group">
-                <h1>CHF Scanner</h1>
-                <div class="header-subtitle" id="connection-subtitle">Wireless Barcode Terminal</div>
+                <h1>CHF QR Scanner</h1>
+                <div class="header-subtitle" id="connection-subtitle">Wireless QR Code Terminal</div>
             </div>
             <div class="header-actions">
                 <button id="torch-btn" class="icon-btn" title="Toggle Flashlight" onclick="toggleTorch()" style="display: none;">
@@ -698,7 +698,7 @@
                 <!-- Guidance Hint -->
                 <div class="scan-instruction-hint">
                     <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent);">center_focus_strong</span>
-                    Position barcode in center target
+                    Position QR code in center target
                 </div>
             </div>
         </div>
@@ -879,9 +879,9 @@
                                 <div class="glass-card" style="text-align: center;">
                                     <span class="material-symbols-outlined" style="font-size: 54px; color: var(--success); margin-bottom: 12px; display: block;">verified</span>
                                     <h2>Device Authorized!</h2>
-                                    <p style="margin-bottom: 24px; color: #ccc; font-size: 0.95rem;">Tap below to launch your mobile camera barcode scanner:</p>
+                                    <p style="margin-bottom: 24px; color: #ccc; font-size: 0.95rem;">Tap below to launch your mobile camera QR code scanner:</p>
                                     <button id="manual-start-cam-btn" class="pin-btn" style="background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%); color: #000; font-size: 1.1rem; padding: 18px;">
-                                        📷 LAUNCH CAMERA SCANNER
+                                        📷 LAUNCH QR SCANNER
                                     </button>
                                 </div>
                             `;
@@ -1104,7 +1104,8 @@
                                 setTimeout(() => maskBox.classList.remove('scan-success'), 1200);
                             }
 
-                            statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${prodName}</strong>`;
+                            const priceTag = prodPrice > 0 ? ` • ₹${Number(prodPrice).toLocaleString('en-IN')}` : '';
+                            statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${prodName}${priceTag}</strong>`;
                             statusEl.className = 'status-hud success';
 
                             // 4. Add item to mobile cart array

@@ -101,9 +101,9 @@ function initializeWhatsAppClient() {
         authStrategy: new LocalAuth({ clientId: 'whatsapp-client-v2', dataPath: './.wwebjs_auth_v2' }),
         webVersionCache: {
             type: 'remotePath',
-            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1018923055-alpha.html'
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1014111620-alpha.html'
         },
-        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
         puppeteer: {
             headless: true,
             executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null,
@@ -114,27 +114,20 @@ function initializeWhatsAppClient() {
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
                 '--disable-gpu',
-                '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+                '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
             ]
         }
     });
 
     client.on('qr', async (qr) => {
-        console.log('New WhatsApp QR Code generated. Scan to log in.');
+        console.log('QR Code generated. Scan to log in.');
         if (watchdogTimer) clearTimeout(watchdogTimer);
         try {
-            qrDataUrl = await qrcode.toDataURL(qr, {
-                margin: 2,
-                scale: 8,
-                color: {
-                    dark: '#000000',
-                    light: '#ffffff'
-                }
-            });
+            qrDataUrl = await qrcode.toDataURL(qr);
             isReady = false;
             isInitializing = false;
         } catch (err) {
-            console.error('Error generating QR code data URL:', err);
+            console.error('Error generating QR code data URL', err);
         }
     });
 
@@ -240,40 +233,26 @@ app.post('/api/whatsapp/send', async (req, res) => {
 
 app.post('/api/whatsapp/logout', async (req, res) => {
     try {
-        console.log('Logging out / resetting WhatsApp session...');
         if (client) {
-            try { await client.logout(); } catch (e) { console.warn('Logout warning:', e.message); }
-            try { await client.destroy(); } catch (e) { console.warn('Destroy warning:', e.message); }
+            console.log('Logging out of WhatsApp...');
+            try { await client.logout(); } catch (e) { console.error(e); }
+            try { await client.destroy(); } catch (e) { console.error(e); }
+            isReady = false;
+            qrDataUrl = null;
+            client = null;
+            
+            // Reinitialize the client after a short delay
+            setTimeout(() => {
+                initializeWhatsAppClient();
+            }, 3000);
+            
+            res.json({ success: true, message: 'Logged out successfully.' });
+        } else {
+            res.status(400).json({ error: 'Client not initialized.' });
         }
-        isReady = false;
-        qrDataUrl = null;
-        client = null;
-
-        // Reset persistent session data directory if exists to force fresh QR pairing
-        try {
-            const sessionDir = path.join(authDir, 'session-whatsapp-client-v2');
-            if (fs.existsSync(sessionDir)) {
-                fs.rmSync(sessionDir, { recursive: true, force: true });
-            }
-        } catch (e) {
-            console.warn('Session dir cleanup warning:', e.message);
-        }
-
-        // Reinitialize the client after a short delay
-        setTimeout(() => {
-            initializeWhatsAppClient();
-        }, 1500);
-
-        return res.json({ success: true, message: 'Logged out and session reset successfully.' });
     } catch (error) {
         console.error('Error logging out:', error);
-        isReady = false;
-        qrDataUrl = null;
-        client = null;
-        setTimeout(() => {
-            initializeWhatsAppClient();
-        }, 1500);
-        return res.json({ success: true, message: 'Session reset complete.' });
+        res.status(500).json({ error: 'Failed to log out.', details: error.toString() });
     }
 });
 
