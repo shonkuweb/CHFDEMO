@@ -1841,10 +1841,11 @@
                     uploadingProductImage.value = true;
                     skuSaveError.value = '';
                     try {
+                        const safeFilename = encodeURIComponent(file.name);
                         const res = await fetch('/api/upload', {
                             method: 'POST',
                             headers: {
-                                'X-Filename': file.name,
+                                'X-Filename': safeFilename,
                                 'X-Folder': 'billingfolder'
                             },
                             body: file

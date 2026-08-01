@@ -1929,7 +1929,8 @@ async def get_r2_media(url: str):
 
 @app.post("/api/upload")
 async def upload_file(request: Request):
-    filename_header = request.headers.get('X-Filename', 'upload.jpg')
+    raw_filename = request.headers.get('X-Filename', 'upload.jpg')
+    filename_header = urllib.parse.unquote(raw_filename)
     old_url_header = request.headers.get('X-Old-Url', '').strip()
     cms_path_header = request.headers.get('X-Cms-Path', '').strip()
     folder_header = request.headers.get('X-Folder', '').strip('/')
