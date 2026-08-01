@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Serif:wght@300..700&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <!-- Vue.js -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Vue.js (Production Build) -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <!-- JsBarcode -->
     <script src="https://unpkg.com/jsbarcode@latest/dist/JsBarcode.all.min.js"></script>
     <!-- jsPDF -->
@@ -41,13 +41,15 @@
           border: 2px dashed #4a4a4a;
         }
         
-        /* Input field styling to match dark theme */
-        .form-input-dark {
-          background-color: #ffffff !important;
-          border: none;
-          color: #000000 !important;
-          padding: 0.5rem 0.75rem;
-          width: 100%;
+        /* Dark Luxury Input field styling */
+        .form-input-dark, input, select, textarea {
+          background-color: #121212 !important;
+          border: 1px solid rgba(255, 255, 255, 0.15) !important;
+          color: #ffffff !important;
+          border-radius: 0.75rem;
+        }
+        input::placeholder, textarea::placeholder {
+          color: #666666 !important;
         }
 
         .form-label {
@@ -1032,6 +1034,7 @@
                                     Product Name <span class="text-red-400">*</span>
                                 </label>
                                 <input v-model="skuForm.name" required type="text" placeholder="e.g. Ceramic Pot CAPPL-9001 (Set of 4)"
+                                    style="background-color: #121212 !important; color: #ffffff !important;"
                                     class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-gray-600 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"/>
                             </div>
 
@@ -1046,6 +1049,7 @@
                                     </button>
                                 </div>
                                 <input v-model="skuForm.sku" required type="text" placeholder="e.g. CAPPL-9001"
+                                    style="background-color: #121212 !important; color: #ffffff !important;"
                                     class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder:text-gray-600 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"/>
                             </div>
                         </div>
@@ -1059,6 +1063,7 @@
                                 </label>
                                 <div class="relative">
                                     <select v-model="skuForm.category" required
+                                        style="background-color: #121212 !important; color: #ffffff !important;"
                                         class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20 appearance-none cursor-pointer pr-10">
                                         <option v-for="cat in categories" :key="cat" :value="cat" class="bg-[#181818] text-white">
                                             {{ cat }}
@@ -1076,12 +1081,13 @@
                                 <div class="relative">
                                     <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#C5A073] text-xs font-serif font-bold">₹</span>
                                     <input v-model.number="skuForm.price" min="0" step="0.01" required type="number" placeholder="0.00"
+                                        style="background-color: #121212 !important; color: #ffffff !important;"
                                         class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl py-2.5 pl-9 pr-3 text-xs text-white font-mono outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"/>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 2. Bottom Section: Product Image & Product Description -->
+                        <!-- 3. Bottom Section: Product Image & Product Description -->
                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
                             
                             <!-- Product Image Upload (4 cols) -->
@@ -1128,6 +1134,7 @@
                             <div class="sm:col-span-8 space-y-1">
                                 <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">Product Description</label>
                                 <textarea v-model="skuForm.description" rows="4" placeholder="Enter product description, botanical notes, or care instructions..."
+                                    style="background-color: #121212 !important; color: #ffffff !important;"
                                     class="w-full h-32 bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl p-3 text-xs text-white placeholder:text-gray-600 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20 resize-none"></textarea>
                             </div>
                         </div>
