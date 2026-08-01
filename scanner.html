@@ -1049,63 +1049,80 @@
                             }
                         });
 
-                        async function processProductScan(rawSku) {
-                            if (!rawSku) return;
-                            const sku = String(rawSku).trim();
-                            if (sku.length < 3) return; // Ignore noise/short scans
+                        async function processProductScan(rawText) {
+                            if (!rawText) return;
+                            const text = String(rawText).trim();
+                            if (text.length < 2) return;
 
-                            // 1. Strictly verify product against catalog database to prevent fake/corrupted products
+                            let realSku = text;
+                            let prodName = '';
+                            let prodPrice = 0;
+                            let imgUrl = '';
+                            let prodDesc = '';
+
+                            // 1. Check if scanned barcode is a structured JSON QR code
+                            if (text.startsWith('{') && text.endsWith('}')) {
+                                try {
+                                    const parsed = JSON.parse(text);
+                                    if (parsed.sku) realSku = String(parsed.sku).trim();
+                                    if (parsed.name) prodName = String(parsed.name).trim();
+                                    if (parsed.price) prodPrice = Number(parsed.price) || 0;
+                                    if (parsed.image_url) imgUrl = String(parsed.image_url).trim();
+                                } catch (e) {}
+                            }
+
+                            // 2. Perform database lookup to verify product and fetch full details
                             try {
-                                const lookupRes = await fetch(`/api/skus/lookup/${encodeURIComponent(sku)}`);
-                                if (!lookupRes.ok) {
-                                    statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: #f59e0b;">warning</span> Not found in catalog: <strong>${sku}</strong>`;
+                                const lookupRes = await fetch(`/api/skus/lookup/${encodeURIComponent(realSku)}`);
+                                if (lookupRes.ok) {
+                                    const prodData = await lookupRes.json();
+                                    if (prodData && prodData.name) {
+                                        realSku = prodData.sku || realSku;
+                                        prodName = prodData.name || prodName;
+                                        imgUrl = prodData.image_url || imgUrl;
+                                        prodPrice = prodData.price !== undefined ? prodData.price : prodPrice;
+                                        prodDesc = prodData.description || '';
+                                    }
+                                } else if (!prodName) {
+                                    // If database lookup failed and no JSON payload was present
+                                    statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: #f59e0b;">warning</span> Not found in catalog: <strong>${realSku}</strong>`;
                                     statusEl.className = 'status-hud warning';
-                                    return; // DO NOT add fake/unverified product to cart!
-                                }
-                                
-                                const prodData = await lookupRes.json();
-                                if (!prodData || !prodData.name) {
-                                    statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: #f59e0b;">warning</span> Invalid Product: <strong>${sku}</strong>`;
                                     return;
                                 }
-
-                                // 2. Play sound feedback only for verified real products
-                                playScanSound();
-
-                                const maskBox = document.getElementById('mask-box');
-                                if (maskBox) {
-                                    maskBox.classList.add('scan-success');
-                                    setTimeout(() => maskBox.classList.remove('scan-success'), 1200);
-                                }
-
-                                const realSku = prodData.sku || sku;
-                                const prodName = prodData.name;
-                                const imgUrl = prodData.image_url || '';
-                                const prodPrice = prodData.price || 0;
-                                const prodDesc = prodData.description || '';
-
-                                statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${prodName}</strong>`;
-                                statusEl.className = 'status-hud success';
-
-                                // 3. Add to mobile cart
-                                const existingIndex = scannedProductsList.findIndex(i => i.sku.toUpperCase() === realSku.toUpperCase());
-                                if (existingIndex !== -1) {
-                                    scannedProductsList[existingIndex].qty += 1;
-                                } else {
-                                    scannedProductsList.push({
-                                        sku: realSku,
-                                        name: prodName,
-                                        price: prodPrice,
-                                        description: prodDesc,
-                                        image_url: imgUrl,
-                                        qty: 1
-                                    });
-                                }
-
-                                renderScannedProductsList();
                             } catch (e) {
-                                console.error('Product lookup error:', e);
+                                if (!prodName) return;
                             }
+
+                            if (!prodName) prodName = realSku;
+
+                            // 3. Play sound feedback only for verified real products
+                            playScanSound();
+
+                            const maskBox = document.getElementById('mask-box');
+                            if (maskBox) {
+                                maskBox.classList.add('scan-success');
+                                setTimeout(() => maskBox.classList.remove('scan-success'), 1200);
+                            }
+
+                            statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${prodName}</strong>`;
+                            statusEl.className = 'status-hud success';
+
+                            // 4. Add item to mobile cart array
+                            const existingIndex = scannedProductsList.findIndex(i => i.sku.toUpperCase() === realSku.toUpperCase());
+                            if (existingIndex !== -1) {
+                                scannedProductsList[existingIndex].qty += 1;
+                            } else {
+                                scannedProductsList.push({
+                                    sku: realSku,
+                                    name: prodName,
+                                    price: prodPrice,
+                                    description: prodDesc,
+                                    image_url: imgUrl,
+                                    qty: 1
+                                });
+                            }
+
+                            renderScannedProductsList();
                         }
 
                         const onScanSuccess = (decodedText) => {
