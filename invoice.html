@@ -924,7 +924,22 @@
                             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 text-xs font-bold uppercase tracking-wider mb-2">
                                 Payment Unsuccessful
                             </div>
-                            <p class="text-[11px] text-gray-400">The customer attempted payment but transaction failed or was cancelled.</p>
+                            <p class="text-[11px] text-gray-400 mb-4 text-center">The customer attempted payment but the transaction failed or was cancelled.</p>
+                            
+                            <div class="w-full space-y-2">
+                                <!-- Resend Payment Link via WhatsApp & Reset Status to Waiting Radar -->
+                                <button type="button" @click="resendPaymentLinkAndRetry" 
+                                    class="w-full bg-gradient-to-r from-[#d4b589] via-[#C5A073] to-[#a88250] text-black font-bold text-xs uppercase tracking-[0.15em] py-3 px-4 rounded-xl hover:shadow-[0_10px_25px_rgba(197,160,115,0.4)] active:scale-95 transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-base">send</span>
+                                    Resend Payment Link & Wait Live
+                                </button>
+                                
+                                <button type="button" @click="resetPaymentStatusToPending" 
+                                    class="w-full bg-white/5 hover:bg-white/10 border border-white/15 text-gray-300 text-xs font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-base">refresh</span>
+                                    Reset Status to Waiting Radar
+                                </button>
+                            </div>
                         </template>
                     </div>
 
@@ -939,6 +954,12 @@
 
                     <!-- Action Links & Testing Utilities -->
                     <div class="space-y-3">
+                        <button v-if="paymentModalStatus !== 'PENDING'" type="button" @click="resendPaymentLinkAndRetry" 
+                            class="w-full bg-[#C5A073]/10 hover:bg-[#C5A073]/20 border border-[#C5A073]/30 text-[#C5A073] text-xs font-bold uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                            <span class="material-symbols-outlined text-sm">send</span>
+                            <span>Resend Payment Link & Reset Radar</span>
+                        </button>
+
                         <div class="flex gap-2">
                             <button type="button" @click="copyPaymentLink" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
                                 <span class="material-symbols-outlined text-sm text-[#C5A073]">{{ paymentModalCopied ? 'check' : 'content_copy' }}</span>
@@ -950,11 +971,17 @@
                             </a>
                         </div>
 
-                        <!-- Testing Quick Action: Simulate Payment Success -->
-                        <button v-if="paymentModalStatus === 'PENDING'" type="button" @click="simulatePaymentSuccess" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
-                            <span class="material-symbols-outlined text-sm">science</span>
-                            <span>Simulate Payment Success (Local Test)</span>
-                        </button>
+                        <!-- Testing Quick Actions (Local Test) -->
+                        <div v-if="paymentModalStatus === 'PENDING'" class="flex gap-2">
+                            <button type="button" @click="simulatePaymentSuccess" class="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold py-2 px-2.5 rounded-xl transition-all flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-sm">check_circle</span>
+                                <span>Simulate Success</span>
+                            </button>
+                            <button type="button" @click="simulatePaymentFailure" class="flex-1 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-[11px] font-semibold py-2 px-2.5 rounded-xl transition-all flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-sm">cancel</span>
+                                <span>Simulate Failure</span>
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -1474,6 +1501,52 @@
                     setTimeout(() => paymentModalCopied.value = false, 2500);
                 };
 
+                const resendPaymentLinkAndRetry = async () => {
+                    // Reset status back to PENDING (re-triggering animated radar & waiting state)
+                    paymentModalStatus.value = 'PENDING';
+                    if (paymentAutoCloseTimer.value) {
+                        clearTimeout(paymentAutoCloseTimer.value);
+                        paymentAutoCloseTimer.value = null;
+                    }
+                    if (!paymentPollInterval && paymentModalInvoiceId.value) {
+                        checkModalPaymentStatus(paymentModalInvoiceId.value);
+                        paymentPollInterval = setInterval(() => {
+                            checkModalPaymentStatus(paymentModalInvoiceId.value);
+                        }, 2000);
+                    }
+
+                    // Send via WhatsApp if phone available, or copy link
+                    if (invoiceData.value.phone && paymentModalLink.value) {
+                        const cleanPhone = invoiceData.value.phone.replace(/[^0-9]/g, '');
+                        let message = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
+                        message += `*INVOICE #${paymentModalInvoiceId.value}*\n`;
+                        message += `Client: ${paymentModalClientName.value || 'Valued Customer'}\n`;
+                        message += `Amount: ₹${paymentModalAmount.value.toLocaleString('en-IN')}\n\n`;
+                        message += `Please complete your payment using this link:\n${paymentModalLink.value}\n\n`;
+                        message += `Thank you! 🌸`;
+                        
+                        const targetPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
+                        const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
+                        window.open(waUrl, '_blank');
+                    } else {
+                        copyPaymentLink();
+                    }
+                };
+
+                const resetPaymentStatusToPending = () => {
+                    paymentModalStatus.value = 'PENDING';
+                    if (paymentAutoCloseTimer.value) {
+                        clearTimeout(paymentAutoCloseTimer.value);
+                        paymentAutoCloseTimer.value = null;
+                    }
+                    if (!paymentPollInterval && paymentModalInvoiceId.value) {
+                        checkModalPaymentStatus(paymentModalInvoiceId.value);
+                        paymentPollInterval = setInterval(() => {
+                            checkModalPaymentStatus(paymentModalInvoiceId.value);
+                        }, 2000);
+                    }
+                };
+
                 const simulatePaymentSuccess = async () => {
                     try {
                         await fetch('/api/payment/ccavenue/response', {
@@ -1488,6 +1561,23 @@
                         checkModalPaymentStatus(paymentModalInvoiceId.value);
                     } catch(e) {
                         console.error('Simulate payment failed', e);
+                    }
+                };
+
+                const simulatePaymentFailure = async () => {
+                    try {
+                        await fetch('/api/payment/ccavenue/response', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({
+                                order_id: paymentModalOrderNo.value || paymentModalInvoiceId.value,
+                                order_status: 'Failure',
+                                tracking_id: 'SIMULATED_FAIL_' + Math.random().toString(36).substring(2, 10).toUpperCase()
+                            })
+                        });
+                        checkModalPaymentStatus(paymentModalInvoiceId.value);
+                    } catch(e) {
+                        console.error('Simulate payment failure failed', e);
                     }
                 };
 
@@ -2089,7 +2179,10 @@
                     paymentModalCopied,
                     manualClosePaymentModal,
                     copyPaymentLink,
+                    resendPaymentLinkAndRetry,
+                    resetPaymentStatusToPending,
                     simulatePaymentSuccess,
+                    simulatePaymentFailure,
                     barcodeData,
                     barcodeQueue,
                     totalQueued,
