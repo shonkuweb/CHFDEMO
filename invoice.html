@@ -702,55 +702,6 @@
                             </button>
                         </div>
 
-                        <!-- LABEL CUSTOMIZER & OPTIONS TOOLBAR -->
-                        <div class="space-y-3.5 pt-3 border-t border-white/5">
-                            <div class="flex items-center justify-between">
-                                <label class="text-[10px] uppercase tracking-widest text-[#C5A073] font-bold flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-sm">tune</span> Label Customization Options
-                                </label>
-                                <span class="text-[9px] text-gray-400 font-mono">Dynamic Preview</span>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3 text-xs">
-                                <div>
-                                    <label class="block text-[9px] uppercase tracking-wider text-gray-400 font-bold mb-1">Columns / Row</label>
-                                    <select v-model.number="barcodeColumns" class="w-full bg-black/60 border border-white/15 text-white rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#C5A073]">
-                                        <option :value="4">4 Per Row (A4 44-Up)</option>
-                                        <option :value="3">3 Per Row (A4 21-Up)</option>
-                                        <option :value="2">2 Per Row (A4 14-Up)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[9px] uppercase tracking-wider text-gray-400 font-bold mb-1">Symbology</label>
-                                    <select v-model="barcodeSymbology" class="w-full bg-black/60 border border-white/15 text-white rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#C5A073]">
-                                        <option value="CODE128">Code 128 (Standard)</option>
-                                        <option value="EAN13">EAN-13</option>
-                                        <option value="CODE39">Code 39</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Display Toggles -->
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] font-semibold text-gray-300">
-                                <label class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20">
-                                    <input type="checkbox" v-model="showHeader" class="rounded accent-[#C5A073]"/>
-                                    <span>Header</span>
-                                </label>
-                                <label class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20">
-                                    <input type="checkbox" v-model="showName" class="rounded accent-[#C5A073]"/>
-                                    <span>Title</span>
-                                </label>
-                                <label class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20">
-                                    <input type="checkbox" v-model="showPrice" class="rounded accent-[#C5A073]"/>
-                                    <span>Price ₹</span>
-                                </label>
-                                <label class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20">
-                                    <input type="checkbox" v-model="showQRCode" class="rounded accent-[#C5A073]"/>
-                                    <span>QR Code</span>
-                                </label>
-                            </div>
-                        </div>
-
                         <!-- LIVE SINGLE LABEL REAL-TIME PREVIEW CARD -->
                         <div v-if="barcodeData.sku.trim()" class="space-y-2 pt-2 border-t border-white/5">
                             <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Single Label Real-Time Preview</label>
@@ -807,12 +758,6 @@
                                 <span class="material-symbols-outlined text-lg">add_circle</span>
                                 Add to Print Queue
                             </button>
-                        </div>
-
-                        <!-- Empty state hint when no SKU chosen -->
-                        <div v-else-if="barcodeTab === 'search'" class="py-8 px-4 text-center border border-dashed border-white/10 rounded-2xl bg-black/30 text-xs text-gray-500 space-y-2">
-                            <span class="material-symbols-outlined text-3xl text-[#C5A073]/60">touch_app</span>
-                            <p class="text-gray-400">Search and select a product above or click <strong>Demo SKUs</strong> to start generating barcodes.</p>
                         </div>
                     </div>
 
