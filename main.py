@@ -2414,7 +2414,7 @@ async def add_category(payload: CategoryPayload):
         conn.close()
     return {"status": "success", "name": clean_name}
 
-@app.delete("/api/categories/{category_name}")
+@app.delete("/api/categories/{category_name:path}")
 async def delete_category(category_name: str):
     ensure_sku_categories_table()
     conn = get_db_connection()
