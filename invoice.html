@@ -754,11 +754,10 @@
                                                     <span v-if="item.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(item.price).toLocaleString('en-IN') }}</span>
                                                 </div>
 
-                                                <!-- Middle: Optional Image + Barcode Graphic -->
-                                                <div class="w-full my-1.5 flex items-center justify-center gap-1 min-h-[40px]">
-                                                    <img v-if="item.image_url" :src="item.image_url" class="w-8 h-8 rounded object-cover border border-gray-300 shrink-0"/>
+                                                <!-- Middle: Barcode Graphic -->
+                                                <div class="w-full my-1.5 flex items-center justify-center min-h-[40px]">
                                                     <!-- Live Barcode Canvas element -->
-                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item.sku)" class="w-full max-h-[35px] object-contain"></canvas>
+                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item.sku)" class="w-full max-h-[38px] object-contain"></canvas>
                                                 </div>
 
                                                 <!-- Bottom: SKU String Code -->
@@ -1274,31 +1273,7 @@
                     
                     const canvas = document.createElement('canvas');
                     
-                    // Cache images for items
-                    const imageCache = {};
-                    for (const item of flattened) {
-                        if (item.image_url && !imageCache[item.image_url]) {
-                            try {
-                                const img = new Image();
-                                img.crossOrigin = 'Anonymous';
-                                await new Promise((resolve) => {
-                                    img.onload = () => {
-                                        try {
-                                            const tempCanvas = document.createElement('canvas');
-                                            tempCanvas.width = img.width;
-                                            tempCanvas.height = img.height;
-                                            const ctx = tempCanvas.getContext('2d');
-                                            ctx.drawImage(img, 0, 0);
-                                            imageCache[item.image_url] = tempCanvas.toDataURL('image/jpeg');
-                                        } catch(e) {}
-                                        resolve();
-                                    };
-                                    img.onerror = () => resolve();
-                                    img.src = item.image_url;
-                                });
-                            } catch(e) {}
-                        }
-                    }
+
 
                     setTimeout(() => {
                         try {
@@ -1336,14 +1311,7 @@
                                     doc.text(priceText, x + colWidth - priceWidth - 3, y + 5.5);
                                 }
                                 
-                                // 2. Draw Product Thumbnail if available
-                                let barcodeXOffset = 0;
-                                if (item.image_url && imageCache[item.image_url]) {
-                                    doc.addImage(imageCache[item.image_url], 'JPEG', x + 3, y + 7.5, 9, 9);
-                                    barcodeXOffset = 4;
-                                }
-                                
-                                // 3. Generate high-res CODE128 barcode
+                                // 2. Generate high-res CODE128 barcode graphic
                                 JsBarcode(canvas, item.sku, {
                                     format: "CODE128",
                                     lineColor: "#000000",
@@ -1355,14 +1323,14 @@
                                 });
                                 
                                 const barcodeDataUrl = canvas.toDataURL('image/png');
-                                const barcodeW = colWidth - 8 - (barcodeXOffset ? 6 : 0);
+                                const barcodeW = colWidth - 8;
                                 const barcodeH = 22;
-                                const barcodeX = x + (colWidth - barcodeW) / 2 + (barcodeXOffset ? 2 : 0);
+                                const barcodeX = x + (colWidth - barcodeW) / 2;
                                 const barcodeY = y + 8;
                                 
                                 doc.addImage(barcodeDataUrl, 'PNG', barcodeX, barcodeY, barcodeW, barcodeH);
                                 
-                                // 4. Draw SKU text at bottom
+                                // 3. Draw SKU text at bottom
                                 doc.setFontSize(8);
                                 doc.setFont('courier', 'bold');
                                 doc.setTextColor(30, 30, 30);
