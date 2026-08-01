@@ -55,6 +55,29 @@ let isReady = false;
 let isInitializing = false;
 let client = null;
 
+function resetAndReinitializeSession() {
+    console.log('Resetting WhatsApp session and clearing auth files...');
+    isReady = false;
+    isInitializing = false;
+    qrDataUrl = null;
+    if (client) {
+        try { client.destroy(); } catch (e) {}
+        client = null;
+    }
+    const sessionDir = path.join(authDir, 'session-whatsapp-client-v2');
+    if (fs.existsSync(sessionDir)) {
+        try {
+            fs.rmSync(sessionDir, { recursive: true, force: true });
+            console.log('Cleaned up session directory for fresh QR code generation.');
+        } catch (e) {
+            console.error('Failed to clean session directory:', e);
+        }
+    }
+    setTimeout(() => {
+        initializeWhatsAppClient();
+    }, 1500);
+}
+
 function initializeWhatsAppClient() {
     if (isInitializing) return;
     isInitializing = true;
@@ -64,6 +87,14 @@ function initializeWhatsAppClient() {
         try { client.destroy(); } catch (e) {}
         client = null;
     }
+
+    // Auto-recovery watchdog: if no QR or Ready within 25 seconds, clear stale session and retry
+    let watchdogTimer = setTimeout(() => {
+        if (!isReady && !qrDataUrl) {
+            console.warn('WhatsApp client initialization timed out without QR or Ready. Forcing session reset...');
+            resetAndReinitializeSession();
+        }
+    }, 25000);
 
     // Setup LocalAuth to persist session so we don't have to scan every time
     client = new Client({
@@ -90,6 +121,7 @@ function initializeWhatsAppClient() {
 
     client.on('qr', async (qr) => {
         console.log('QR Code generated. Scan to log in.');
+        if (watchdogTimer) clearTimeout(watchdogTimer);
         try {
             qrDataUrl = await qrcode.toDataURL(qr);
             isReady = false;
@@ -101,6 +133,7 @@ function initializeWhatsAppClient() {
 
     client.on('ready', () => {
         console.log('WhatsApp Client is ready!');
+        if (watchdogTimer) clearTimeout(watchdogTimer);
         isReady = true;
         isInitializing = false;
         qrDataUrl = null;
@@ -108,36 +141,24 @@ function initializeWhatsAppClient() {
 
     client.on('authenticated', () => {
         console.log('WhatsApp Client authenticated!');
+        if (watchdogTimer) clearTimeout(watchdogTimer);
     });
 
     client.on('auth_failure', msg => {
         console.error('Authentication failure', msg);
-        isReady = false;
-        isInitializing = false;
-        qrDataUrl = null;
-        // Clean up failed session data if auth fails
-        const sessionDir = path.join(authDir, 'session-whatsapp-client-v2');
-        if (fs.existsSync(sessionDir)) {
-            try {
-                fs.rmSync(sessionDir, { recursive: true, force: true });
-                console.log('Cleaned up failed session directory.');
-            } catch (e) {
-                console.error('Failed to clean session directory:', e);
-            }
-        }
+        if (watchdogTimer) clearTimeout(watchdogTimer);
+        resetAndReinitializeSession();
     });
 
     client.on('disconnected', (reason) => {
         console.log('WhatsApp Client was disconnected', reason);
-        isReady = false;
-        isInitializing = false;
-        qrDataUrl = null;
-        // Re-initialize client on disconnect
-        setTimeout(initializeWhatsAppClient, 5000);
+        if (watchdogTimer) clearTimeout(watchdogTimer);
+        resetAndReinitializeSession();
     });
 
     client.initialize().catch(err => {
         console.error('Failed to initialize WhatsApp client:', err);
+        if (watchdogTimer) clearTimeout(watchdogTimer);
         isInitializing = false;
         isReady = false;
         qrDataUrl = null;
