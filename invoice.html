@@ -719,18 +719,15 @@
                                 </button>
                             </div>
                             <div class="bg-white rounded-xl p-3 text-black border border-gray-300 shadow-xl flex flex-col justify-between items-center relative transition-transform">
-                                <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[8px] font-bold tracking-widest text-center py-0.5 rounded-t">
-                                    PLANT EXPERIENCE CENTRE
+                                <div class="w-full flex justify-between items-center text-[11px] font-bold pb-1.5 border-b border-gray-200 gap-2">
+                                    <span class="truncate text-gray-900 font-sans" :title="barcodeData.name || barcodeData.sku">{{ barcodeData.name || barcodeData.sku }}</span>
+                                    <span v-if="barcodeData.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(barcodeData.price).toLocaleString('en-IN') }}</span>
                                 </div>
-                                <div class="w-full flex justify-between items-center text-[10px] font-bold py-1 border-b border-gray-200 gap-1">
-                                    <span v-if="showName" class="truncate text-gray-900 font-sans">{{ barcodeData.name || barcodeData.sku }}</span>
-                                    <span v-if="showPrice && barcodeData.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(barcodeData.price).toLocaleString('en-IN') }}</span>
+                                <div class="w-full my-2 flex items-center justify-center min-h-[46px] bg-white px-2 py-1">
+                                    <canvas :ref="el => setBarcodeCanvasRef(el, barcodeData.sku, barcodeSymbology)" class="w-full max-h-[46px] object-contain"></canvas>
                                 </div>
-                                <div class="w-full my-2 flex items-center justify-center min-h-[42px]">
-                                    <canvas :ref="el => setBarcodeCanvasRef(el, barcodeData.sku, barcodeSymbology)" class="w-full max-h-[40px] object-contain"></canvas>
-                                </div>
-                                <div class="w-full text-center">
-                                    <span class="font-mono text-[10px] font-bold tracking-widest text-gray-800">SKU: {{ barcodeData.sku }}</span>
+                                <div class="w-full text-center pt-1 border-t border-gray-100">
+                                    <span class="font-mono text-[10px] font-extrabold tracking-widest text-gray-900">SKU: {{ barcodeData.sku }}</span>
                                 </div>
                             </div>
                         </div>
@@ -839,27 +836,22 @@
                                         <template v-for="(item, itemIdx) in barcodeQueue" :key="itemIdx">
                                             <!-- Render each barcode instance according to quantity -->
                                             <div v-for="qtyIdx in item.qty" :key="`${itemIdx}-${qtyIdx}`"
-                                                class="bg-white rounded-xl p-2.5 text-black border border-gray-200 shadow-sm flex flex-col justify-between items-center relative group hover:border-[#C5A073] hover:shadow-md transition-all">
+                                                class="bg-white rounded-xl p-3 text-black border border-gray-200 shadow-sm flex flex-col justify-between items-center relative group hover:border-[#C5A073] hover:shadow-md transition-all">
                                                 
-                                                <!-- Header -->
-                                                <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[7px] font-bold tracking-widest text-center py-0.5 rounded-t">
-                                                    PLANT EXPERIENCE CENTRE
-                                                </div>
-
                                                 <!-- Product Name & Price -->
-                                                <div class="w-full flex justify-between items-start text-[9px] font-bold pt-1 pb-1 border-b border-gray-200 gap-1">
-                                                    <span v-if="showName" class="truncate text-gray-900 font-sans" :title="item.name">{{ item.name || item.sku }}</span>
-                                                    <span v-if="showPrice && item.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(item.price).toLocaleString('en-IN') }}</span>
+                                                <div class="w-full flex justify-between items-center text-[10px] font-bold pb-1 border-b border-gray-200 gap-1.5">
+                                                    <span class="truncate text-gray-900 font-sans" :title="item.name">{{ item.name || item.sku }}</span>
+                                                    <span v-if="item.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(item.price).toLocaleString('en-IN') }}</span>
                                                 </div>
 
                                                 <!-- Barcode Graphic Canvas -->
-                                                <div class="w-full my-1.5 flex items-center justify-center min-h-[40px]">
-                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item.sku, barcodeSymbology)" class="w-full max-h-[38px] object-contain"></canvas>
+                                                <div class="w-full my-2 flex items-center justify-center min-h-[42px] bg-white px-1">
+                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item.sku, barcodeSymbology)" class="w-full max-h-[42px] object-contain"></canvas>
                                                 </div>
 
                                                 <!-- SKU String Code Footer -->
-                                                <div class="w-full text-center">
-                                                    <span class="font-mono text-[9px] font-bold tracking-wider text-gray-800">SKU: {{ item.sku }}</span>
+                                                <div class="w-full text-center pt-1 border-t border-gray-100">
+                                                    <span class="font-mono text-[9px] font-extrabold tracking-wider text-gray-900">SKU: {{ item.sku }}</span>
                                                 </div>
 
                                                 <!-- Delete / Adjust Badge on Hover -->
@@ -1608,76 +1600,50 @@
                             doc.setLineWidth(0.2);
                             doc.roundedRect(x + 1, y + 1, colWidth - 2, rowHeight - 2, 1.5, 1.5, 'S');
 
-                            // 1. Top Brand Header
-                            let topOffset = 1;
-                            if (showHeader.value) {
-                                doc.setFillColor(20, 20, 20);
-                                doc.rect(x + 1, y + 1, colWidth - 2, 4.5, 'F');
-                                doc.setFontSize(cols === 2 ? 7 : 5.5);
-                                doc.setFont('helvetica', 'bold');
-                                doc.setTextColor(197, 160, 115);
-                                doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4.2, { align: 'center' });
-                                topOffset = 5.5;
-                            }
+                            // 1. Label boundary border
+                            doc.setDrawColor(200, 200, 200);
+                            doc.setLineWidth(0.2);
+                            doc.roundedRect(x + 1, y + 1, colWidth - 2, rowHeight - 2, 1.2, 1.2, 'S');
 
-                            // 2. Product Name & Price Row
-                            if (showName.value || showPrice.value) {
+                            // 2. Product Name (Top Left)
+                            doc.setFontSize(cols === 2 ? 9 : 7.5);
+                            doc.setFont('helvetica', 'bold');
+                            doc.setTextColor(20, 20, 20);
+                            const maxChar = cols === 4 ? 16 : (cols === 3 ? 24 : 36);
+                            const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '..' : item.name;
+                            doc.text(truncatedName, x + 3, y + 5.5);
+
+                            // 3. Price (Top Right)
+                            if (item.price > 0) {
                                 doc.setFontSize(cols === 2 ? 9 : 7.5);
                                 doc.setFont('helvetica', 'bold');
-                                doc.setTextColor(20, 20, 20);
-
-                                if (showName.value) {
-                                    const maxChar = cols === 4 ? 18 : (cols === 3 ? 24 : 36);
-                                    const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '...' : item.name;
-                                    doc.text(truncatedName, x + 3, y + topOffset + 4.5);
-                                }
-
-                                if (showPrice.value && item.price > 0) {
-                                    doc.setFontSize(cols === 2 ? 9 : 7.5);
-                                    doc.setFont('helvetica', 'bold');
-                                    doc.setTextColor(180, 120, 30);
-                                    const priceText = `INR ${item.price.toLocaleString('en-IN')}`;
-                                    doc.text(priceText, x + colWidth - 3, y + topOffset + 4.5, { align: 'right' });
-                                }
+                                doc.setTextColor(180, 110, 20);
+                                const priceText = `INR ${item.price.toLocaleString('en-IN')}`;
+                                doc.text(priceText, x + colWidth - 3, y + 5.5, { align: 'right' });
                             }
 
-                            // 3. Generate QR Code (if enabled)
-                            let barcodeLeft = x + 3;
-                            let barcodeW = colWidth - 6;
-                            if (showQRCode.value) {
-                                const qrPayload = JSON.stringify({
-                                    sku: item.sku,
-                                    name: item.name,
-                                    price: item.price
-                                });
-                                const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
-                                if (qrDataUrl) {
-                                    doc.addImage(qrDataUrl, 'PNG', x + 3, y + topOffset + 6.5, 14, 14);
-                                    barcodeLeft = x + 19;
-                                    barcodeW = colWidth - 21;
-                                }
-                            }
-
-                            // 4. Generate high-res 1D barcode graphic
-                            JsBarcode(canvas, item.sku, {
-                                format: barcodeSymbology.value || "CODE128",
+                            // 4. Valid High-Res 1D Code 128 Barcode Graphic (Center)
+                            const cleanSku = String(item.sku).trim().toUpperCase();
+                            JsBarcode(canvas, cleanSku, {
+                                format: "CODE128",
                                 lineColor: "#000000",
                                 width: 3,
-                                height: 70,
+                                height: 80,
                                 displayValue: false,
-                                margin: 6,
+                                margin: 10,
                                 background: "#ffffff"
                             });
 
                             const barcodeDataUrl = canvas.toDataURL('image/png');
-                            const barcodeH = cols === 2 ? 20 : 15;
-                            doc.addImage(barcodeDataUrl, 'PNG', barcodeLeft, y + topOffset + 6.5, barcodeW, barcodeH);
+                            const barcodeW = colWidth - 6;
+                            const barcodeH = rowHeight - 14;
+                            doc.addImage(barcodeDataUrl, 'PNG', x + 3, y + 7, barcodeW, barcodeH);
 
-                            // 5. SKU Code Footer
-                            doc.setFontSize(cols === 2 ? 8 : 7);
+                            // 5. SKU Code / ID Footer (Bottom Center)
+                            doc.setFontSize(cols === 2 ? 8.5 : 7.5);
                             doc.setFont('courier', 'bold');
                             doc.setTextColor(30, 30, 30);
-                            doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + rowHeight - 2.5, { align: 'center' });
+                            doc.text(`SKU: ${cleanSku}`, x + (colWidth / 2), y + rowHeight - 2.5, { align: 'center' });
                         }
                         
                         doc.save(`chf_inventory_barcodes_${cols}col.pdf`);
