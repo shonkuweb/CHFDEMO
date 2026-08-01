@@ -1429,12 +1429,205 @@
                     }, 2000);
                 };
 
+                const generateBrandedInvoicePDF = (invData, paymentRef = '', totalAmt = 0) => {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4');
+                    
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+
+                    // 1. Top Luxury Header Banner (Dark Charcoal)
+                    doc.setFillColor(15, 15, 15);
+                    doc.rect(0, 0, pageWidth, 44, 'F');
+
+                    // Accent Gold Line
+                    doc.setFillColor(197, 160, 115);
+                    doc.rect(0, 44, pageWidth, 2, 'F');
+
+                    // Brand Title & Subtitle
+                    doc.setTextColor(197, 160, 115);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(18);
+                    doc.text('PLANT EXPERIENCE CENTRE', 15, 20);
+
+                    doc.setTextColor(200, 200, 200);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8.5);
+                    doc.text('Botanical Sanctuary & Luxury Plant Catalogue', 15, 27);
+                    doc.text('Official Digital Tax Receipt & Billing Statement', 15, 33);
+
+                    // Right Header: Invoice Badge & Date
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('TAX INVOICE', pageWidth - 15, 18, { align: 'right' });
+
+                    doc.setTextColor(197, 160, 115);
+                    doc.setFontSize(10);
+                    const invNumber = invData.number || 'INV-000000';
+                    doc.text(`#${invNumber}`, pageWidth - 15, 25, { align: 'right' });
+
+                    doc.setTextColor(180, 180, 180);
+                    doc.setFontSize(8);
+                    const todayDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                    doc.text(`Date: ${todayDate}`, pageWidth - 15, 32, { align: 'right' });
+
+                    // 2. Client & Payment Info Card
+                    let startY = 56;
+                    doc.setFillColor(248, 248, 248);
+                    doc.roundedRect(15, startY, pageWidth - 30, 28, 3, 3, 'F');
+                    doc.setDrawColor(225, 225, 225);
+                    doc.roundedRect(15, startY, pageWidth - 30, 28, 3, 3, 'S');
+
+                    doc.setTextColor(110, 110, 110);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(8);
+                    doc.text('BILLED TO:', 22, startY + 8);
+                    doc.text('PAYMENT DETAILS:', pageWidth / 2 + 10, startY + 8);
+
+                    doc.setTextColor(20, 20, 20);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(invData.clientName || 'Valued Customer', 22, startY + 15);
+
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(80, 80, 80);
+                    doc.text(`Phone: ${invData.phone || 'N/A'}`, 22, startY + 22);
+
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(34, 197, 94); // Green PAID IN FULL
+                    doc.text('Status: PAID IN FULL', pageWidth / 2 + 10, startY + 15);
+
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(80, 80, 80);
+                    doc.setFontSize(8.5);
+                    const refStr = paymentRef ? `CCAvenue Ref: ${paymentRef}` : 'Method: Online CCAvenue Payment';
+                    doc.text(refStr, pageWidth / 2 + 10, startY + 22);
+
+                    // 3. Items Table Header
+                    let tableY = startY + 36;
+                    doc.setFillColor(18, 18, 18);
+                    doc.rect(15, tableY, pageWidth - 30, 10, 'F');
+
+                    doc.setTextColor(197, 160, 115);
+                    doc.setFontSize(8.5);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('#', 20, tableY + 6.5);
+                    doc.text('ITEM DESCRIPTION / SKU', 32, tableY + 6.5);
+                    doc.text('QTY', 125, tableY + 6.5, { align: 'center' });
+                    doc.text('UNIT PRICE', 155, tableY + 6.5, { align: 'right' });
+                    doc.text('TOTAL', pageWidth - 20, tableY + 6.5, { align: 'right' });
+
+                    // 4. Line Items Rows with Exact Calculation
+                    let currentY = tableY + 10;
+                    const items = invData.items || [];
+                    let calcTotal = 0;
+
+                    items.forEach((item, idx) => {
+                        const itemQty = Number(item.qty) || 1;
+                        const itemPrice = Number(item.price) || 0;
+                        const itemSubtotal = itemQty * itemPrice;
+                        calcTotal += itemSubtotal;
+
+                        if (idx % 2 === 0) {
+                            doc.setFillColor(252, 252, 252);
+                            doc.rect(15, currentY, pageWidth - 30, 9, 'F');
+                        }
+
+                        doc.setDrawColor(240, 240, 240);
+                        doc.line(15, currentY + 9, pageWidth - 15, currentY + 9);
+
+                        doc.setTextColor(50, 50, 50);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(9);
+                        doc.text(String(idx + 1), 20, currentY + 6);
+
+                        const descText = item.description || 'Product Item';
+                        const truncatedDesc = descText.length > 45 ? descText.substring(0, 43) + '...' : descText;
+                        doc.text(truncatedDesc, 32, currentY + 6);
+
+                        doc.text(String(itemQty), 125, currentY + 6, { align: 'center' });
+                        doc.text(`INR ${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 155, currentY + 6, { align: 'right' });
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(`INR ${itemSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 20, currentY + 6, { align: 'right' });
+
+                        currentY += 9;
+                    });
+
+                    // 5. Total Calculation Summary Box
+                    const finalAmount = totalAmt > 0 ? totalAmt : calcTotal;
+                    currentY += 6;
+
+                    doc.setFillColor(248, 246, 240);
+                    doc.roundedRect(pageWidth - 105, currentY, 90, 24, 3, 3, 'F');
+                    doc.setDrawColor(197, 160, 115);
+                    doc.setLineWidth(0.4);
+                    doc.roundedRect(pageWidth - 105, currentY, 90, 24, 3, 3, 'S');
+
+                    doc.setTextColor(100, 100, 100);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9);
+                    doc.text('SUBTOTAL:', pageWidth - 98, currentY + 8);
+                    doc.text(`INR ${calcTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 20, currentY + 8, { align: 'right' });
+
+                    doc.setTextColor(18, 18, 18);
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('TOTAL PAID:', pageWidth - 98, currentY + 17);
+                    doc.setTextColor(180, 120, 30);
+                    doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 20, currentY + 17, { align: 'right' });
+
+                    // 6. Luxury Footer
+                    const footerY = pageHeight - 25;
+                    doc.setDrawColor(220, 220, 220);
+                    doc.setLineWidth(0.3);
+                    doc.line(15, footerY, pageWidth - 15, footerY);
+
+                    doc.setTextColor(120, 120, 120);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8);
+                    doc.text('Plant Experience Centre • Premium Botanical Experience', pageWidth / 2, footerY + 6, { align: 'center' });
+                    doc.text('Thank you for your purchase! This digital tax receipt has been auto-generated for your records.', pageWidth / 2, footerY + 11, { align: 'center' });
+
+                    return doc.output('datauristring');
+                };
+
+                const sendBrandedPDFInvoiceToWhatsApp = async (refNo = '') => {
+                    if (!invoiceData.value.phone) return;
+                    
+                    try {
+                        const pdfBase64 = generateBrandedInvoicePDF(invoiceData.value, refNo, totalAmount.value);
+                        const invId = invoiceData.value.number || paymentModalInvoiceId.value || 'INV-000000';
+                        
+                        let caption = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
+                        caption += `Dear *${invoiceData.value.clientName || 'Valued Customer'}*,\n`;
+                        caption += `Thank you for your payment! Your transaction for *Invoice #${invId}* (Total: ₹${totalAmount.value.toLocaleString('en-IN')}) is successful.\n\n`;
+                        caption += `Attached is your official *Plant Experience Centre Tax Invoice & Receipt PDF*.\n\n`;
+                        caption += `We look forward to serving you again! 🌸`;
+
+                        await fetch('/api/whatsapp/send', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                number: invoiceData.value.phone,
+                                message: caption,
+                                pdf_base64: pdfBase64,
+                                filename: `Invoice_${invId}.pdf`
+                            })
+                        });
+                    } catch(e) {
+                        console.error('Failed to send branded PDF invoice to WhatsApp:', e);
+                    }
+                };
+
                 const checkModalPaymentStatus = async (invId) => {
                     if (!invId) return;
                     try {
                         const res = await fetch(`/api/payment/status/${invId}`);
                         const data = await res.json();
                         if (data && data.payment_status) {
+                            const isNewSuccess = (data.payment_status === 'SUCCESS' || data.payment_status === 'PAID') && paymentModalStatus.value !== 'SUCCESS';
                             paymentModalStatus.value = data.payment_status;
                             currentPaymentStatus.value = data.payment_status;
                             if (data.order_id) paymentModalOrderNo.value = data.order_id;
@@ -1446,10 +1639,15 @@
                                     clearInterval(paymentPollInterval);
                                     paymentPollInterval = null;
                                 }
+
+                                if (isNewSuccess) {
+                                    sendBrandedPDFInvoiceToWhatsApp(paymentModalRefNo.value);
+                                }
+
                                 if (!paymentAutoCloseTimer.value) {
                                     paymentAutoCloseTimer.value = setTimeout(() => {
                                         closePaymentModalAndResetBill();
-                                    }, 3500);
+                                    }, 4500);
                                 }
                             }
                         }
@@ -1656,15 +1854,18 @@
                         
                         message += `\nThank you for choosing us!`;
 
-                        // 3. Send WhatsApp message
+                        // 3. Send WhatsApp message with branded PDF invoice attachment
                         let whatsappNotice = null;
                         try {
+                            const pdfBase64 = generateBrandedInvoicePDF(invoiceData.value, '', totalAmount.value);
                             const res = await fetch('/api/whatsapp/send', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     number: invoiceData.value.phone,
-                                    message: message
+                                    message: message,
+                                    pdf_base64: pdfBase64,
+                                    filename: `Invoice_${invId}.pdf`
                                 })
                             });
 

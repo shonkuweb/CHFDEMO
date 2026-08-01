@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
 const fs = require('fs');
 const path = require('path');
@@ -9,7 +9,8 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Clean up stale Chromium lock files before starting
 const authDir = path.join(__dirname, '.wwebjs_auth_v2');
@@ -154,10 +155,10 @@ app.post('/api/whatsapp/send', async (req, res) => {
         return res.status(400).json({ error: 'WhatsApp client is not ready. Please scan the QR code first.' });
     }
 
-    const { number, message } = req.body;
+    const { number, message, pdf_base64, filename } = req.body;
 
-    if (!number || !message) {
-        return res.status(400).json({ error: 'Phone number and message are required.' });
+    if (!number) {
+        return res.status(400).json({ error: 'Phone number is required.' });
     }
 
     try {
@@ -182,9 +183,19 @@ app.post('/api/whatsapp/send', async (req, res) => {
             console.warn('isRegisteredUser check bypassed:', regErr.message);
         }
         
-        const response = await client.sendMessage(chatId, message);
-        console.log(`WhatsApp message successfully sent to ${chatId}`);
-        return res.json({ success: true, messageId: response.id ? response.id._serialized : null });
+        if (pdf_base64) {
+            const cleanBase64 = pdf_base64.replace(/^data:application\/pdf;base64,/, '');
+            const mediaName = filename || 'Plant_Experience_Centre_Invoice.pdf';
+            const media = new MessageMedia('application/pdf', cleanBase64, mediaName);
+            const options = message ? { caption: message } : {};
+            const response = await client.sendMessage(chatId, media, options);
+            console.log(`WhatsApp PDF invoice successfully sent to ${chatId}`);
+            return res.json({ success: true, messageId: response.id ? response.id._serialized : null });
+        } else {
+            const response = await client.sendMessage(chatId, message);
+            console.log(`WhatsApp text message successfully sent to ${chatId}`);
+            return res.json({ success: true, messageId: response.id ? response.id._serialized : null });
+        }
     } catch (error) {
         console.error('Error sending message:', error);
         res.status(500).json({ error: 'Failed to send message on WhatsApp. Make sure your phone is connected.', details: error.toString() });
