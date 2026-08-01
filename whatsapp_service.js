@@ -101,7 +101,7 @@ function initializeWhatsAppClient() {
         authStrategy: new LocalAuth({ clientId: 'whatsapp-client-v2', dataPath: './.wwebjs_auth_v2' }),
         webVersionCache: {
             type: 'remotePath',
-            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1014111620-alpha.html'
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1041203030-alpha.html'
         },
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
         puppeteer: {

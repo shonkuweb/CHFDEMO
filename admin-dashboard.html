@@ -1530,7 +1530,7 @@
                         const data = await res.json();
                         waReady.value = data.ready;
                         waQrUrl.value = data.qr;
-                        waError.value = '';
+                        waError.value = data.error || '';
                     } catch (e) {
                         waError.value = "Cannot connect to WhatsApp microservice.";
                         waReady.value = false;
