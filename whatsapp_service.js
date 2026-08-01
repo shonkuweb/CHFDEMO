@@ -69,8 +69,8 @@ function initializeWhatsAppClient() {
     client = new Client({
         authStrategy: new LocalAuth({ clientId: 'whatsapp-client-v2', dataPath: './.wwebjs_auth_v2' }),
         webVersionCache: {
-            type: 'remote',
-            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/{version}.html'
+            type: 'remotePath',
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1014111620-alpha.html'
         },
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
         puppeteer: {
@@ -136,7 +136,12 @@ function initializeWhatsAppClient() {
         setTimeout(initializeWhatsAppClient, 5000);
     });
 
-    client.initialize();
+    client.initialize().catch(err => {
+        console.error('Failed to initialize WhatsApp client:', err);
+        isInitializing = false;
+        isReady = false;
+        qrDataUrl = null;
+    });
 }
 
 initializeWhatsAppClient();
