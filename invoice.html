@@ -1008,17 +1008,29 @@
                     <!-- Form Content Body -->
                     <form @submit.prevent="saveSku" class="space-y-5 relative z-10">
                         
-                        <!-- 1. Top Section: Product Name, Category & Retail Price -->
+                        <!-- 1. Top Section: SKU ID, Product Name, Category & Retail Price -->
                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-                            <!-- Product Name (5 cols) -->
-                            <div class="sm:col-span-5 space-y-1">
+                            <!-- SKU Code / ID (6 cols) -->
+                            <div class="sm:col-span-6 space-y-1">
+                                <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block flex items-center justify-between">
+                                    <span>SKU Code / ID <span class="text-red-400">*</span></span>
+                                    <button type="button" @click="autoGenerateSkuCode" class="text-[9px] uppercase font-bold text-[#C5A073] hover:text-white transition-colors">
+                                        ⚡ Auto-Generate
+                                    </button>
+                                </label>
+                                <input v-model="skuForm.sku" required type="text" placeholder="e.g. CAPPL-900168116WXLM"
+                                    class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder:text-gray-600 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"/>
+                            </div>
+
+                            <!-- Product Name (6 cols) -->
+                            <div class="sm:col-span-6 space-y-1">
                                 <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">Product Name <span class="text-red-400">*</span></label>
-                                <input v-model="skuForm.name" required type="text" placeholder="e.g. Ficus Bonsai Tree"
+                                <input v-model="skuForm.name" required type="text" placeholder="e.g. Ceramic Pot CAPPL-9001 (Set of 4)"
                                     class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-gray-600 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"/>
                             </div>
 
-                            <!-- Category (4 cols) -->
-                            <div class="sm:col-span-4 space-y-1">
+                            <!-- Category (7 cols) -->
+                            <div class="sm:col-span-7 space-y-1">
                                 <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">Category <span class="text-red-400">*</span></label>
                                 <div class="relative">
                                     <select v-model="skuForm.category" required
@@ -1031,9 +1043,9 @@
                                 </div>
                             </div>
 
-                            <!-- Retail Product Price (3 cols) -->
-                            <div class="sm:col-span-3 space-y-1">
-                                <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">Price (₹) <span class="text-red-400">*</span></label>
+                            <!-- Retail Product Price (5 cols) -->
+                            <div class="sm:col-span-5 space-y-1">
+                                <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">Retail Product Price (₹) <span class="text-red-400">*</span></label>
                                 <div class="relative">
                                     <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#C5A073] text-xs font-serif font-bold">₹</span>
                                     <input v-model.number="skuForm.price" min="0" step="0.01" required type="number" placeholder="0.00"
