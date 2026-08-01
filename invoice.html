@@ -583,111 +583,254 @@
 
             <!-- Generate Barcodes View (Studio & 4-in-a-Row Sheet Printer) -->
             <div v-if="currentTab === 'barcodes'" class="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-7xl mx-auto space-y-8">
-                <!-- Header -->
-                <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-white/10">
-                    <div>
-                        <div class="inline-flex items-center px-3 py-1 mb-3 rounded-full border border-[#C5A073]/30 bg-[#C5A073]/10">
-                            <span class="material-symbols-outlined text-sm text-[#C5A073] mr-2">qr_code_2</span>
-                            <span class="text-[10px] uppercase tracking-widest text-[#C5A073] font-semibold">Barcode Studio & Sheet Printer</span>
-                        </div>
-                        <h1 class="serif-title text-3xl md:text-4xl font-normal text-white">Generate Inventory Barcodes</h1>
-                        <p class="text-text-muted text-xs md:text-sm mt-1">Search catalog products or add custom SKUs with image thumbnails & prices. Barcodes are formatted 4 in a row for printing.</p>
-                    </div>
+                <!-- Ambient Studio Header -->
+                <header class="relative overflow-hidden bg-gradient-to-br from-[#0f0f0f] via-[#090909] to-[#040404] border border-[#C5A073]/30 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-2xl">
+                    <!-- Subtle Ambient Golden Radial Glow -->
+                    <div class="absolute -top-24 -left-24 w-96 h-96 bg-[#C5A073]/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-[#C5A073]/5 rounded-full blur-3xl pointer-events-none"></div>
 
-                    <!-- Quick Stats Badges -->
-                    <div class="flex items-center gap-3 bg-white/5 border border-white/10 p-3 rounded-2xl">
-                        <div class="text-center px-3 border-r border-white/10">
-                            <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">Total Labels</span>
-                            <span class="serif-title text-2xl text-[#C5A073]">{{ totalQueued }}</span>
+                    <div class="relative z-10 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
+                        <div>
+                            <div class="inline-flex items-center px-3.5 py-1 mb-3 rounded-full border border-[#C5A073]/40 bg-[#C5A073]/15 text-[#C5A073] shadow-[0_0_15px_rgba(197,160,115,0.2)]">
+                                <span class="material-symbols-outlined text-sm mr-2 animate-pulse">qr_code_2</span>
+                                <span class="text-[10px] uppercase tracking-[0.2em] font-extrabold">Studio & Batch Sheet Printer</span>
+                            </div>
+                            <h1 class="serif-title text-3xl sm:text-4xl xl:text-5xl font-light text-white tracking-wide">Generate Inventory Barcodes</h1>
+                            <p class="text-gray-400 text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed">
+                                Customize label elements, search catalog products or add custom SKUs, preview live sticker sheets, and export high-resolution A4 printable PDFs.
+                            </p>
                         </div>
-                        <div class="text-center px-3 border-r border-white/10">
-                            <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">Unique SKUs</span>
-                            <span class="serif-title text-2xl text-white">{{ barcodeQueue.length }}</span>
-                        </div>
-                        <div class="text-center px-3">
-                            <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">Sheet Layout</span>
-                            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">4 Per Row</span>
+
+                        <!-- Header Live Stats & Quick Actions Toolbar -->
+                        <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto">
+                            <!-- Quick Stats Badges -->
+                            <div class="flex items-center gap-3 bg-black/60 border border-white/10 p-3 rounded-2xl backdrop-blur-md">
+                                <div class="text-center px-3 border-r border-white/10">
+                                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">Total Labels</span>
+                                    <span class="serif-title text-2xl text-[#C5A073] font-bold">{{ totalQueued }}</span>
+                                </div>
+                                <div class="text-center px-3 border-r border-white/10">
+                                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">Unique SKUs</span>
+                                    <span class="serif-title text-2xl text-white font-bold">{{ barcodeQueue.length }}</span>
+                                </div>
+                                <div class="text-center px-3">
+                                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">A4 Sheets</span>
+                                    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                        {{ Math.ceil(totalQueued / (barcodeColumns * 11)) || 1 }} Sheet(s)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Quick Preset Actions -->
+                            <div class="flex items-center gap-2">
+                                <button type="button" @click="loadDemoSkus" 
+                                    class="px-3.5 py-2.5 rounded-2xl bg-white/5 border border-[#C5A073]/30 text-[#C5A073] hover:bg-[#C5A073]/20 hover:border-[#C5A073] text-xs font-bold transition-all shadow-md flex items-center gap-1.5 active:scale-95"
+                                    title="Pre-fill queue with sample plant catalog SKUs for testing">
+                                    <span class="material-symbols-outlined text-sm">auto_fix_high</span>
+                                    <span>Demo SKUs</span>
+                                </button>
+
+                                <button type="button" v-if="barcodeQueue.length > 0" @click="fillSheetSpace" 
+                                    class="px-3.5 py-2.5 rounded-2xl bg-white/5 border border-white/15 text-gray-300 hover:text-white hover:bg-white/10 text-xs font-bold transition-all shadow-md flex items-center gap-1.5 active:scale-95"
+                                    title="Duplicate last SKU quantity to complete full row">
+                                    <span class="material-symbols-outlined text-sm">grid_view</span>
+                                    <span>Auto-Fill Row</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </header>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <!-- LEFT COLUMN: SKU Search & Configurator (5 cols) -->
-                    <div class="lg:col-span-5 space-y-6 bg-[#0c0c0c] border border-white/10 p-6 md:p-8 rounded-3xl shadow-2xl relative">
-                        <div class="flex justify-between items-center pb-3 border-b border-white/5">
-                            <h3 class="serif-title text-lg text-white font-normal">1. Select SKU</h3>
-                            <span class="text-[10px] uppercase tracking-widest text-[#C5A073] font-bold">Step 1</span>
+                    <!-- LEFT COLUMN: SKU Search, Customizer & Live Single Label Preview (5 cols) -->
+                    <div class="lg:col-span-5 space-y-6 bg-gradient-to-b from-[#0d0d0d] to-[#080808] border border-white/10 p-6 md:p-7 rounded-3xl shadow-2xl relative overflow-hidden">
+                        <div class="flex items-center justify-between pb-4 border-b border-white/5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-[#C5A073] animate-ping"></span>
+                                <h3 class="serif-title text-xl text-white font-normal">1. Select & Configure SKU</h3>
+                            </div>
+                            <span class="text-[10px] uppercase tracking-widest bg-[#C5A073]/15 text-[#C5A073] border border-[#C5A073]/30 px-2.5 py-1 rounded-full font-bold">Step 1</span>
                         </div>
 
-                        <!-- Searchbar for SKUs (Only element shown initially) -->
-                        <div class="relative space-y-2">
-                            <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Search Catalog Product</label>
+                        <!-- 3-Mode Selection Tabs -->
+                        <div class="grid grid-cols-3 gap-1 bg-black/60 p-1 rounded-2xl border border-white/10 text-xs font-semibold">
+                            <button type="button" @click="barcodeTab = 'search'" 
+                                :class="[barcodeTab === 'search' ? 'bg-[#C5A073] text-black font-bold shadow-lg' : 'text-gray-400 hover:text-white', 'py-2 rounded-xl transition-all flex items-center justify-center gap-1']">
+                                <span class="material-symbols-outlined text-sm">search</span>
+                                <span>Catalog</span>
+                            </button>
+                            <button type="button" @click="barcodeTab = 'custom'" 
+                                :class="[barcodeTab === 'custom' ? 'bg-[#C5A073] text-black font-bold shadow-lg' : 'text-gray-400 hover:text-white', 'py-2 rounded-xl transition-all flex items-center justify-center gap-1']">
+                                <span class="material-symbols-outlined text-sm">add_box</span>
+                                <span>Custom</span>
+                            </button>
+                            <button type="button" @click="barcodeTab = 'batch'" 
+                                :class="[barcodeTab === 'batch' ? 'bg-[#C5A073] text-black font-bold shadow-lg' : 'text-gray-400 hover:text-white', 'py-2 rounded-xl transition-all flex items-center justify-center gap-1']">
+                                <span class="material-symbols-outlined text-sm">checklist</span>
+                                <span>Batch</span>
+                            </button>
+                        </div>
+
+                        <!-- TAB 1: CATALOG SEARCH -->
+                        <div v-if="barcodeTab === 'search'" class="space-y-4">
+                            <div class="relative space-y-1.5">
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Search Catalog Product</label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">search</span>
+                                    <input type="text" v-model="barcodeSearchQuery" @focus="showBarcodeSearchDropdown = true" @keyup.enter="selectCustomSkuForBarcode(barcodeSearchQuery)"
+                                        class="w-full bg-black/70 border border-white/15 focus:border-[#C5A073] rounded-2xl py-3.5 pl-10 pr-10 text-xs text-white placeholder:text-gray-500 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"
+                                        placeholder="Type to search product name or SKU code..."/>
+                                    <button v-if="barcodeSearchQuery" @click="clearSelectedSku" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+                                        <span class="material-symbols-outlined text-sm">close</span>
+                                    </button>
+                                </div>
+
+                                <!-- Autocomplete Dropdown -->
+                                <div v-if="showBarcodeSearchDropdown && (filteredBarcodeSkus.length > 0 || barcodeSearchQuery.trim())" class="absolute left-0 right-0 top-full mt-2 bg-[#121212] border border-[#C5A073]/40 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto custom-scrollbar">
+                                    <div v-for="item in filteredBarcodeSkus" :key="item.id || item.sku" @click="selectSkuForBarcode(item)"
+                                        class="p-3 hover:bg-[#C5A073]/15 transition-colors cursor-pointer border-b border-white/5 last:border-0 flex items-center gap-3 group">
+                                        <div class="w-10 h-10 rounded-lg bg-black/50 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                                            <img v-if="item.image_url" :src="item.image_url" class="w-full h-full object-cover"/>
+                                            <span v-else class="material-symbols-outlined text-gray-500 text-sm">eco</span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between">
+                                                <p class="text-xs text-white font-bold truncate group-hover:text-[#C5A073] transition-colors">{{ item.name }}</p>
+                                                <span class="text-xs font-mono font-bold text-[#C5A073]">₹{{ (item.price || 0).toLocaleString('en-IN') }}</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 mt-0.5">
+                                                <span class="font-mono text-[9px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{{ item.sku }}</span>
+                                                <span class="text-[9px] text-gray-500 uppercase tracking-wider">{{ item.category || 'General' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: CUSTOM SKU CREATOR -->
+                        <div v-if="barcodeTab === 'custom'" class="space-y-3.5 bg-black/40 p-4 rounded-2xl border border-white/5">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">SKU Code *</label>
+                                    <input type="text" v-model="barcodeData.sku" @input="barcodeData.sku = barcodeData.sku.toUpperCase()"
+                                        placeholder="e.g. PLANT-001" class="w-full bg-black/60 border border-white/15 focus:border-[#C5A073] rounded-xl px-3 py-2 text-xs font-mono text-white outline-none"/>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Price (₹)</label>
+                                    <input type="number" v-model.number="barcodeData.price" min="0"
+                                        placeholder="1499" class="w-full bg-black/60 border border-white/15 focus:border-[#C5A073] rounded-xl px-3 py-2 text-xs font-mono text-white outline-none"/>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Product Title</label>
+                                <input type="text" v-model="barcodeData.name"
+                                    placeholder="e.g. Ficus Microcarpa Bonsai" class="w-full bg-black/60 border border-white/15 focus:border-[#C5A073] rounded-xl px-3 py-2 text-xs text-white outline-none"/>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: BATCH SELECTOR -->
+                        <div v-if="barcodeTab === 'batch'" class="space-y-3 bg-black/40 p-4 rounded-2xl border border-white/5">
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">search</span>
-                                <input type="text" v-model="barcodeSearchQuery" @focus="showBarcodeSearchDropdown = true" @keyup.enter="selectCustomSkuForBarcode(barcodeSearchQuery)"
-                                    class="w-full bg-black/60 border border-white/15 focus:border-[#C5A073] rounded-2xl py-3.5 pl-10 pr-10 text-xs text-white placeholder:text-gray-500 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"
-                                    placeholder="Type to search product name or SKU code..."/>
-                                <button v-if="barcodeSearchQuery" @click="clearSelectedSku" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
-                                    <span class="material-symbols-outlined text-sm">close</span>
-                                </button>
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">search</span>
+                                <input type="text" v-model="batchSearchQuery" placeholder="Filter batch catalog..."
+                                    class="w-full bg-black/60 border border-white/15 focus:border-[#C5A073] rounded-xl py-2 pl-9 pr-3 text-xs text-white outline-none"/>
                             </div>
-
-                            <!-- Search Autocomplete Dropdown -->
-                            <div v-if="showBarcodeSearchDropdown && (filteredBarcodeSkus.length > 0 || barcodeSearchQuery.trim())" class="absolute left-0 right-0 top-full mt-2 bg-[#121212] border border-[#C5A073]/40 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto custom-scrollbar">
-                                <div v-for="item in filteredBarcodeSkus" :key="item.id || item.sku" @click="selectSkuForBarcode(item)"
-                                    class="p-3 hover:bg-[#C5A073]/15 transition-colors cursor-pointer border-b border-white/5 last:border-0 flex items-center gap-3 group">
-                                    <div class="w-10 h-10 rounded-lg bg-black/50 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
-                                        <img v-if="item.image_url" :src="item.image_url" class="w-full h-full object-cover"/>
-                                        <span v-else class="material-symbols-outlined text-gray-500 text-sm">eco</span>
+                            <div class="max-h-48 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                                <div v-for="item in batchFilteredSkus" :key="item.sku" 
+                                    @click="toggleBatchSelection(item.sku)"
+                                    :class="[selectedBatchItems[item.sku] ? 'border-[#C5A073] bg-[#C5A073]/15' : 'border-white/5 bg-white/5', 'p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all']">
+                                    <div class="flex items-center gap-2.5 min-w-0">
+                                        <input type="checkbox" :checked="!!selectedBatchItems[item.sku]" class="rounded text-[#C5A073] accent-[#C5A073]"/>
+                                        <div class="min-w-0">
+                                            <p class="text-xs font-bold text-white truncate">{{ item.name }}</p>
+                                            <p class="text-[9px] font-mono text-[#C5A073]">{{ item.sku }} • ₹{{ (item.price || 0).toLocaleString('en-IN') }}</p>
+                                        </div>
                                     </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center justify-between">
-                                            <p class="text-xs text-white font-bold truncate group-hover:text-[#C5A073] transition-colors">{{ item.name }}</p>
-                                            <span class="text-xs font-mono font-bold text-[#C5A073]">₹{{ (item.price || 0).toLocaleString('en-IN') }}</span>
-                                        </div>
-                                        <div class="flex items-center gap-2 mt-0.5">
-                                            <span class="font-mono text-[9px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{{ item.sku }}</span>
-                                            <span class="text-[9px] text-gray-500 uppercase tracking-wider">{{ item.category || 'General' }}</span>
-                                        </div>
+                                    <div v-if="selectedBatchItems[item.sku]" @click.stop class="flex items-center gap-1">
+                                        <span class="text-[9px] text-gray-400 font-mono">Qty:</span>
+                                        <input type="number" v-model.number="selectedBatchItems[item.sku]" min="1" class="w-12 text-center bg-black border border-white/20 rounded text-xs text-white font-mono py-0.5"/>
                                     </div>
                                 </div>
+                            </div>
+                            <button type="button" @click="addBatchToQueue" :disabled="Object.keys(selectedBatchItems).length === 0"
+                                class="w-full bg-[#C5A073] text-black hover:opacity-90 py-2.5 rounded-xl text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-30 flex items-center justify-center gap-1.5">
+                                <span class="material-symbols-outlined text-base">playlist_add</span>
+                                Add Selected ({{ Object.keys(selectedBatchItems).length }}) to Queue
+                            </button>
+                        </div>
 
-                                <!-- Custom SKU fallback option -->
-                                <div v-if="barcodeSearchQuery.trim() && !filteredBarcodeSkus.some(s => s.sku.toLowerCase() === barcodeSearchQuery.trim().toLowerCase())"
-                                    @click="selectCustomSkuForBarcode(barcodeSearchQuery)"
-                                    class="p-3 hover:bg-[#C5A073]/20 transition-colors cursor-pointer border-t border-white/10 flex items-center gap-2 text-xs font-semibold text-[#C5A073]">
-                                    <span class="material-symbols-outlined text-base">add_box</span>
-                                    Use "{{ barcodeSearchQuery.trim().toUpperCase() }}" as custom SKU
+                        <!-- LABEL CUSTOMIZER & OPTIONS TOOLBAR -->
+                        <div class="space-y-3.5 pt-3 border-t border-white/5">
+                            <div class="flex items-center justify-between">
+                                <label class="text-[10px] uppercase tracking-widest text-[#C5A073] font-bold flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">tune</span> Label Customization Options
+                                </label>
+                                <span class="text-[9px] text-gray-400 font-mono">Dynamic Preview</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 text-xs">
+                                <div>
+                                    <label class="block text-[9px] uppercase tracking-wider text-gray-400 font-bold mb-1">Columns / Row</label>
+                                    <select v-model.number="barcodeColumns" class="w-full bg-black/60 border border-white/15 text-white rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#C5A073]">
+                                        <option :value="4">4 Per Row (A4 44-Up)</option>
+                                        <option :value="3">3 Per Row (A4 21-Up)</option>
+                                        <option :value="2">2 Per Row (A4 14-Up)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] uppercase tracking-wider text-gray-400 font-bold mb-1">Symbology</label>
+                                    <select v-model="barcodeSymbology" class="w-full bg-black/60 border border-white/15 text-white rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#C5A073]">
+                                        <option value="CODE128">Code 128 (Standard)</option>
+                                        <option value="EAN13">EAN-13</option>
+                                        <option value="CODE39">Code 39</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Display Toggles -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] font-semibold text-gray-300">
+                                <label class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20">
+                                    <input type="checkbox" v-model="showHeader" class="rounded accent-[#C5A073]"/>
+                                    <span>Header</span>
+                                </label>
+                                <label class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20">
+                                    <input type="checkbox" v-model="showName" class="rounded accent-[#C5A073]"/>
+                                    <span>Title</span>
+                                </label>
+                                <label class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20">
+                                    <input type="checkbox" v-model="showPrice" class="rounded accent-[#C5A073]"/>
+                                    <span>Price ₹</span>
+                                </label>
+                                <label class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20">
+                                    <input type="checkbox" v-model="showQRCode" class="rounded accent-[#C5A073]"/>
+                                    <span>QR Code</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- LIVE SINGLE LABEL REAL-TIME PREVIEW CARD -->
+                        <div v-if="barcodeData.sku.trim()" class="space-y-2 pt-2 border-t border-white/5">
+                            <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Single Label Real-Time Preview</label>
+                            <div class="bg-white rounded-xl p-3 text-black border border-gray-300 shadow-xl flex flex-col justify-between items-center relative transition-transform">
+                                <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[8px] font-bold tracking-widest text-center py-0.5 rounded-t">
+                                    PLANT EXPERIENCE CENTRE
+                                </div>
+                                <div class="w-full flex justify-between items-center text-[10px] font-bold py-1 border-b border-gray-200 gap-1">
+                                    <span v-if="showName" class="truncate text-gray-900 font-sans">{{ barcodeData.name || barcodeData.sku }}</span>
+                                    <span v-if="showPrice && barcodeData.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(barcodeData.price).toLocaleString('en-IN') }}</span>
+                                </div>
+                                <div class="w-full my-2 flex items-center justify-center min-h-[42px]">
+                                    <canvas :ref="el => setBarcodeCanvasRef(el, barcodeData.sku, barcodeSymbology)" class="w-full max-h-[40px] object-contain"></canvas>
+                                </div>
+                                <div class="w-full text-center">
+                                    <span class="font-mono text-[10px] font-bold tracking-widest text-gray-800">SKU: {{ barcodeData.sku }}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Empty State Notice when no SKU selected -->
-                        <div v-if="!barcodeData.sku.trim()" class="py-8 px-4 text-center border border-dashed border-white/10 rounded-2xl bg-black/20 text-xs text-gray-500 space-y-2">
-                            <span class="material-symbols-outlined text-2xl text-gray-600">manage_search</span>
-                            <p>Search and select a product above to choose barcode quantity and add to print queue.</p>
-                        </div>
-
-                        <!-- Dynamic Quantity Controls & Add Button (Revealed ON SKU Selection) -->
-                        <div v-else class="space-y-5 animate-in fade-in duration-300 pt-2 border-t border-white/5">
-                            <!-- Selected Product Preview Card -->
-                            <div class="p-4 rounded-2xl bg-white/5 border border-[#C5A073]/30 flex items-center justify-between gap-3 shadow-lg">
-                                <div class="flex items-center gap-3 min-w-0">
-                                    <div class="w-12 h-12 rounded-xl bg-black/60 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
-                                        <img v-if="barcodeData.image_url" :src="barcodeData.image_url" class="w-full h-full object-cover"/>
-                                        <span v-else class="material-symbols-outlined text-[#C5A073]">eco</span>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="text-xs font-bold text-white truncate">{{ barcodeData.name || barcodeData.sku }}</p>
-                                        <p class="text-[10px] font-mono text-[#C5A073] mt-0.5">SKU: {{ barcodeData.sku }} • ₹{{ (barcodeData.price || 0).toLocaleString('en-IN') }}</p>
-                                    </div>
-                                </div>
-                                <button type="button" @click="clearSelectedSku" class="text-xs text-gray-400 hover:text-white underline shrink-0">
-                                    Change
-                                </button>
-                            </div>
-
-                            <!-- Quantity Selector (+ / - buttons) -->
+                        <!-- QUANTITY SELECTOR & ADD BUTTON -->
+                        <div v-if="barcodeData.sku.trim()" class="space-y-4 pt-2 border-t border-white/5 animate-in fade-in duration-300">
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
                                     <label class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Quantity (Labels to Print)</label>
@@ -700,94 +843,132 @@
                                         -
                                     </button>
                                     <input type="number" v-model.number="barcodeData.qty" min="1"
-                                        class="flex-1 bg-black/60 border border-[#C5A073]/40 rounded-2xl py-3 text-center text-lg text-white font-bold font-mono outline-none focus:ring-2 focus:ring-[#C5A073]/30">
+                                        class="flex-1 bg-black/70 border border-[#C5A073]/40 rounded-2xl py-3 text-center text-lg text-white font-bold font-mono outline-none focus:ring-2 focus:ring-[#C5A073]/30">
                                     <button type="button" @click="barcodeData.qty = (barcodeData.qty || 1) + 1" 
                                         class="w-12 h-12 rounded-2xl bg-white/5 border border-white/15 text-white font-bold text-xl hover:bg-white/15 transition-all flex items-center justify-center active:scale-95">
                                         +
                                     </button>
                                 </div>
 
-                                <!-- Quick Preset Pills -->
+                                <!-- Preset Pills -->
                                 <div class="flex gap-1.5 overflow-x-auto pb-1 pt-1">
-                                    <button type="button" v-for="q in [1, 4, 8, 12, 24, 50]" :key="q" @click="barcodeData.qty = q"
-                                        :class="[barcodeData.qty === q ? 'bg-[#C5A073] text-black font-bold' : 'bg-white/5 text-gray-400 hover:text-white', 'px-3 py-1 rounded-xl text-[10px] font-mono transition-all']">
-                                        +{{ q }}
+                                    <button type="button" v-for="q in [1, 4, 8, 12, 24, 44]" :key="q" @click="barcodeData.qty = q"
+                                        :class="[barcodeData.qty === q ? 'bg-[#C5A073] text-black font-bold shadow-md' : 'bg-white/5 text-gray-400 hover:text-white', 'px-3 py-1.5 rounded-xl text-[10px] font-mono transition-all']">
+                                        +{{ q }} {{ q === 4 ? '(1 Row)' : (q === 44 ? '(1 Sheet)' : '') }}
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Add to Queue Button -->
                             <button @click="addToQueue" :disabled="!barcodeData.sku.trim()"
-                                class="w-full mt-2 bg-gradient-to-r from-[#C5A073] to-[#d4b082] text-black hover:opacity-90 py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest font-bold transition-all shadow-xl shadow-[#C5A073]/15 flex items-center justify-center gap-2">
+                                class="w-full bg-gradient-to-r from-[#C5A073] via-[#d4b082] to-[#C5A073] text-black hover:brightness-110 py-4 px-6 rounded-2xl text-xs uppercase tracking-widest font-extrabold transition-all shadow-xl shadow-[#C5A073]/20 flex items-center justify-center gap-2 active:scale-98">
                                 <span class="material-symbols-outlined text-lg">add_circle</span>
                                 Add to Print Queue
                             </button>
                         </div>
+
+                        <!-- Empty state hint when no SKU chosen -->
+                        <div v-else-if="barcodeTab === 'search'" class="py-8 px-4 text-center border border-dashed border-white/10 rounded-2xl bg-black/30 text-xs text-gray-500 space-y-2">
+                            <span class="material-symbols-outlined text-3xl text-[#C5A073]/60">touch_app</span>
+                            <p class="text-gray-400">Search and select a product above or click <strong>Demo SKUs</strong> to start generating barcodes.</p>
+                        </div>
                     </div>
 
-                    <!-- RIGHT COLUMN: 4-in-a-Row Print Queue & Live Sheet Preview (7 cols) -->
-                    <div class="lg:col-span-7 bg-[#0c0c0c] border border-white/10 p-6 md:p-8 rounded-3xl shadow-2xl flex flex-col justify-between space-y-6">
+                    <!-- RIGHT COLUMN: Photorealistic A4 Print Sheet Preview (7 cols) -->
+                    <div class="lg:col-span-7 bg-gradient-to-b from-[#0d0d0d] to-[#080808] border border-white/10 p-6 md:p-7 rounded-3xl shadow-2xl flex flex-col justify-between space-y-6 relative overflow-hidden">
                         <div>
                             <!-- Section Header & Toolbar -->
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-white/5">
                                 <div>
-                                    <h3 class="serif-title text-lg text-white font-normal">2. Live Print Sheet Preview</h3>
-                                    <p class="text-[10px] text-gray-400 mt-0.5">Barcodes generated strictly 4 per row for standard sticker sheets.</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-[#C5A073] text-lg">print</span>
+                                        <h3 class="serif-title text-xl text-white font-normal">2. Live Print Sheet Canvas</h3>
+                                    </div>
+                                    <p class="text-[10px] text-gray-400 mt-0.5">Photorealistic A4 sticker sheet preview (Formatted {{ barcodeColumns }} per row).</p>
                                 </div>
+                                
                                 <div class="flex items-center gap-2">
-                                    <button v-if="barcodeQueue.length > 0" @click="barcodeQueue = []" class="px-3 py-1.5 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-all flex items-center gap-1">
+                                    <span v-if="totalPages > 1" class="text-[10px] font-mono bg-white/5 border border-white/10 px-2.5 py-1 rounded-xl text-gray-300">
+                                        Page {{ currentPreviewPage }} of {{ totalPages }}
+                                    </span>
+                                    <button v-if="barcodeQueue.length > 0" @click="barcodeQueue = []" 
+                                        class="px-3 py-1.5 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-all flex items-center gap-1 active:scale-95">
                                         <span class="material-symbols-outlined text-sm">delete_sweep</span> Clear Queue
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Empty Queue State -->
-                            <div v-if="barcodeQueue.length === 0" class="py-20 text-center flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-black/20 my-4">
-                                <div class="w-16 h-16 rounded-2xl bg-[#C5A073]/10 border border-[#C5A073]/20 flex items-center justify-center text-[#C5A073] mb-3">
-                                    <span class="material-symbols-outlined text-3xl">qr_code_scanner</span>
+                            <div v-if="barcodeQueue.length === 0" class="py-24 text-center flex flex-col items-center justify-center border border-dashed border-white/10 rounded-3xl bg-black/40 my-4 space-y-4">
+                                <div class="w-20 h-20 rounded-3xl bg-[#C5A073]/10 border border-[#C5A073]/20 flex items-center justify-center text-[#C5A073] shadow-[0_0_30px_rgba(197,160,115,0.15)] animate-bounce">
+                                    <span class="material-symbols-outlined text-4xl">qr_code_scanner</span>
                                 </div>
-                                <h4 class="serif-title text-xl text-white font-normal mb-1">Queue is Empty</h4>
-                                <p class="text-xs text-gray-400 max-w-xs mx-auto">Select a product from the catalog search or enter SKU details on the left to queue barcodes in 4-in-a-row layout.</p>
+                                <div>
+                                    <h4 class="serif-title text-2xl text-white font-normal mb-1">Queue is Empty</h4>
+                                    <p class="text-xs text-gray-400 max-w-sm mx-auto leading-relaxed">
+                                        Select a catalog product or enter custom SKU details to populate your printable barcode sheet.
+                                    </p>
+                                </div>
+                                <button type="button" @click="loadDemoSkus" class="px-5 py-2.5 rounded-2xl bg-[#C5A073] text-black font-extrabold text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-lg">
+                                    Pre-fill 4 Demo Plant SKUs
+                                </button>
                             </div>
 
-                            <!-- 4-in-a-Row Barcode Grid Preview -->
+                            <!-- PHOTOREALISTIC A4 STICKER SHEET CANVAS PREVIEW -->
                             <div v-else class="space-y-4 my-4">
                                 <div class="flex items-center justify-between text-xs text-gray-400 px-1">
-                                    <span>Previewing <strong>{{ totalQueued }}</strong> total label(s) across {{ Math.ceil(totalQueued / 4) }} row(s)</span>
-                                    <span class="font-mono text-[#C5A073] font-bold">4 COLUMNS / ROW</span>
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                        Previewing <strong>{{ totalQueued }}</strong> total label(s) across <strong>{{ Math.ceil(totalQueued / barcodeColumns) }}</strong> row(s)
+                                    </span>
+                                    <span class="font-mono text-[#C5A073] font-bold bg-[#C5A073]/10 px-2.5 py-0.5 rounded-md border border-[#C5A073]/20 uppercase">
+                                        {{ barcodeColumns }} COLUMNS / ROW
+                                    </span>
                                 </div>
 
-                                <!-- Scrollable 4-Column Grid Container -->
-                                <div class="max-h-[480px] overflow-y-auto pr-1 space-y-4 custom-scrollbar">
-                                    <!-- 4-Column Grid Preview -->
-                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-black/40 p-4 border border-white/5 rounded-2xl print-sheet-area">
+                                <!-- A4 Printable Paper Canvas Wrapper -->
+                                <div class="bg-white rounded-2xl p-5 md:p-6 text-black border border-gray-300 shadow-[0_20px_50px_rgba(0,0,0,0.9)] max-h-[520px] overflow-y-auto custom-scrollbar relative">
+                                    <!-- Decorative A4 Sheet Header Banner -->
+                                    <div class="flex justify-between items-center border-b border-dashed border-gray-300 pb-2 mb-4 text-[9px] font-mono text-gray-400 uppercase tracking-wider select-none">
+                                        <span>CHF INVENTORY STICKER SHEET — A4 STANDARD ({{ barcodeColumns }} COLUMNS)</span>
+                                        <span>PRINT DENSITY: 300 DPI</span>
+                                    </div>
+
+                                    <!-- Grid Preview according to columns (4, 3, or 2) -->
+                                    <div :class="['grid gap-3', barcodeColumns === 4 ? 'grid-cols-2 sm:grid-cols-4' : (barcodeColumns === 3 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2')]">
                                         <template v-for="(item, itemIdx) in barcodeQueue" :key="itemIdx">
                                             <!-- Render each barcode instance according to quantity -->
                                             <div v-for="qtyIdx in item.qty" :key="`${itemIdx}-${qtyIdx}`"
-                                                class="bg-white rounded-xl p-2.5 text-black border border-gray-200 shadow-md flex flex-col justify-between items-center relative group hover:scale-[1.02] transition-transform">
+                                                class="bg-white rounded-xl p-2.5 text-black border border-gray-200 shadow-sm flex flex-col justify-between items-center relative group hover:border-[#C5A073] hover:shadow-md transition-all">
                                                 
-                                                <!-- Top: Name & Price -->
-                                                <div class="w-full flex justify-between items-start text-[9px] font-bold pb-1 border-b border-gray-200 gap-1">
-                                                    <span class="truncate text-gray-900 font-sans" :title="item.name">{{ item.name || item.sku }}</span>
-                                                    <span v-if="item.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(item.price).toLocaleString('en-IN') }}</span>
+                                                <!-- Header -->
+                                                <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[7px] font-bold tracking-widest text-center py-0.5 rounded-t">
+                                                    PLANT EXPERIENCE CENTRE
                                                 </div>
 
-                                                <!-- Middle: Barcode Graphic -->
+                                                <!-- Product Name & Price -->
+                                                <div class="w-full flex justify-between items-start text-[9px] font-bold pt-1 pb-1 border-b border-gray-200 gap-1">
+                                                    <span v-if="showName" class="truncate text-gray-900 font-sans" :title="item.name">{{ item.name || item.sku }}</span>
+                                                    <span v-if="showPrice && item.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(item.price).toLocaleString('en-IN') }}</span>
+                                                </div>
+
+                                                <!-- Barcode Graphic Canvas -->
                                                 <div class="w-full my-1.5 flex items-center justify-center min-h-[40px]">
-                                                    <!-- Live Barcode Canvas element -->
-                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item.sku)" class="w-full max-h-[38px] object-contain"></canvas>
+                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item.sku, barcodeSymbology)" class="w-full max-h-[38px] object-contain"></canvas>
                                                 </div>
 
-                                                <!-- Bottom: SKU String Code -->
+                                                <!-- SKU String Code Footer -->
                                                 <div class="w-full text-center">
-                                                    <span class="font-mono text-[9px] font-bold tracking-wider text-gray-800">{{ item.sku }}</span>
+                                                    <span class="font-mono text-[9px] font-bold tracking-wider text-gray-800">SKU: {{ item.sku }}</span>
                                                 </div>
 
-                                                <!-- Delete badge on hover -->
-                                                <button @click="removeFromQueue(itemIdx)" title="Remove item"
-                                                    class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md no-print">
-                                                    <span class="material-symbols-outlined text-xs">close</span>
-                                                </button>
+                                                <!-- Delete / Adjust Badge on Hover -->
+                                                <div class="absolute -top-2 -right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                                    <button @click="removeFromQueue(itemIdx)" title="Remove item from queue"
+                                                        class="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                                                        <span class="material-symbols-outlined text-xs">close</span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </template>
                                     </div>
@@ -795,13 +976,19 @@
                             </div>
                         </div>
 
-                        <!-- Action Toolbar (Download PDF Button Centered) -->
-                        <div class="pt-4 border-t border-white/10 flex justify-center">
+                        <!-- Action Toolbar (Download PDF Button & Print) -->
+                        <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-3">
                             <button @click="downloadPDF" :disabled="barcodeQueue.length === 0 || isPrinting"
-                                class="w-full max-w-md bg-ivory text-black hover:bg-white py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest font-bold transition-all shadow-xl disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                                <span v-if="isPrinting" class="material-symbols-outlined text-base animate-spin">refresh</span>
-                                <span v-else class="material-symbols-outlined text-base">picture_as_pdf</span>
-                                {{ isPrinting ? 'Generating PDF...' : 'Download 4-in-a-Row PDF' }}
+                                class="w-full sm:w-auto flex-1 bg-gradient-to-r from-[#C5A073] via-[#e5c598] to-[#C5A073] text-black hover:brightness-110 py-4 px-8 rounded-2xl text-xs uppercase tracking-widest font-extrabold transition-all shadow-xl shadow-[#C5A073]/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-98">
+                                <span v-if="isPrinting" class="material-symbols-outlined text-lg animate-spin">refresh</span>
+                                <span v-else class="material-symbols-outlined text-lg">picture_as_pdf</span>
+                                <span>{{ isPrinting ? 'Generating High-Res PDF...' : 'Download Printable A4 PDF Sheet' }}</span>
+                            </button>
+
+                            <button type="button" @click="printBarcodes" :disabled="barcodeQueue.length === 0"
+                                class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white/5 border border-white/15 text-white hover:bg-white/15 text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-40 flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-base">print</span>
+                                <span>Print Sheet</span>
                             </button>
                         </div>
                     </div>
@@ -1024,141 +1211,138 @@
                     </div>
 
                     <!-- Form Content Body -->
-                    <form @submit.prevent="saveSku" class="space-y-5 relative z-10">
-                        
-                        <!-- 1. Row 1: Product Name & SKU ID -->
-                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-                            <!-- Product Name (7 cols) -->
-                            <div class="sm:col-span-7 space-y-1.5">
-                                <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">
-                                    Product Name <span class="text-red-400">*</span>
-                                </label>
-                                <input v-model="skuForm.name" required type="text" placeholder="e.g. Ceramic Pot CAPPL-9001 (Set of 4)"
-                                    style="background-color: #121212 !important; color: #ffffff !important;"
-                                    class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-gray-600 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"/>
-                            </div>
-
-                            <!-- SKU Code / ID (5 cols) -->
-                            <div class="sm:col-span-5 space-y-1.5">
-                                <div class="flex items-center justify-between">
-                                    <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">
-                                        SKU Code / ID <span class="text-red-400">*</span>
-                                    </label>
-                                    <button type="button" @click="autoGenerateSkuCode" class="text-[9px] uppercase font-bold text-[#C5A073] hover:text-white transition-colors">
-                                        ⚡ Auto-Gen
-                                    </button>
-                                </div>
-                                <input v-model="skuForm.sku" required type="text" placeholder="e.g. CAPPL-9001"
-                                    style="background-color: #121212 !important; color: #ffffff !important;"
-                                    class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder:text-gray-600 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"/>
-                            </div>
-                        </div>
-
-                        <!-- 2. Row 2: Category & Retail Price -->
-                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-                            <!-- Category (7 cols) -->
-                            <div class="sm:col-span-7 space-y-1.5">
-                                <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">
-                                    Category <span class="text-red-400">*</span>
-                                </label>
-                                <div class="relative">
-                                    <select v-model="skuForm.category" required
-                                        style="background-color: #121212 !important; color: #ffffff !important;"
-                                        class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20 appearance-none cursor-pointer pr-10">
-                                        <option v-for="cat in categories" :key="cat" :value="cat" class="bg-[#181818] text-white">
-                                            {{ cat }}
-                                        </option>
-                                    </select>
-                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A073] pointer-events-none text-base">expand_more</span>
-                                </div>
-                            </div>
-
-                            <!-- Retail Product Price (5 cols) -->
-                            <div class="sm:col-span-5 space-y-1.5">
-                                <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">
-                                    Retail Product Price (₹) <span class="text-red-400">*</span>
-                                </label>
-                                <div class="relative">
-                                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#C5A073] text-xs font-serif font-bold">₹</span>
-                                    <input v-model.number="skuForm.price" min="0" step="0.01" required type="number" placeholder="0.00"
-                                        style="background-color: #121212 !important; color: #ffffff !important;"
-                                        class="w-full bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl py-2.5 pl-9 pr-3 text-xs text-white font-mono outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3. Bottom Section: Product Image & Product Description -->
-                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                    <form @submit.prevent="saveSku" class="relative z-10">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             
-                            <!-- Product Image Upload (4 cols) -->
-                            <div class="sm:col-span-4 space-y-1">
-                                <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">Product Image</label>
-                                
-                                <div @dragover.prevent="isDragging = true"
-                                     @dragenter.prevent="isDragging = true"
-                                     @dragleave.prevent="isDragging = false"
-                                     @drop.prevent="handleImageDrop"
-                                     :class="[isDragging ? 'border-[#C5A073] bg-[#C5A073]/20 scale-[1.02]' : 'border-white/15 bg-black/60']"
-                                     class="h-32 relative rounded-xl border-2 border-dashed hover:border-[#C5A073]/60 transition-all group overflow-hidden flex flex-col items-center justify-center p-2">
-                                    <input type="file" ref="productImageInput" @change="uploadProductImage" accept="image/*" class="hidden" id="modal-sku-image-upload-input"/>
-                                    
-                                    <!-- Image Preview State -->
-                                    <template v-if="skuForm.image_url">
-                                        <img :src="skuForm.image_url" alt="Product Image" class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"/>
-                                        <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-opacity p-2 text-center">
-                                            <label for="modal-sku-image-upload-input" class="px-2.5 py-1 rounded-full bg-[#C5A073] text-black text-[10px] font-bold uppercase tracking-wider cursor-pointer hover:bg-white transition-colors">
-                                                Change
-                                            </label>
-                                            <button type="button" @click="skuForm.image_url = ''" class="text-[10px] text-red-400 hover:text-red-300 font-medium">
-                                                Remove
-                                            </button>
-                                        </div>
-                                    </template>
+                            <!-- Left Column: Core Details -->
+                            <div class="space-y-5">
+                                <!-- Product Name -->
+                                <div>
+                                    <label class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A073] block mb-1.5 flex items-center gap-1">
+                                        Product Name <span class="text-red-500 text-lg leading-none">*</span>
+                                    </label>
+                                    <input v-model="skuForm.name" required type="text" placeholder="e.g. Ceramic Pot CAPPL-9001"
+                                        style="background-color: #121212 !important; color: #ffffff !important;"
+                                        class="w-full bg-[#121212] border border-white/10 focus:border-[#C5A073] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 outline-none transition-all focus:ring-1 focus:ring-[#C5A073] shadow-inner"/>
+                                </div>
 
-                                    <!-- Empty Upload Dropzone State -->
-                                    <template v-else>
-                                        <label for="modal-sku-image-upload-input" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer p-2">
-                                            <div class="w-8 h-8 rounded-lg bg-[#C5A073]/10 border border-[#C5A073]/30 flex items-center justify-center text-[#C5A073] mb-1.5 group-hover:scale-110 transition-transform">
-                                                <span class="material-symbols-outlined text-lg" :class="{'animate-spin': uploadingProductImage}">{{ uploadingProductImage ? 'refresh' : (isDragging ? 'download' : 'cloud_upload') }}</span>
-                                            </div>
-                                            <p class="text-[10px] font-semibold text-white">
-                                                {{ uploadingProductImage ? 'Uploading...' : (isDragging ? 'Drop Image Here' : 'Upload or Drag & Drop') }}
-                                            </p>
-                                            <span class="text-[8px] text-gray-500 mt-0.5">PNG, JPG, WEBP</span>
+                                <!-- SKU Code -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <label class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A073] flex items-center gap-1">
+                                            SKU Code / ID <span class="text-red-500 text-lg leading-none">*</span>
                                         </label>
-                                    </template>
+                                        <button type="button" @click="autoGenerateSkuCode" class="text-[9px] uppercase font-bold text-[#C5A073] bg-[#C5A073]/10 hover:bg-[#C5A073]/20 px-2 py-1 rounded-md transition-colors flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[12px]">bolt</span> Auto-Gen
+                                        </button>
+                                    </div>
+                                    <input v-model="skuForm.sku" required type="text" placeholder="e.g. CAPPL-9001"
+                                        style="background-color: #121212 !important; color: #ffffff !important;"
+                                        class="w-full bg-[#121212] border border-white/10 focus:border-[#C5A073] rounded-xl px-4 py-3 text-sm text-white font-mono placeholder:text-white/20 outline-none transition-all focus:ring-1 focus:ring-[#C5A073] shadow-inner"/>
+                                </div>
+
+                                <!-- Category -->
+                                <div>
+                                    <label class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A073] block mb-1.5 flex items-center gap-1">
+                                        Category <span class="text-red-500 text-lg leading-none">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <select v-model="skuForm.category" required
+                                            style="background-color: #121212 !important; color: #ffffff !important;"
+                                            class="w-full bg-[#121212] border border-white/10 focus:border-[#C5A073] rounded-xl px-4 py-3 text-sm text-white outline-none transition-all focus:ring-1 focus:ring-[#C5A073] appearance-none cursor-pointer pr-10 shadow-inner">
+                                            <option v-for="cat in categories" :key="cat" :value="cat" class="bg-[#181818] text-white">
+                                                {{ cat }}
+                                            </option>
+                                        </select>
+                                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A073] pointer-events-none">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <!-- Retail Price -->
+                                <div>
+                                    <label class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A073] block mb-1.5 flex items-center gap-1">
+                                        Retail Price (₹) <span class="text-red-500 text-lg leading-none">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#C5A073] font-serif font-bold text-sm">₹</span>
+                                        <input v-model.number="skuForm.price" min="0" step="0.01" required type="number" placeholder="0.00"
+                                            style="background-color: #121212 !important; color: #ffffff !important;"
+                                            class="w-full bg-[#121212] border border-white/10 focus:border-[#C5A073] rounded-xl py-3 pl-9 pr-4 text-sm text-white font-mono outline-none transition-all focus:ring-1 focus:ring-[#C5A073] shadow-inner"/>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Product Description (8 cols) -->
-                            <div class="sm:col-span-8 space-y-1">
-                                <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">Product Description</label>
-                                <textarea v-model="skuForm.description" rows="4" placeholder="Enter product description, botanical notes, or care instructions..."
-                                    style="background-color: #121212 !important; color: #ffffff !important;"
-                                    class="w-full h-32 bg-[#121212] border border-white/15 focus:border-[#C5A073] rounded-xl p-3 text-xs text-white placeholder:text-gray-600 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20 resize-none"></textarea>
+                            <!-- Right Column: Media & Description -->
+                            <div class="space-y-5 flex flex-col h-full">
+                                <!-- Product Image Upload -->
+                                <div>
+                                    <label class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A073] block mb-1.5">Product Image</label>
+                                    <div @dragover.prevent="isDragging = true"
+                                         @dragenter.prevent="isDragging = true"
+                                         @dragleave.prevent="isDragging = false"
+                                         @drop.prevent="handleImageDrop"
+                                         :class="[isDragging ? 'border-[#C5A073] bg-[#C5A073]/10 scale-[1.02]' : 'border-white/10 bg-black/40']"
+                                         class="h-44 relative rounded-2xl border-2 border-dashed hover:border-[#C5A073]/50 transition-all group overflow-hidden flex flex-col items-center justify-center p-2 cursor-pointer shadow-inner">
+                                        <input type="file" ref="productImageInput" @change="uploadProductImage" accept="image/*" class="hidden" id="modal-sku-image-upload-input"/>
+                                        
+                                        <!-- Image Preview State -->
+                                        <template v-if="skuForm.image_url">
+                                            <img :src="skuForm.image_url" alt="Product Image" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"/>
+                                            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-3 transition-opacity duration-300">
+                                                <label for="modal-sku-image-upload-input" class="px-4 py-2 rounded-xl bg-[#C5A073] text-black text-xs font-bold uppercase tracking-widest cursor-pointer hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(197,160,115,0.4)]">
+                                                    Change Image
+                                                </label>
+                                                <button type="button" @click.stop.prevent="skuForm.image_url = ''" class="text-xs text-red-400 hover:text-red-300 font-bold tracking-wider uppercase">
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        </template>
+
+                                        <!-- Empty Upload Dropzone State -->
+                                        <template v-else>
+                                            <label for="modal-sku-image-upload-input" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer p-4">
+                                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C5A073]/20 to-transparent border border-[#C5A073]/30 flex items-center justify-center text-[#C5A073] mb-3 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(197,160,115,0.15)]">
+                                                    <span class="material-symbols-outlined text-2xl" :class="{'animate-spin': uploadingProductImage}">{{ uploadingProductImage ? 'refresh' : (isDragging ? 'download' : 'cloud_upload') }}</span>
+                                                </div>
+                                                <p class="text-xs font-bold text-white tracking-wide">
+                                                    {{ uploadingProductImage ? 'Uploading Image...' : (isDragging ? 'Drop Image Here' : 'Upload or Drag & Drop') }}
+                                                </p>
+                                                <span class="text-[9px] text-gray-500 mt-1 uppercase tracking-widest">High-Res PNG, JPG, WEBP</span>
+                                            </label>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- Product Description -->
+                                <div class="flex-grow flex flex-col">
+                                    <label class="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A073] block mb-1.5">Product Description</label>
+                                    <textarea v-model="skuForm.description" placeholder="Enter botanical notes, care instructions, or product details..."
+                                        style="background-color: #121212 !important; color: #ffffff !important;"
+                                        class="w-full flex-grow min-h-[100px] bg-[#121212] border border-white/10 focus:border-[#C5A073] rounded-xl p-4 text-sm text-white placeholder:text-white/20 outline-none transition-all focus:ring-1 focus:ring-[#C5A073] resize-none shadow-inner custom-scrollbar"></textarea>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Feedback Alerts -->
-                        <div v-if="skuSaveSuccess" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-                            <span class="material-symbols-outlined text-base">check_circle</span>
-                            Product saved successfully!
+                        <div v-if="skuSaveSuccess" class="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-semibold flex items-center gap-3 animate-in fade-in">
+                            <span class="material-symbols-outlined">check_circle</span>
+                            Product successfully saved to catalog!
                         </div>
-                        <div v-if="skuSaveError" class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-                            <span class="material-symbols-outlined text-base">error</span>
+                        <div v-if="skuSaveError" class="mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold flex items-center gap-3 animate-in fade-in">
+                            <span class="material-symbols-outlined">error</span>
                             {{ skuSaveError }}
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                        <div class="flex items-center justify-end gap-4 mt-8 pt-6 border-t border-white/10">
                             <button type="button" @click="showAddProductModal = false" 
-                                class="px-5 py-2.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-xs font-bold uppercase tracking-widest text-gray-300 transition-all">
+                                class="px-6 py-3 rounded-xl bg-transparent border border-white/10 hover:border-white/30 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all">
                                 Cancel
                             </button>
                             <button type="submit" :disabled="savingSku" 
-                                class="px-7 py-2.5 rounded-full bg-gradient-to-r from-[#d4b589] via-[#C5A073] to-[#a88250] text-black font-bold text-xs uppercase tracking-[0.15em] hover:shadow-[0_10px_25px_rgba(197,160,115,0.4)] active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50">
+                                class="px-8 py-3 rounded-xl bg-[#C5A073] hover:bg-[#d4af37] text-black font-bold text-xs uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(197,160,115,0.3)] hover:shadow-[0_0_30px_rgba(197,160,115,0.5)] active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50 disabled:active:scale-100">
                                 <span v-if="savingSku" class="material-symbols-outlined text-sm animate-spin">refresh</span>
-                                <span v-else class="material-symbols-outlined text-sm">{{ editingSkuId ? 'save' : 'add' }}</span>
+                                <span v-else class="material-symbols-outlined text-base">{{ editingSkuId ? 'save' : 'add' }}</span>
                                 {{ savingSku ? 'Saving...' : (editingSkuId ? 'Update Product' : 'Save to Catalog') }}
                             </button>
                         </div>
@@ -1198,7 +1382,7 @@
                     notes: ''
                 });
                 
-                // Barcode state & logic
+                // Barcode state & studio logic
                 const barcodeData = ref({
                     sku: '',
                     name: '',
@@ -1212,6 +1396,21 @@
                 const barcodeSearchQuery = ref('');
                 const showBarcodeSearchDropdown = ref(false);
 
+                // Upgraded Studio options & reactivity
+                const barcodeTab = ref('search'); // 'search' | 'custom' | 'batch'
+                const barcodeColumns = ref(4); // 4, 3, 2
+                const barcodeSymbology = ref('CODE128');
+                const showPrice = ref(true);
+                const showName = ref(true);
+                const showHeader = ref(true);
+                const showQRCode = ref(true);
+                const batchSearchQuery = ref('');
+                const selectedBatchItems = ref({});
+                const currentPreviewPage = ref(1);
+
+                const itemsPerPage = computed(() => barcodeColumns.value * 11);
+                const totalPages = computed(() => Math.max(1, Math.ceil(totalQueued.value / (itemsPerPage.value || 44))));
+
                 const filteredBarcodeSkus = computed(() => {
                     if (!barcodeSearchQuery.value.trim()) return skus.value.slice(0, 8);
                     const q = barcodeSearchQuery.value.toLowerCase();
@@ -1221,6 +1420,72 @@
                         (s.category || '').toLowerCase().includes(q)
                     ).slice(0, 10);
                 });
+
+                const batchFilteredSkus = computed(() => {
+                    if (!batchSearchQuery.value.trim()) return skus.value.slice(0, 12);
+                    const q = batchSearchQuery.value.toLowerCase();
+                    return skus.value.filter(s =>
+                        (s.sku || '').toLowerCase().includes(q) ||
+                        (s.name || '').toLowerCase().includes(q)
+                    );
+                });
+
+                const toggleBatchSelection = (sku) => {
+                    if (selectedBatchItems.value[sku]) {
+                        delete selectedBatchItems.value[sku];
+                    } else {
+                        selectedBatchItems.value[sku] = 4;
+                    }
+                };
+
+                const addBatchToQueue = () => {
+                    Object.keys(selectedBatchItems.value).forEach(sku => {
+                        const item = skus.value.find(s => s.sku === sku);
+                        if (item) {
+                            barcodeQueue.value.push({
+                                sku: item.sku,
+                                name: item.name,
+                                price: Number(item.price) || 0,
+                                qty: Math.max(1, Number(selectedBatchItems.value[sku]) || 1),
+                                image_url: item.image_url || ''
+                            });
+                        }
+                    });
+                    selectedBatchItems.value = {};
+                };
+
+                const loadDemoSkus = () => {
+                    const demos = [
+                        { sku: 'BONSAI-FICUS-01', name: 'Ficus Microcarpa Bonsai', price: 3499, qty: 4, image_url: '' },
+                        { sku: 'MONSTERA-DEL-02', name: 'Monstera Deliciosa Giant', price: 2199, qty: 4, image_url: '' },
+                        { sku: 'PLANTER-CERAM-03', name: 'Handcrafted Ceramic Planter', price: 1850, qty: 4, image_url: '' },
+                        { sku: 'OLIVE-TREE-04', name: 'Tuscan Olive Specimen', price: 8900, qty: 4, image_url: '' }
+                    ];
+                    if (skus.value && skus.value.length >= 4) {
+                        skus.value.slice(0, 4).forEach((s, idx) => {
+                            barcodeQueue.value.push({
+                                sku: s.sku || `SKU-00${idx+1}`,
+                                name: s.name || `Plant Item ${idx+1}`,
+                                price: Number(s.price) || 1250,
+                                qty: 4,
+                                image_url: s.image_url || ''
+                            });
+                        });
+                    } else {
+                        demos.forEach(d => barcodeQueue.value.push(d));
+                    }
+                };
+
+                const fillSheetSpace = () => {
+                    if (barcodeQueue.value.length === 0) return;
+                    const total = totalQueued.value;
+                    const cols = barcodeColumns.value;
+                    const remainder = total % cols;
+                    if (remainder === 0) return;
+                    const needed = cols - remainder;
+                    const lastItem = barcodeQueue.value[barcodeQueue.value.length - 1];
+                    lastItem.qty = (Number(lastItem.qty) || 1) + needed;
+                };
 
                 const selectSkuForBarcode = (item) => {
                     barcodeData.value.sku = item.sku;
@@ -1256,16 +1521,16 @@
                     showBarcodeSearchDropdown.value = false;
                 };
 
-                const setBarcodeCanvasRef = (canvasEl, skuCode) => {
+                const setBarcodeCanvasRef = (canvasEl, skuCode, symbology = 'CODE128') => {
                     if (!canvasEl || !skuCode) return;
                     try {
                         JsBarcode(canvasEl, skuCode, {
-                            format: "CODE128",
+                            format: symbology || "CODE128",
                             lineColor: "#000000",
                             width: 2,
-                            height: 50,
+                            height: 44,
                             displayValue: false,
-                            margin: 10,
+                            margin: 6,
                             background: "#ffffff"
                         });
                     } catch(e) {}
@@ -1368,14 +1633,14 @@
                     
                     const pdfWidth = 210;
                     const pdfHeight = 297;
-                    const cols = 4;
-                    const colWidth = 48;
-                    const rowHeight = 38;
+                    const cols = Number(barcodeColumns.value) || 4;
+                    const colWidth = cols === 4 ? 48 : (cols === 3 ? 64 : 96);
+                    const rowHeight = cols === 4 ? 38 : (cols === 3 ? 44 : 52);
                     
                     const marginX = (pdfWidth - (cols * colWidth)) / 2;
                     const marginY = 12;
                     const maxRows = Math.floor((pdfHeight - 2 * marginY) / rowHeight);
-                    const itemsPerPage = cols * maxRows;
+                    const pageCapacity = cols * maxRows;
                     
                     const canvas = document.createElement('canvas');
                     
@@ -1396,11 +1661,11 @@
                     try {
                         for (let index = 0; index < flattened.length; index++) {
                             const item = flattened[index];
-                            if (index > 0 && index % itemsPerPage === 0) {
+                            if (index > 0 && index % pageCapacity === 0) {
                                 doc.addPage();
                             }
                             
-                            const pageIndex = index % itemsPerPage;
+                            const pageIndex = index % pageCapacity;
                             const col = pageIndex % cols;
                             const row = Math.floor(pageIndex / cols);
                             
@@ -1413,45 +1678,58 @@
                             doc.roundedRect(x + 1, y + 1, colWidth - 2, rowHeight - 2, 1.5, 1.5, 'S');
 
                             // 1. Top Brand Header
-                            doc.setFillColor(20, 20, 20);
-                            doc.rect(x + 1, y + 1, colWidth - 2, 4.5, 'F');
-                            doc.setFontSize(5.5);
-                            doc.setFont('helvetica', 'bold');
-                            doc.setTextColor(197, 160, 115);
-                            doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4.2, { align: 'center' });
+                            let topOffset = 1;
+                            if (showHeader.value) {
+                                doc.setFillColor(20, 20, 20);
+                                doc.rect(x + 1, y + 1, colWidth - 2, 4.5, 'F');
+                                doc.setFontSize(cols === 2 ? 7 : 5.5);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(197, 160, 115);
+                                doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4.2, { align: 'center' });
+                                topOffset = 5.5;
+                            }
 
                             // 2. Product Name & Price Row
-                            doc.setFontSize(7.5);
-                            doc.setFont('helvetica', 'bold');
-                            doc.setTextColor(20, 20, 20);
-
-                            const truncatedName = item.name.length > 19 ? item.name.substring(0, 17) + '...' : item.name;
-                            doc.text(truncatedName, x + 3, y + 9.5);
-
-                            if (item.price > 0) {
-                                doc.setFontSize(7.5);
+                            if (showName.value || showPrice.value) {
+                                doc.setFontSize(cols === 2 ? 9 : 7.5);
                                 doc.setFont('helvetica', 'bold');
-                                doc.setTextColor(180, 120, 30);
-                                const priceText = `INR ${item.price.toLocaleString('en-IN')}`;
-                                doc.text(priceText, x + colWidth - 3, y + 9.5, { align: 'right' });
+                                doc.setTextColor(20, 20, 20);
+
+                                if (showName.value) {
+                                    const maxChar = cols === 4 ? 18 : (cols === 3 ? 24 : 36);
+                                    const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '...' : item.name;
+                                    doc.text(truncatedName, x + 3, y + topOffset + 4.5);
+                                }
+
+                                if (showPrice.value && item.price > 0) {
+                                    doc.setFontSize(cols === 2 ? 9 : 7.5);
+                                    doc.setFont('helvetica', 'bold');
+                                    doc.setTextColor(180, 120, 30);
+                                    const priceText = `INR ${item.price.toLocaleString('en-IN')}`;
+                                    doc.text(priceText, x + colWidth - 3, y + topOffset + 4.5, { align: 'right' });
+                                }
                             }
 
-                            // 3. Generate QR Code (Encodes SKU, Name, Price & Image URL into structured JSON)
-                            const qrPayload = JSON.stringify({
-                                sku: item.sku,
-                                name: item.name,
-                                price: item.price,
-                                image_url: item.image_url || ''
-                            });
-                            const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
-
-                            if (qrDataUrl) {
-                                doc.addImage(qrDataUrl, 'PNG', x + 3, y + 12, 16, 16);
+                            // 3. Generate QR Code (if enabled)
+                            let barcodeLeft = x + 3;
+                            let barcodeW = colWidth - 6;
+                            if (showQRCode.value) {
+                                const qrPayload = JSON.stringify({
+                                    sku: item.sku,
+                                    name: item.name,
+                                    price: item.price
+                                });
+                                const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                                if (qrDataUrl) {
+                                    doc.addImage(qrDataUrl, 'PNG', x + 3, y + topOffset + 6.5, 14, 14);
+                                    barcodeLeft = x + 19;
+                                    barcodeW = colWidth - 21;
+                                }
                             }
 
-                            // 4. Generate high-res CODE128 1D barcode graphic
+                            // 4. Generate high-res 1D barcode graphic
                             JsBarcode(canvas, item.sku, {
-                                format: "CODE128",
+                                format: barcodeSymbology.value || "CODE128",
                                 lineColor: "#000000",
                                 width: 3,
                                 height: 70,
@@ -1461,18 +1739,17 @@
                             });
 
                             const barcodeDataUrl = canvas.toDataURL('image/png');
-                            const barcodeW = colWidth - 22;
-                            const barcodeH = 16;
-                            doc.addImage(barcodeDataUrl, 'PNG', x + 20, y + 12, barcodeW, barcodeH);
+                            const barcodeH = cols === 2 ? 20 : 15;
+                            doc.addImage(barcodeDataUrl, 'PNG', barcodeLeft, y + topOffset + 6.5, barcodeW, barcodeH);
 
                             // 5. SKU Code Footer
-                            doc.setFontSize(7);
+                            doc.setFontSize(cols === 2 ? 8 : 7);
                             doc.setFont('courier', 'bold');
                             doc.setTextColor(30, 30, 30);
                             doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + rowHeight - 2.5, { align: 'center' });
                         }
                         
-                        doc.save('legit_inventory_barcodes_4inrow.pdf');
+                        doc.save(`chf_inventory_barcodes_${cols}col.pdf`);
                     } catch (e) {
                         console.error("Error generating PDF:", e);
                     } finally {
@@ -2524,6 +2801,24 @@
                     downloadPDF,
                     isPrinting,
                     lastScannedItem,
+
+                    // Upgraded Studio exports
+                    barcodeTab,
+                    barcodeColumns,
+                    barcodeSymbology,
+                    showPrice,
+                    showName,
+                    showHeader,
+                    showQRCode,
+                    batchSearchQuery,
+                    selectedBatchItems,
+                    currentPreviewPage,
+                    totalPages,
+                    batchFilteredSkus,
+                    toggleBatchSelection,
+                    addBatchToQueue,
+                    loadDemoSkus,
+                    fillSheetSpace,
 
                     // Category Management exports
                     categories,
