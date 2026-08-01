@@ -1512,41 +1512,6 @@
                         console.error("Failed to download barcode PNG:", e);
                     }
                 };
-                
-                const generateQRCodeDataUrl = (text) => {
-                    return new Promise((resolve) => {
-                        try {
-                            const container = document.createElement('div');
-                            container.style.position = 'absolute';
-                            container.style.left = '-9999px';
-                            document.body.appendChild(container);
-                            
-                            new QRCode(container, {
-                                text: text,
-                                width: 180,
-                                height: 180,
-                                colorDark: "#000000",
-                                colorLight: "#ffffff",
-                                correctLevel: QRCode.CorrectLevel.M
-                            });
-
-                            setTimeout(() => {
-                                let dataUrl = '';
-                                const canvas = container.querySelector('canvas');
-                                const img = container.querySelector('img');
-                                if (canvas) {
-                                    dataUrl = canvas.toDataURL('image/png');
-                                } else if (img && img.src) {
-                                    dataUrl = img.src;
-                                }
-                                try { document.body.removeChild(container); } catch(e) {}
-                                resolve(dataUrl);
-                            }, 80);
-                        } catch (e) {
-                            resolve('');
-                        }
-                    });
-                };
 
                 const downloadPDF = async () => {
                     if (barcodeQueue.value.length === 0) return;
@@ -2707,7 +2672,6 @@
                     showPrice,
                     showName,
                     showHeader,
-                    showQRCode,
                     batchSearchQuery,
                     selectedBatchItems,
                     currentPreviewPage,
