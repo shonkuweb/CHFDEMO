@@ -709,6 +709,14 @@
             Ready to link
         </div>
 
+        <!-- Manual SKU Entry Input Box -->
+        <div style="padding: 10px 15px; background: rgba(18, 18, 18, 0.95); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 8px; align-items: center; position: relative; z-10;">
+            <input type="text" id="manual-sku-input" placeholder="Type or paste SKU Code..." style="flex: 1; background: #000; border: 1px solid rgba(197, 160, 115, 0.4); color: #fff; padding: 10px 12px; border-radius: 8px; font-size: 13px; font-family: monospace; outline: none;" />
+            <button type="button" id="manual-sku-add-btn" style="background: var(--gold, #C5A073); color: #000; font-weight: bold; border: none; padding: 10px 16px; border-radius: 8px; font-size: 12px; cursor: pointer; text-transform: uppercase; whitespace-nowrap: nowrap;">
+                + Add Item
+            </button>
+        </div>
+
         <!-- Scanned Product Bottom Sheet Drawer -->
         <div class="mobile-scan-sheet" id="scan-sheet">
             <div class="sheet-header">
@@ -914,35 +922,35 @@
                         const html5QrCode = new Html5Qrcode("reader");
                         html5QrCodeInstance = html5QrCode;
                         
-                        let formatsList = undefined;
-                        if (typeof Html5QrcodeSupportedFormats !== 'undefined') {
-                            formatsList = [
-                                Html5QrcodeSupportedFormats.CODE_128,
-                                Html5QrcodeSupportedFormats.CODE_39,
-                                Html5QrcodeSupportedFormats.EAN_13,
-                                Html5QrcodeSupportedFormats.EAN_8,
-                                Html5QrcodeSupportedFormats.UPC_A,
-                                Html5QrcodeSupportedFormats.UPC_E,
-                                Html5QrcodeSupportedFormats.QR_CODE
-                            ];
-                        }
-
                         const config = { 
                             fps: 30,
                             qrbox: (viewfinderWidth, viewfinderHeight) => {
-                                const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.88), 340);
-                                const boxHeight = Math.min(Math.floor(viewfinderHeight * 0.55), 180);
+                                const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.95), 480);
+                                const boxHeight = Math.min(Math.floor(viewfinderHeight * 0.70), 320);
                                 return { width: boxWidth, height: boxHeight };
-                            },
-                            experimentalFeatures: {
-                                useBarCodeDetectorIfSupported: true
                             }
                         };
-                        if (formatsList) {
-                            config.formatsToSupport = formatsList;
-                        }
 
                         let scannedProductsList = [];
+
+                        // UI references for manual entry and bottom scan sheet
+                        const manualSkuInput = document.getElementById('manual-sku-input');
+                        const manualSkuAddBtn = document.getElementById('manual-sku-add-btn');
+
+                        if (manualSkuAddBtn && manualSkuInput) {
+                            const submitManualSku = () => {
+                                const rawSku = manualSkuInput.value.trim();
+                                if (rawSku) {
+                                    playScanSound();
+                                    processProductScan(rawSku);
+                                    manualSkuInput.value = '';
+                                }
+                            };
+                            manualSkuAddBtn.onclick = submitManualSku;
+                            manualSkuInput.onkeydown = (e) => {
+                                if (e.key === 'Enter') submitManualSku();
+                            };
+                        }
 
                         // UI references for bottom scan sheet
                         const scanSheet = document.getElementById('scan-sheet');
