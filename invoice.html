@@ -712,7 +712,12 @@
 
                         <!-- LIVE SINGLE LABEL REAL-TIME PREVIEW CARD -->
                         <div v-if="barcodeData.sku.trim()" class="space-y-2 pt-2 border-t border-white/5">
-                            <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Single Label Real-Time Preview</label>
+                            <div class="flex items-center justify-between">
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Single Label Real-Time Preview</label>
+                                <button type="button" @click="downloadSingleBarcodePNG(barcodeData.sku, barcodeData.name)" class="text-[10px] text-[#C5A073] font-bold hover:underline flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-xs">download</span> Download PNG
+                                </button>
+                            </div>
                             <div class="bg-white rounded-xl p-3 text-black border border-gray-300 shadow-xl flex flex-col justify-between items-center relative transition-transform">
                                 <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[8px] font-bold tracking-widest text-center py-0.5 rounded-t">
                                     PLANT EXPERIENCE CENTRE
@@ -871,11 +876,18 @@
                             </div>
                         </div>
 
-                        <!-- Action Toolbar (Print Sheet) -->
-                        <div class="pt-4 border-t border-white/10 flex justify-center">
+                        <!-- Action Toolbar (Direct Browser Download & Print Sheet) -->
+                        <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-3">
+                            <button type="button" @click="downloadPDF" :disabled="barcodeQueue.length === 0 || isPrinting"
+                                class="w-full sm:flex-1 bg-gradient-to-r from-[#C5A073] via-[#e5c598] to-[#C5A073] text-black hover:brightness-110 py-4 px-8 rounded-2xl text-xs uppercase tracking-widest font-extrabold transition-all shadow-xl shadow-[#C5A073]/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-98">
+                                <span v-if="isPrinting" class="material-symbols-outlined text-lg animate-spin">refresh</span>
+                                <span v-else class="material-symbols-outlined text-lg">download</span>
+                                <span>{{ isPrinting ? 'Generating Barcode PDF...' : 'Download Barcodes (PDF)' }}</span>
+                            </button>
+
                             <button type="button" @click="printBarcodes" :disabled="barcodeQueue.length === 0"
-                                class="w-full max-w-md bg-gradient-to-r from-[#C5A073] via-[#e5c598] to-[#C5A073] text-black hover:brightness-110 py-4 px-8 rounded-2xl text-xs uppercase tracking-widest font-extrabold transition-all shadow-xl shadow-[#C5A073]/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-98">
-                                <span class="material-symbols-outlined text-lg">print</span>
+                                class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white/5 border border-white/15 text-white hover:bg-white/15 text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-40 flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-base">print</span>
                                 <span>Print Sheet</span>
                             </button>
                         </div>
@@ -1481,6 +1493,32 @@
 
                 const printBarcodes = () => {
                     window.print();
+                };
+
+                const downloadSingleBarcodePNG = (sku, name) => {
+                    if (!sku) return;
+                    try {
+                        const canvas = document.createElement('canvas');
+                        JsBarcode(canvas, sku, {
+                            format: barcodeSymbology.value || "CODE128",
+                            lineColor: "#000000",
+                            width: 3,
+                            height: 90,
+                            displayValue: true,
+                            font: "monospace",
+                            fontSize: 16,
+                            margin: 12,
+                            background: "#ffffff"
+                        });
+                        const link = document.createElement('a');
+                        link.download = `barcode_${sku}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    } catch (e) {
+                        console.error("Failed to download barcode PNG:", e);
+                    }
                 };
                 
                 const generateQRCodeDataUrl = (text) => {
@@ -2692,6 +2730,7 @@
                     removeFromQueue,
                     printBarcodes,
                     downloadPDF,
+                    downloadSingleBarcodePNG,
                     isPrinting,
                     lastScannedItem,
 
