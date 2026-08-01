@@ -1131,33 +1131,27 @@
                             }
                         };
 
-                        // High Definition 1080p camera configuration with fallback
-                        const hdCameraConfig = {
-                            facingMode: "environment",
-                            width: { min: 1280, ideal: 1920 },
-                            height: { min: 720, ideal: 1080 }
-                        };
-
+                        // Multi-tier camera start fallback chain
                         try {
-                            await html5QrCode.start(hdCameraConfig, config, onScanSuccess, onScanFrame);
+                            const devices = await Html5Qrcode.getCameras();
+                            if (devices && devices.length > 0) {
+                                const backCam = devices.find(d => 
+                                    d.label.toLowerCase().includes('back') || 
+                                    d.label.toLowerCase().includes('rear') || 
+                                    d.label.toLowerCase().includes('environment') ||
+                                    d.label.toLowerCase().includes('0')
+                                );
+                                const selectedId = backCam ? backCam.id : devices[devices.length - 1].id;
+                                await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
+                            } else {
+                                await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
+                            }
                         } catch (envErr) {
-                            console.warn("HD camera start failed, trying environment fallback...", envErr);
                             try {
                                 await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
                             } catch (fallbackErr) {
                                 try {
-                                    const devices = await Html5Qrcode.getCameras();
-                                    if (devices && devices.length > 0) {
-                                        const backCam = devices.find(d => 
-                                            d.label.toLowerCase().includes('back') || 
-                                            d.label.toLowerCase().includes('rear') || 
-                                            d.label.toLowerCase().includes('environment')
-                                        );
-                                        const selectedId = backCam ? backCam.id : devices[0].id;
-                                        await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
-                                    } else {
-                                        await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
-                                    }
+                                    await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
                                 } catch (devErr) {
                                     console.error("Camera start fallback error:", devErr);
                                     statusEl.innerHTML = `<span class="material-symbols-outlined">videocam_off</span> Camera blocked — <button onclick="startScanner()" style="margin-left: 6px; padding: 4px 10px; background: var(--accent); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📷 Open Camera</button>`;
@@ -1168,7 +1162,6 @@
                     } catch (globalErr) {
                         console.error("Scanner startup error:", globalErr);
                         statusEl.innerHTML = `<span class="material-symbols-outlined">warning</span> <button onclick="startScanner()" style="margin-left: 6px; padding: 4px 10px; background: var(--accent); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📷 Open Camera</button>`;
-                    }
                     }
 
                     // Poll server to check if desktop is still connected
