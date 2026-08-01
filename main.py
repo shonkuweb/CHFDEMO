@@ -2537,7 +2537,11 @@ async def lookup_sku(sku_code: str):
 
 @app.get("/scan")
 async def serve_scanner_alias():
-    return FileResponse("scanner.html")
+    return FileResponse("scanner.html", headers={
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    })
 
 @app.delete("/api/admin/leads")
 async def delete_leads(request: Request, admin: str = Depends(get_current_admin)):
