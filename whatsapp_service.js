@@ -233,26 +233,40 @@ app.post('/api/whatsapp/send', async (req, res) => {
 
 app.post('/api/whatsapp/logout', async (req, res) => {
     try {
+        console.log('Logging out / resetting WhatsApp session...');
         if (client) {
-            console.log('Logging out of WhatsApp...');
-            try { await client.logout(); } catch (e) { console.error(e); }
-            try { await client.destroy(); } catch (e) { console.error(e); }
-            isReady = false;
-            qrDataUrl = null;
-            client = null;
-            
-            // Reinitialize the client after a short delay
-            setTimeout(() => {
-                initializeWhatsAppClient();
-            }, 3000);
-            
-            res.json({ success: true, message: 'Logged out successfully.' });
-        } else {
-            res.status(400).json({ error: 'Client not initialized.' });
+            try { await client.logout(); } catch (e) { console.warn('Logout warning:', e.message); }
+            try { await client.destroy(); } catch (e) { console.warn('Destroy warning:', e.message); }
         }
+        isReady = false;
+        qrDataUrl = null;
+        client = null;
+
+        // Reset persistent session data directory if exists to force fresh QR pairing
+        try {
+            const sessionDir = path.join(authDir, 'session-whatsapp-client-v2');
+            if (fs.existsSync(sessionDir)) {
+                fs.rmSync(sessionDir, { recursive: true, force: true });
+            }
+        } catch (e) {
+            console.warn('Session dir cleanup warning:', e.message);
+        }
+
+        // Reinitialize the client after a short delay
+        setTimeout(() => {
+            initializeWhatsAppClient();
+        }, 1500);
+
+        return res.json({ success: true, message: 'Logged out and session reset successfully.' });
     } catch (error) {
         console.error('Error logging out:', error);
-        res.status(500).json({ error: 'Failed to log out.', details: error.toString() });
+        isReady = false;
+        qrDataUrl = null;
+        client = null;
+        setTimeout(() => {
+            initializeWhatsAppClient();
+        }, 1500);
+        return res.json({ success: true, message: 'Session reset complete.' });
     }
 });
 
