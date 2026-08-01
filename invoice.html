@@ -1502,7 +1502,7 @@
                 };
 
                 const resendPaymentLinkAndRetry = async () => {
-                    // Reset status back to PENDING (re-triggering animated radar & waiting state)
+                    // 1. Reset status back to PENDING (re-triggering animated radar & waiting state)
                     paymentModalStatus.value = 'PENDING';
                     if (paymentAutoCloseTimer.value) {
                         clearTimeout(paymentAutoCloseTimer.value);
@@ -1515,9 +1515,9 @@
                         }, 2000);
                     }
 
-                    // Send via WhatsApp if phone available, or copy link
-                    if (invoiceData.value.phone && paymentModalLink.value) {
-                        const cleanPhone = invoiceData.value.phone.replace(/[^0-9]/g, '');
+                    // 2. Send WhatsApp message directly via backend API (/api/whatsapp/send) without opening Chrome WhatsApp Web
+                    const targetPhone = invoiceData.value.phone;
+                    if (targetPhone && paymentModalLink.value) {
                         let message = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
                         message += `*INVOICE #${paymentModalInvoiceId.value}*\n`;
                         message += `Client: ${paymentModalClientName.value || 'Valued Customer'}\n`;
@@ -1525,9 +1525,18 @@
                         message += `Please complete your payment using this link:\n${paymentModalLink.value}\n\n`;
                         message += `Thank you! 🌸`;
                         
-                        const targetPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
-                        const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
-                        window.open(waUrl, '_blank');
+                        try {
+                            await fetch('/api/whatsapp/send', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    number: targetPhone,
+                                    message: message
+                                })
+                            });
+                        } catch (e) {
+                            console.error('Failed to send WhatsApp message via API:', e);
+                        }
                     } else {
                         copyPaymentLink();
                     }
