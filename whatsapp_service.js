@@ -171,23 +171,25 @@ app.post('/api/whatsapp/send', async (req, res) => {
         }
 
         // Format number to WhatsApp JID (@c.us)
-        const chatId = `${cleanNumber}@c.us`;
+        let chatId = `${cleanNumber}@c.us`;
         
-        // Optional registered check with fallback to allow direct delivery
+        // Use getNumberId to get official WhatsApp JID & verify registration
         try {
-            const registered = await client.isRegisteredUser(chatId);
-            if (!registered) {
-                console.warn(`isRegisteredUser returned false for ${cleanNumber}, proceeding with direct delivery...`);
+            const numberDetails = await client.getNumberId(cleanNumber);
+            if (numberDetails && numberDetails._serialized) {
+                chatId = numberDetails._serialized;
+            } else {
+                console.warn(`getNumberId did not find registered ID for ${cleanNumber}, using fallback ${chatId}`);
             }
-        } catch (regErr) {
-            console.warn('isRegisteredUser check bypassed:', regErr.message);
+        } catch (numErr) {
+            console.warn(`getNumberId check bypassed for ${cleanNumber}:`, numErr.message);
         }
         
         if (pdf_base64) {
-            const cleanBase64 = pdf_base64.replace(/^data:application\/pdf;base64,/, '');
+            const cleanBase64 = pdf_base64.includes(',') ? pdf_base64.split(',')[1] : pdf_base64;
             const mediaName = filename || 'Plant_Experience_Centre_Invoice.pdf';
             const media = new MessageMedia('application/pdf', cleanBase64, mediaName);
-            const options = message ? { caption: message } : {};
+            const options = { caption: message || '', sendMediaAsDocument: true };
             const response = await client.sendMessage(chatId, media, options);
             console.log(`WhatsApp PDF invoice successfully sent to ${chatId}`);
             return res.json({ success: true, messageId: response.id ? response.id._serialized : null });
@@ -198,7 +200,8 @@ app.post('/api/whatsapp/send', async (req, res) => {
         }
     } catch (error) {
         console.error('Error sending message:', error);
-        res.status(500).json({ error: 'Failed to send message on WhatsApp. Make sure your phone is connected.', details: error.toString() });
+        const errMsg = error.message || error.toString();
+        res.status(500).json({ error: `Failed to send message on WhatsApp: ${errMsg}`, details: error.toString() });
     }
 });
 
