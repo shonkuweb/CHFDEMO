@@ -984,8 +984,8 @@
                                     </div>
                                     <div class="item-details">
                                         <div class="item-name">${item.name}</div>
-                                        <div class="item-sku">SKU: ${item.sku}</div>
-                                        <div class="item-url-text">${item.image_url ? `R2: ${item.image_url}` : 'No R2 Image Attached'}</div>
+                                        <div class="item-sku">SKU: ${item.sku} ${item.price ? `• ₹${Number(item.price).toLocaleString('en-IN')}` : ''}</div>
+                                        <div class="item-url-text">${item.image_url ? `Image: ${item.image_url}` : 'No Image Attached'}</div>
                                     </div>
                                     <div class="qty-controls">
                                         <button class="qty-btn" onclick="updateProductQty(${idx}, -1)" type="button">−</button>
@@ -1047,12 +1047,14 @@
                             // 2. Lookup product details via catalog lookup endpoint
                             let prodName = sku;
                             let imgUrl = '';
+                            let prodPrice = 0;
                             try {
                                 const lookupRes = await fetch(`/api/skus/lookup/${encodeURIComponent(sku)}`);
                                 if (lookupRes.ok) {
                                     const prodData = await lookupRes.json();
                                     prodName = prodData.name || sku;
                                     imgUrl = prodData.image_url || '';
+                                    prodPrice = prodData.price || 0;
                                 }
                             } catch (e) {}
 
@@ -1064,6 +1066,7 @@
                                 scannedProductsList.push({
                                     sku: sku,
                                     name: prodName,
+                                    price: prodPrice,
                                     image_url: imgUrl,
                                     qty: 1
                                 });

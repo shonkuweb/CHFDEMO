@@ -2368,15 +2368,16 @@ async def verify_device_auth(payload: DeviceAuthVerifyPayload):
 def ensure_sku_categories_table():
     conn = get_db_connection()
     cur = conn.cursor()
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='sku_categories'")
+    table_exists = cur.fetchone() is not None
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS sku_categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE NOT NULL
         )
     """)
-    cur.execute("SELECT COUNT(*) as cnt FROM sku_categories")
-    row = cur.fetchone()
-    if row and row["cnt"] == 0:
+    if not table_exists:
         defaults = ["Indoor Plant", "Outdoor Plant", "Bonsai", "Planter / Pot", "Accessory", "Service", "Other"]
         for cat in defaults:
             cur.execute("INSERT OR IGNORE INTO sku_categories (name) VALUES (?)", (cat,))
