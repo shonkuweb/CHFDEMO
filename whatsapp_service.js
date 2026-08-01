@@ -101,9 +101,9 @@ function initializeWhatsAppClient() {
         authStrategy: new LocalAuth({ clientId: 'whatsapp-client-v2', dataPath: './.wwebjs_auth_v2' }),
         webVersionCache: {
             type: 'remotePath',
-            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1014111620-alpha.html'
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1018923055-alpha.html'
         },
-        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
         puppeteer: {
             headless: true,
             executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null,
@@ -114,20 +114,27 @@ function initializeWhatsAppClient() {
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
                 '--disable-gpu',
-                '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
+                '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
             ]
         }
     });
 
     client.on('qr', async (qr) => {
-        console.log('QR Code generated. Scan to log in.');
+        console.log('New WhatsApp QR Code generated. Scan to log in.');
         if (watchdogTimer) clearTimeout(watchdogTimer);
         try {
-            qrDataUrl = await qrcode.toDataURL(qr);
+            qrDataUrl = await qrcode.toDataURL(qr, {
+                margin: 2,
+                scale: 8,
+                color: {
+                    dark: '#000000',
+                    light: '#ffffff'
+                }
+            });
             isReady = false;
             isInitializing = false;
         } catch (err) {
-            console.error('Error generating QR code data URL', err);
+            console.error('Error generating QR code data URL:', err);
         }
     });
 
