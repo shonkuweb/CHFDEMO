@@ -583,64 +583,6 @@
 
             <!-- Generate Barcodes View (Studio & 4-in-a-Row Sheet Printer) -->
             <div v-if="currentTab === 'barcodes'" class="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-7xl mx-auto space-y-8">
-                <!-- Ambient Studio Header -->
-                <header class="relative overflow-hidden bg-gradient-to-br from-[#0f0f0f] via-[#090909] to-[#040404] border border-[#C5A073]/30 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-2xl">
-                    <!-- Subtle Ambient Golden Radial Glow -->
-                    <div class="absolute -top-24 -left-24 w-96 h-96 bg-[#C5A073]/10 rounded-full blur-3xl pointer-events-none"></div>
-                    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-[#C5A073]/5 rounded-full blur-3xl pointer-events-none"></div>
-
-                    <div class="relative z-10 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
-                        <div>
-                            <div class="inline-flex items-center px-3.5 py-1 mb-3 rounded-full border border-[#C5A073]/40 bg-[#C5A073]/15 text-[#C5A073] shadow-[0_0_15px_rgba(197,160,115,0.2)]">
-                                <span class="material-symbols-outlined text-sm mr-2 animate-pulse">qr_code_2</span>
-                                <span class="text-[10px] uppercase tracking-[0.2em] font-extrabold">Studio & Batch Sheet Printer</span>
-                            </div>
-                            <h1 class="serif-title text-3xl sm:text-4xl xl:text-5xl font-light text-white tracking-wide">Generate Inventory Barcodes</h1>
-                            <p class="text-gray-400 text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed">
-                                Customize label elements, search catalog products or add custom SKUs, preview live sticker sheets, and export high-resolution A4 printable PDFs.
-                            </p>
-                        </div>
-
-                        <!-- Header Live Stats & Quick Actions Toolbar -->
-                        <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto">
-                            <!-- Quick Stats Badges -->
-                            <div class="flex items-center gap-3 bg-black/60 border border-white/10 p-3 rounded-2xl backdrop-blur-md">
-                                <div class="text-center px-3 border-r border-white/10">
-                                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">Total Labels</span>
-                                    <span class="serif-title text-2xl text-[#C5A073] font-bold">{{ totalQueued }}</span>
-                                </div>
-                                <div class="text-center px-3 border-r border-white/10">
-                                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">Unique SKUs</span>
-                                    <span class="serif-title text-2xl text-white font-bold">{{ barcodeQueue.length }}</span>
-                                </div>
-                                <div class="text-center px-3">
-                                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block font-bold">A4 Sheets</span>
-                                    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                                        {{ Math.ceil(totalQueued / (barcodeColumns * 11)) || 1 }} Sheet(s)
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Quick Preset Actions -->
-                            <div class="flex items-center gap-2">
-                                <button type="button" @click="loadDemoSkus" 
-                                    class="px-3.5 py-2.5 rounded-2xl bg-white/5 border border-[#C5A073]/30 text-[#C5A073] hover:bg-[#C5A073]/20 hover:border-[#C5A073] text-xs font-bold transition-all shadow-md flex items-center gap-1.5 active:scale-95"
-                                    title="Pre-fill queue with sample plant catalog SKUs for testing">
-                                    <span class="material-symbols-outlined text-sm">auto_fix_high</span>
-                                    <span>Demo SKUs</span>
-                                </button>
-
-                                <button type="button" v-if="barcodeQueue.length > 0" @click="fillSheetSpace" 
-                                    class="px-3.5 py-2.5 rounded-2xl bg-white/5 border border-white/15 text-gray-300 hover:text-white hover:bg-white/10 text-xs font-bold transition-all shadow-md flex items-center gap-1.5 active:scale-95"
-                                    title="Duplicate last SKU quantity to complete full row">
-                                    <span class="material-symbols-outlined text-sm">grid_view</span>
-                                    <span>Auto-Fill Row</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <!-- LEFT COLUMN: SKU Search, Customizer & Live Single Label Preview (5 cols) -->
                     <div class="lg:col-span-5 space-y-6 bg-gradient-to-b from-[#0d0d0d] to-[#080808] border border-white/10 p-6 md:p-7 rounded-3xl shadow-2xl relative overflow-hidden">
