@@ -2500,7 +2500,15 @@ async def lookup_sku(sku_code: str):
     code_upper = sku_code.strip().upper()
     cached = SKU_CACHE.get(code_upper)
     if cached:
-        return {"found": True, "sku": cached["sku"], "name": cached["name"], "price": cached["price"], "category": cached.get("category", ""), "image_url": cached.get("image_url", "")}
+        return {
+            "found": True, 
+            "sku": cached["sku"], 
+            "name": cached["name"], 
+            "price": cached["price"], 
+            "category": cached.get("category", ""), 
+            "description": cached.get("description", ""), 
+            "image_url": cached.get("image_url", "")
+        }
         
     conn = get_db_connection()
     cur = conn.cursor()
@@ -2508,9 +2516,17 @@ async def lookup_sku(sku_code: str):
     row = cur.fetchone()
     conn.close()
     if not row:
-        return {"found": False, "sku": sku_code, "name": sku_code, "price": 0.0, "image_url": ""}
+        return {"found": False, "sku": sku_code, "name": sku_code, "price": 0.0, "description": "", "image_url": ""}
     d = dict(row)
-    return {"found": True, "sku": d["sku"], "name": d["name"], "price": d["price"], "category": d.get("category", ""), "image_url": d.get("image_url", "")}
+    return {
+        "found": True, 
+        "sku": d["sku"], 
+        "name": d["name"], 
+        "price": d["price"], 
+        "category": d.get("category", ""), 
+        "description": d.get("description", ""), 
+        "image_url": d.get("image_url", "")
+    }
 
 @app.get("/scan")
 async def serve_scanner_alias():

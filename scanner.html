@@ -985,7 +985,8 @@
                                     <div class="item-details">
                                         <div class="item-name">${item.name}</div>
                                         <div class="item-sku">SKU: ${item.sku} ${item.price ? `• ₹${Number(item.price).toLocaleString('en-IN')}` : ''}</div>
-                                        <div class="item-url-text">${item.image_url ? `Image: ${item.image_url}` : 'No Image Attached'}</div>
+                                        ${item.description ? `<div style="font-size: 10px; color: var(--gold); font-family: monospace; margin-top: 2px;">${item.description}</div>` : ''}
+                                        <div class="item-url-text">${item.image_url ? `Image Attached` : 'No Image'}</div>
                                     </div>
                                     <div class="qty-controls">
                                         <button class="qty-btn" onclick="updateProductQty(${idx}, -1)" type="button">−</button>
@@ -1048,6 +1049,7 @@
                             let prodName = sku;
                             let imgUrl = '';
                             let prodPrice = 0;
+                            let prodDesc = '';
                             try {
                                 const lookupRes = await fetch(`/api/skus/lookup/${encodeURIComponent(sku)}`);
                                 if (lookupRes.ok) {
@@ -1055,6 +1057,7 @@
                                     prodName = prodData.name || sku;
                                     imgUrl = prodData.image_url || '';
                                     prodPrice = prodData.price || 0;
+                                    prodDesc = prodData.description || '';
                                 }
                             } catch (e) {}
 
@@ -1067,6 +1070,7 @@
                                     sku: sku,
                                     name: prodName,
                                     price: prodPrice,
+                                    description: prodDesc,
                                     image_url: imgUrl,
                                     qty: 1
                                 });
