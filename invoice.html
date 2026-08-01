@@ -714,7 +714,7 @@
                         <div v-if="barcodeData.sku.trim()" class="space-y-2 pt-2 border-t border-white/5">
                             <div class="flex items-center justify-between">
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Single Label Real-Time Preview</label>
-                                <button type="button" @click="downloadSingleBarcodePNG(barcodeData.sku, barcodeData.name)" class="text-[10px] text-[#C5A073] font-bold hover:underline flex items-center gap-1">
+                                <button type="button" @click="downloadSingleBarcodePNG(barcodeData)" class="text-[10px] text-[#C5A073] font-bold hover:underline flex items-center gap-1">
                                     <span class="material-symbols-outlined text-xs">download</span> Download PNG
                                 </button>
                             </div>
@@ -724,10 +724,10 @@
                                     <span v-if="barcodeData.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(barcodeData.price).toLocaleString('en-IN') }}</span>
                                 </div>
                                 <div class="w-full my-2 flex items-center justify-center min-h-[46px] bg-white px-2 py-1">
-                                    <canvas :ref="el => setBarcodeCanvasRef(el, barcodeData.sku, barcodeSymbology)" class="w-full max-h-[46px] object-contain"></canvas>
+                                    <canvas :ref="el => setBarcodeCanvasRef(el, barcodeData)" class="w-full max-h-[46px] object-contain"></canvas>
                                 </div>
                                 <div class="w-full text-center pt-1 border-t border-gray-100">
-                                    <span class="font-mono text-[10px] font-extrabold tracking-widest text-gray-900">SKU: {{ barcodeData.sku }}</span>
+                                    <span class="font-mono text-[9px] font-extrabold tracking-tight text-gray-900 truncate block">SKU: {{ barcodeData.sku }} <template v-if="barcodeData.name && barcodeData.name !== barcodeData.sku">| {{ barcodeData.name }}</template> <template v-if="barcodeData.price">| ₹{{ Number(barcodeData.price).toLocaleString('en-IN') }}</template></span>
                                 </div>
                             </div>
                         </div>
@@ -846,12 +846,12 @@
 
                                                 <!-- Barcode Graphic Canvas -->
                                                 <div class="w-full my-2 flex items-center justify-center min-h-[42px] bg-white px-1">
-                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item.sku, barcodeSymbology)" class="w-full max-h-[42px] object-contain"></canvas>
+                                                    <canvas :ref="el => setBarcodeCanvasRef(el, item)" class="w-full max-h-[42px] object-contain"></canvas>
                                                 </div>
 
                                                 <!-- SKU String Code Footer -->
                                                 <div class="w-full text-center pt-1 border-t border-gray-100">
-                                                    <span class="font-mono text-[9px] font-extrabold tracking-wider text-gray-900">SKU: {{ item.sku }}</span>
+                                                    <span class="font-mono text-[8px] font-extrabold tracking-tight text-gray-900 truncate block">SKU: {{ item.sku }} <template v-if="item.name && item.name !== item.sku">| {{ item.name }}</template> <template v-if="item.price">| ₹{{ Number(item.price).toLocaleString('en-IN') }}</template></span>
                                                 </div>
 
                                                 <!-- Delete / Adjust Badge on Hover -->
@@ -1418,19 +1418,47 @@
                     showBarcodeSearchDropdown.value = false;
                 };
 
-                const setBarcodeCanvasRef = (canvasEl, skuCode, symbology = 'CODE128') => {
-                    if (!canvasEl || !skuCode) return;
+                const getBarcodeDataPayload = (itemOrSku, name, price) => {
+                    let cleanSku = '';
+                    let cleanName = '';
+                    let cleanPrice = 0;
+
+                    if (typeof itemOrSku === 'object' && itemOrSku !== null) {
+                        cleanSku = String(itemOrSku.sku || '').trim().toUpperCase();
+                        cleanName = String(itemOrSku.name || '').trim();
+                        cleanPrice = Number(itemOrSku.price) || 0;
+                    } else {
+                        cleanSku = String(itemOrSku || '').trim().toUpperCase();
+                        cleanName = String(name || '').trim();
+                        cleanPrice = Number(price) || 0;
+                    }
+
+                    if (!cleanSku) return '';
+
+                    const parts = [cleanSku];
+                    if (cleanName && cleanName !== cleanSku) parts.push(cleanName);
+                    if (cleanPrice > 0) parts.push(`Rs.${cleanPrice}`);
+
+                    return parts.join(' | ');
+                };
+
+                const setBarcodeCanvasRef = (canvasEl, itemOrSku, symbology = 'CODE128') => {
+                    if (!canvasEl) return;
+                    const payload = getBarcodeDataPayload(itemOrSku);
+                    if (!payload) return;
                     try {
-                        JsBarcode(canvasEl, skuCode, {
-                            format: symbology || "CODE128",
+                        JsBarcode(canvasEl, payload, {
+                            format: "CODE128",
                             lineColor: "#000000",
                             width: 2,
-                            height: 44,
+                            height: 48,
                             displayValue: false,
-                            margin: 6,
+                            margin: 8,
                             background: "#ffffff"
                         });
-                    } catch(e) {}
+                    } catch(e) {
+                        console.error("Barcode rendering error:", e);
+                    }
                 };
 
                 const totalQueued = computed(() => {
@@ -1487,23 +1515,25 @@
                     window.print();
                 };
 
-                const downloadSingleBarcodePNG = (sku, name) => {
-                    if (!sku) return;
+                const downloadSingleBarcodePNG = (itemOrSku, name, price) => {
+                    const payload = getBarcodeDataPayload(itemOrSku, name, price);
+                    if (!payload) return;
                     try {
                         const canvas = document.createElement('canvas');
-                        JsBarcode(canvas, sku, {
-                            format: barcodeSymbology.value || "CODE128",
+                        JsBarcode(canvas, payload, {
+                            format: "CODE128",
                             lineColor: "#000000",
                             width: 3,
                             height: 90,
                             displayValue: true,
                             font: "monospace",
-                            fontSize: 16,
-                            margin: 12,
+                            fontSize: 13,
+                            margin: 15,
                             background: "#ffffff"
                         });
+                        const skuPart = typeof itemOrSku === 'object' ? itemOrSku.sku : itemOrSku;
                         const link = document.createElement('a');
-                        link.download = `barcode_${sku}.png`;
+                        link.download = `barcode_${skuPart || 'item'}.png`;
                         link.href = canvas.toDataURL('image/png');
                         document.body.appendChild(link);
                         link.click();
@@ -1587,9 +1617,9 @@
                                 doc.text(priceText, x + colWidth - 3, y + 5.5, { align: 'right' });
                             }
 
-                            // 4. Valid High-Res 1D Code 128 Barcode Graphic (Center)
-                            const cleanSku = String(item.sku).trim().toUpperCase();
-                            JsBarcode(canvas, cleanSku, {
+                            // 4. Valid High-Res 1D Code 128 Barcode Graphic carrying SKU ID, Product Name, and Price
+                            const payload = getBarcodeDataPayload(item);
+                            JsBarcode(canvas, payload, {
                                 format: "CODE128",
                                 lineColor: "#000000",
                                 width: 3,
@@ -1605,10 +1635,12 @@
                             doc.addImage(barcodeDataUrl, 'PNG', x + 3, y + 7, barcodeW, barcodeH);
 
                             // 5. SKU Code / ID Footer (Bottom Center)
-                            doc.setFontSize(cols === 2 ? 8.5 : 7.5);
+                            doc.setFontSize(cols === 2 ? 8 : 6.5);
                             doc.setFont('courier', 'bold');
                             doc.setTextColor(30, 30, 30);
-                            doc.text(`SKU: ${cleanSku}`, x + (colWidth / 2), y + rowHeight - 2.5, { align: 'center' });
+                            const footerText = `SKU: ${item.sku} | ${item.name} | ₹${item.price}`;
+                            const truncatedFooter = footerText.length > (cols === 4 ? 28 : (cols === 3 ? 38 : 55)) ? `SKU: ${item.sku} | ₹${item.price}` : footerText;
+                            doc.text(truncatedFooter, x + (colWidth / 2), y + rowHeight - 2.5, { align: 'center' });
                         }
                         
                         doc.save(`chf_inventory_barcodes_${cols}col.pdf`);
