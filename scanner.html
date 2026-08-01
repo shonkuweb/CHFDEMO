@@ -930,9 +930,12 @@
                         const config = { 
                             fps: 30,
                             qrbox: (viewfinderWidth, viewfinderHeight) => {
-                                const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.82), 320);
-                                const boxHeight = Math.min(Math.floor(boxWidth * 0.65), 210);
+                                const boxWidth = Math.min(Math.floor(viewfinderWidth * 0.88), 340);
+                                const boxHeight = Math.min(Math.floor(viewfinderHeight * 0.55), 180);
                                 return { width: boxWidth, height: boxHeight };
+                            },
+                            experimentalFeatures: {
+                                useBarCodeDetectorIfSupported: true
                             }
                         };
                         if (formatsList) {

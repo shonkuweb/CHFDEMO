@@ -1256,9 +1256,9 @@
                             format: "CODE128",
                             lineColor: "#000000",
                             width: 2,
-                            height: 40,
+                            height: 50,
                             displayValue: false,
-                            margin: 0,
+                            margin: 10,
                             background: "#ffffff"
                         });
                     } catch(e) {}
@@ -1390,14 +1390,14 @@
                                     doc.text(priceText, x + colWidth - priceWidth - 3, y + 5.5);
                                 }
                                 
-                                // 2. Generate high-res CODE128 barcode graphic
+                                // 2. Generate high-res CODE128 barcode graphic with 10px Quiet Zone margin
                                 JsBarcode(canvas, item.sku, {
                                     format: "CODE128",
                                     lineColor: "#000000",
-                                    width: 3.5,
-                                    height: 90,
+                                    width: 4,
+                                    height: 100,
                                     displayValue: false,
-                                    margin: 0,
+                                    margin: 10,
                                     background: "#ffffff"
                                 });
                                 
