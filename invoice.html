@@ -1035,7 +1035,12 @@
                             <div class="sm:col-span-4 space-y-1">
                                 <label class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#C5A073] block">Product Image</label>
                                 
-                                <div class="h-32 relative rounded-xl bg-black/60 border-2 border-dashed border-white/15 hover:border-[#C5A073]/60 transition-all group overflow-hidden flex flex-col items-center justify-center p-2">
+                                <div @dragover.prevent="isDragging = true"
+                                     @dragenter.prevent="isDragging = true"
+                                     @dragleave.prevent="isDragging = false"
+                                     @drop.prevent="handleImageDrop"
+                                     :class="[isDragging ? 'border-[#C5A073] bg-[#C5A073]/20 scale-[1.02]' : 'border-white/15 bg-black/60']"
+                                     class="h-32 relative rounded-xl border-2 border-dashed hover:border-[#C5A073]/60 transition-all group overflow-hidden flex flex-col items-center justify-center p-2">
                                     <input type="file" ref="productImageInput" @change="uploadProductImage" accept="image/*" class="hidden" id="modal-sku-image-upload-input"/>
                                     
                                     <!-- Image Preview State -->
@@ -1055,10 +1060,10 @@
                                     <template v-else>
                                         <label for="modal-sku-image-upload-input" class="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer p-2">
                                             <div class="w-8 h-8 rounded-lg bg-[#C5A073]/10 border border-[#C5A073]/30 flex items-center justify-center text-[#C5A073] mb-1.5 group-hover:scale-110 transition-transform">
-                                                <span class="material-symbols-outlined text-lg" :class="{'animate-spin': uploadingProductImage}">{{ uploadingProductImage ? 'refresh' : 'cloud_upload' }}</span>
+                                                <span class="material-symbols-outlined text-lg" :class="{'animate-spin': uploadingProductImage}">{{ uploadingProductImage ? 'refresh' : (isDragging ? 'download' : 'cloud_upload') }}</span>
                                             </div>
                                             <p class="text-[10px] font-semibold text-white">
-                                                {{ uploadingProductImage ? 'Uploading...' : 'Upload Image' }}
+                                                {{ uploadingProductImage ? 'Uploading...' : (isDragging ? 'Drop Image Here' : 'Upload or Drag & Drop') }}
                                             </p>
                                             <span class="text-[8px] text-gray-500 mt-0.5">PNG, JPG, WEBP</span>
                                         </label>
@@ -1896,8 +1901,17 @@
                     image_url: ''
                 });
 
+                const isDragging = ref(false);
+                const handleImageDrop = (event) => {
+                    isDragging.value = false;
+                    const files = event.dataTransfer ? event.dataTransfer.files : null;
+                    if (files && files.length > 0) {
+                        uploadProductImage({ target: { files: files } });
+                    }
+                };
+
                 const uploadProductImage = async (event) => {
-                    const file = event.target.files[0];
+                    const file = (event.target && event.target.files) ? event.target.files[0] : (event.file || null);
                     if (!file) return;
                     
                     uploadingProductImage.value = true;
@@ -1919,7 +1933,7 @@
                         skuSaveError.value = 'Image upload failed: ' + e.message;
                     } finally {
                         uploadingProductImage.value = false;
-                        if (event.target) event.target.value = '';
+                        if (event.target && event.target.value !== undefined) event.target.value = '';
                     }
                 };
 
@@ -2231,6 +2245,8 @@
                     skuForm,
                     uploadingProductImage,
                     uploadProductImage,
+                    isDragging,
+                    handleImageDrop,
                     fetchSkus,
                     resetSkuForm,
                     autoGenerateSkuCode,
