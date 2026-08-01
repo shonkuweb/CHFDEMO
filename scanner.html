@@ -1049,51 +1049,63 @@
                             }
                         });
 
-                        async function processProductScan(sku) {
-                            // 1. Unconditional Sound Feedback on Every Successful Scan
-                            playScanSound();
+                        async function processProductScan(rawSku) {
+                            if (!rawSku) return;
+                            const sku = String(rawSku).trim();
+                            if (sku.length < 3) return; // Ignore noise/short scans
 
-                            const maskBox = document.getElementById('mask-box');
-                            if (maskBox) {
-                                maskBox.classList.add('scan-success');
-                                setTimeout(() => maskBox.classList.remove('scan-success'), 1200);
-                            }
-
-                            statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${sku}</strong>`;
-                            statusEl.className = 'status-hud success';
-
-                            // 2. Lookup product details via catalog lookup endpoint
-                            let prodName = sku;
-                            let imgUrl = '';
-                            let prodPrice = 0;
-                            let prodDesc = '';
+                            // 1. Strictly verify product against catalog database to prevent fake/corrupted products
                             try {
                                 const lookupRes = await fetch(`/api/skus/lookup/${encodeURIComponent(sku)}`);
-                                if (lookupRes.ok) {
-                                    const prodData = await lookupRes.json();
-                                    prodName = prodData.name || sku;
-                                    imgUrl = prodData.image_url || '';
-                                    prodPrice = prodData.price || 0;
-                                    prodDesc = prodData.description || '';
+                                if (!lookupRes.ok) {
+                                    statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: #f59e0b;">warning</span> Not found in catalog: <strong>${sku}</strong>`;
+                                    statusEl.className = 'status-hud warning';
+                                    return; // DO NOT add fake/unverified product to cart!
                                 }
-                            } catch (e) {}
+                                
+                                const prodData = await lookupRes.json();
+                                if (!prodData || !prodData.name) {
+                                    statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: #f59e0b;">warning</span> Invalid Product: <strong>${sku}</strong>`;
+                                    return;
+                                }
 
-                            // 3. Add to mobile browser cart array (increment qty if existing, or push new item card)
-                            const existingIndex = scannedProductsList.findIndex(i => i.sku.toUpperCase() === sku.toUpperCase());
-                            if (existingIndex !== -1) {
-                                scannedProductsList[existingIndex].qty += 1;
-                            } else {
-                                scannedProductsList.push({
-                                    sku: sku,
-                                    name: prodName,
-                                    price: prodPrice,
-                                    description: prodDesc,
-                                    image_url: imgUrl,
-                                    qty: 1
-                                });
+                                // 2. Play sound feedback only for verified real products
+                                playScanSound();
+
+                                const maskBox = document.getElementById('mask-box');
+                                if (maskBox) {
+                                    maskBox.classList.add('scan-success');
+                                    setTimeout(() => maskBox.classList.remove('scan-success'), 1200);
+                                }
+
+                                const realSku = prodData.sku || sku;
+                                const prodName = prodData.name;
+                                const imgUrl = prodData.image_url || '';
+                                const prodPrice = prodData.price || 0;
+                                const prodDesc = prodData.description || '';
+
+                                statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${prodName}</strong>`;
+                                statusEl.className = 'status-hud success';
+
+                                // 3. Add to mobile cart
+                                const existingIndex = scannedProductsList.findIndex(i => i.sku.toUpperCase() === realSku.toUpperCase());
+                                if (existingIndex !== -1) {
+                                    scannedProductsList[existingIndex].qty += 1;
+                                } else {
+                                    scannedProductsList.push({
+                                        sku: realSku,
+                                        name: prodName,
+                                        price: prodPrice,
+                                        description: prodDesc,
+                                        image_url: imgUrl,
+                                        qty: 1
+                                    });
+                                }
+
+                                renderScannedProductsList();
+                            } catch (e) {
+                                console.error('Product lookup error:', e);
                             }
-
-                            renderScannedProductsList();
                         }
 
                         const onScanSuccess = (decodedText) => {
@@ -1119,33 +1131,44 @@
                             }
                         };
 
-                        // Multi-tier camera start fallback chain
+                        // High Definition 1080p camera configuration with fallback
+                        const hdCameraConfig = {
+                            facingMode: "environment",
+                            width: { min: 1280, ideal: 1920 },
+                            height: { min: 720, ideal: 1080 }
+                        };
+
                         try {
-                            await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
+                            await html5QrCode.start(hdCameraConfig, config, onScanSuccess, onScanFrame);
                         } catch (envErr) {
-                            console.warn("facingMode: environment failed, trying camera device list...", envErr);
+                            console.warn("HD camera start failed, trying environment fallback...", envErr);
                             try {
-                                const devices = await Html5Qrcode.getCameras();
-                                if (devices && devices.length > 0) {
-                                    const backCam = devices.find(d => 
-                                        d.label.toLowerCase().includes('back') || 
-                                        d.label.toLowerCase().includes('rear') || 
-                                        d.label.toLowerCase().includes('environment')
-                                    );
-                                    const selectedId = backCam ? backCam.id : devices[0].id;
-                                    await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
-                                } else {
-                                    await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
-                                }
+                                await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFrame);
                             } catch (fallbackErr) {
-                                console.error("Camera start fallback error:", fallbackErr);
-                                statusEl.innerHTML = `<span class="material-symbols-outlined">videocam_off</span> Camera blocked — <button onclick="startScanner()" style="margin-left: 6px; padding: 4px 10px; background: var(--accent); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📷 Open Camera</button>`;
-                                statusEl.className = 'status-hud';
+                                try {
+                                    const devices = await Html5Qrcode.getCameras();
+                                    if (devices && devices.length > 0) {
+                                        const backCam = devices.find(d => 
+                                            d.label.toLowerCase().includes('back') || 
+                                            d.label.toLowerCase().includes('rear') || 
+                                            d.label.toLowerCase().includes('environment')
+                                        );
+                                        const selectedId = backCam ? backCam.id : devices[0].id;
+                                        await html5QrCode.start(selectedId, config, onScanSuccess, onScanFrame);
+                                    } else {
+                                        await html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFrame);
+                                    }
+                                } catch (devErr) {
+                                    console.error("Camera start fallback error:", devErr);
+                                    statusEl.innerHTML = `<span class="material-symbols-outlined">videocam_off</span> Camera blocked — <button onclick="startScanner()" style="margin-left: 6px; padding: 4px 10px; background: var(--accent); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📷 Open Camera</button>`;
+                                    statusEl.className = 'status-hud';
+                                }
                             }
                         }
                     } catch (globalErr) {
                         console.error("Scanner startup error:", globalErr);
                         statusEl.innerHTML = `<span class="material-symbols-outlined">warning</span> <button onclick="startScanner()" style="margin-left: 6px; padding: 4px 10px; background: var(--accent); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">📷 Open Camera</button>`;
+                    }
                     }
 
                     // Poll server to check if desktop is still connected

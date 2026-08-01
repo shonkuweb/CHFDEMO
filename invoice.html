@@ -1369,28 +1369,44 @@
                                 const y = marginY + row * rowHeight;
                                 
                                 // Label boundary box
-                                doc.setDrawColor(220, 220, 220);
-                                doc.setLineWidth(0.1);
-                                doc.roundedRect(x + 1, y + 1, colWidth - 2, rowHeight - 2, 1, 1, 'S');
-                                
-                                // 1. Draw Product Name & Price at top
+                                doc.setDrawColor(200, 200, 200);
+                                doc.setLineWidth(0.15);
+                                doc.roundedRect(x + 1, y + 1, colWidth - 2, rowHeight - 2, 1.5, 1.5, 'S');
+
+                                // 1. Top Brand Badge Header
+                                doc.setFillColor(20, 20, 20);
+                                doc.rect(x + 1, y + 1, colWidth - 2, 4.5, 'F');
+                                doc.setFontSize(5.5);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(197, 160, 115);
+                                doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4.2, { align: 'center' });
+
+                                // 2. Product Name & Price Row
                                 doc.setFontSize(7.5);
                                 doc.setFont('helvetica', 'bold');
                                 doc.setTextColor(20, 20, 20);
-                                
-                                const truncatedName = item.name.length > 18 ? item.name.substring(0, 16) + '...' : item.name;
-                                doc.text(truncatedName, x + 3, y + 5.5);
-                                
+
+                                const truncatedName = item.name.length > 20 ? item.name.substring(0, 18) + '...' : item.name;
+                                doc.text(truncatedName, x + 3, y + 9.5);
+
                                 if (item.price > 0) {
-                                    doc.setFontSize(7);
+                                    doc.setFontSize(7.5);
                                     doc.setFont('helvetica', 'bold');
                                     doc.setTextColor(180, 120, 30);
                                     const priceText = `INR ${item.price.toLocaleString('en-IN')}`;
-                                    const priceWidth = doc.getTextWidth(priceText);
-                                    doc.text(priceText, x + colWidth - priceWidth - 3, y + 5.5);
+                                    doc.text(priceText, x + colWidth - 3, y + 9.5, { align: 'right' });
                                 }
-                                
-                                // 2. Generate high-res CODE128 barcode graphic with 10px Quiet Zone margin
+
+                                // 3. Category Tag
+                                if (item.category) {
+                                    doc.setFontSize(5.5);
+                                    doc.setFont('helvetica', 'normal');
+                                    doc.setTextColor(100, 100, 100);
+                                    const catText = `Category: ${item.category}`;
+                                    doc.text(catText, x + 3, y + 13);
+                                }
+
+                                // 4. Generate high-res CODE128 barcode graphic with 10px Quiet Zone margin
                                 JsBarcode(canvas, item.sku, {
                                     format: "CODE128",
                                     lineColor: "#000000",
@@ -1400,21 +1416,20 @@
                                     margin: 10,
                                     background: "#ffffff"
                                 });
-                                
+
                                 const barcodeDataUrl = canvas.toDataURL('image/png');
                                 const barcodeW = colWidth - 8;
-                                const barcodeH = 22;
+                                const barcodeH = 18;
                                 const barcodeX = x + (colWidth - barcodeW) / 2;
-                                const barcodeY = y + 8;
-                                
+                                const barcodeY = y + 14;
+
                                 doc.addImage(barcodeDataUrl, 'PNG', barcodeX, barcodeY, barcodeW, barcodeH);
-                                
-                                // 3. Draw SKU text at bottom
-                                doc.setFontSize(8);
+
+                                // 5. SKU Code Footer
+                                doc.setFontSize(7);
                                 doc.setFont('courier', 'bold');
                                 doc.setTextColor(30, 30, 30);
-                                const skuTextWidth = doc.getTextWidth(item.sku);
-                                doc.text(item.sku, x + (colWidth - skuTextWidth) / 2, y + rowHeight - 4);
+                                doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + rowHeight - 2.5, { align: 'center' });
                             });
                             
                             doc.save('inventory_barcodes_4inrow.pdf');
