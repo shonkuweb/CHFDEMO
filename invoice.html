@@ -597,25 +597,25 @@
                     <!-- LEFT COLUMN: SKU Search & Configurator (5 cols) -->
                     <div class="lg:col-span-5 space-y-6 bg-[#0c0c0c] border border-white/10 p-6 md:p-8 rounded-3xl shadow-2xl relative">
                         <div class="flex justify-between items-center pb-3 border-b border-white/5">
-                            <h3 class="serif-title text-lg text-white font-normal">1. Select or Enter SKU</h3>
+                            <h3 class="serif-title text-lg text-white font-normal">1. Select SKU</h3>
                             <span class="text-[10px] uppercase tracking-widest text-[#C5A073] font-bold">Step 1</span>
                         </div>
 
-                        <!-- 1. Searchbar for SKUs -->
-                        <div class="relative space-y-1.5">
+                        <!-- Searchbar for SKUs (Only element shown initially) -->
+                        <div class="relative space-y-2">
                             <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Search Catalog Product</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">search</span>
-                                <input type="text" v-model="barcodeSearchQuery" @focus="showBarcodeSearchDropdown = true"
-                                    class="w-full bg-black/60 border border-white/15 focus:border-[#C5A073] rounded-2xl py-3 pl-10 pr-10 text-xs text-white placeholder:text-gray-500 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"
-                                    placeholder="Type to search catalog product or SKU code..."/>
-                                <button v-if="barcodeSearchQuery" @click="barcodeSearchQuery = ''; showBarcodeSearchDropdown = false" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+                                <input type="text" v-model="barcodeSearchQuery" @focus="showBarcodeSearchDropdown = true" @keyup.enter="selectCustomSkuForBarcode(barcodeSearchQuery)"
+                                    class="w-full bg-black/60 border border-white/15 focus:border-[#C5A073] rounded-2xl py-3.5 pl-10 pr-10 text-xs text-white placeholder:text-gray-500 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"
+                                    placeholder="Type to search product name or SKU code..."/>
+                                <button v-if="barcodeSearchQuery" @click="clearSelectedSku" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
                                     <span class="material-symbols-outlined text-sm">close</span>
                                 </button>
                             </div>
 
                             <!-- Search Autocomplete Dropdown -->
-                            <div v-if="showBarcodeSearchDropdown && filteredBarcodeSkus.length > 0" class="absolute left-0 right-0 top-full mt-2 bg-[#121212] border border-[#C5A073]/40 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto custom-scrollbar">
+                            <div v-if="showBarcodeSearchDropdown && (filteredBarcodeSkus.length > 0 || barcodeSearchQuery.trim())" class="absolute left-0 right-0 top-full mt-2 bg-[#121212] border border-[#C5A073]/40 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto custom-scrollbar">
                                 <div v-for="item in filteredBarcodeSkus" :key="item.id || item.sku" @click="selectSkuForBarcode(item)"
                                     class="p-3 hover:bg-[#C5A073]/15 transition-colors cursor-pointer border-b border-white/5 last:border-0 flex items-center gap-3 group">
                                     <div class="w-10 h-10 rounded-lg bg-black/50 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
@@ -633,69 +633,66 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Custom SKU fallback option -->
+                                <div v-if="barcodeSearchQuery.trim() && !filteredBarcodeSkus.some(s => s.sku.toLowerCase() === barcodeSearchQuery.trim().toLowerCase())"
+                                    @click="selectCustomSkuForBarcode(barcodeSearchQuery)"
+                                    class="p-3 hover:bg-[#C5A073]/20 transition-colors cursor-pointer border-t border-white/10 flex items-center gap-2 text-xs font-semibold text-[#C5A073]">
+                                    <span class="material-symbols-outlined text-base">add_box</span>
+                                    Use "{{ barcodeSearchQuery.trim().toUpperCase() }}" as custom SKU
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Manual SKU & Product Form Fields -->
-                        <div class="space-y-4 pt-2 border-t border-white/5">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-[10px] uppercase tracking-widest text-gray-400 mb-1.5 font-bold">Product SKU / ID <span class="text-red-400">*</span></label>
-                                    <input type="text" v-model="barcodeData.sku"
-                                        class="w-full bg-black/40 border border-white/10 px-3.5 py-2.5 text-xs text-white font-mono rounded-xl focus:border-[#C5A073] outline-none transition-all placeholder:text-gray-600"
-                                        placeholder="e.g. PLANT-001">
+                        <!-- Empty State Notice when no SKU selected -->
+                        <div v-if="!barcodeData.sku.trim()" class="py-8 px-4 text-center border border-dashed border-white/10 rounded-2xl bg-black/20 text-xs text-gray-500 space-y-2">
+                            <span class="material-symbols-outlined text-2xl text-gray-600">manage_search</span>
+                            <p>Search and select a product above to choose barcode quantity and add to print queue.</p>
+                        </div>
+
+                        <!-- Dynamic Quantity Controls & Add Button (Revealed ON SKU Selection) -->
+                        <div v-else class="space-y-5 animate-in fade-in duration-300 pt-2 border-t border-white/5">
+                            <!-- Selected Product Preview Card -->
+                            <div class="p-4 rounded-2xl bg-white/5 border border-[#C5A073]/30 flex items-center justify-between gap-3 shadow-lg">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-12 h-12 rounded-xl bg-black/60 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                                        <img v-if="barcodeData.image_url" :src="barcodeData.image_url" class="w-full h-full object-cover"/>
+                                        <span v-else class="material-symbols-outlined text-[#C5A073]">eco</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs font-bold text-white truncate">{{ barcodeData.name || barcodeData.sku }}</p>
+                                        <p class="text-[10px] font-mono text-[#C5A073] mt-0.5">SKU: {{ barcodeData.sku }} • ₹{{ (barcodeData.price || 0).toLocaleString('en-IN') }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-[10px] uppercase tracking-widest text-gray-400 mb-1.5 font-bold">Price (₹)</label>
-                                    <input type="number" v-model.number="barcodeData.price" min="0" step="0.01"
-                                        class="w-full bg-black/40 border border-white/10 px-3.5 py-2.5 text-xs text-white font-mono rounded-xl focus:border-[#C5A073] outline-none transition-all placeholder:text-gray-600"
-                                        placeholder="0.00">
-                                </div>
+                                <button type="button" @click="clearSelectedSku" class="text-xs text-gray-400 hover:text-white underline shrink-0">
+                                    Change
+                                </button>
                             </div>
 
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-400 mb-1.5 font-bold">Product Name</label>
-                                <input type="text" v-model="barcodeData.name"
-                                    class="w-full bg-black/40 border border-white/10 px-3.5 py-2.5 text-xs text-white rounded-xl focus:border-[#C5A073] outline-none transition-all placeholder:text-gray-600"
-                                    placeholder="e.g. Monstera Deliciosa">
-                            </div>
-
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-400 mb-1.5 font-bold">Product Image URL (Optional)</label>
-                                <input type="text" v-model="barcodeData.image_url"
-                                    class="w-full bg-black/40 border border-white/10 px-3.5 py-2.5 text-xs text-white font-mono rounded-xl focus:border-[#C5A073] outline-none transition-all placeholder:text-gray-600"
-                                    placeholder="https://... or select catalog product">
-                            </div>
-
-                            <!-- Selected Product Mini Card Preview -->
-                            <div v-if="barcodeData.sku.trim()" class="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-xl bg-black/60 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
-                                    <img v-if="barcodeData.image_url" :src="barcodeData.image_url" class="w-full h-full object-cover"/>
-                                    <span v-else class="material-symbols-outlined text-[#C5A073]">eco</span>
+                            <!-- Quantity Selector (+ / - buttons) -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Quantity (Labels to Print)</label>
+                                    <span class="text-[10px] font-mono text-[#C5A073] font-bold">Total: {{ barcodeData.qty || 1 }} label(s)</span>
                                 </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-bold text-white truncate">{{ barcodeData.name || barcodeData.sku }}</p>
-                                    <p class="text-[10px] font-mono text-[#C5A073] mt-0.5">SKU: {{ barcodeData.sku }} • ₹{{ (barcodeData.price || 0).toLocaleString('en-IN') }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Quantity Selector with Presets -->
-                            <div class="pt-2">
-                                <div class="flex justify-between items-center mb-1.5">
-                                    <label class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Quantity (Number of Labels)</label>
-                                    <span class="text-[10px] font-mono text-[#C5A073] font-bold">Total: {{ barcodeData.qty || 1 }} barcode(s)</span>
-                                </div>
-                                <div class="flex items-center gap-2 mb-2">
-                                    <button type="button" @click="barcodeData.qty = Math.max(1, (barcodeData.qty || 1) - 1)" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-lg hover:bg-white/10 transition-colors">-</button>
+                                
+                                <div class="flex items-center gap-3">
+                                    <button type="button" @click="barcodeData.qty = Math.max(1, (barcodeData.qty || 1) - 1)" 
+                                        class="w-12 h-12 rounded-2xl bg-white/5 border border-white/15 text-white font-bold text-xl hover:bg-white/15 transition-all flex items-center justify-center active:scale-95">
+                                        -
+                                    </button>
                                     <input type="number" v-model.number="barcodeData.qty" min="1"
-                                        class="flex-1 bg-black/50 border border-white/15 rounded-xl py-2.5 text-center text-sm text-white font-bold font-mono focus:border-[#C5A073] outline-none">
-                                    <button type="button" @click="barcodeData.qty = (barcodeData.qty || 1) + 1" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-lg hover:bg-white/10 transition-colors">+</button>
+                                        class="flex-1 bg-black/60 border border-[#C5A073]/40 rounded-2xl py-3 text-center text-lg text-white font-bold font-mono outline-none focus:ring-2 focus:ring-[#C5A073]/30">
+                                    <button type="button" @click="barcodeData.qty = (barcodeData.qty || 1) + 1" 
+                                        class="w-12 h-12 rounded-2xl bg-white/5 border border-white/15 text-white font-bold text-xl hover:bg-white/15 transition-all flex items-center justify-center active:scale-95">
+                                        +
+                                    </button>
                                 </div>
 
-                                <!-- Quick Presets -->
-                                <div class="flex gap-1.5 overflow-x-auto pb-1">
+                                <!-- Quick Preset Pills -->
+                                <div class="flex gap-1.5 overflow-x-auto pb-1 pt-1">
                                     <button type="button" v-for="q in [1, 4, 8, 12, 24, 50]" :key="q" @click="barcodeData.qty = q"
-                                        :class="[barcodeData.qty === q ? 'bg-[#C5A073] text-black font-bold' : 'bg-white/5 text-gray-400 hover:text-white', 'px-2.5 py-1 rounded-lg text-[10px] font-mono transition-all']">
+                                        :class="[barcodeData.qty === q ? 'bg-[#C5A073] text-black font-bold' : 'bg-white/5 text-gray-400 hover:text-white', 'px-3 py-1 rounded-xl text-[10px] font-mono transition-all']">
                                         +{{ q }}
                                     </button>
                                 </div>
@@ -703,7 +700,7 @@
 
                             <!-- Add to Queue Button -->
                             <button @click="addToQueue" :disabled="!barcodeData.sku.trim()"
-                                class="w-full mt-4 bg-gradient-to-r from-[#C5A073] to-[#d4b082] text-black hover:opacity-90 py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest font-bold transition-all shadow-lg shadow-[#C5A073]/10 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                class="w-full mt-2 bg-gradient-to-r from-[#C5A073] to-[#d4b082] text-black hover:opacity-90 py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest font-bold transition-all shadow-xl shadow-[#C5A073]/15 flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined text-lg">add_circle</span>
                                 Add to Print Queue
                             </button>
@@ -1169,7 +1166,32 @@
                     barcodeData.value.name = item.name;
                     barcodeData.value.price = item.price || 0;
                     barcodeData.value.image_url = item.image_url || '';
+                    barcodeData.value.qty = 1;
                     barcodeSearchQuery.value = `${item.name} (${item.sku})`;
+                    showBarcodeSearchDropdown.value = false;
+                };
+
+                const selectCustomSkuForBarcode = (customCode) => {
+                    const code = (customCode || '').trim().toUpperCase();
+                    if (!code) return;
+                    barcodeData.value.sku = code;
+                    barcodeData.value.name = code;
+                    barcodeData.value.price = 0;
+                    barcodeData.value.image_url = '';
+                    barcodeData.value.qty = 1;
+                    barcodeSearchQuery.value = code;
+                    showBarcodeSearchDropdown.value = false;
+                };
+
+                const clearSelectedSku = () => {
+                    barcodeData.value = {
+                        sku: '',
+                        name: '',
+                        price: 0,
+                        qty: 1,
+                        image_url: ''
+                    };
+                    barcodeSearchQuery.value = '';
                     showBarcodeSearchDropdown.value = false;
                 };
 
@@ -2124,6 +2146,8 @@
                     showBarcodeSearchDropdown,
                     filteredBarcodeSkus,
                     selectSkuForBarcode,
+                    selectCustomSkuForBarcode,
+                    clearSelectedSku,
                     setBarcodeCanvasRef,
                     addToQueue,
                     removeFromQueue,
