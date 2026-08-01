@@ -2179,6 +2179,9 @@ class ScanPayload(BaseModel):
     session_id: str
     sku: Optional[str] = None
     raw_sku: Optional[str] = None
+    name: Optional[str] = None
+    price: Optional[float] = None
+    image_url: Optional[str] = None
 
     @property
     def get_sku(self) -> str:
@@ -2208,23 +2211,26 @@ async def submit_scan(payload: ScanPayload):
     # 0.001 ms RAM Lookup in SKU_CACHE
     sku_upper = raw_sku.upper()
     cached_sku = SKU_CACHE.get(sku_upper)
+    scan_id = uuid.uuid4().hex[:12]
     
     if cached_sku:
         scan_event = {
+            "scan_id": scan_id,
             "sku": raw_sku,
-            "name": cached_sku["name"],
-            "price": cached_sku["price"],
+            "name": cached_sku["name"] or payload.name or raw_sku,
+            "price": cached_sku["price"] if (cached_sku["price"] and cached_sku["price"] > 0) else (payload.price or 0.0),
             "category": cached_sku.get("category", ""),
-            "image_url": cached_sku.get("image_url", ""),
+            "image_url": cached_sku.get("image_url") or payload.image_url or "",
             "timestamp": time.time()
         }
     else:
         scan_event = {
+            "scan_id": scan_id,
             "sku": raw_sku,
-            "name": raw_sku,
-            "price": 0.0,
+            "name": payload.name or raw_sku,
+            "price": payload.price or 0.0,
             "category": "",
-            "image_url": "",
+            "image_url": payload.image_url or "",
             "timestamp": time.time()
         }
         

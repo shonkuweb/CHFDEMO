@@ -1659,9 +1659,12 @@
                                     clearInterval(setupPollInterval);
                                     deviceVerified.value = true;
                                     
-                                    // Helper to add or increment item in invoice cart
+                                    const processedScanIds = new Set();
                                     const processIncomingScan = (item) => {
                                         if (!item || !item.sku) return;
+                                        if (item.scan_id && processedScanIds.has(item.scan_id)) return;
+                                        if (item.scan_id) processedScanIds.add(item.scan_id);
+
                                         lastScannedItem.value = item.sku;
                                         const skuCode = item.sku.trim();
                                         const itemDesc = item.name && item.name !== item.sku
@@ -1675,6 +1678,9 @@
                                         
                                         if (existingIndex !== -1) {
                                             invoiceData.value.items[existingIndex].qty += 1;
+                                            if (item.price > 0 && (!invoiceData.value.items[existingIndex].price || invoiceData.value.items[existingIndex].price === 0)) {
+                                                invoiceData.value.items[existingIndex].price = item.price;
+                                            }
                                         } else {
                                             invoiceData.value.items.push({
                                                 description: itemDesc,

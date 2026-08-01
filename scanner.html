@@ -1013,7 +1013,13 @@
                                         await fetch('/api/scan/submit', {
                                             method: 'POST',
                                             headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({ session_id: sessionId, raw_sku: item.sku })
+                                            body: JSON.stringify({ 
+                                                session_id: sessionId, 
+                                                raw_sku: item.sku,
+                                                name: item.name,
+                                                price: item.price,
+                                                image_url: item.image_url
+                                            })
                                         });
                                         totalUnitsSent++;
                                     }
