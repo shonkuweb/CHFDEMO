@@ -206,6 +206,12 @@
                         <span class="material-symbols-outlined text-[20px]">receipt_long</span>
                         <span v-if="isSidebarOpen" class="whitespace-nowrap">Generate Bill</span>
                     </button>
+                    <button @click="currentTab = 'history'" 
+                        :title="!isSidebarOpen ? 'History' : ''"
+                        :class="[currentTab === 'history' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', isSidebarOpen ? 'justify-start px-4 py-3 gap-3' : 'justify-center p-3', 'w-full flex items-center text-sm font-medium transition-all rounded-r-sm']">
+                        <span class="material-symbols-outlined text-[20px]">history</span>
+                        <span v-if="isSidebarOpen" class="whitespace-nowrap">History</span>
+                    </button>
                     <button @click="currentTab = 'skus'" 
                         :title="!isSidebarOpen ? 'Manage SKUs' : ''"
                         :class="[currentTab === 'skus' ? 'bg-white/5 text-accent-bronze border-l-2 border-accent-bronze' : 'text-gray-500 hover:text-white border-l-2 border-transparent hover:bg-white/[0.02]', isSidebarOpen ? 'justify-start px-4 py-3 gap-3' : 'justify-center p-3', 'w-full flex items-center text-sm font-medium transition-all rounded-r-sm']">
@@ -310,90 +316,380 @@
                         </div>
 
                         <!-- Right Column: Scanned Items (The Cart) -->
-                        <div class="w-full xl:w-[480px] flex-shrink-0 bg-background-dark/30 border border-white/5 rounded-lg shadow-2xl flex flex-col relative min-h-[500px] max-h-[70vh] overflow-hidden">
+                        <div class="w-full xl:w-[500px] flex-shrink-0 bg-[#0f1114]/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex flex-col relative min-h-[520px] max-h-[75vh] overflow-hidden">
                             <!-- Header -->
-                            <div class="bg-surface-dark/80 backdrop-blur-md border-b border-white/5 p-6 flex items-center justify-between z-10 relative">
+                            <div class="bg-gradient-to-r from-white/[0.04] to-white/[0.01] backdrop-blur-md border-b border-white/10 px-6 py-5 flex items-center justify-between z-10 relative">
                                 <div>
-                                    <h3 class="font-serif text-xl text-ivory">Scanned Items</h3>
-                                    <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold mt-1 flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                        Mobile Scanner Active ({{ invoiceData.items.length }} Items)
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-xl bg-[#C5A073]/10 border border-[#C5A073]/30 flex items-center justify-center text-[#C5A073]">
+                                            <span class="material-symbols-outlined text-lg">shopping_basket</span>
+                                        </div>
+                                        <h3 class="font-serif text-xl text-white font-medium">Scanned Items</h3>
+                                    </div>
+                                    <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold mt-1.5 flex items-center gap-1.5">
+                                        <span class="relative flex h-2 w-2">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                        </span>
+                                        Mobile Scanner Active • <strong class="text-white font-mono">{{ invoiceData.items.length }} {{ invoiceData.items.length === 1 ? 'Item' : 'Items' }}</strong>
                                     </p>
                                 </div>
-                                <button type="button" @click="resetScanner" class="px-3 py-1.5 rounded-full bg-accent-bronze/10 border border-accent-bronze/30 text-accent-bronze hover:bg-accent-bronze/20 text-[11px] font-semibold transition-all flex items-center gap-1" title="Re-link Mobile Device">
-                                    <span class="material-symbols-outlined text-sm">qr_code_scanner</span>
+                                <button type="button" @click="resetScanner" class="px-3.5 py-1.5 rounded-xl bg-[#C5A073]/10 border border-[#C5A073]/30 text-[#C5A073] hover:bg-[#C5A073] hover:text-black font-bold text-xs transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-base">qr_code_scanner</span>
                                     <span>Re-link</span>
                                 </button>
                             </div>
 
                             <!-- Scrollable Items List -->
-                            <div class="flex-1 overflow-y-auto p-6 space-y-4 relative z-0 hide-scrollbar">
+                            <div class="flex-1 overflow-y-auto p-5 space-y-4 relative z-0 hide-scrollbar">
                                 <!-- Empty State -->
-                                <div v-if="invoiceData.items.length === 0" class="flex flex-col items-center justify-center h-full text-center py-12">
-                                    <div class="w-20 h-20 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center mb-6 mt-10">
-                                        <span class="material-symbols-outlined text-4xl text-gray-600">document_scanner</span>
+                                <div v-if="invoiceData.items.length === 0" class="flex flex-col items-center justify-center h-full text-center py-16 px-4">
+                                    <div class="relative w-20 h-20 flex items-center justify-center mb-5">
+                                        <div class="absolute inset-0 rounded-full border-2 border-dashed border-[#C5A073]/30 animate-spin-slow"></div>
+                                        <div class="w-14 h-14 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/20 flex items-center justify-center text-[#C5A073]">
+                                            <span class="material-symbols-outlined text-3xl">document_scanner</span>
+                                        </div>
                                     </div>
-                                    <p class="text-lg font-serif text-ivory mb-2">No items scanned yet</p>
-                                    <p class="text-sm text-gray-500 max-w-[250px] leading-relaxed mx-auto">Use your linked mobile device to scan QR codes. Products will instantly appear here.</p>
+                                    <p class="text-lg font-serif text-white mb-1.5">No Items Scanned Yet</p>
+                                    <p class="text-xs text-gray-400 max-w-[260px] leading-relaxed">Scan plant QR codes using your linked mobile scanner device to populate bill items instantly.</p>
                                 </div>
 
-                                <!-- Items -->
-                                <div v-for="(item, index) in invoiceData.items" :key="index" class="group relative bg-surface-dark border border-white/5 p-5 rounded-md hover:border-accent-bronze/30 transition-all">
-                                    <button type="button" @click="removeItem(index)" class="absolute top-4 right-4 text-red-400/50 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-all">
-                                        <span class="material-symbols-outlined text-[18px]">close</span>
-                                    </button>
-                                    <div class="pr-8 mb-4">
-                                        <label class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Product Description</label>
-                                        <input type="text" v-model="item.description" required
-                                            class="w-full bg-transparent border-b border-white/10 py-2 text-base font-serif text-ivory focus:outline-none focus:border-accent-bronze transition-colors placeholder:text-white/20"
-                                            placeholder="Product Name">
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-20">
-                                            <label class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Qty</label>
-                                            <input type="number" v-model.number="item.qty" min="1" required
-                                                class="w-full bg-background-dark border border-white/10 px-3 py-2 text-sm text-ivory focus:outline-none focus:border-accent-bronze rounded-sm transition-colors text-center">
-                                        </div>
+                                <!-- Item Cards -->
+                                <div v-for="(item, index) in invoiceData.items" :key="index" class="group relative bg-white/[0.02] hover:bg-white/[0.04] border border-white/10 hover:border-[#C5A073]/40 p-5 rounded-2xl transition-all duration-300 shadow-md">
+                                    <!-- Card Header & Remove Button -->
+                                    <div class="flex items-start justify-between gap-3 mb-3">
                                         <div class="flex-1">
-                                            <label class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Price (₹)</label>
-                                            <input type="number" v-model.number="item.price" min="0" required
-                                                class="w-full bg-background-dark border border-white/10 px-3 py-2 text-sm text-ivory focus:outline-none focus:border-accent-bronze rounded-sm transition-colors">
+                                            <label class="block text-[9px] uppercase tracking-widest text-[#C5A073] font-extrabold mb-1">Product Description & SKU</label>
+                                            <input type="text" v-model="item.description" required
+                                                class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2 text-sm font-serif text-white focus:outline-none focus:border-[#C5A073] transition-colors placeholder:text-gray-600"
+                                                placeholder="Product Name or Code">
+                                        </div>
+                                        <button type="button" @click="removeItem(index)" title="Remove item" 
+                                            class="w-8 h-8 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all cursor-pointer shrink-0 mt-4">
+                                            <span class="material-symbols-outlined text-base">delete</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Price & Quantity Inputs Grid -->
+                                    <div class="grid grid-cols-12 gap-3 items-center">
+                                        <!-- Quantity Stepper -->
+                                        <div class="col-span-5">
+                                            <label class="block text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-1">Quantity</label>
+                                            <div class="flex items-center bg-black/40 border border-white/10 rounded-xl p-1">
+                                                <button type="button" @click="item.qty = Math.max(1, (Number(item.qty) || 1) - 1)"
+                                                    class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white flex items-center justify-center text-xs font-bold transition-all cursor-pointer">
+                                                    -
+                                                </button>
+                                                <input type="number" v-model.number="item.qty" min="1" required
+                                                    class="w-full bg-transparent text-center text-xs font-bold text-white focus:outline-none py-1">
+                                                <button type="button" @click="item.qty = (Number(item.qty) || 0) + 1"
+                                                    class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white flex items-center justify-center text-xs font-bold transition-all cursor-pointer">
+                                                    +
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Unit Price -->
+                                        <div class="col-span-7">
+                                            <label class="block text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-1">Unit Price (₹)</label>
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#C5A073]">₹</span>
+                                                <input type="number" v-model.number="item.price" min="0" required
+                                                    class="w-full bg-black/40 border border-white/10 rounded-xl pl-7 pr-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-[#C5A073] transition-colors">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between">
-                                        <span class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">GST (18%):</span>
-                                        <button type="button" @click="item.gst_applicable = (item.gst_applicable === 0 ? 1 : 0)" 
-                                            :class="item.gst_applicable === 0 ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'"
-                                            class="px-2.5 py-1 rounded text-[10px] font-bold border transition-all">
-                                            {{ (item.gst_applicable === 0) ? '0% GST (Exempt)' : '18% GST Applicable' }}
-                                        </button>
+
+                                    <!-- GST Toggle & Calculated Subtotal -->
+                                    <div class="mt-3.5 pt-3 border-t border-white/5 flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="text-[10px] font-semibold text-gray-400">Tax Status:</span>
+                                            <button type="button" @click="item.gst_applicable = (item.gst_applicable === 0 ? 1 : 0)" 
+                                                :class="item.gst_applicable === 0 ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'"
+                                                class="px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all flex items-center gap-1 cursor-pointer">
+                                                <span class="material-symbols-outlined text-xs">{{ item.gst_applicable === 0 ? 'remove_circle_outline' : 'check_circle' }}</span>
+                                                <span>{{ (item.gst_applicable === 0) ? '0% Exempt' : '18% GST' }}</span>
+                                            </button>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-[10px] text-gray-400">Item Total: </span>
+                                            <span class="text-xs font-bold text-white">₹{{ ((Number(item.qty) || 1) * (Number(item.price) || 0) * (item.gst_applicable === 0 ? 1 : 1.18)).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Sticky Footer for Total -->
-                            <div class="bg-surface-dark/95 backdrop-blur-md border-t border-white/5 p-5 relative z-10 space-y-2">
-                                <div class="flex justify-between text-xs text-gray-400">
-                                    <span>Subtotal (Excl. Tax):</span>
-                                    <span class="text-white font-medium">₹{{ subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                            <div class="bg-gradient-to-b from-[#16191e]/95 to-[#0b0c0e]/98 backdrop-blur-xl border-t border-white/10 p-5 relative z-10 space-y-2.5 shadow-2xl">
+                                <div class="flex justify-between items-center text-xs text-gray-400">
+                                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-gray-500">receipt</span> Subtotal (Excl. Tax):</span>
+                                    <span class="text-white font-mono font-medium">₹{{ subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
                                 </div>
-                                <div class="flex justify-between text-xs text-gray-400">
-                                    <span>GST @ 18% (Applicable Items):</span>
-                                    <span class="text-emerald-400 font-semibold">+ ₹{{ gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                <div class="flex justify-between items-center text-xs text-gray-400">
+                                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-emerald-400">percent</span> GST @ 18% (Tax):</span>
+                                    <span class="text-emerald-400 font-mono font-bold">+ ₹{{ gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
                                 </div>
-                                <div class="border-t border-white/10 pt-2 flex items-end justify-between">
+                                <div class="border-t border-white/10 pt-3 flex items-center justify-between">
                                     <div>
-                                        <p class="text-[10px] uppercase tracking-widest text-[#C5A073] font-bold">Total Amount</p>
-                                        <p class="text-[10px] text-gray-400">INR (₹) • Incl. 18% GST</p>
+                                        <p class="text-[10px] uppercase tracking-widest text-[#C5A073] font-extrabold flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-xs text-[#C5A073]">verified</span> Total Amount
+                                        </p>
+                                        <p class="text-[10px] text-gray-400 font-mono">INR (₹) • Incl. 18% GST</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="font-serif text-3xl text-accent-bronze font-bold tracking-wide">₹{{ totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</p>
+                                        <p class="font-serif text-3xl text-[#C5A073] font-bold tracking-wide shadow-sm">₹{{ totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </template>
+            </div>
+            <!-- History View -->
+            <div v-if="currentTab === 'history'" class="animate-in fade-in slide-in-from-bottom-4 duration-300 w-full max-w-7xl mx-auto space-y-8">
+                <!-- Page Top Header -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-bronze/10 border border-accent-bronze/20 text-accent-bronze text-[11px] font-semibold uppercase tracking-wider mb-2">
+                            <span class="material-symbols-outlined text-xs">history</span> Daily & Historical Bills Log
+                        </div>
+                        <h1 class="font-serif text-3xl md:text-4xl text-ivory font-normal">Invoice History</h1>
+                        <p class="text-xs text-gray-400 mt-1">View real-time records of all bills generated throughout the day with Cloudflare R2 invoices and exact IST timestamps.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button type="button" @click="fetchInvoiceHistory" :disabled="loadingHistory" class="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50">
+                            <span :class="['material-symbols-outlined text-base', loadingHistory ? 'animate-spin' : '']">refresh</span>
+                            <span>Refresh History</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Metrics Summary Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="glass-panel p-5 rounded-2xl border border-white/10 relative overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[11px] uppercase tracking-wider text-gray-400 font-semibold">Today's Bills</p>
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                                <span class="material-symbols-outlined text-lg">today</span>
+                            </div>
+                        </div>
+                        <h3 class="serif-title text-3xl font-bold text-white mt-3">{{ historyMetrics.today_count || 0 }}</h3>
+                        <p class="text-[10px] text-emerald-400 mt-1 font-mono">Bills generated today</p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border border-white/10 relative overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[11px] uppercase tracking-wider text-gray-400 font-semibold">Today's Revenue</p>
+                            <div class="w-8 h-8 rounded-lg bg-[#C5A073]/10 border border-[#C5A073]/30 flex items-center justify-center text-[#C5A073]">
+                                <span class="material-symbols-outlined text-lg">payments</span>
+                            </div>
+                        </div>
+                        <h3 class="serif-title text-3xl font-bold text-[#C5A073] mt-3">₹{{ Number(historyMetrics.today_revenue || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</h3>
+                        <p class="text-[10px] text-[#C5A073] mt-1 font-mono">Total collected today</p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border border-white/10 relative overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[11px] uppercase tracking-wider text-gray-400 font-semibold">Total Invoices</p>
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                                <span class="material-symbols-outlined text-lg">receipt</span>
+                            </div>
+                        </div>
+                        <h3 class="serif-title text-3xl font-bold text-white mt-3">{{ historyMetrics.total_count || 0 }}</h3>
+                        <p class="text-[10px] text-gray-400 mt-1 font-mono">All-time count</p>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border border-white/10 relative overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[11px] uppercase tracking-wider text-gray-400 font-semibold">Total Revenue</p>
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                                <span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+                            </div>
+                        </div>
+                        <h3 class="serif-title text-3xl font-bold text-white mt-3">₹{{ Number(historyMetrics.total_revenue || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</h3>
+                        <p class="text-[10px] text-gray-400 mt-1 font-mono">All-time total</p>
+                    </div>
+                </div>
+
+                <!-- Filters & Search Toolbar -->
+                <div class="glass-panel p-4 rounded-2xl border border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <!-- Search Input -->
+                    <div class="relative w-full md:w-96">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg">search</span>
+                        <input type="text" v-model="historySearchQuery" @input="debouncedFetchHistory"
+                            placeholder="Search by customer name, phone, or invoice #"
+                            class="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#C5A073]/50 transition-colors" />
+                    </div>
+
+                    <!-- Date Filter Tabs -->
+                    <div class="flex items-center gap-2 bg-black/40 p-1 rounded-xl border border-white/10 w-full md:w-auto">
+                        <button type="button" @click="historyDateFilter = 'all'; fetchInvoiceHistory()"
+                            :class="[historyDateFilter === 'all' ? 'bg-[#C5A073] text-black font-extrabold' : 'text-gray-400 hover:text-white font-medium', 'px-4 py-1.5 rounded-lg text-xs transition-all cursor-pointer flex-1 md:flex-none text-center']">
+                            All Bills
+                        </button>
+                        <button type="button" @click="historyDateFilter = 'today'; fetchInvoiceHistory()"
+                            :class="[historyDateFilter === 'today' ? 'bg-[#C5A073] text-black font-extrabold' : 'text-gray-400 hover:text-white font-medium', 'px-4 py-1.5 rounded-lg text-xs transition-all cursor-pointer flex-1 md:flex-none text-center']">
+                            Today's Bills
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Table / Rows of Leads -->
+                <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-white/5 border-b border-white/10 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                                    <th class="py-4 px-5">Date (IST)</th>
+                                    <th class="py-4 px-5">Customer Name</th>
+                                    <th class="py-4 px-5">Phone Number</th>
+                                    <th class="py-4 px-5">Products Purchased</th>
+                                    <th class="py-4 px-5 text-right">Total Paid</th>
+                                    <th class="py-4 px-5 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 text-xs text-gray-300">
+                                <template v-if="loadingHistory">
+                                    <tr>
+                                        <td colspan="6" class="py-12 text-center text-gray-400">
+                                            <div class="flex flex-col items-center justify-center gap-2">
+                                                <span class="material-symbols-outlined text-3xl animate-spin text-[#C5A073]">refresh</span>
+                                                <span>Loading invoice history...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+
+                                <template v-else-if="historyList.length === 0">
+                                    <tr>
+                                        <td colspan="6" class="py-16 text-center text-gray-500">
+                                            <div class="flex flex-col items-center justify-center gap-3">
+                                                <div class="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400">
+                                                    <span class="material-symbols-outlined text-2xl">folder_off</span>
+                                                </div>
+                                                <p class="font-serif text-lg text-gray-300">No Bills Recorded Yet</p>
+                                                <p class="text-xs text-gray-500 max-w-sm">Bills generated during payments will automatically be stored here with Cloudflare R2 links and exact IST timestamps.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+
+                                <template v-else>
+                                    <tr v-for="item in historyList" :key="item.invoice_id" class="hover:bg-white/[0.02] transition-colors group">
+                                        <!-- Date (IST) -->
+                                        <td class="py-4 px-5 whitespace-nowrap">
+                                            <div class="flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-sm text-[#C5A073]">schedule</span>
+                                                <div>
+                                                    <p class="font-medium text-white">{{ item.created_at_ist || item.created_at }}</p>
+                                                    <p class="text-[10px] text-gray-500 font-mono">Invoice #{{ item.invoice_id }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Customer Name -->
+                                        <td class="py-4 px-5 whitespace-nowrap">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs font-bold shrink-0">
+                                                    {{ (item.client_name || 'C').charAt(0).toUpperCase() }}
+                                                </div>
+                                                <span class="font-semibold text-white">{{ item.client_name || 'Valued Customer' }}</span>
+                                            </div>
+                                        </td>
+
+                                        <!-- Phone Number -->
+                                        <td class="py-4 px-5 whitespace-nowrap font-mono">
+                                            <div class="flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-xs text-gray-400">call</span>
+                                                <span class="text-gray-300">{{ item.phone || 'N/A' }}</span>
+                                                <a v-if="item.phone" :href="'https://wa.me/' + item.phone.replace(/[^0-9]/g, '')" target="_blank" title="Chat on WhatsApp" class="text-emerald-400 hover:text-emerald-300 ml-1 transition-colors">
+                                                    <span class="material-symbols-outlined text-sm">chat</span>
+                                                </a>
+                                            </div>
+                                        </td>
+
+                                        <!-- Products Purchased -->
+                                        <td class="py-4 px-5">
+                                            <div class="flex flex-wrap gap-1.5 max-w-md">
+                                                <template v-if="item.items && item.items.length > 0">
+                                                    <span v-for="(prod, pIdx) in item.items.slice(0, 3)" :key="pIdx" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[11px] text-gray-300">
+                                                        <span class="font-medium text-white">{{ prod.description || 'Item' }}</span>
+                                                        <span class="text-[10px] text-[#C5A073] font-bold">x{{ prod.qty || 1 }}</span>
+                                                    </span>
+                                                    <span v-if="item.items.length > 3" class="inline-flex items-center px-2 py-0.5 rounded-full bg-white/10 text-[10px] text-gray-400 font-semibold">
+                                                        +{{ item.items.length - 3 }} more
+                                                    </span>
+                                                </template>
+                                                <template v-else>
+                                                    <span class="text-gray-500 italic text-[11px]">General Products</span>
+                                                </template>
+                                            </div>
+                                        </td>
+
+                                        <!-- Total Paid -->
+                                        <td class="py-4 px-5 text-right whitespace-nowrap font-bold text-sm text-[#C5A073]">
+                                            ₹{{ Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}
+                                        </td>
+
+                                        <!-- View Invoice Button -->
+                                        <td class="py-4 px-5 text-center whitespace-nowrap">
+                                            <button type="button" @click="openR2InvoiceModal(item)"
+                                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C5A073]/20 to-[#b08c62]/20 border border-[#C5A073]/40 text-[#C5A073] hover:bg-[#C5A073] hover:text-black font-semibold text-xs transition-all shadow-md cursor-pointer">
+                                                <span class="material-symbols-outlined text-sm">visibility</span>
+                                                <span>View Invoice</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- R2 Invoice PNG Viewer Modal -->
+            <div v-if="showR2Modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-2xl animate-in fade-in duration-300 overflow-y-auto">
+                <div class="glass-panel w-full max-w-4xl p-6 md:p-8 rounded-3xl border border-[#C5A073]/30 text-white relative shadow-[0_0_50px_rgba(197,160,115,0.15)] my-auto flex flex-col max-h-[90vh]">
+                    <!-- Modal Header -->
+                    <div class="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/30 flex items-center justify-center text-[#C5A073]">
+                                <span class="material-symbols-outlined text-xl">receipt_long</span>
+                            </div>
+                            <div>
+                                <h3 class="serif-title text-xl text-white font-normal">Invoice #{{ selectedR2Item?.invoice_id }}</h3>
+                                <p class="text-xs text-gray-400">{{ selectedR2Item?.client_name || 'Customer' }} • {{ selectedR2Item?.created_at_ist }}</p>
+                            </div>
+                        </div>
+                        <button type="button" @click="showR2Modal = false" class="p-2 text-gray-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors">
+                            <span class="material-symbols-outlined text-xl">close</span>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body / Image Viewer -->
+                    <div class="flex-1 overflow-y-auto py-4 flex flex-col items-center justify-center bg-black/60 rounded-2xl my-4 border border-white/5 relative min-h-[350px]">
+                        <img v-if="selectedR2Item?.r2_url" :src="selectedR2Item.r2_url" :alt="'Invoice ' + selectedR2Item.invoice_id" class="max-w-full h-auto rounded-lg shadow-2xl border border-white/10 object-contain max-h-[65vh]" />
+                        <div v-else class="text-center text-gray-400 p-8 flex flex-col items-center gap-2">
+                            <span class="material-symbols-outlined text-4xl text-gray-600">image_not_supported</span>
+                            <span>Invoice image not available on R2</span>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer Actions -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 shrink-0">
+                        <span class="text-xs text-gray-400 font-mono">Cloudflare R2: <strong class="text-emerald-400">{{ selectedR2Item?.r2_url || 'N/A' }}</strong></span>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <a v-if="selectedR2Item?.r2_url" :href="selectedR2Item.r2_url" target="_blank" download class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer flex-1 sm:flex-none">
+                                <span class="material-symbols-outlined text-sm">download</span>
+                                <span>Download PNG</span>
+                            </a>
+                            <a v-if="selectedR2Item?.r2_url" :href="selectedR2Item.r2_url" target="_blank" class="px-4 py-2 rounded-xl bg-[#C5A073] text-black font-extrabold text-xs flex items-center justify-center gap-1.5 hover:brightness-110 transition-colors cursor-pointer flex-1 sm:flex-none">
+                                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                                <span>Open R2 Link</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Manage SKUs View -->
@@ -1789,6 +2085,268 @@
                 const paymentAutoCloseTimer = ref(null);
                 let paymentPollInterval = null;
 
+                // Invoice History State
+                const historyList = ref([]);
+                const historyMetrics = ref({
+                    today_count: 0,
+                    today_revenue: 0,
+                    total_count: 0,
+                    total_revenue: 0
+                });
+                const historySearchQuery = ref('');
+                const historyDateFilter = ref('all');
+                const loadingHistory = ref(false);
+                const showR2Modal = ref(false);
+                const selectedR2Item = ref(null);
+                let searchDebounceTimer = null;
+
+                const fetchInvoiceHistory = async () => {
+                    loadingHistory.value = true;
+                    try {
+                        let url = `/api/invoice/history?filter_date=${historyDateFilter.value}`;
+                        if (historySearchQuery.value.trim()) {
+                            url += `&search=${encodeURIComponent(historySearchQuery.value.trim())}`;
+                        }
+                        const res = await fetch(url);
+                        const data = await res.json();
+                        if (data && data.status === 'success') {
+                            historyList.value = data.history || [];
+                            if (data.metrics) {
+                                historyMetrics.value = data.metrics;
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Failed to fetch invoice history:', e);
+                    } finally {
+                        loadingHistory.value = false;
+                    }
+                };
+
+                const debouncedFetchHistory = () => {
+                    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                    searchDebounceTimer = setTimeout(() => {
+                        fetchInvoiceHistory();
+                    }, 300);
+                };
+
+                const openR2InvoiceModal = (item) => {
+                    selectedR2Item.value = item;
+                    showR2Modal.value = true;
+                };
+
+                const generateBrandedInvoicePNG = (invData, paymentRef = '', totalAmt = 0) => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 1240;
+                    canvas.height = 1754;
+                    const ctx = canvas.getContext('2d');
+
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, 1240, 1754);
+
+                    const bgImg = (window.CHF_LETTERHEAD_BASE64 && window.CHF_LETTERHEAD_BASE64.length > 100) 
+                        ? window.CHF_LETTERHEAD_BASE64 
+                        : letterheadBase64.value;
+
+                    if (bgImg) {
+                        const img = new Image();
+                        img.src = bgImg;
+                        ctx.drawImage(img, 0, 0, 1240, 1754);
+                    } else {
+                        ctx.fillStyle = '#4C762E';
+                        ctx.fillRect(0, 0, 1240, 36);
+                    }
+
+                    let startY = 472;
+
+                    const invNumber = invData.number || 'INV-000000';
+                    ctx.font = 'bold 24px helvetica, sans-serif';
+                    ctx.fillStyle = '#4C762E';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(`INVOICE #${invNumber}`, 88, startY);
+
+                    const todayDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                    ctx.font = '18px helvetica, sans-serif';
+                    ctx.fillStyle = '#646464';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(`Date: ${todayDate}`, 1152, startY);
+
+                    startY += 30;
+                    ctx.fillStyle = '#F8FAF6';
+                    ctx.strokeStyle = '#D2E1C8';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    if (ctx.roundRect) {
+                        ctx.roundRect(88, startY, 1064, 177, 12);
+                    } else {
+                        ctx.rect(88, startY, 1064, 177);
+                    }
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#64785A';
+                    ctx.font = 'bold 15px helvetica, sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.fillText('BILLED TO:', 118, startY + 40);
+
+                    ctx.fillStyle = '#1E1E1E';
+                    ctx.font = 'bold 20px helvetica, sans-serif';
+                    ctx.fillText(invData.clientName || 'Valued Customer', 118, startY + 82);
+
+                    ctx.fillStyle = '#505050';
+                    ctx.font = '17px helvetica, sans-serif';
+                    ctx.fillText(`Phone: ${invData.phone || 'N/A'}`, 118, startY + 118);
+
+                    ctx.fillStyle = '#64785A';
+                    ctx.font = 'bold 15px helvetica, sans-serif';
+                    ctx.fillText('PAYMENT DETAILS:', 620, startY + 40);
+
+                    ctx.fillStyle = '#288C3C';
+                    ctx.font = 'bold 19px helvetica, sans-serif';
+                    ctx.fillText('Status: PAID IN FULL', 620, startY + 82);
+
+                    ctx.fillStyle = '#505050';
+                    ctx.font = '16px helvetica, sans-serif';
+                    const refStr = paymentRef ? `Transaction ID: ${paymentRef}` : 'Method: Online Payment';
+                    ctx.fillText(refStr, 620, startY + 118);
+
+                    ctx.fillStyle = '#3C3C3C';
+                    ctx.font = 'bold 16px helvetica, sans-serif';
+                    ctx.fillText('GST NUMBER: 19AASFC7226L1ZS', 620, startY + 154);
+
+                    let tableY = startY + 195;
+                    const tableX = 82;
+                    const tableW = 1076;
+
+                    ctx.fillStyle = '#4C762E';
+                    ctx.fillRect(tableX, tableY, tableW, 53);
+
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 16px helvetica, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Sl. No', 106, tableY + 34);
+                    ctx.textAlign = 'left';
+                    ctx.fillText('Description', 153, tableY + 34);
+                    ctx.textAlign = 'right';
+                    ctx.fillText('Unit Price', 560, tableY + 34);
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Qty', 620, tableY + 34);
+                    ctx.textAlign = 'right';
+                    ctx.fillText('Net Amount', 778, tableY + 34);
+                    ctx.textAlign = 'center';
+                    ctx.fillText('GST Rate', 850, tableY + 34);
+                    ctx.textAlign = 'right';
+                    ctx.fillText('GST Amount', 990, tableY + 34);
+                    ctx.fillText('Total Amount', 1145, tableY + 34);
+
+                    let currentY = tableY + 53;
+                    const items = invData.items || [];
+                    let calcSubtotalGst = 0;
+                    let calcSubtotalExempt = 0;
+                    let totalTaxAmount = 0;
+
+                    items.forEach((item, idx) => {
+                        const itemQty = Number(item.qty) || 1;
+                        const itemPrice = Number(item.price) || 0;
+                        const isGst = (item.gst_applicable ?? 1) === 1;
+                        const itemNetAmount = itemQty * itemPrice;
+                        const itemTaxAmount = isGst ? Math.round(itemNetAmount * 0.18 * 100) / 100 : 0;
+                        const itemTotalAmount = itemNetAmount + itemTaxAmount;
+
+                        if (isGst) calcSubtotalGst += itemNetAmount;
+                        else calcSubtotalExempt += itemNetAmount;
+                        totalTaxAmount += itemTaxAmount;
+
+                        ctx.fillStyle = (idx % 2 === 0) ? '#FCFDFB' : '#FFFFFF';
+                        ctx.fillRect(tableX, currentY, tableW, 50);
+
+                        ctx.strokeStyle = '#EBEBEB';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(tableX, currentY + 50);
+                        ctx.lineTo(tableX + tableW, currentY + 50);
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#323232';
+                        ctx.font = '16px helvetica, sans-serif';
+
+                        ctx.textAlign = 'center';
+                        ctx.fillText(String(idx + 1), 106, currentY + 32);
+
+                        ctx.textAlign = 'left';
+                        const descText = item.description || 'Product Item';
+                        const truncatedDesc = descText.length > 28 ? descText.substring(0, 26) + '...' : descText;
+                        ctx.fillText(truncatedDesc, 153, currentY + 32);
+
+                        ctx.textAlign = 'right';
+                        ctx.fillText(`INR ${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 560, currentY + 32);
+
+                        ctx.textAlign = 'center';
+                        ctx.fillText(String(itemQty), 620, currentY + 32);
+
+                        ctx.textAlign = 'right';
+                        ctx.fillText(`INR ${itemNetAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 778, currentY + 32);
+
+                        ctx.textAlign = 'center';
+                        ctx.fillText(isGst ? '18%' : 'NILL', 850, currentY + 32);
+
+                        ctx.textAlign = 'right';
+                        const taxAmtStr = isGst ? `INR ${itemTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'NILL';
+                        ctx.fillText(taxAmtStr, 990, currentY + 32);
+
+                        ctx.font = 'bold 16px helvetica, sans-serif';
+                        ctx.fillText(`INR ${itemTotalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 32);
+
+                        currentY += 50;
+                    });
+
+                    const calcSubtotal = calcSubtotalGst + calcSubtotalExempt;
+                    const calcGstAmount = Math.round(totalTaxAmount * 100) / 100;
+                    const calcFinalTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
+                    const finalAmount = totalAmt > 0 ? totalAmt : calcFinalTotal;
+
+                    ctx.fillStyle = '#4C762E';
+                    ctx.fillRect(tableX, currentY, tableW, 53);
+
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 18px helvetica, sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.fillText('TOTAL:', 106, currentY + 34);
+
+                    ctx.textAlign = 'right';
+                    ctx.fillText(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 34);
+
+                    return canvas.toDataURL('image/png');
+                };
+
+                const uploadInvoiceToR2AndLog = async (invData, paymentRef = '', totalAmt = 0) => {
+                    try {
+                        const pngData = generateBrandedInvoicePNG(invData, paymentRef, totalAmt);
+                        const invId = invData.number || paymentModalInvoiceId.value || 'INV-000000';
+
+                        const res = await fetch('/api/invoice/upload-r2-and-log', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                invoice_id: invId,
+                                png_base64: pngData,
+                                client_name: invData.clientName || paymentModalClientName.value || '',
+                                phone: invData.phone || '',
+                                amount: totalAmt || paymentModalAmount.value || 0,
+                                items: invData.items || [],
+                                payment_ref: paymentRef || paymentModalRefNo.value || '',
+                                order_id: paymentModalOrderNo.value || ''
+                            })
+                        });
+                        const data = await safeFetchJson(res);
+                        if (data && data.status === 'success') {
+                            console.log('[INVOICE R2 LOG] Uploaded & Logged successfully to Cloudflare R2:', data.r2_url);
+                            fetchInvoiceHistory();
+                        }
+                    } catch (e) {
+                        console.error('[INVOICE R2 LOG] Background R2 upload failed:', e);
+                    }
+                };
+
                 const letterheadBase64 = ref('');
                 const loadLetterheadImage = () => {
                     const img = new Image();
@@ -2122,6 +2680,11 @@
 
                                 // Prepare PDF Preview for Admin Approval (Do NOT auto-send to WhatsApp)
                                 prepareApprovedPdfPreview(data.ccavenue_ref_no || paymentModalRefNo.value);
+
+                                // Trigger Background R2 Upload & History Logging
+                                if (isNewSuccess) {
+                                    uploadInvoiceToR2AndLog(invoiceData.value, data.ccavenue_ref_no || paymentModalRefNo.value, totalAmount.value);
+                                }
                             }
                         }
                     } catch (e) {
@@ -2826,6 +3389,9 @@
                 });
 
                 watch(currentTab, (newTab) => {
+                    if (newTab === 'history') {
+                        fetchInvoiceHistory();
+                    }
                     if (newTab === 'skus') {
                         fetchCategories();
                         fetchSkus();
@@ -2856,6 +3422,19 @@
                     resetScanner,
                     currentTab,
                     logout,
+
+                    // Invoice History exports
+                    historyList,
+                    historyMetrics,
+                    historySearchQuery,
+                    historyDateFilter,
+                    loadingHistory,
+                    showR2Modal,
+                    selectedR2Item,
+                    fetchInvoiceHistory,
+                    debouncedFetchHistory,
+                    openR2InvoiceModal,
+                    uploadInvoiceToR2AndLog,
                     invoiceData,
                     addItem,
                     removeItem,
