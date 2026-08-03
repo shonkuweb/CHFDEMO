@@ -1998,16 +1998,32 @@
                     return doc.output('datauristring');
                 };
 
+                const dataURItoBlob = (dataURI) => {
+                    if (!dataURI) return null;
+                    const byteString = atob(dataURI.split(',')[1]);
+                    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) {
+                        ia[i] = byteString.charCodeAt(i);
+                    }
+                    return new Blob([ab], { type: mimeString });
+                };
+
                 const manuallySendPdfToWhatsApp = async () => {
-                    if (!invoiceData.value.phone) return;
+                    const targetPhone = (invoiceData.value.phone || paymentModalClientPhone.value || '').trim();
+                    if (!targetPhone) {
+                        approvedPdfSendError.value = 'Customer phone number is missing!';
+                        return;
+                    }
                     sendingApprovedPdf.value = true;
                     approvedPdfSentSuccess.value = false;
                     approvedPdfSendError.value = '';
                     try {
                         const invId = invoiceData.value.number || paymentModalInvoiceId.value || 'INV-000000';
                         let caption = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
-                        caption += `Dear *${invoiceData.value.clientName || 'Valued Customer'}*,\n`;
-                        caption += `Thank you for your payment! Your transaction for *Invoice #${invId}* (Total: ₹${totalAmount.value.toLocaleString('en-IN', { minimumFractionDigits: 2 })}) is successful.\n\n`;
+                        caption += `Dear *${invoiceData.value.clientName || paymentModalClientName.value || 'Valued Customer'}*,\n`;
+                        caption += `Thank you for your payment! Your transaction for *Invoice #${invId}* (Total: ₹${(paymentModalAmount.value || totalAmount.value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}) is successful.\n\n`;
                         caption += `Attached is your official *Tax Invoice & Receipt PDF*.\n\n`;
                         caption += `We look forward to serving you again! 🌸`;
 
@@ -2017,7 +2033,7 @@
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                number: invoiceData.value.phone,
+                                number: targetPhone,
                                 message: caption,
                                 pdf_base64: pdfBase64,
                                 filename: `Invoice_${invId}.pdf`
@@ -2029,6 +2045,8 @@
                             setTimeout(() => { approvedPdfSentSuccess.value = false; }, 6000);
                         } else if (data && data.error) {
                             approvedPdfSendError.value = data.error;
+                        } else {
+                            approvedPdfSendError.value = 'Failed to dispatch WhatsApp PDF. Please check connection.';
                         }
                     } catch (e) {
                         console.error('Failed to send PDF to WhatsApp:', e);
@@ -2039,28 +2057,47 @@
                 };
 
                 const printInvoicePdf = () => {
-                    const pdfData = approvedPdfDataUri.value || generateBrandedInvoicePDF(invoiceData.value, paymentModalRefNo.value, totalAmount.value);
-                    const printWindow = window.open('', '_blank');
-                    if (printWindow) {
-                        printWindow.document.write(`
-                            <!DOCTYPE html>
-                            <html>
-                                <head>
-                                    <title>Print Bill — CHF Invoice #${invoiceData.value.number || 'INV-000000'}</title>
-                                    <style>
-                                        body { margin: 0; padding: 0; background: #fff; }
-                                        iframe { width: 100vw; height: 100vh; border: none; }
-                                    </style>
-                                </head>
-                                <body>
-                                    <iframe src="${pdfData}"></iframe>
-                                    <script>
-                                        setTimeout(() => { window.print(); }, 600);
-                                    <\/script>
-                                </body>
-                            </html>
-                        `);
-                        printWindow.document.close();
+                    try {
+                        const pdfData = approvedPdfDataUri.value || generateBrandedInvoicePDF(invoiceData.value, paymentModalRefNo.value, totalAmount.value);
+                        if (!pdfData) return;
+
+                        const blob = dataURItoBlob(pdfData);
+                        if (!blob) return;
+
+                        const blobUrl = URL.createObjectURL(blob);
+                        
+                        // Strategy 1: Open Blob window
+                        const printWindow = window.open(blobUrl, '_blank');
+                        if (printWindow) {
+                            printWindow.focus();
+                            setTimeout(() => {
+                                printWindow.print();
+                            }, 500);
+                        } else {
+                            // Fallback: Invisible iframe print
+                            const iframe = document.createElement('iframe');
+                            iframe.style.position = 'fixed';
+                            iframe.style.right = '0';
+                            iframe.style.bottom = '0';
+                            iframe.style.width = '0';
+                            iframe.style.height = '0';
+                            iframe.style.border = '0';
+                            iframe.src = blobUrl;
+                            document.body.appendChild(iframe);
+
+                            iframe.onload = () => {
+                                setTimeout(() => {
+                                    iframe.contentWindow.focus();
+                                    iframe.contentWindow.print();
+                                    setTimeout(() => {
+                                        document.body.removeChild(iframe);
+                                        URL.revokeObjectURL(blobUrl);
+                                    }, 2000);
+                                }, 300);
+                            };
+                        }
+                    } catch (e) {
+                        console.error('Print failed:', e);
                     }
                 };
 
@@ -2843,6 +2880,7 @@
                     paymentModalRefNo,
                     paymentModalCopied,
                     manualClosePaymentModal,
+                    closePaymentModalAndResetBill,
                     copyPaymentLink,
                     resendPaymentLinkAndRetry,
                     resetPaymentStatusToPending,
