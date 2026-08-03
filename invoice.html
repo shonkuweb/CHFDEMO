@@ -1938,29 +1938,42 @@
                     const calcFinalTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
                     const finalAmount = totalAmt > 0 ? totalAmt : calcFinalTotal;
 
-                    // Total Summary Box
-                    currentY += 5;
-                    doc.setFillColor(248, 250, 245);
-                    doc.roundedRect(pageWidth - 110, currentY, 95, 28, 2, 2, 'F');
-                    doc.setDrawColor(180, 205, 160);
-                    doc.setLineWidth(0.3);
-                    doc.roundedRect(pageWidth - 110, currentY, 95, 28, 2, 2, 'S');
+                    // 1. Subtotal Row (Integrated as table row)
+                    doc.setFillColor(248, 250, 246);
+                    doc.rect(15, currentY, pageWidth - 30, 8, 'F');
+                    doc.setDrawColor(220, 230, 215);
+                    doc.line(15, currentY + 8, pageWidth - 15, currentY + 8);
 
-                    doc.setTextColor(90, 90, 90);
+                    doc.setTextColor(80, 80, 80);
+                    doc.setFontSize(8.5);
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(8);
-                    doc.text('SUBTOTAL (Excl. Tax):', pageWidth - 103, currentY + 7);
-                    doc.text(`INR ${calcSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 7, { align: 'right' });
+                    doc.text('SUBTOTAL (Excl. Tax)', 28, currentY + 5.5);
+                    doc.text(`INR ${calcSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 5.5, { align: 'right' });
+                    currentY += 8;
 
-                    doc.text('GST @ 18% (Applicable):', pageWidth - 103, currentY + 14);
-                    doc.text(`INR ${calcGstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 14, { align: 'right' });
+                    // 2. GST Row (Integrated as table row)
+                    if (calcGstAmount > 0) {
+                        doc.setFillColor(248, 250, 246);
+                        doc.rect(15, currentY, pageWidth - 30, 8, 'F');
+                        doc.line(15, currentY + 8, pageWidth - 15, currentY + 8);
 
-                    doc.setTextColor(20, 20, 20);
-                    doc.setFontSize(10);
+                        doc.setTextColor(80, 80, 80);
+                        doc.setFontSize(8.5);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('GST @ 18% (Applicable Items)', 28, currentY + 5.5);
+                        doc.text(`INR ${calcGstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 5.5, { align: 'right' });
+                        currentY += 8;
+                    }
+
+                    // 3. Highlighted Final Total Row (Full-width table footer row)
+                    doc.setFillColor(76, 118, 46);
+                    doc.rect(15, currentY, pageWidth - 30, 10, 'F');
+
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(9.5);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('TOTAL PAID:', pageWidth - 103, currentY + 23);
-                    doc.setTextColor(76, 118, 46);
-                    doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 23, { align: 'right' });
+                    doc.text('TOTAL AMOUNT PAID', 28, currentY + 6.5);
+                    doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 6.5, { align: 'right' });
 
                     return doc.output('datauristring');
                 };
