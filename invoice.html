@@ -1824,28 +1824,23 @@
                         doc.rect(0, 0, pageWidth, 6, 'F');
                     }
 
-                    // Header Content Overlay
-                    let startY = 48; // Below letterhead header
-
-                    // Tax Invoice Badge
-                    doc.setTextColor(40, 40, 40);
-                    doc.setFontSize(16);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('TAX INVOICE', 15, startY);
+                    // Header Content Overlay (Positioned comfortably below the letterhead header)
+                    let startY = 52; // Below letterhead header logo & address
 
                     const invNumber = invData.number || 'INV-000000';
-                    doc.setFontSize(10);
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'bold');
                     doc.setTextColor(76, 118, 46);
-                    doc.text(`#${invNumber}`, 15, startY + 6);
+                    doc.text(`INVOICE #${invNumber}`, 15, startY);
 
                     const todayDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
                     doc.setTextColor(100, 100, 100);
-                    doc.setFontSize(8.5);
+                    doc.setFontSize(9);
                     doc.setFont('helvetica', 'normal');
                     doc.text(`Date: ${todayDate}`, pageWidth - 15, startY, { align: 'right' });
 
                     // Client & Payment Info Card
-                    startY += 12;
+                    startY += 10;
                     doc.setFillColor(248, 250, 246);
                     doc.roundedRect(15, startY, pageWidth - 30, 26, 2, 2, 'F');
                     doc.setDrawColor(210, 225, 200);
