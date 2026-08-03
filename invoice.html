@@ -1872,108 +1872,106 @@
                     const refStr = paymentRef ? `CCAvenue Ref: ${paymentRef}` : 'Method: Online Payment';
                     doc.text(refStr, pageWidth / 2 + 10, startY + 20);
 
-                    // Line Items Table Header
-                    let tableY = startY + 32;
+                    // Line Items Table Header (Green Theme Match)
+                    let tableY = startY + 28;
                     doc.setFillColor(76, 118, 46);
                     doc.rect(15, tableY, pageWidth - 30, 9, 'F');
 
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('#', 18, tableY + 6);
-                    doc.text('ITEM DESCRIPTION / SKU', 28, tableY + 6);
-                    doc.text('QTY', 115, tableY + 6, { align: 'center' });
-                    doc.text('UNIT PRICE', 138, tableY + 6, { align: 'right' });
-                    doc.text('GST %', 160, tableY + 6, { align: 'center' });
-                    doc.text('TOTAL', pageWidth - 18, tableY + 6, { align: 'right' });
+                    doc.text('Sl. No', 20, tableY + 6, { align: 'center' });
+                    doc.text('Description', 26, tableY + 6);
+                    doc.text('Unit Price', 96, tableY + 6, { align: 'right' });
+                    doc.text('Qty', 104, tableY + 6, { align: 'center' });
+                    doc.text('Net Amount', 131, tableY + 6, { align: 'right' });
+                    doc.text('Tax Rate', 141.5, tableY + 6, { align: 'center' });
+                    doc.text('Tax Amount', 171, tableY + 6, { align: 'right' });
+                    doc.text('Total Amount', pageWidth - 17, tableY + 6, { align: 'right' });
 
                     // Line Items Rows
                     let currentY = tableY + 9;
                     const items = invData.items || [];
                     let calcSubtotalGst = 0;
                     let calcSubtotalExempt = 0;
+                    let totalTaxAmount = 0;
 
                     items.forEach((item, idx) => {
                         const itemQty = Number(item.qty) || 1;
                         const itemPrice = Number(item.price) || 0;
                         const isGst = (item.gst_applicable ?? 1) === 1;
-                        const itemBaseTotal = itemQty * itemPrice;
-                        const itemGstAmt = isGst ? (itemBaseTotal * 0.18) : 0;
-                        const itemRowTotal = itemBaseTotal + itemGstAmt;
+                        const itemNetAmount = itemQty * itemPrice;
+                        const itemTaxAmount = isGst ? Math.round(itemNetAmount * 0.18 * 100) / 100 : 0;
+                        const itemTotalAmount = itemNetAmount + itemTaxAmount;
 
                         if (isGst) {
-                            calcSubtotalGst += itemBaseTotal;
+                            calcSubtotalGst += itemNetAmount;
                         } else {
-                            calcSubtotalExempt += itemBaseTotal;
+                            calcSubtotalExempt += itemNetAmount;
                         }
+                        totalTaxAmount += itemTaxAmount;
 
                         if (idx % 2 === 0) {
                             doc.setFillColor(252, 253, 250);
                             doc.rect(15, currentY, pageWidth - 30, 8.5, 'F');
                         }
 
-                        doc.setDrawColor(240, 240, 240);
+                        doc.setDrawColor(235, 235, 235);
                         doc.line(15, currentY + 8.5, pageWidth - 15, currentY + 8.5);
 
                         doc.setTextColor(50, 50, 50);
                         doc.setFont('helvetica', 'normal');
-                        doc.setFontSize(8.5);
-                        doc.text(String(idx + 1), 18, currentY + 5.5);
+                        doc.setFontSize(8);
 
+                        // Sl. No
+                        doc.text(String(idx + 1), 20, currentY + 5.5, { align: 'center' });
+
+                        // Description
                         const descText = item.description || 'Product Item';
-                        const truncatedDesc = descText.length > 40 ? descText.substring(0, 38) + '...' : descText;
-                        doc.text(truncatedDesc, 28, currentY + 5.5);
+                        const truncatedDesc = descText.length > 32 ? descText.substring(0, 30) + '...' : descText;
+                        doc.text(truncatedDesc, 26, currentY + 5.5);
 
-                        doc.text(String(itemQty), 115, currentY + 5.5, { align: 'center' });
-                        doc.text(`INR ${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 138, currentY + 5.5, { align: 'right' });
-                        doc.text(isGst ? '18%' : '0%', 160, currentY + 5.5, { align: 'center' });
+                        // Unit Price
+                        doc.text(`₹${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 96, currentY + 5.5, { align: 'right' });
+
+                        // Qty
+                        doc.text(String(itemQty), 104, currentY + 5.5, { align: 'center' });
+
+                        // Net Amount
+                        doc.text(`₹${itemNetAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 131, currentY + 5.5, { align: 'right' });
+
+                        // Tax Rate
+                        doc.text(isGst ? '18%' : '0%', 141.5, currentY + 5.5, { align: 'center' });
+
+                        // Tax Amount
+                        doc.text(`₹${itemTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 171, currentY + 5.5, { align: 'right' });
+
+                        // Total Amount
                         doc.setFont('helvetica', 'bold');
-                        doc.text(`INR ${itemRowTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 5.5, { align: 'right' });
+                        doc.text(`₹${itemTotalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 17, currentY + 5.5, { align: 'right' });
 
                         currentY += 8.5;
                     });
 
                     const calcSubtotal = calcSubtotalGst + calcSubtotalExempt;
-                    const calcGstAmount = Math.round(calcSubtotalGst * 0.18 * 100) / 100;
+                    const calcGstAmount = Math.round(totalTaxAmount * 100) / 100;
                     const calcFinalTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
                     const finalAmount = totalAmt > 0 ? totalAmt : calcFinalTotal;
 
-                    // 1. Subtotal Row (Integrated as table row)
-                    doc.setFillColor(248, 250, 246);
-                    doc.rect(15, currentY, pageWidth - 30, 8, 'F');
-                    doc.setDrawColor(220, 230, 215);
-                    doc.line(15, currentY + 8, pageWidth - 15, currentY + 8);
-
-                    doc.setTextColor(80, 80, 80);
-                    doc.setFontSize(8.5);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('SUBTOTAL (Excl. Tax)', 28, currentY + 5.5);
-                    doc.text(`INR ${calcSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 5.5, { align: 'right' });
-                    currentY += 8;
-
-                    // 2. GST Row (Integrated as table row)
-                    if (calcGstAmount > 0) {
-                        doc.setFillColor(248, 250, 246);
-                        doc.rect(15, currentY, pageWidth - 30, 8, 'F');
-                        doc.line(15, currentY + 8, pageWidth - 15, currentY + 8);
-
-                        doc.setTextColor(80, 80, 80);
-                        doc.setFontSize(8.5);
-                        doc.setFont('helvetica', 'bold');
-                        doc.text('GST @ 18% (Applicable Items)', 28, currentY + 5.5);
-                        doc.text(`INR ${calcGstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 5.5, { align: 'right' });
-                        currentY += 8;
-                    }
-
-                    // 3. Highlighted Final Total Row (Full-width table footer row)
+                    // TOTAL Table Footer Row (Green Theme Match)
                     doc.setFillColor(76, 118, 46);
-                    doc.rect(15, currentY, pageWidth - 30, 10, 'F');
+                    doc.rect(15, currentY, pageWidth - 30, 9, 'F');
 
                     doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(9.5);
+                    doc.setFontSize(8.5);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('TOTAL AMOUNT PAID', 28, currentY + 6.5);
-                    doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 6.5, { align: 'right' });
+                    doc.text('TOTAL:', 20, currentY + 6);
+
+                    // Tax Amount Total
+                    doc.text(`₹${calcGstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 171, currentY + 6, { align: 'right' });
+
+                    // Total Amount Total
+                    doc.text(`₹${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 17, currentY + 6, { align: 'right' });
 
                     return doc.output('datauristring');
                 };
