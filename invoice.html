@@ -3263,6 +3263,8 @@
                     currentTab.value = 'bill';
                 };
 
+                const addToBillDirectly = addSkuToBill;
+
                 const sendSkuToBarcodeQueue = (item) => {
                     barcodeQueue.value.push({
                         sku: item.sku,
@@ -3522,6 +3524,7 @@
                     saveSku,
                     editSku,
                     deleteSku,
+                    addSkuToBill,
                     addToBillDirectly,
                     sendSkuToBarcodeQueue
                 }
