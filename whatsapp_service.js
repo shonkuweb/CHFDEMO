@@ -175,7 +175,7 @@ app.get('/api/whatsapp/status', (req, res) => {
 });
 
 app.post('/api/whatsapp/send', async (req, res) => {
-    if (!isReady) {
+    if (!isReady || !client) {
         return res.status(400).json({ error: 'WhatsApp client is not ready. Please scan the QR code first.' });
     }
 
@@ -209,23 +209,28 @@ app.post('/api/whatsapp/send', async (req, res) => {
             console.warn(`getNumberId check bypassed for ${cleanNumber}:`, numErr.message);
         }
         
+        let response = null;
         if (pdf_base64) {
             const cleanBase64 = pdf_base64.includes(',') ? pdf_base64.split(',')[1] : pdf_base64;
             const mediaName = filename || 'Plant_Experience_Centre_Invoice.pdf';
             const media = new MessageMedia('application/pdf', cleanBase64, mediaName);
             const options = { caption: message || '', sendMediaAsDocument: true };
-            const response = await client.sendMessage(chatId, media, options);
+            response = await client.sendMessage(chatId, media, options);
             console.log(`WhatsApp PDF invoice successfully sent to ${chatId}`);
-            return res.json({ success: true, messageId: response.id ? response.id._serialized : null });
         } else {
-            const response = await client.sendMessage(chatId, message);
+            response = await client.sendMessage(chatId, message);
             console.log(`WhatsApp text message successfully sent to ${chatId}`);
-            return res.json({ success: true, messageId: response.id ? response.id._serialized : null });
         }
+
+        const msgId = (response && response.id && response.id._serialized) ? response.id._serialized : (response && response.id ? String(response.id) : null);
+        return res.json({ success: true, messageId: msgId });
     } catch (error) {
         console.error('Error sending message:', error);
-        const errMsg = error.message || error.toString();
-        res.status(500).json({ error: `Failed to send message on WhatsApp: ${errMsg}`, details: error.toString() });
+        let errMsg = error.message || error.toString();
+        if (errMsg.includes("reading 'id'") || errMsg.includes("Cannot read properties of undefined")) {
+            errMsg = `Could not reach +${number} on WhatsApp. Please verify that the customer's phone number is registered on WhatsApp.`;
+        }
+        res.status(500).json({ error: errMsg, details: error.toString() });
     }
 });
 

@@ -1043,6 +1043,9 @@
                                         <p v-if="approvedPdfSentSuccess" class="text-xs text-emerald-400 font-bold text-center animate-in fade-in py-1">
                                             ✓ Invoice PDF successfully sent to customer's WhatsApp!
                                         </p>
+                                        <p v-if="approvedPdfSendError" class="text-xs text-red-400 font-bold text-center animate-in fade-in py-1">
+                                            {{ approvedPdfSendError }}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -1814,6 +1817,7 @@
                 const approvedPdfDataUri = ref('');
                 const sendingApprovedPdf = ref(false);
                 const approvedPdfSentSuccess = ref(false);
+                const approvedPdfSendError = ref('');
 
                 const prepareApprovedPdfPreview = (refNo = '') => {
                     approvedPdfDataUri.value = generateBrandedInvoicePDF(invoiceData.value, refNo || paymentModalRefNo.value, totalAmount.value);
@@ -1990,6 +1994,7 @@
                     if (!invoiceData.value.phone) return;
                     sendingApprovedPdf.value = true;
                     approvedPdfSentSuccess.value = false;
+                    approvedPdfSendError.value = '';
                     try {
                         const invId = invoiceData.value.number || paymentModalInvoiceId.value || 'INV-000000';
                         let caption = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
@@ -2010,13 +2015,16 @@
                                 filename: `Invoice_${invId}.pdf`
                             })
                         });
-                        const data = await res.json();
+                        const data = await safeFetchJson(res);
                         if (data && data.success) {
                             approvedPdfSentSuccess.value = true;
                             setTimeout(() => { approvedPdfSentSuccess.value = false; }, 6000);
+                        } else if (data && data.error) {
+                            approvedPdfSendError.value = data.error;
                         }
                     } catch (e) {
                         console.error('Failed to send PDF to WhatsApp:', e);
+                        approvedPdfSendError.value = e.message || 'Failed to send WhatsApp message.';
                     } finally {
                         sendingApprovedPdf.value = false;
                     }
@@ -2826,6 +2834,7 @@
                     approvedPdfDataUri,
                     sendingApprovedPdf,
                     approvedPdfSentSuccess,
+                    approvedPdfSendError,
                     manuallySendPdfToWhatsApp,
                     printInvoicePdf,
                     barcodeData,
