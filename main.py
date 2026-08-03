@@ -14,7 +14,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from functools import lru_cache
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+import base64
 from passlib.hash import argon2
 import hashlib
 from jose import jwt, JWTError
@@ -72,10 +73,13 @@ UPLOAD_DIR = os.environ.get("UPLOAD_DIR", os.path.join("assets", "images"))
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_MB", "80")) * 1024 * 1024
 
-# Mount both the core assets and the uploads directory (if they differ)
+# Mount core assets, uploads directory, and invoice storage directory
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 if UPLOAD_DIR != os.path.join("assets", "images"):
     app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+INVOICE_DIR = "invoice"
+os.makedirs(INVOICE_DIR, exist_ok=True)
+app.mount("/invoice", StaticFiles(directory=INVOICE_DIR), name="invoice")
 
 # DB Handling
 def get_db_connection():
@@ -1725,6 +1729,28 @@ def ensure_invoice_payments_table():
     conn.commit()
     conn.close()
 
+def ensure_invoice_history_table():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS invoice_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            invoice_id TEXT UNIQUE NOT NULL,
+            order_id TEXT DEFAULT '',
+            client_name TEXT DEFAULT '',
+            phone TEXT DEFAULT '',
+            amount REAL DEFAULT 0.0,
+            items_json TEXT DEFAULT '[]',
+            r2_url TEXT DEFAULT '',
+            r2_key TEXT DEFAULT '',
+            payment_ref TEXT DEFAULT '',
+            created_at_ist TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    conn.close()
+
 @app.on_event("startup")
 def startup_init_sync_state():
     migrate_legacy_site_content_keys()
@@ -1735,6 +1761,7 @@ def startup_init_sync_state():
     ensure_device_auth_table()
     ensure_sku_catalog_table()
     ensure_invoice_payments_table()
+    ensure_invoice_history_table()
     refresh_sku_cache()
     migrate_remove_comma_before_and()
     purge_deploy_asset_cache()
@@ -2853,6 +2880,179 @@ async def get_payment_status(invoice_id: str):
         "payment_link": row["payment_link"],
         "ccavenue_ref_no": row["ccavenue_ref_no"],
         "updated_at": row["updated_at"]
+    }
+
+# ── Invoice History & Cloudflare R2 Upload Routes ─────────────────────
+
+class InvoiceLogR2Request(BaseModel):
+    invoice_id: str
+    png_base64: str
+    client_name: Optional[str] = ""
+    phone: Optional[str] = ""
+    amount: Optional[float] = 0.0
+    items: Optional[list] = []
+    payment_ref: Optional[str] = ""
+    order_id: Optional[str] = ""
+
+def get_current_ist_string():
+    ist_offset = timezone(timedelta(hours=5, minutes=30))
+    now_ist = datetime.now(ist_offset)
+    return now_ist.strftime("%d %b %Y, %I:%M:%S %p IST")
+
+def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
+    r2_account_id = os.environ.get('R2_ACCOUNT_ID', '').strip('"')
+    r2_access_key = os.environ.get('R2_ACCESS_KEY_ID', '').strip('"')
+    r2_secret_key = os.environ.get('R2_SECRET_ACCESS_KEY', '').strip('"')
+    r2_bucket = os.environ.get('R2_BUCKET_NAME', 'chf-media').strip('"')
+    r2_public_url = os.environ.get('R2_PUBLIC_URL', '').strip('"').rstrip('/')
+
+    r2_key = f"invoice/{filename}"
+
+    # Always write copy to local invoice/ folder
+    os.makedirs("invoice", exist_ok=True)
+    local_filepath = os.path.join("invoice", filename)
+    try:
+        with open(local_filepath, "wb") as f:
+            f.write(png_bytes)
+    except Exception as e:
+        print(f"[INVOICE LOG] Warning writing local copy: {e}")
+
+    if r2_account_id and r2_access_key and r2_secret_key and r2_public_url:
+        try:
+            import boto3
+            from botocore.config import Config
+
+            r2 = boto3.client(
+                's3',
+                endpoint_url=f'https://{r2_account_id}.r2.cloudflarestorage.com',
+                aws_access_key_id=r2_access_key,
+                aws_secret_access_key=r2_secret_key,
+                config=Config(signature_version='s3v4'),
+                region_name='auto'
+            )
+            r2.put_object(
+                Bucket=r2_bucket,
+                Key=r2_key,
+                Body=png_bytes,
+                ContentType='image/png'
+            )
+            public_url = f"{r2_public_url}/{r2_key}"
+            return r2_key, public_url
+        except Exception as e:
+            print(f"[INVOICE R2] R2 Upload failed ({e}), using local URL fallback.")
+
+    # Local fallback URL
+    local_url = f"/invoice/{filename}"
+    return r2_key, local_url
+
+@app.post("/api/invoice/upload-r2-and-log")
+async def upload_invoice_r2_and_log(payload: InvoiceLogR2Request):
+    ensure_invoice_history_table()
+    invoice_id = payload.invoice_id.strip()
+    if not invoice_id:
+        raise HTTPException(status_code=400, detail="invoice_id is required")
+
+    raw_b64 = payload.png_base64 or ""
+    if "," in raw_b64:
+        raw_b64 = raw_b64.split(",", 1)[1]
+
+    try:
+        png_bytes = base64.b64decode(raw_b64)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid base64 PNG data: {e}")
+
+    filename = f"{invoice_id}.png"
+    r2_key, r2_url = upload_png_bytes_to_r2(png_bytes, filename)
+    ist_timestamp = get_current_ist_string()
+    items_str = json.dumps(payload.items or [])
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM invoice_history WHERE invoice_id = ?", (invoice_id,))
+    existing = cur.fetchone()
+
+    if existing:
+        cur.execute("""
+            UPDATE invoice_history
+            SET client_name = ?, phone = ?, amount = ?, items_json = ?, r2_url = ?, r2_key = ?, payment_ref = ?, order_id = ?
+            WHERE invoice_id = ?
+        """, (payload.client_name or '', payload.phone or '', payload.amount or 0.0, items_str, r2_url, r2_key, payload.payment_ref or '', payload.order_id or '', invoice_id))
+    else:
+        cur.execute("""
+            INSERT INTO invoice_history (invoice_id, order_id, client_name, phone, amount, items_json, r2_url, r2_key, payment_ref, created_at_ist)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (invoice_id, payload.order_id or '', payload.client_name or '', payload.phone or '', payload.amount or 0.0, items_str, r2_url, r2_key, payload.payment_ref or '', ist_timestamp))
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "status": "success",
+        "invoice_id": invoice_id,
+        "r2_url": r2_url,
+        "r2_key": r2_key,
+        "created_at_ist": ist_timestamp
+    }
+
+@app.get("/api/invoice/history")
+async def get_invoice_history(search: Optional[str] = None, filter_date: Optional[str] = "all"):
+    ensure_invoice_history_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM invoice_history ORDER BY id DESC")
+    rows = cur.fetchall()
+    conn.close()
+
+    ist_offset = timezone(timedelta(hours=5, minutes=30))
+    today_ist_prefix = datetime.now(ist_offset).strftime("%d %b %Y")
+
+    history_items = []
+    today_revenue = 0.0
+    today_count = 0
+    total_revenue = 0.0
+    total_count = len(rows)
+
+    for row in rows:
+        item_dict = dict(row)
+        try:
+            item_dict["items"] = json.loads(item_dict.get("items_json") or "[]")
+        except Exception:
+            item_dict["items"] = []
+
+        amt = float(item_dict.get("amount", 0.0))
+        total_revenue += amt
+
+        ist_date = item_dict.get("created_at_ist", "")
+        is_today = ist_date.startswith(today_ist_prefix)
+        item_dict["is_today"] = is_today
+
+        if is_today:
+            today_revenue += amt
+            today_count += 1
+
+        if search:
+            s = search.lower().strip()
+            c_name = str(item_dict.get("client_name", "")).lower()
+            c_phone = str(item_dict.get("phone", "")).lower()
+            c_inv = str(item_dict.get("invoice_id", "")).lower()
+            if s not in c_name and s not in c_phone and s not in c_inv:
+                continue
+
+        if filter_date == "today" and not is_today:
+            continue
+
+        history_items.append(item_dict)
+
+    return {
+        "status": "success",
+        "metrics": {
+            "today_revenue": round(today_revenue, 2),
+            "today_count": today_count,
+            "total_revenue": round(total_revenue, 2),
+            "total_count": total_count
+        },
+        "history": history_items
     }
 
 # ── WhatsApp Microservice Proxy Route ─────────────────────
