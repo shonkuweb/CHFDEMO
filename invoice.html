@@ -946,173 +946,205 @@
                 </div>
             </div>
 
-            <!-- Live CCAvenue Payment Status Popup Modal (Plant Experience Centre) -->
-            <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
-                <div class="relative w-full max-w-lg bg-[#0d0d0d] border border-[#C5A073]/30 rounded-3xl p-8 shadow-2xl text-center overflow-hidden">
+            <!-- Live CCAvenue Payment Status Popup Modal (Desktop Friendly, Centered, Luxury UI) -->
+            <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-black/85 backdrop-blur-2xl animate-in fade-in duration-300 overflow-y-auto">
+                <div :class="paymentModalStatus === 'SUCCESS' ? 'max-w-5xl' : 'max-w-xl'" 
+                    class="relative w-full bg-[#0a0a0c] border border-[#C5A073]/40 rounded-3xl p-6 sm:p-8 md:p-10 shadow-[0_25px_90px_rgba(0,0,0,0.95)] text-left overflow-hidden m-auto my-auto transition-all duration-300">
                     
-                    <!-- Background Ambient Glow -->
-                    <div class="absolute -top-24 -left-24 w-60 h-60 bg-[#C5A073]/10 rounded-full blur-3xl pointer-events-none"></div>
-                    <div class="absolute -bottom-24 -right-24 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <!-- Ambient Backlight Glows -->
+                    <div class="absolute -top-32 -left-32 w-80 h-80 bg-[#C5A073]/15 rounded-full blur-[100px] pointer-events-none"></div>
+                    <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none"></div>
 
-                    <!-- Manual Close Button -->
-                    <button type="button" @click="manualClosePaymentModal" class="absolute top-5 right-5 text-gray-400 hover:text-white p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all z-10" title="Close Pop-up">
-                        <span class="material-symbols-outlined text-lg">close</span>
-                    </button>
-
-                    <!-- Brand Header -->
-                    <div class="mb-6">
-                        <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/30 text-[#C5A073] text-[10px] font-bold uppercase tracking-[0.25em]">
-                            🌿 PLANT EXPERIENCE CENTRE
-                        </span>
-                        <h2 class="serif-title text-2xl md:text-3xl text-white font-normal mt-3">Live Payment Status</h2>
-                        <p class="text-xs text-gray-400 mt-1">Invoice #{{ paymentModalInvoiceId }} • {{ paymentModalClientName }}</p>
+                    <!-- Header Bar -->
+                    <div class="flex items-start justify-between border-b border-white/10 pb-5 mb-6 relative z-10">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/30 text-[#C5A073] text-[10px] font-bold uppercase tracking-[0.2em]">
+                                    🌿 PLANT EXPERIENCE CENTRE
+                                </span>
+                                <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300 font-bold">
+                                    Invoice #{{ paymentModalInvoiceId }}
+                                </span>
+                            </div>
+                            <h2 class="serif-title text-2xl sm:text-3xl text-white font-normal">
+                                {{ paymentModalStatus === 'SUCCESS' ? 'Payment Approved & Invoice Console' : (paymentModalStatus === 'FAILED' ? 'Payment Unsuccessful' : 'Live Gateway Monitor') }}
+                            </h2>
+                            <p class="text-xs text-gray-400 mt-1">Customer: <strong class="text-white">{{ paymentModalClientName || 'Valued Customer' }}</strong></p>
+                        </div>
+                        <button type="button" @click="manualClosePaymentModal" class="p-2.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-all border border-white/5 shrink-0" title="Close Window">
+                            <span class="material-symbols-outlined text-xl">close</span>
+                        </button>
                     </div>
 
-                    <!-- Animated Live Visual Area -->
-                    <div class="my-6 py-6 px-4 bg-black/50 border border-white/5 rounded-2xl relative flex flex-col items-center justify-center min-h-[220px]">
-                        
-                        <!-- PENDING STATE: Live Radar / Pulsing Rings Animation -->
-                        <template v-if="paymentModalStatus === 'PENDING'">
-                            <div class="relative w-28 h-28 flex items-center justify-center mb-4">
-                                <div class="absolute inset-0 rounded-full border-2 border-[#C5A073]/40 animate-ping opacity-75"></div>
-                                <div class="absolute inset-2 rounded-full border border-[#C5A073]/20 animate-pulse"></div>
-                                <div class="w-20 h-20 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/50 flex items-center justify-center text-[#C5A073] shadow-[0_0_30px_rgba(197,160,115,0.3)]">
-                                    <span class="material-symbols-outlined text-4xl animate-bounce">contactless</span>
+                    <!-- STATE 1: SUCCESS (Desktop Split 2-Column Desktop Layout) -->
+                    <template v-if="paymentModalStatus === 'SUCCESS'">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch relative z-10">
+                            <!-- Left Column: Full Printable A4 PDF Viewer Window (7 cols) -->
+                            <div class="lg:col-span-7 flex flex-col space-y-3">
+                                <div class="flex items-center justify-between px-1">
+                                    <span class="text-xs uppercase tracking-wider font-bold text-[#C5A073] flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-base">picture_as_pdf</span>
+                                        Official A4 Tax Receipt Preview
+                                    </span>
+                                    <span class="text-[10px] font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">300 DPI A4</span>
+                                </div>
+
+                                <div class="flex-1 min-h-[420px] lg:min-h-[480px] w-full rounded-2xl border border-[#C5A073]/30 bg-black/60 overflow-hidden shadow-2xl relative group">
+                                    <iframe v-if="approvedPdfDataUri" :src="approvedPdfDataUri" class="w-full h-full border-none"></iframe>
+                                    <div v-else class="flex flex-col items-center justify-center h-full text-gray-400 text-xs gap-3 p-8">
+                                        <span class="material-symbols-outlined text-3xl text-[#C5A073] animate-spin">refresh</span>
+                                        <span class="font-medium">Rendering PDF Letterhead Preview...</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-2">
-                                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-                                Awaiting Customer Payment...
-                            </div>
-                            <p class="text-[11px] text-gray-400 max-w-xs leading-relaxed">
-                                WhatsApp invoice with CCAvenue link was sent to customer. Monitoring CCAvenue status live...
-                            </p>
-                        </template>
-
-                        <!-- SUCCESS STATE: Admin Approval & PDF Action Pop-up -->
-                        <template v-else-if="paymentModalStatus === 'SUCCESS'">
-                            <div class="space-y-4 text-left">
-                                <div class="p-4 bg-emerald-500/20 border border-emerald-400/40 rounded-2xl flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-emerald-500/30 text-emerald-300 flex items-center justify-center font-bold">
-                                            <span class="material-symbols-outlined text-2xl">check_circle</span>
+                            <!-- Right Column: Verification & Admin Action Console (5 cols) -->
+                            <div class="lg:col-span-5 flex flex-col justify-between space-y-6 bg-white/[0.02] border border-white/10 p-6 rounded-2xl">
+                                <div class="space-y-5">
+                                    <!-- Verification Status Card -->
+                                    <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3.5">
+                                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 shrink-0 shadow-[0_0_20px_rgba(52,211,153,0.3)]">
+                                            <span class="material-symbols-outlined text-2xl font-bold">verified</span>
                                         </div>
                                         <div>
-                                            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider">Payment Received & Confirmed</h4>
-                                            <p class="text-[11px] text-gray-300">Ref: {{ paymentModalRefNo || 'ONLINE_PAYMENT' }}</p>
+                                            <span class="text-[10px] uppercase tracking-widest font-extrabold text-emerald-400 block">Payment Verified</span>
+                                            <h4 class="text-sm font-bold text-white mt-0.5">Paid in Full via Gateway</h4>
+                                            <p v-if="paymentModalRefNo" class="text-[11px] font-mono text-gray-400 mt-0.5">Ref: {{ paymentModalRefNo }}</p>
                                         </div>
                                     </div>
-                                    <span class="serif-title text-xl font-bold text-emerald-300">₹{{ Number(paymentModalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
-                                </div>
 
-                                <p class="text-xs text-gray-300 font-medium">
-                                    Full PDF Invoice preview below. Select an action to dispatch or print:
-                                </p>
+                                    <!-- Amount Card -->
+                                    <div class="bg-black/60 border border-white/10 p-4 rounded-xl flex items-center justify-between">
+                                        <span class="text-xs uppercase tracking-wider text-gray-400 font-bold">Total Amount Paid</span>
+                                        <span class="serif-title text-2xl font-bold text-[#C5A073]">₹{{ Number(paymentModalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                    </div>
 
-                                <!-- Full A4 PDF Invoice Interactive Preview -->
-                                <div class="w-full h-80 rounded-2xl border border-white/15 bg-white/5 overflow-hidden shadow-inner relative">
-                                    <iframe v-if="approvedPdfDataUri" :src="approvedPdfDataUri" class="w-full h-full border-none"></iframe>
-                                    <div v-else class="flex flex-col items-center justify-center h-full text-gray-400 text-xs gap-2">
-                                        <span class="material-symbols-outlined text-2xl animate-spin">refresh</span>
-                                        <span>Generating Invoice PDF Preview...</span>
+                                    <p class="text-xs text-gray-300 leading-relaxed">
+                                        Click below to dispatch the PDF invoice directly to the customer's WhatsApp or print an A4 copy:
+                                    </p>
+
+                                    <!-- Primary Action Buttons -->
+                                    <div class="space-y-3 pt-2">
+                                        <!-- Send to WhatsApp Button -->
+                                        <button type="button" @click="manuallySendPdfToWhatsApp" :disabled="sendingApprovedPdf"
+                                            class="w-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500 text-black font-extrabold text-xs uppercase tracking-widest py-4 px-6 rounded-xl hover:brightness-110 active:scale-98 transition-all shadow-[0_10px_30px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2.5 disabled:opacity-50 cursor-pointer">
+                                            <span v-if="sendingApprovedPdf" class="material-symbols-outlined text-lg animate-spin">refresh</span>
+                                            <span v-else class="material-symbols-outlined text-lg">send</span>
+                                            <span>{{ sendingApprovedPdf ? 'Sending to WhatsApp...' : 'Send Invoice to WhatsApp' }}</span>
+                                        </button>
+
+                                        <!-- Print A4 Bill Button -->
+                                        <button type="button" @click="printInvoicePdf"
+                                            class="w-full bg-gradient-to-r from-[#C5A073] via-[#e5c598] to-[#C5A073] text-black font-extrabold text-xs uppercase tracking-widest py-4 px-6 rounded-xl hover:brightness-110 active:scale-98 transition-all shadow-[0_10px_30px_rgba(197,160,115,0.25)] flex items-center justify-center gap-2.5 cursor-pointer">
+                                            <span class="material-symbols-outlined text-lg">print</span>
+                                            <span>Print Bill (A4 Size)</span>
+                                        </button>
+
+                                        <p v-if="approvedPdfSentSuccess" class="text-xs text-emerald-400 font-bold text-center animate-in fade-in py-1">
+                                            ✓ Invoice PDF successfully sent to customer's WhatsApp!
+                                        </p>
                                     </div>
                                 </div>
 
-                                <!-- Action Buttons Grid: Send to WhatsApp & Print -->
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                                    <button type="button" @click="manuallySendPdfToWhatsApp" :disabled="sendingApprovedPdf"
-                                        class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-xs uppercase tracking-widest py-3.5 px-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50">
-                                        <span class="material-symbols-outlined text-lg">send</span>
-                                        <span>{{ sendingApprovedPdf ? 'Sending...' : 'Send to WhatsApp' }}</span>
-                                    </button>
-
-                                    <button type="button" @click="printInvoicePdf"
-                                        class="w-full bg-[#C5A073] hover:bg-[#b08c62] text-black font-bold text-xs uppercase tracking-widest py-3.5 px-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
-                                        <span class="material-symbols-outlined text-lg">print</span>
-                                        <span>Print Bill (A4)</span>
+                                <!-- Footer Action -->
+                                <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                                    <span class="text-[11px] text-gray-400">Ready for next order?</span>
+                                    <button type="button" @click="closePaymentModalAndResetBill" 
+                                        class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer">
+                                        Reset & Create Next Bill
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    </template>
 
-                                <p v-if="approvedPdfSentSuccess" class="text-xs text-emerald-400 font-bold text-center animate-in fade-in py-1">
-                                    ✓ Invoice PDF successfully sent to customer's WhatsApp!
+                    <!-- STATE 2: PENDING (Live Gateway Monitoring Radar) -->
+                    <template v-else-if="paymentModalStatus === 'PENDING'">
+                        <div class="space-y-6 relative z-10 text-center">
+                            <div class="py-8 px-6 bg-black/60 border border-white/10 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden">
+                                <div class="relative w-32 h-32 flex items-center justify-center mb-6">
+                                    <div class="absolute inset-0 rounded-full border-2 border-[#C5A073]/40 animate-ping opacity-75"></div>
+                                    <div class="absolute inset-3 rounded-full border border-[#C5A073]/20 animate-pulse"></div>
+                                    <div class="w-24 h-24 rounded-full bg-[#C5A073]/10 border border-[#C5A073]/50 flex items-center justify-center text-[#C5A073] shadow-[0_0_40px_rgba(197,160,115,0.3)]">
+                                        <span class="material-symbols-outlined text-5xl animate-bounce">contactless</span>
+                                    </div>
+                                </div>
+
+                                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-3">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+                                    <span>Awaiting Customer Online Payment...</span>
+                                </div>
+
+                                <p class="text-xs text-gray-300 max-w-md leading-relaxed mx-auto">
+                                    Payment link sent to customer's WhatsApp. Monitoring gateway status in real-time...
                                 </p>
+                            </div>
 
-                                <div class="pt-2 border-t border-white/10 flex justify-end">
-                                    <button type="button" @click="closePaymentModalAndResetBill" class="text-xs text-gray-400 hover:text-white underline">
-                                        Done & Reset Bill Console
+                            <div class="bg-black/60 border border-white/10 rounded-xl p-4 flex items-center justify-between text-left">
+                                <div>
+                                    <span class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Total Payable</span>
+                                    <span class="text-xs text-gray-300">Invoice #{{ paymentModalInvoiceId }}</span>
+                                </div>
+                                <span class="serif-title text-2xl font-bold text-[#C5A073]">₹{{ Number(paymentModalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                            </div>
+
+                            <!-- Testing & Quick Links -->
+                            <div class="space-y-3">
+                                <div class="flex gap-3">
+                                    <button type="button" @click="copyPaymentLink" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-medium py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                                        <span class="material-symbols-outlined text-base text-[#C5A073]">{{ paymentModalCopied ? 'check' : 'content_copy' }}</span>
+                                        <span>{{ paymentModalCopied ? 'Link Copied!' : 'Copy Payment Link' }}</span>
+                                    </button>
+                                    <a :href="paymentModalLink" target="_blank" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-medium py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                                        <span class="material-symbols-outlined text-base text-[#C5A073]">open_in_new</span>
+                                        <span>Open Payment Page</span>
+                                    </a>
+                                </div>
+
+                                <!-- Local Testing Simulation Buttons -->
+                                <div class="flex gap-3 pt-2 border-t border-white/5">
+                                    <button type="button" @click="simulatePaymentSuccess" class="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                        <span class="material-symbols-outlined text-base">check_circle</span>
+                                        <span>Simulate Payment Success</span>
+                                    </button>
+                                    <button type="button" @click="simulatePaymentFailure" class="flex-1 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
+                                        <span class="material-symbols-outlined text-base">cancel</span>
+                                        <span>Simulate Failure</span>
                                     </button>
                                 </div>
                             </div>
-                        </template>
+                        </div>
+                    </template>
 
-                        <!-- FAILED STATE -->
-                        <template v-else-if="paymentModalStatus === 'FAILED'">
-                            <div class="w-20 h-20 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 mb-4 shadow-[0_0_30px_rgba(239,68,68,0.3)]">
-                                <span class="material-symbols-outlined text-4xl">error_outline</span>
+                    <!-- STATE 3: FAILED (Payment Unsuccessful State) -->
+                    <template v-else-if="paymentModalStatus === 'FAILED'">
+                        <div class="space-y-6 relative z-10 text-center">
+                            <div class="py-8 px-6 bg-red-500/10 border border-red-500/30 rounded-2xl flex flex-col items-center justify-center">
+                                <div class="w-20 h-20 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 mb-4 shadow-[0_0_30px_rgba(239,68,68,0.3)]">
+                                    <span class="material-symbols-outlined text-4xl">error_outline</span>
+                                </div>
+                                <h3 class="serif-title text-xl text-red-300 font-semibold mb-1">Transaction Cancelled or Failed</h3>
+                                <p class="text-xs text-gray-300 max-w-md mx-auto leading-relaxed">
+                                    The customer attempted payment but the gateway transaction was incomplete or failed.
+                                </p>
                             </div>
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 text-xs font-bold uppercase tracking-wider mb-2">
-                                Payment Unsuccessful
-                            </div>
-                            <p class="text-[11px] text-gray-400 mb-4 text-center">The customer attempted payment but the transaction failed or was cancelled.</p>
-                            
-                            <div class="w-full space-y-2">
-                                <!-- Resend Payment Link via WhatsApp & Reset Status to Waiting Radar -->
+
+                            <div class="space-y-3">
                                 <button type="button" @click="resendPaymentLinkAndRetry" 
-                                    class="w-full bg-gradient-to-r from-[#d4b589] via-[#C5A073] to-[#a88250] text-black font-bold text-xs uppercase tracking-[0.15em] py-3 px-4 rounded-xl hover:shadow-[0_10px_25px_rgba(197,160,115,0.4)] active:scale-95 transition-all flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined text-base">send</span>
-                                    Resend Payment Link & Wait Live
+                                    class="w-full bg-[#C5A073] hover:bg-[#b08c62] text-black font-extrabold text-xs uppercase tracking-widest py-3.5 px-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">send</span>
+                                    <span>Resend Payment Link & Monitor Again</span>
                                 </button>
                                 
                                 <button type="button" @click="resetPaymentStatusToPending" 
-                                    class="w-full bg-white/5 hover:bg-white/10 border border-white/15 text-gray-300 text-xs font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined text-base">refresh</span>
-                                    Reset Status to Waiting Radar
+                                    class="w-full bg-white/5 hover:bg-white/10 border border-white/15 text-gray-300 text-xs font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">refresh</span>
+                                    <span>Reset Status to Live Monitor</span>
                                 </button>
                             </div>
-                        </template>
-                    </div>
-
-                    <!-- Total Amount Card -->
-                    <div class="bg-gradient-to-r from-[#171410] via-[#1f1a14] to-[#171410] border border-[#C5A073]/20 rounded-xl p-4 flex items-center justify-between mb-6">
-                        <div class="text-left">
-                            <span class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Total Bill Amount</span>
-                            <span class="text-xs text-gray-300">Invoice #{{ paymentModalInvoiceId }}</span>
                         </div>
-                        <span class="serif-title text-2xl font-bold text-[#C5A073]">₹{{ Number(paymentModalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
-                    </div>
+                    </template>
 
-                    <!-- Action Links & Testing Utilities -->
-                    <div class="space-y-3">
-                        <button v-if="paymentModalStatus !== 'PENDING'" type="button" @click="resendPaymentLinkAndRetry" 
-                            class="w-full bg-[#C5A073]/10 hover:bg-[#C5A073]/20 border border-[#C5A073]/30 text-[#C5A073] text-xs font-bold uppercase tracking-wider py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
-                            <span class="material-symbols-outlined text-sm">send</span>
-                            <span>Resend Payment Link & Reset Radar</span>
-                        </button>
-
-                        <div class="flex gap-2">
-                            <button type="button" @click="copyPaymentLink" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
-                                <span class="material-symbols-outlined text-sm text-[#C5A073]">{{ paymentModalCopied ? 'check' : 'content_copy' }}</span>
-                                <span>{{ paymentModalCopied ? 'Link Copied!' : 'Copy Payment Link' }}</span>
-                            </button>
-                            <a :href="paymentModalLink" target="_blank" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5">
-                                <span class="material-symbols-outlined text-sm text-[#C5A073]">open_in_new</span>
-                                <span>Open Pay Page</span>
-                            </a>
-                        </div>
-
-                        <!-- Testing Quick Actions (Local Test) -->
-                        <div v-if="paymentModalStatus === 'PENDING'" class="flex gap-2">
-                            <button type="button" @click="simulatePaymentSuccess" class="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold py-2 px-2.5 rounded-xl transition-all flex items-center justify-center gap-1">
-                                <span class="material-symbols-outlined text-sm">check_circle</span>
-                                <span>Simulate Success</span>
-                            </button>
-                            <button type="button" @click="simulatePaymentFailure" class="flex-1 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-[11px] font-semibold py-2 px-2.5 rounded-xl transition-all flex items-center justify-center gap-1">
-                                <span class="material-symbols-outlined text-sm">cancel</span>
-                                <span>Simulate Failure</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
 
