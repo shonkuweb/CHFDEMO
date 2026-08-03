@@ -1897,12 +1897,14 @@
                         const itemQty = Number(item.qty) || 1;
                         const itemPrice = Number(item.price) || 0;
                         const isGst = (item.gst_applicable ?? 1) === 1;
-                        const itemSubtotal = itemQty * itemPrice;
+                        const itemBaseTotal = itemQty * itemPrice;
+                        const itemGstAmt = isGst ? (itemBaseTotal * 0.18) : 0;
+                        const itemRowTotal = itemBaseTotal + itemGstAmt;
 
                         if (isGst) {
-                            calcSubtotalGst += itemSubtotal;
+                            calcSubtotalGst += itemBaseTotal;
                         } else {
-                            calcSubtotalExempt += itemSubtotal;
+                            calcSubtotalExempt += itemBaseTotal;
                         }
 
                         if (idx % 2 === 0) {
@@ -1926,7 +1928,7 @@
                         doc.text(`INR ${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 138, currentY + 5.5, { align: 'right' });
                         doc.text(isGst ? '18%' : '0%', 160, currentY + 5.5, { align: 'center' });
                         doc.setFont('helvetica', 'bold');
-                        doc.text(`INR ${itemSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 5.5, { align: 'right' });
+                        doc.text(`INR ${itemRowTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 5.5, { align: 'right' });
 
                         currentY += 8.5;
                     });
