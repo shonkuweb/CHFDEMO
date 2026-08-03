@@ -2134,32 +2134,45 @@
                     showR2Modal.value = true;
                 };
 
-                const generateBrandedInvoicePNG = (invData, paymentRef = '', totalAmt = 0) => {
+                const loadCanvasImage = (src) => {
+                    return new Promise((resolve) => {
+                        if (!src) return resolve(null);
+                        const img = new Image();
+                        img.crossOrigin = 'Anonymous';
+                        img.onload = () => resolve(img);
+                        img.onerror = () => resolve(null);
+                        img.src = src;
+                    });
+                };
+
+                const generateBrandedInvoicePNG = async (invData, paymentRef = '', totalAmt = 0) => {
                     const canvas = document.createElement('canvas');
                     canvas.width = 1240;
                     canvas.height = 1754;
                     const ctx = canvas.getContext('2d');
 
+                    // Base background
                     ctx.fillStyle = '#FFFFFF';
                     ctx.fillRect(0, 0, 1240, 1754);
 
-                    const bgImg = (window.CHF_LETTERHEAD_BASE64 && window.CHF_LETTERHEAD_BASE64.length > 100) 
+                    // 1. Official CHF Letterhead Background (Direct PDF replica)
+                    const bgImgSrc = (window.CHF_LETTERHEAD_BASE64 && window.CHF_LETTERHEAD_BASE64.length > 100) 
                         ? window.CHF_LETTERHEAD_BASE64 
                         : letterheadBase64.value;
 
-                    if (bgImg) {
-                        const img = new Image();
-                        img.src = bgImg;
-                        ctx.drawImage(img, 0, 0, 1240, 1754);
+                    const loadedBg = await loadCanvasImage(bgImgSrc || '/assets/images/chf_letterhead.png');
+                    if (loadedBg) {
+                        ctx.drawImage(loadedBg, 0, 0, 1240, 1754);
                     } else {
                         ctx.fillStyle = '#4C762E';
                         ctx.fillRect(0, 0, 1240, 36);
                     }
 
+                    // Header Content Overlay (startY = 80mm = 472.38px)
                     let startY = 472;
 
                     const invNumber = invData.number || 'INV-000000';
-                    ctx.font = 'bold 24px helvetica, sans-serif';
+                    ctx.font = 'bold 22px helvetica, sans-serif';
                     ctx.fillStyle = '#4C762E';
                     ctx.textAlign = 'left';
                     ctx.fillText(`INVOICE #${invNumber}`, 88, startY);
@@ -2170,23 +2183,25 @@
                     ctx.textAlign = 'right';
                     ctx.fillText(`Date: ${todayDate}`, 1152, startY);
 
-                    startY += 30;
+                    // Client & Payment Info Card (startY = 90mm = 531.43px)
+                    startY += 59;
                     ctx.fillStyle = '#F8FAF6';
                     ctx.strokeStyle = '#D2E1C8';
                     ctx.lineWidth = 2;
                     ctx.beginPath();
                     if (ctx.roundRect) {
-                        ctx.roundRect(88, startY, 1064, 177, 12);
+                        ctx.roundRect(88, startY, 1063, 177, 12);
                     } else {
-                        ctx.rect(88, startY, 1064, 177);
+                        ctx.rect(88, startY, 1063, 177);
                     }
                     ctx.fill();
                     ctx.stroke();
 
+                    // Billed To Info
                     ctx.fillStyle = '#64785A';
-                    ctx.font = 'bold 15px helvetica, sans-serif';
+                    ctx.font = 'bold 16px helvetica, sans-serif';
                     ctx.textAlign = 'left';
-                    ctx.fillText('BILLED TO:', 118, startY + 40);
+                    ctx.fillText('BILLED TO:', 118, startY + 41);
 
                     ctx.fillStyle = '#1E1E1E';
                     ctx.font = 'bold 20px helvetica, sans-serif';
@@ -2196,26 +2211,28 @@
                     ctx.font = '17px helvetica, sans-serif';
                     ctx.fillText(`Phone: ${invData.phone || 'N/A'}`, 118, startY + 118);
 
+                    // Payment Info
                     ctx.fillStyle = '#64785A';
-                    ctx.font = 'bold 15px helvetica, sans-serif';
-                    ctx.fillText('PAYMENT DETAILS:', 620, startY + 40);
+                    ctx.font = 'bold 16px helvetica, sans-serif';
+                    ctx.fillText('PAYMENT DETAILS:', 679, startY + 41);
 
                     ctx.fillStyle = '#288C3C';
                     ctx.font = 'bold 19px helvetica, sans-serif';
-                    ctx.fillText('Status: PAID IN FULL', 620, startY + 82);
+                    ctx.fillText('Status: PAID IN FULL', 679, startY + 82);
 
                     ctx.fillStyle = '#505050';
                     ctx.font = '16px helvetica, sans-serif';
                     const refStr = paymentRef ? `Transaction ID: ${paymentRef}` : 'Method: Online Payment';
-                    ctx.fillText(refStr, 620, startY + 118);
+                    ctx.fillText(refStr, 679, startY + 118);
 
                     ctx.fillStyle = '#3C3C3C';
                     ctx.font = 'bold 16px helvetica, sans-serif';
-                    ctx.fillText('GST NUMBER: 19AASFC7226L1ZS', 620, startY + 154);
+                    ctx.fillText('GST NUMBER: 19AASFC7226L1ZS', 679, startY + 154);
 
+                    // Line Items Table Header (tableY = 123mm = 726px)
                     let tableY = startY + 195;
                     const tableX = 82;
-                    const tableW = 1076;
+                    const tableW = 1075;
 
                     ctx.fillStyle = '#4C762E';
                     ctx.fillRect(tableX, tableY, tableW, 53);
@@ -2223,21 +2240,22 @@
                     ctx.fillStyle = '#FFFFFF';
                     ctx.font = 'bold 16px helvetica, sans-serif';
                     ctx.textAlign = 'center';
-                    ctx.fillText('Sl. No', 106, tableY + 34);
+                    ctx.fillText('Sl. No', 106, tableY + 35);
                     ctx.textAlign = 'left';
-                    ctx.fillText('Description', 153, tableY + 34);
+                    ctx.fillText('Description', 153, tableY + 35);
                     ctx.textAlign = 'right';
-                    ctx.fillText('Unit Price', 560, tableY + 34);
+                    ctx.fillText('Unit Price', 560, tableY + 35);
                     ctx.textAlign = 'center';
-                    ctx.fillText('Qty', 620, tableY + 34);
+                    ctx.fillText('Qty', 620, tableY + 35);
                     ctx.textAlign = 'right';
-                    ctx.fillText('Net Amount', 778, tableY + 34);
+                    ctx.fillText('Net Amount', 779, tableY + 35);
                     ctx.textAlign = 'center';
-                    ctx.fillText('GST Rate', 850, tableY + 34);
+                    ctx.fillText('GST Rate', 850, tableY + 35);
                     ctx.textAlign = 'right';
-                    ctx.fillText('GST Amount', 990, tableY + 34);
-                    ctx.fillText('Total Amount', 1145, tableY + 34);
+                    ctx.fillText('GST Amount', 992, tableY + 35);
+                    ctx.fillText('Total Amount', 1145, tableY + 35);
 
+                    // Table Rows
                     let currentY = tableY + 53;
                     const items = invData.items || [];
                     let calcSubtotalGst = 0;
@@ -2284,14 +2302,14 @@
                         ctx.fillText(String(itemQty), 620, currentY + 32);
 
                         ctx.textAlign = 'right';
-                        ctx.fillText(`INR ${itemNetAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 778, currentY + 32);
+                        ctx.fillText(`INR ${itemNetAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 779, currentY + 32);
 
                         ctx.textAlign = 'center';
                         ctx.fillText(isGst ? '18%' : 'NILL', 850, currentY + 32);
 
                         ctx.textAlign = 'right';
                         const taxAmtStr = isGst ? `INR ${itemTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'NILL';
-                        ctx.fillText(taxAmtStr, 990, currentY + 32);
+                        ctx.fillText(taxAmtStr, 992, currentY + 32);
 
                         ctx.font = 'bold 16px helvetica, sans-serif';
                         ctx.fillText(`INR ${itemTotalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 32);
@@ -2304,23 +2322,24 @@
                     const calcFinalTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
                     const finalAmount = totalAmt > 0 ? totalAmt : calcFinalTotal;
 
+                    // Total Footer Row
                     ctx.fillStyle = '#4C762E';
                     ctx.fillRect(tableX, currentY, tableW, 53);
 
                     ctx.fillStyle = '#FFFFFF';
                     ctx.font = 'bold 18px helvetica, sans-serif';
                     ctx.textAlign = 'left';
-                    ctx.fillText('TOTAL:', 106, currentY + 34);
+                    ctx.fillText('TOTAL:', 106, currentY + 35);
 
                     ctx.textAlign = 'right';
-                    ctx.fillText(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 34);
+                    ctx.fillText(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 35);
 
                     return canvas.toDataURL('image/png');
                 };
 
                 const uploadInvoiceToR2AndLog = async (invData, paymentRef = '', totalAmt = 0) => {
                     try {
-                        const pngData = generateBrandedInvoicePNG(invData, paymentRef, totalAmt);
+                        const pngData = await generateBrandedInvoicePNG(invData, paymentRef, totalAmt);
                         const invId = invData.number || paymentModalInvoiceId.value || 'INV-000000';
 
                         const res = await fetch('/api/invoice/upload-r2-and-log', {
