@@ -2227,6 +2227,7 @@ async def submit_scan(payload: ScanPayload):
             "price": cached_sku["price"] if (cached_sku["price"] and cached_sku["price"] > 0) else (payload.price or 0.0),
             "category": cached_sku.get("category", ""),
             "image_url": cached_sku.get("image_url") or payload.image_url or "",
+            "gst_applicable": cached_sku.get("gst_applicable", 1) if cached_sku.get("gst_applicable") is not None else 1,
             "timestamp": time.time()
         }
     else:
@@ -2237,6 +2238,7 @@ async def submit_scan(payload: ScanPayload):
             "price": payload.price or 0.0,
             "category": "",
             "image_url": payload.image_url or "",
+            "gst_applicable": 1,
             "timestamp": time.time()
         }
         
