@@ -1872,22 +1872,25 @@
                     const refStr = paymentRef ? `CCAvenue Ref: ${paymentRef}` : 'Method: Online Payment';
                     doc.text(refStr, pageWidth / 2 + 10, startY + 20);
 
-                    // Line Items Table Header (Green Theme Match)
+                    // Line Items Table Header (Green Theme Match, Zero Overlap Alignment)
                     let tableY = startY + 28;
+                    const tableX = 14;
+                    const tableW = pageWidth - 28;
+
                     doc.setFillColor(76, 118, 46);
-                    doc.rect(15, tableY, pageWidth - 30, 9, 'F');
+                    doc.rect(tableX, tableY, tableW, 9, 'F');
 
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('Sl. No', 20, tableY + 6, { align: 'center' });
+                    doc.text('Sl. No', 18, tableY + 6, { align: 'center' });
                     doc.text('Description', 26, tableY + 6);
-                    doc.text('Unit Price', 96, tableY + 6, { align: 'right' });
-                    doc.text('Qty', 104, tableY + 6, { align: 'center' });
-                    doc.text('Net Amount', 131, tableY + 6, { align: 'right' });
-                    doc.text('Tax Rate', 141.5, tableY + 6, { align: 'center' });
-                    doc.text('Tax Amount', 171, tableY + 6, { align: 'right' });
-                    doc.text('Total Amount', pageWidth - 17, tableY + 6, { align: 'right' });
+                    doc.text('Unit Price', 95, tableY + 6, { align: 'right' });
+                    doc.text('Qty', 105, tableY + 6, { align: 'center' });
+                    doc.text('Net Amount', 132, tableY + 6, { align: 'right' });
+                    doc.text('Tax Rate', 144, tableY + 6, { align: 'center' });
+                    doc.text('Tax Amount', 168, tableY + 6, { align: 'right' });
+                    doc.text('Total Amount', 194, tableY + 6, { align: 'right' });
 
                     // Line Items Rows
                     let currentY = tableY + 9;
@@ -1913,42 +1916,42 @@
 
                         if (idx % 2 === 0) {
                             doc.setFillColor(252, 253, 250);
-                            doc.rect(15, currentY, pageWidth - 30, 8.5, 'F');
+                            doc.rect(tableX, currentY, tableW, 8.5, 'F');
                         }
 
                         doc.setDrawColor(235, 235, 235);
-                        doc.line(15, currentY + 8.5, pageWidth - 15, currentY + 8.5);
+                        doc.line(tableX, currentY + 8.5, tableX + tableW, currentY + 8.5);
 
                         doc.setTextColor(50, 50, 50);
                         doc.setFont('helvetica', 'normal');
                         doc.setFontSize(8);
 
                         // Sl. No
-                        doc.text(String(idx + 1), 20, currentY + 5.5, { align: 'center' });
+                        doc.text(String(idx + 1), 18, currentY + 5.5, { align: 'center' });
 
                         // Description
                         const descText = item.description || 'Product Item';
-                        const truncatedDesc = descText.length > 32 ? descText.substring(0, 30) + '...' : descText;
+                        const truncatedDesc = descText.length > 28 ? descText.substring(0, 26) + '...' : descText;
                         doc.text(truncatedDesc, 26, currentY + 5.5);
 
                         // Unit Price
-                        doc.text(`₹${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 96, currentY + 5.5, { align: 'right' });
+                        doc.text(`INR ${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 95, currentY + 5.5, { align: 'right' });
 
                         // Qty
-                        doc.text(String(itemQty), 104, currentY + 5.5, { align: 'center' });
+                        doc.text(String(itemQty), 105, currentY + 5.5, { align: 'center' });
 
                         // Net Amount
-                        doc.text(`₹${itemNetAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 131, currentY + 5.5, { align: 'right' });
+                        doc.text(`INR ${itemNetAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 132, currentY + 5.5, { align: 'right' });
 
                         // Tax Rate
-                        doc.text(isGst ? '18%' : '0%', 141.5, currentY + 5.5, { align: 'center' });
+                        doc.text(isGst ? '18%' : '0%', 144, currentY + 5.5, { align: 'center' });
 
                         // Tax Amount
-                        doc.text(`₹${itemTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 171, currentY + 5.5, { align: 'right' });
+                        doc.text(`INR ${itemTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 168, currentY + 5.5, { align: 'right' });
 
                         // Total Amount
                         doc.setFont('helvetica', 'bold');
-                        doc.text(`₹${itemTotalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 17, currentY + 5.5, { align: 'right' });
+                        doc.text(`INR ${itemTotalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 5.5, { align: 'right' });
 
                         currentY += 8.5;
                     });
@@ -1960,18 +1963,18 @@
 
                     // TOTAL Table Footer Row (Green Theme Match)
                     doc.setFillColor(76, 118, 46);
-                    doc.rect(15, currentY, pageWidth - 30, 9, 'F');
+                    doc.rect(tableX, currentY, tableW, 9, 'F');
 
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8.5);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('TOTAL:', 20, currentY + 6);
+                    doc.text('TOTAL:', 18, currentY + 6);
 
                     // Tax Amount Total
-                    doc.text(`₹${calcGstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 171, currentY + 6, { align: 'right' });
+                    doc.text(`INR ${calcGstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 168, currentY + 6, { align: 'right' });
 
                     // Total Amount Total
-                    doc.text(`₹${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 17, currentY + 6, { align: 'right' });
+                    doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 6, { align: 'right' });
 
                     return doc.output('datauristring');
                 };
