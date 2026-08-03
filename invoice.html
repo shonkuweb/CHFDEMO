@@ -17,6 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- QRCode.js for Mobile Scanner -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Official CHF Letterhead Base64 Asset -->
+    <script src="/assets/js/chf_letterhead_base64.js"></script>
     <style>
         :root {
             --accent-gold: #C6A87C;
@@ -1810,9 +1812,13 @@
                     const pageWidth = doc.internal.pageSize.getWidth();
                     const pageHeight = doc.internal.pageSize.getHeight();
 
-                    // 1. Official CHF Letterhead Background
-                    if (letterheadBase64.value) {
-                        doc.addImage(letterheadBase64.value, 'PNG', 0, 0, pageWidth, pageHeight);
+                    // 1. Official CHF Letterhead Background (Direct PDF scan replica)
+                    const bgImg = (window.CHF_LETTERHEAD_BASE64 && window.CHF_LETTERHEAD_BASE64.length > 100) 
+                        ? window.CHF_LETTERHEAD_BASE64 
+                        : letterheadBase64.value;
+
+                    if (bgImg) {
+                        doc.addImage(bgImg, 'PNG', 0, 0, pageWidth, pageHeight);
                     } else {
                         doc.setFillColor(76, 118, 46);
                         doc.rect(0, 0, pageWidth, 6, 'F');
