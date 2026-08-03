@@ -1842,9 +1842,10 @@
                     // Client & Payment Info Card
                     startY += 10;
                     doc.setFillColor(248, 250, 246);
-                    doc.roundedRect(15, startY, pageWidth - 30, 26, 2, 2, 'F');
+                    doc.setFillColor(248, 250, 246);
+                    doc.roundedRect(15, startY, pageWidth - 30, 30, 2, 2, 'F');
                     doc.setDrawColor(210, 225, 200);
-                    doc.roundedRect(15, startY, pageWidth - 30, 26, 2, 2, 'S');
+                    doc.roundedRect(15, startY, pageWidth - 30, 30, 2, 2, 'S');
 
                     doc.setTextColor(100, 120, 90);
                     doc.setFont('helvetica', 'bold');
@@ -1872,8 +1873,12 @@
                     const refStr = paymentRef ? `Transaction ID: ${paymentRef}` : 'Method: Online Payment';
                     doc.text(refStr, pageWidth / 2 + 10, startY + 20);
 
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(60, 60, 60);
+                    doc.text('GST NUMBER: 19AASFC7226L1ZS', pageWidth / 2 + 10, startY + 26);
+
                     // Line Items Table Header (Green Theme Match, Zero Overlap Alignment)
-                    let tableY = startY + 28;
+                    let tableY = startY + 33;
                     const tableX = 14;
                     const tableW = pageWidth - 28;
 
@@ -1888,8 +1893,8 @@
                     doc.text('Unit Price', 95, tableY + 6, { align: 'right' });
                     doc.text('Qty', 105, tableY + 6, { align: 'center' });
                     doc.text('Net Amount', 132, tableY + 6, { align: 'right' });
-                    doc.text('Tax Rate', 144, tableY + 6, { align: 'center' });
-                    doc.text('Tax Amount', 168, tableY + 6, { align: 'right' });
+                    doc.text('GST Rate', 144, tableY + 6, { align: 'center' });
+                    doc.text('GST Amount', 168, tableY + 6, { align: 'right' });
                     doc.text('Total Amount', 194, tableY + 6, { align: 'right' });
 
                     // Line Items Rows
@@ -1943,11 +1948,12 @@
                         // Net Amount
                         doc.text(`INR ${itemNetAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 132, currentY + 5.5, { align: 'right' });
 
-                        // Tax Rate
-                        doc.text(isGst ? '18%' : '0%', 144, currentY + 5.5, { align: 'center' });
+                        // GST Rate
+                        doc.text(isGst ? '18%' : 'NILL', 144, currentY + 5.5, { align: 'center' });
 
-                        // Tax Amount
-                        doc.text(`INR ${itemTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 168, currentY + 5.5, { align: 'right' });
+                        // GST Amount
+                        const taxAmtStr = isGst ? `INR ${itemTaxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'NILL';
+                        doc.text(taxAmtStr, 168, currentY + 5.5, { align: 'right' });
 
                         // Total Amount
                         doc.setFont('helvetica', 'bold');
@@ -1970,10 +1976,7 @@
                     doc.setFont('helvetica', 'bold');
                     doc.text('TOTAL:', 18, currentY + 6);
 
-                    // Tax Amount Total
-                    doc.text(`INR ${calcGstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 168, currentY + 6, { align: 'right' });
-
-                    // Total Amount Total
+                    // Total Amount Total (Incl. GST)
                     doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 6, { align: 'right' });
 
                     return doc.output('datauristring');
