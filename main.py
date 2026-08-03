@@ -1441,12 +1441,17 @@ def ensure_sku_catalog_table():
             category TEXT DEFAULT '',
             description TEXT DEFAULT '',
             image_url TEXT DEFAULT '',
+            gst_applicable INTEGER DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
     # Migration safety for existing database
     try:
         cur.execute("ALTER TABLE sku_catalog ADD COLUMN image_url TEXT DEFAULT ''")
+    except Exception:
+        pass
+    try:
+        cur.execute("ALTER TABLE sku_catalog ADD COLUMN gst_applicable INTEGER DEFAULT 1")
     except Exception:
         pass
     conn.commit()
@@ -1464,7 +1469,7 @@ def refresh_sku_cache():
         ensure_sku_catalog_table()
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, sku, name, price, category, description, image_url FROM sku_catalog")
+        cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable FROM sku_catalog")
         rows = cur.fetchall()
         SKU_CACHE = {
             r["sku"].upper(): {
@@ -1474,7 +1479,8 @@ def refresh_sku_cache():
                 "price": r["price"],
                 "category": r["category"],
                 "description": r["description"],
-                "image_url": r.get("image_url", "")
+                "image_url": r.get("image_url", ""),
+                "gst_applicable": r.get("gst_applicable", 1) if r.get("gst_applicable") is not None else 1
             } for r in rows
         }
         conn.close()
@@ -2441,13 +2447,14 @@ class SKUPayload(BaseModel):
     category: Optional[str] = ""
     description: Optional[str] = ""
     image_url: Optional[str] = ""
+    gst_applicable: Optional[int] = 1
 
 @app.get("/api/skus")
 async def list_skus():
     ensure_sku_catalog_table()
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT id, sku, name, price, category, description, image_url, created_at FROM sku_catalog ORDER BY created_at DESC")
+    cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, created_at FROM sku_catalog ORDER BY created_at DESC")
     rows = cur.fetchall()
     conn.close()
     return [dict(r) for r in rows]
@@ -2457,6 +2464,7 @@ async def save_sku(payload: SKUPayload):
     ensure_sku_catalog_table()
     clean_name = payload.name.strip()
     clean_sku = (payload.sku or "").strip().upper()
+    gst_val = 1 if payload.gst_applicable is None or payload.gst_applicable == 1 else 0
     if not clean_sku:
         prefix = (payload.category or "SKU")[:3].upper()
         import random
@@ -2470,20 +2478,21 @@ async def save_sku(payload: SKUPayload):
     if payload.id:
         cur.execute("""
             UPDATE sku_catalog
-            SET sku = ?, name = ?, price = ?, category = ?, description = ?, image_url = ?
+            SET sku = ?, name = ?, price = ?, category = ?, description = ?, image_url = ?, gst_applicable = ?
             WHERE id = ?
-        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", payload.id))
+        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val, payload.id))
     else:
         cur.execute("""
-            INSERT INTO sku_catalog (sku, name, price, category, description, image_url)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO sku_catalog (sku, name, price, category, description, image_url, gst_applicable)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(sku) DO UPDATE SET
                 name = excluded.name,
                 price = excluded.price,
                 category = excluded.category,
                 description = excluded.description,
-                image_url = excluded.image_url
-        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or ""))
+                image_url = excluded.image_url,
+                gst_applicable = excluded.gst_applicable
+        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val))
         
     conn.commit()
     conn.close()
@@ -2514,16 +2523,17 @@ async def lookup_sku(sku_code: str):
             "price": cached["price"], 
             "category": cached.get("category", ""), 
             "description": cached.get("description", ""), 
-            "image_url": cached.get("image_url", "")
+            "image_url": cached.get("image_url", ""),
+            "gst_applicable": cached.get("gst_applicable", 1)
         }
         
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT id, sku, name, price, category, description, image_url FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (code_upper,))
+    cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (code_upper,))
     row = cur.fetchone()
     conn.close()
     if not row:
-        return {"found": False, "sku": sku_code, "name": sku_code, "price": 0.0, "description": "", "image_url": ""}
+        return {"found": False, "sku": sku_code, "name": sku_code, "price": 0.0, "description": "", "image_url": "", "gst_applicable": 1}
     d = dict(row)
     return {
         "found": True, 
@@ -2532,7 +2542,8 @@ async def lookup_sku(sku_code: str):
         "price": d["price"], 
         "category": d.get("category", ""), 
         "description": d.get("description", ""), 
-        "image_url": d.get("image_url", "")
+        "image_url": d.get("image_url", ""),
+        "gst_applicable": d.get("gst_applicable", 1)
     }
 
 @app.get("/scan")

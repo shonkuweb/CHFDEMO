@@ -347,7 +347,7 @@
                                             placeholder="Product Name">
                                     </div>
                                     <div class="flex items-center gap-4">
-                                        <div class="w-24">
+                                        <div class="w-20">
                                             <label class="block text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Qty</label>
                                             <input type="number" v-model.number="item.qty" min="1" required
                                                 class="w-full bg-background-dark border border-white/10 px-3 py-2 text-sm text-ivory focus:outline-none focus:border-accent-bronze rounded-sm transition-colors text-center">
@@ -358,18 +358,34 @@
                                                 class="w-full bg-background-dark border border-white/10 px-3 py-2 text-sm text-ivory focus:outline-none focus:border-accent-bronze rounded-sm transition-colors">
                                         </div>
                                     </div>
+                                    <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between">
+                                        <span class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">GST (18%):</span>
+                                        <button type="button" @click="item.gst_applicable = (item.gst_applicable === 0 ? 1 : 0)" 
+                                            :class="item.gst_applicable === 0 ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'"
+                                            class="px-2.5 py-1 rounded text-[10px] font-bold border transition-all">
+                                            {{ (item.gst_applicable === 0) ? '0% GST (Exempt)' : '18% GST Applicable' }}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Sticky Footer for Total -->
-                            <div class="bg-surface-dark/95 backdrop-blur-md border-t border-white/5 p-6 relative z-10">
-                                <div class="flex items-end justify-between">
+                            <div class="bg-surface-dark/95 backdrop-blur-md border-t border-white/5 p-5 relative z-10 space-y-2">
+                                <div class="flex justify-between text-xs text-gray-400">
+                                    <span>Subtotal (Excl. Tax):</span>
+                                    <span class="text-white font-medium">₹{{ subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-400">
+                                    <span>GST @ 18% (Applicable Items):</span>
+                                    <span class="text-emerald-400 font-semibold">+ ₹{{ gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                </div>
+                                <div class="border-t border-white/10 pt-2 flex items-end justify-between">
                                     <div>
-                                        <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Total Amount</p>
-                                        <p class="text-sm text-gray-400">INR (₹)</p>
+                                        <p class="text-[10px] uppercase tracking-widest text-[#C5A073] font-bold">Total Amount</p>
+                                        <p class="text-[10px] text-gray-400">INR (₹) • Incl. 18% GST</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="font-serif text-4xl text-accent-bronze font-light tracking-wide">₹{{ totalAmount.toLocaleString('en-IN') }}</p>
+                                        <p class="font-serif text-3xl text-accent-bronze font-bold tracking-wide">₹{{ totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -974,23 +990,60 @@
                             </p>
                         </template>
 
-                        <!-- SUCCESS STATE: Glowing Checkmark & Celebration Animation -->
+                        <!-- SUCCESS STATE: Admin Approval & PDF Action Pop-up -->
                         <template v-else-if="paymentModalStatus === 'SUCCESS'">
-                            <div class="relative w-28 h-28 flex items-center justify-center mb-4">
-                                <div class="absolute inset-0 rounded-full border-2 border-emerald-400/50 animate-ping opacity-50"></div>
-                                <div class="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-emerald-400 shadow-[0_0_40px_rgba(52,211,153,0.5)]">
-                                    <span class="material-symbols-outlined text-4xl font-bold">check</span>
+                            <div class="space-y-4 text-left">
+                                <div class="p-4 bg-emerald-500/20 border border-emerald-400/40 rounded-2xl flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-emerald-500/30 text-emerald-300 flex items-center justify-center font-bold">
+                                            <span class="material-symbols-outlined text-2xl">check_circle</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-emerald-300 uppercase tracking-wider">Payment Received & Confirmed</h4>
+                                            <p class="text-[11px] text-gray-300">Ref: {{ paymentModalRefNo || 'ONLINE_PAYMENT' }}</p>
+                                        </div>
+                                    </div>
+                                    <span class="serif-title text-xl font-bold text-emerald-300">₹{{ Number(paymentModalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                </div>
+
+                                <p class="text-xs text-gray-300 font-medium">
+                                    Full PDF Invoice preview below. Select an action to dispatch or print:
+                                </p>
+
+                                <!-- Full A4 PDF Invoice Interactive Preview -->
+                                <div class="w-full h-80 rounded-2xl border border-white/15 bg-white/5 overflow-hidden shadow-inner relative">
+                                    <iframe v-if="approvedPdfDataUri" :src="approvedPdfDataUri" class="w-full h-full border-none"></iframe>
+                                    <div v-else class="flex flex-col items-center justify-center h-full text-gray-400 text-xs gap-2">
+                                        <span class="material-symbols-outlined text-2xl animate-spin">refresh</span>
+                                        <span>Generating Invoice PDF Preview...</span>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons Grid: Send to WhatsApp & Print -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                    <button type="button" @click="manuallySendPdfToWhatsApp" :disabled="sendingApprovedPdf"
+                                        class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-xs uppercase tracking-widest py-3.5 px-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                                        <span class="material-symbols-outlined text-lg">send</span>
+                                        <span>{{ sendingApprovedPdf ? 'Sending...' : 'Send to WhatsApp' }}</span>
+                                    </button>
+
+                                    <button type="button" @click="printInvoicePdf"
+                                        class="w-full bg-[#C5A073] hover:bg-[#b08c62] text-black font-bold text-xs uppercase tracking-widest py-3.5 px-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
+                                        <span class="material-symbols-outlined text-lg">print</span>
+                                        <span>Print Bill (A4)</span>
+                                    </button>
+                                </div>
+
+                                <p v-if="approvedPdfSentSuccess" class="text-xs text-emerald-400 font-bold text-center animate-in fade-in py-1">
+                                    ✓ Invoice PDF successfully sent to customer's WhatsApp!
+                                </p>
+
+                                <div class="pt-2 border-t border-white/10 flex justify-end">
+                                    <button type="button" @click="closePaymentModalAndResetBill" class="text-xs text-gray-400 hover:text-white underline">
+                                        Done & Reset Bill Console
+                                    </button>
                                 </div>
                             </div>
-
-                            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
-                                ✓ PAYMENT RECEIVED
-                            </div>
-                            <h3 class="serif-title text-xl text-emerald-300 font-semibold mb-1">Transaction Successful!</h3>
-                            <p v-if="paymentModalRefNo" class="text-[11px] text-gray-400">CCAvenue Ref: {{ paymentModalRefNo }}</p>
-                            <p class="text-[11px] text-emerald-400/90 mt-3 font-semibold animate-pulse">
-                                Closing window & resetting console to make next bill...
-                            </p>
                         </template>
 
                         <!-- FAILED STATE -->
@@ -1145,6 +1198,18 @@
                                         <input v-model.number="skuForm.price" min="0" step="0.01" required type="number" placeholder="0"
                                             class="w-full bg-black border border-neutral-800 text-neutral-100 text-sm py-3 pl-9 pr-4 rounded-xl focus:ring-1 focus:ring-amber-400 focus:border-amber-400 outline-none transition-all"/>
                                     </div>
+                                </div>
+
+                                <!-- GST Applicability -->
+                                <div>
+                                    <label class="block text-[11px] font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
+                                        GST Category <span class="text-red-400">*</span>
+                                    </label>
+                                    <select v-model.number="skuForm.gst_applicable" required
+                                        class="w-full bg-black border border-neutral-800 text-neutral-100 text-sm py-3 px-4 rounded-xl focus:ring-1 focus:ring-amber-400 focus:border-amber-400 appearance-none cursor-pointer outline-none transition-all">
+                                        <option :value="1" class="bg-black text-white">GST 18% Applicable</option>
+                                        <option :value="0" class="bg-black text-white">GST Exempt / Not Applicable (0%)</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -1636,15 +1701,35 @@
                 const sendError = ref('');
 
                 const addItem = () => {
-                    invoiceData.value.items.push({ description: '', qty: 1, price: 0 });
+                    invoiceData.value.items.push({ description: '', qty: 1, price: 0, gst_applicable: 1 });
                 };
 
                 const removeItem = (index) => {
                     invoiceData.value.items.splice(index, 1);
                 };
 
+                const subtotalGstApplicable = computed(() => {
+                    return (invoiceData.value.items || [])
+                        .filter(item => (item.gst_applicable ?? 1) === 1)
+                        .reduce((sum, item) => sum + ((Number(item.qty) || 1) * (Number(item.price) || 0)), 0);
+                });
+
+                const subtotalGstExempt = computed(() => {
+                    return (invoiceData.value.items || [])
+                        .filter(item => (item.gst_applicable ?? 1) === 0)
+                        .reduce((sum, item) => sum + ((Number(item.qty) || 1) * (Number(item.price) || 0)), 0);
+                });
+
+                const subtotal = computed(() => {
+                    return subtotalGstApplicable.value + subtotalGstExempt.value;
+                });
+
+                const gstAmount = computed(() => {
+                    return Math.round(subtotalGstApplicable.value * 0.18 * 100) / 100;
+                });
+
                 const totalAmount = computed(() => {
-                    return invoiceData.value.items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+                    return Math.round((subtotal.value + gstAmount.value) * 100) / 100;
                 });
 
                 const currentPaymentLink = ref('');
@@ -1666,7 +1751,7 @@
                     }
                 };
 
-                // Live CCAvenue Payment Status Modal State
+                // Live CCAvenue Payment Status Modal State & Approval Workflow
                 const showPaymentModal = ref(false);
                 const paymentModalInvoiceId = ref('');
                 const paymentModalClientName = ref('');
@@ -1678,6 +1763,29 @@
                 const paymentModalCopied = ref(false);
                 const paymentAutoCloseTimer = ref(null);
                 let paymentPollInterval = null;
+
+                const letterheadBase64 = ref('');
+                const loadLetterheadImage = () => {
+                    const img = new Image();
+                    img.crossOrigin = 'Anonymous';
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        letterheadBase64.value = canvas.toDataURL('image/png');
+                    };
+                    img.src = '/assets/images/chf_letterhead.png';
+                };
+
+                const approvedPdfDataUri = ref('');
+                const sendingApprovedPdf = ref(false);
+                const approvedPdfSentSuccess = ref(false);
+
+                const prepareApprovedPdfPreview = (refNo = '') => {
+                    approvedPdfDataUri.value = generateBrandedInvoicePDF(invoiceData.value, refNo || paymentModalRefNo.value, totalAmount.value);
+                };
 
                 const startPaymentPolling = (invId) => {
                     if (paymentPollInterval) clearInterval(paymentPollInterval);
@@ -1694,177 +1802,173 @@
                     const pageWidth = doc.internal.pageSize.getWidth();
                     const pageHeight = doc.internal.pageSize.getHeight();
 
-                    // 1. Top Luxury Header Banner (Dark Charcoal)
-                    doc.setFillColor(15, 15, 15);
-                    doc.rect(0, 0, pageWidth, 44, 'F');
+                    // 1. Official CHF Letterhead Background
+                    if (letterheadBase64.value) {
+                        doc.addImage(letterheadBase64.value, 'PNG', 0, 0, pageWidth, pageHeight);
+                    } else {
+                        doc.setFillColor(76, 118, 46);
+                        doc.rect(0, 0, pageWidth, 6, 'F');
+                    }
 
-                    // Accent Gold Line
-                    doc.setFillColor(197, 160, 115);
-                    doc.rect(0, 44, pageWidth, 2, 'F');
+                    // Header Content Overlay
+                    let startY = 48; // Below letterhead header
 
-                    // Brand Title & Subtitle
-                    doc.setTextColor(197, 160, 115);
+                    // Tax Invoice Badge
+                    doc.setTextColor(40, 40, 40);
+                    doc.setFontSize(16);
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(18);
-                    doc.text('PLANT EXPERIENCE CENTRE', 15, 20);
+                    doc.text('TAX INVOICE', 15, startY);
 
-                    doc.setTextColor(200, 200, 200);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(8.5);
-                    doc.text('Botanical Sanctuary & Luxury Plant Catalogue', 15, 27);
-                    doc.text('Official Digital Tax Receipt & Billing Statement', 15, 33);
-
-                    // Right Header: Invoice Badge & Date
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('TAX INVOICE', pageWidth - 15, 18, { align: 'right' });
-
-                    doc.setTextColor(197, 160, 115);
-                    doc.setFontSize(10);
                     const invNumber = invData.number || 'INV-000000';
-                    doc.text(`#${invNumber}`, pageWidth - 15, 25, { align: 'right' });
-
-                    doc.setTextColor(180, 180, 180);
-                    doc.setFontSize(8);
-                    const todayDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-                    doc.text(`Date: ${todayDate}`, pageWidth - 15, 32, { align: 'right' });
-
-                    // 2. Client & Payment Info Card
-                    let startY = 56;
-                    doc.setFillColor(248, 248, 248);
-                    doc.roundedRect(15, startY, pageWidth - 30, 28, 3, 3, 'F');
-                    doc.setDrawColor(225, 225, 225);
-                    doc.roundedRect(15, startY, pageWidth - 30, 28, 3, 3, 'S');
-
-                    doc.setTextColor(110, 110, 110);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(8);
-                    doc.text('BILLED TO:', 22, startY + 8);
-                    doc.text('PAYMENT DETAILS:', pageWidth / 2 + 10, startY + 8);
-
-                    doc.setTextColor(20, 20, 20);
                     doc.setFontSize(10);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(invData.clientName || 'Valued Customer', 22, startY + 15);
+                    doc.setTextColor(76, 118, 46);
+                    doc.text(`#${invNumber}`, 15, startY + 6);
 
-                    doc.setFontSize(9);
+                    const todayDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                    doc.setTextColor(100, 100, 100);
+                    doc.setFontSize(8.5);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`Date: ${todayDate}`, pageWidth - 15, startY, { align: 'right' });
+
+                    // Client & Payment Info Card
+                    startY += 12;
+                    doc.setFillColor(248, 250, 246);
+                    doc.roundedRect(15, startY, pageWidth - 30, 26, 2, 2, 'F');
+                    doc.setDrawColor(210, 225, 200);
+                    doc.roundedRect(15, startY, pageWidth - 30, 26, 2, 2, 'S');
+
+                    doc.setTextColor(100, 120, 90);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(8);
+                    doc.text('BILLED TO:', 20, startY + 7);
+                    doc.text('PAYMENT DETAILS:', pageWidth / 2 + 10, startY + 7);
+
+                    doc.setTextColor(30, 30, 30);
+                    doc.setFontSize(9.5);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(invData.clientName || 'Valued Customer', 20, startY + 14);
+
+                    doc.setFontSize(8.5);
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(80, 80, 80);
-                    doc.text(`Phone: ${invData.phone || 'N/A'}`, 22, startY + 22);
+                    doc.text(`Phone: ${invData.phone || 'N/A'}`, 20, startY + 20);
 
                     doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(34, 197, 94); // Green PAID IN FULL
-                    doc.text('Status: PAID IN FULL', pageWidth / 2 + 10, startY + 15);
+                    doc.setTextColor(40, 140, 60);
+                    doc.text('Status: PAID IN FULL', pageWidth / 2 + 10, startY + 14);
 
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(80, 80, 80);
-                    doc.setFontSize(8.5);
-                    const refStr = paymentRef ? `CCAvenue Ref: ${paymentRef}` : 'Method: Online CCAvenue Payment';
-                    doc.text(refStr, pageWidth / 2 + 10, startY + 22);
+                    doc.setFontSize(8);
+                    const refStr = paymentRef ? `CCAvenue Ref: ${paymentRef}` : 'Method: Online Payment';
+                    doc.text(refStr, pageWidth / 2 + 10, startY + 20);
 
-                    // 3. Items Table Header
-                    let tableY = startY + 36;
-                    doc.setFillColor(18, 18, 18);
-                    doc.rect(15, tableY, pageWidth - 30, 10, 'F');
+                    // Line Items Table Header
+                    let tableY = startY + 32;
+                    doc.setFillColor(76, 118, 46);
+                    doc.rect(15, tableY, pageWidth - 30, 9, 'F');
 
-                    doc.setTextColor(197, 160, 115);
-                    doc.setFontSize(8.5);
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(8);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('#', 20, tableY + 6.5);
-                    doc.text('ITEM DESCRIPTION / SKU', 32, tableY + 6.5);
-                    doc.text('QTY', 125, tableY + 6.5, { align: 'center' });
-                    doc.text('UNIT PRICE', 155, tableY + 6.5, { align: 'right' });
-                    doc.text('TOTAL', pageWidth - 20, tableY + 6.5, { align: 'right' });
+                    doc.text('#', 18, tableY + 6);
+                    doc.text('ITEM DESCRIPTION / SKU', 28, tableY + 6);
+                    doc.text('QTY', 115, tableY + 6, { align: 'center' });
+                    doc.text('UNIT PRICE', 138, tableY + 6, { align: 'right' });
+                    doc.text('GST %', 160, tableY + 6, { align: 'center' });
+                    doc.text('TOTAL', pageWidth - 18, tableY + 6, { align: 'right' });
 
-                    // 4. Line Items Rows with Exact Calculation
-                    let currentY = tableY + 10;
+                    // Line Items Rows
+                    let currentY = tableY + 9;
                     const items = invData.items || [];
-                    let calcTotal = 0;
+                    let calcSubtotalGst = 0;
+                    let calcSubtotalExempt = 0;
 
                     items.forEach((item, idx) => {
                         const itemQty = Number(item.qty) || 1;
                         const itemPrice = Number(item.price) || 0;
+                        const isGst = (item.gst_applicable ?? 1) === 1;
                         const itemSubtotal = itemQty * itemPrice;
-                        calcTotal += itemSubtotal;
+
+                        if (isGst) {
+                            calcSubtotalGst += itemSubtotal;
+                        } else {
+                            calcSubtotalExempt += itemSubtotal;
+                        }
 
                         if (idx % 2 === 0) {
-                            doc.setFillColor(252, 252, 252);
-                            doc.rect(15, currentY, pageWidth - 30, 9, 'F');
+                            doc.setFillColor(252, 253, 250);
+                            doc.rect(15, currentY, pageWidth - 30, 8.5, 'F');
                         }
 
                         doc.setDrawColor(240, 240, 240);
-                        doc.line(15, currentY + 9, pageWidth - 15, currentY + 9);
+                        doc.line(15, currentY + 8.5, pageWidth - 15, currentY + 8.5);
 
                         doc.setTextColor(50, 50, 50);
                         doc.setFont('helvetica', 'normal');
-                        doc.setFontSize(9);
-                        doc.text(String(idx + 1), 20, currentY + 6);
+                        doc.setFontSize(8.5);
+                        doc.text(String(idx + 1), 18, currentY + 5.5);
 
                         const descText = item.description || 'Product Item';
-                        const truncatedDesc = descText.length > 45 ? descText.substring(0, 43) + '...' : descText;
-                        doc.text(truncatedDesc, 32, currentY + 6);
+                        const truncatedDesc = descText.length > 40 ? descText.substring(0, 38) + '...' : descText;
+                        doc.text(truncatedDesc, 28, currentY + 5.5);
 
-                        doc.text(String(itemQty), 125, currentY + 6, { align: 'center' });
-                        doc.text(`INR ${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 155, currentY + 6, { align: 'right' });
+                        doc.text(String(itemQty), 115, currentY + 5.5, { align: 'center' });
+                        doc.text(`INR ${itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 138, currentY + 5.5, { align: 'right' });
+                        doc.text(isGst ? '18%' : '0%', 160, currentY + 5.5, { align: 'center' });
                         doc.setFont('helvetica', 'bold');
-                        doc.text(`INR ${itemSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 20, currentY + 6, { align: 'right' });
+                        doc.text(`INR ${itemSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 5.5, { align: 'right' });
 
-                        currentY += 9;
+                        currentY += 8.5;
                     });
 
-                    // 5. Total Calculation Summary Box
-                    const finalAmount = totalAmt > 0 ? totalAmt : calcTotal;
-                    currentY += 6;
+                    const calcSubtotal = calcSubtotalGst + calcSubtotalExempt;
+                    const calcGstAmount = Math.round(calcSubtotalGst * 0.18 * 100) / 100;
+                    const calcFinalTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
+                    const finalAmount = totalAmt > 0 ? totalAmt : calcFinalTotal;
 
-                    doc.setFillColor(248, 246, 240);
-                    doc.roundedRect(pageWidth - 105, currentY, 90, 24, 3, 3, 'F');
-                    doc.setDrawColor(197, 160, 115);
-                    doc.setLineWidth(0.4);
-                    doc.roundedRect(pageWidth - 105, currentY, 90, 24, 3, 3, 'S');
-
-                    doc.setTextColor(100, 100, 100);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(9);
-                    doc.text('SUBTOTAL:', pageWidth - 98, currentY + 8);
-                    doc.text(`INR ${calcTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 20, currentY + 8, { align: 'right' });
-
-                    doc.setTextColor(18, 18, 18);
-                    doc.setFontSize(11);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('TOTAL PAID:', pageWidth - 98, currentY + 17);
-                    doc.setTextColor(180, 120, 30);
-                    doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 20, currentY + 17, { align: 'right' });
-
-                    // 6. Luxury Footer
-                    const footerY = pageHeight - 25;
-                    doc.setDrawColor(220, 220, 220);
+                    // Total Summary Box
+                    currentY += 5;
+                    doc.setFillColor(248, 250, 245);
+                    doc.roundedRect(pageWidth - 110, currentY, 95, 28, 2, 2, 'F');
+                    doc.setDrawColor(180, 205, 160);
                     doc.setLineWidth(0.3);
-                    doc.line(15, footerY, pageWidth - 15, footerY);
+                    doc.roundedRect(pageWidth - 110, currentY, 95, 28, 2, 2, 'S');
 
-                    doc.setTextColor(120, 120, 120);
-                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(90, 90, 90);
+                    doc.setFont('helvetica', 'bold');
                     doc.setFontSize(8);
-                    doc.text('Plant Experience Centre • Premium Botanical Experience', pageWidth / 2, footerY + 6, { align: 'center' });
-                    doc.text('Thank you for your purchase! This digital tax receipt has been auto-generated for your records.', pageWidth / 2, footerY + 11, { align: 'center' });
+                    doc.text('SUBTOTAL (Excl. Tax):', pageWidth - 103, currentY + 7);
+                    doc.text(`INR ${calcSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 7, { align: 'right' });
+
+                    doc.text('GST @ 18% (Applicable):', pageWidth - 103, currentY + 14);
+                    doc.text(`INR ${calcGstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 14, { align: 'right' });
+
+                    doc.setTextColor(20, 20, 20);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('TOTAL PAID:', pageWidth - 103, currentY + 23);
+                    doc.setTextColor(76, 118, 46);
+                    doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, pageWidth - 18, currentY + 23, { align: 'right' });
 
                     return doc.output('datauristring');
                 };
 
-                const sendBrandedPDFInvoiceToWhatsApp = async (refNo = '') => {
+                const manuallySendPdfToWhatsApp = async () => {
                     if (!invoiceData.value.phone) return;
-                    
+                    sendingApprovedPdf.value = true;
+                    approvedPdfSentSuccess.value = false;
                     try {
-                        const pdfBase64 = generateBrandedInvoicePDF(invoiceData.value, refNo, totalAmount.value);
                         const invId = invoiceData.value.number || paymentModalInvoiceId.value || 'INV-000000';
-                        
                         let caption = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
                         caption += `Dear *${invoiceData.value.clientName || 'Valued Customer'}*,\n`;
-                        caption += `Thank you for your payment! Your transaction for *Invoice #${invId}* (Total: ₹${totalAmount.value.toLocaleString('en-IN')}) is successful.\n\n`;
-                        caption += `Attached is your official *Plant Experience Centre Tax Invoice & Receipt PDF*.\n\n`;
+                        caption += `Thank you for your payment! Your transaction for *Invoice #${invId}* (Total: ₹${totalAmount.value.toLocaleString('en-IN', { minimumFractionDigits: 2 })}) is successful.\n\n`;
+                        caption += `Attached is your official *Tax Invoice & Receipt PDF*.\n\n`;
                         caption += `We look forward to serving you again! 🌸`;
 
-                        await fetch('/api/whatsapp/send', {
+                        const pdfBase64 = approvedPdfDataUri.value || generateBrandedInvoicePDF(invoiceData.value, paymentModalRefNo.value, totalAmount.value);
+
+                        const res = await fetch('/api/whatsapp/send', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -1874,8 +1978,41 @@
                                 filename: `Invoice_${invId}.pdf`
                             })
                         });
-                    } catch(e) {
-                        console.error('Failed to send branded PDF invoice to WhatsApp:', e);
+                        const data = await res.json();
+                        if (data && data.success) {
+                            approvedPdfSentSuccess.value = true;
+                            setTimeout(() => { approvedPdfSentSuccess.value = false; }, 6000);
+                        }
+                    } catch (e) {
+                        console.error('Failed to send PDF to WhatsApp:', e);
+                    } finally {
+                        sendingApprovedPdf.value = false;
+                    }
+                };
+
+                const printInvoicePdf = () => {
+                    const pdfData = approvedPdfDataUri.value || generateBrandedInvoicePDF(invoiceData.value, paymentModalRefNo.value, totalAmount.value);
+                    const printWindow = window.open('', '_blank');
+                    if (printWindow) {
+                        printWindow.document.write(`
+                            <!DOCTYPE html>
+                            <html>
+                                <head>
+                                    <title>Print Bill — CHF Invoice #${invoiceData.value.number || 'INV-000000'}</title>
+                                    <style>
+                                        body { margin: 0; padding: 0; background: #fff; }
+                                        iframe { width: 100vw; height: 100vh; border: none; }
+                                    </style>
+                                </head>
+                                <body>
+                                    <iframe src="${pdfData}"></iframe>
+                                    <script>
+                                        setTimeout(() => { window.print(); }, 600);
+                                    <\/script>
+                                </body>
+                            </html>
+                        `);
+                        printWindow.document.close();
                     }
                 };
 
@@ -1898,15 +2035,8 @@
                                     paymentPollInterval = null;
                                 }
 
-                                if (isNewSuccess) {
-                                    sendBrandedPDFInvoiceToWhatsApp(paymentModalRefNo.value);
-                                }
-
-                                if (!paymentAutoCloseTimer.value) {
-                                    paymentAutoCloseTimer.value = setTimeout(() => {
-                                        closePaymentModalAndResetBill();
-                                    }, 4500);
-                                }
+                                // Prepare PDF Preview for Admin Approval (Do NOT auto-send to WhatsApp)
+                                prepareApprovedPdfPreview(data.ccavenue_ref_no || paymentModalRefNo.value);
                             }
                         }
                     } catch (e) {
@@ -2112,18 +2242,15 @@
                         
                         message += `\nThank you for choosing us!`;
 
-                        // 3. Send WhatsApp message with branded PDF invoice attachment
+                        // 3. Send WhatsApp message containing ONLY the payment link (no PDF attached yet)
                         let whatsappNotice = null;
                         try {
-                            const pdfBase64 = generateBrandedInvoicePDF(invoiceData.value, '', totalAmount.value);
                             const res = await fetch('/api/whatsapp/send', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
                                     number: invoiceData.value.phone,
-                                    message: message,
-                                    pdf_base64: pdfBase64,
-                                    filename: `Invoice_${invId}.pdf`
+                                    message: message
                                 })
                             });
 
@@ -2589,6 +2716,7 @@
                 };
 
                 onMounted(() => {
+                    loadLetterheadImage();
                     fetchCategories();
                     fetchSkus();
                     if (!deviceVerified.value && currentTab.value === 'bill') {
@@ -2637,6 +2765,10 @@
                     invoiceData,
                     addItem,
                     removeItem,
+                    subtotalGstApplicable,
+                    subtotalGstExempt,
+                    subtotal,
+                    gstAmount,
                     totalAmount,
                     sendingInvoice,
                     sendSuccess,
@@ -2659,6 +2791,11 @@
                     resetPaymentStatusToPending,
                     simulatePaymentSuccess,
                     simulatePaymentFailure,
+                    approvedPdfDataUri,
+                    sendingApprovedPdf,
+                    approvedPdfSentSuccess,
+                    manuallySendPdfToWhatsApp,
+                    printInvoicePdf,
                     barcodeData,
                     barcodeQueue,
                     totalQueued,
