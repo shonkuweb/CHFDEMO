@@ -986,7 +986,7 @@
                                     </div>
                                     <div>
                                         <h4 class="text-xs font-bold text-white uppercase tracking-wider">Payment Received</h4>
-                                        <p v-if="paymentModalRefNo" class="text-[10px] font-mono text-gray-400">Ref: {{ paymentModalRefNo }}</p>
+                                        <p v-if="paymentModalRefNo" class="text-[10px] font-mono text-gray-400">Transaction ID: {{ paymentModalRefNo }}</p>
                                         <p v-else class="text-[10px] text-emerald-400 font-semibold">Paid Online via Gateway</p>
                                     </div>
                                 </div>
@@ -1869,7 +1869,7 @@
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(80, 80, 80);
                     doc.setFontSize(8);
-                    const refStr = paymentRef ? `CCAvenue Ref: ${paymentRef}` : 'Method: Online Payment';
+                    const refStr = paymentRef ? `Transaction ID: ${paymentRef}` : 'Method: Online Payment';
                     doc.text(refStr, pageWidth / 2 + 10, startY + 20);
 
                     // Line Items Table Header (Green Theme Match, Zero Overlap Alignment)
