@@ -1584,6 +1584,7 @@
                 let setupPollInterval = null;
                 const lastScannedItem = ref('');
                 let scanPollInterval = null;
+                let isInitializingAuth = false;
                 
                 // Invoice Form State
                 const invoiceData = ref({
@@ -2928,9 +2929,22 @@
                 };
 
                 const initDeviceAuth = async () => {
+                    if (isInitializingAuth) return;
+                    isInitializingAuth = true;
+
                     try {
+                        if (setupPollInterval) {
+                            clearInterval(setupPollInterval);
+                            setupPollInterval = null;
+                        }
+                        if (scanPollInterval) {
+                            clearInterval(scanPollInterval);
+                            scanPollInterval = null;
+                        }
+
                         const res = await fetch('/api/scan/auth/init', { method: 'POST' });
                         const data = await res.json();
+                        
                         setupSessionId.value = data.session_id;
                         setupPin.value = data.pin;
                         
@@ -2947,12 +2961,27 @@
                         currentQrUrl.value = url;
                         renderQR();
                         
+                        const activeSessionId = data.session_id;
+
                         setupPollInterval = setInterval(async () => {
+                            if (setupSessionId.value !== activeSessionId) {
+                                clearInterval(setupPollInterval);
+                                setupPollInterval = null;
+                                return;
+                            }
                             try {
-                                const pollRes = await fetch(`/api/scan/auth/poll?session_id=${data.session_id}`);
+                                const pollRes = await fetch(`/api/scan/auth/poll?session_id=${activeSessionId}`);
                                 const pollData = await pollRes.json();
+                                
+                                if (pollData.error === 'session_disconnected') {
+                                    clearInterval(setupPollInterval);
+                                    setupPollInterval = null;
+                                    return;
+                                }
+                                
                                 if (pollData.verified) {
                                     clearInterval(setupPollInterval);
+                                    setupPollInterval = null;
                                     deviceVerified.value = true;
                                     
                                     const processedScanIds = new Set();
@@ -2990,7 +3019,7 @@
                                     
                                     // 1. Instant WebSocket Connection (< 0.1 ms latency)
                                     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                                    const wsUrl = `${protocol}//${window.location.host}/ws/scan/${data.session_id}`;
+                                    const wsUrl = `${protocol}//${window.location.host}/ws/scan/${activeSessionId}`;
                                     try {
                                         const ws = new WebSocket(wsUrl);
                                         ws.onmessage = (evt) => {
@@ -3004,14 +3033,22 @@
                                     // 2. High-frequency 100ms fallback polling
                                     if (scanPollInterval) clearInterval(scanPollInterval);
                                     scanPollInterval = setInterval(async () => {
+                                        if (setupSessionId.value !== activeSessionId) {
+                                            clearInterval(scanPollInterval);
+                                            scanPollInterval = null;
+                                            return;
+                                        }
                                         try {
-                                            const scanRes = await fetch(`/api/scan/poll?session_id=${data.session_id}`);
+                                            const scanRes = await fetch(`/api/scan/poll?session_id=${activeSessionId}`);
                                             const scanData = await scanRes.json();
                                             
                                             if (scanData.error === 'session_disconnected') {
                                                 clearInterval(scanPollInterval);
-                                                deviceVerified.value = false;
-                                                initDeviceAuth();
+                                                scanPollInterval = null;
+                                                if (deviceVerified.value) {
+                                                    deviceVerified.value = false;
+                                                    initDeviceAuth();
+                                                }
                                                 return;
                                             }
                                             
@@ -3026,24 +3063,37 @@
                         
                     } catch (e) {
                         console.error('Failed to init device auth', e);
+                    } finally {
+                        isInitializingAuth = false;
                     }
                 };
 
-                const resetScanner = () => {
-                    if (setupPollInterval) clearInterval(setupPollInterval);
-                    if (scanPollInterval) clearInterval(scanPollInterval);
-                    if (setupSessionId.value) {
-                        fetch('/api/scan/auth/disconnect', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ session_id: setupSessionId.value })
-                        }).catch(() => {});
+                const resetScanner = async () => {
+                    if (setupPollInterval) {
+                        clearInterval(setupPollInterval);
+                        setupPollInterval = null;
                     }
+                    if (scanPollInterval) {
+                        clearInterval(scanPollInterval);
+                        scanPollInterval = null;
+                    }
+                    const oldSessionId = setupSessionId.value;
                     setupSessionId.value = '';
                     setupPin.value = '';
                     currentQrUrl.value = '';
                     deviceVerified.value = false;
-                    initDeviceAuth();
+
+                    if (oldSessionId) {
+                        try {
+                            await fetch('/api/scan/auth/disconnect', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ session_id: oldSessionId })
+                            });
+                        } catch (e) {}
+                    }
+
+                    await initDeviceAuth();
                 };
 
                 // SKU Catalog State & Logic
