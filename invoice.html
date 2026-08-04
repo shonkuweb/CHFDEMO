@@ -619,13 +619,19 @@
                                             ₹{{ Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}
                                         </td>
 
-                                        <!-- View Invoice Button (Direct Cloudflare R2 URL) -->
+                                        <!-- View & Delete Invoice Buttons -->
                                         <td class="py-4 px-5 text-center whitespace-nowrap">
-                                            <a :href="item.r2_url || ('/invoice/' + item.invoice_id + '.png')" target="_blank" rel="noopener noreferrer"
-                                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C5A073]/20 to-[#b08c62]/20 border border-[#C5A073]/40 text-[#C5A073] hover:bg-[#C5A073] hover:text-black font-semibold text-xs transition-all shadow-md cursor-pointer">
-                                                <span class="material-symbols-outlined text-sm">open_in_new</span>
-                                                <span>View Invoice</span>
-                                            </a>
+                                            <div class="flex items-center justify-center gap-2">
+                                                <a :href="item.r2_url || ('/invoice/' + item.invoice_id + '.png')" target="_blank" rel="noopener noreferrer"
+                                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C5A073]/20 to-[#b08c62]/20 border border-[#C5A073]/40 text-[#C5A073] hover:bg-[#C5A073] hover:text-black font-semibold text-xs transition-all shadow-md cursor-pointer">
+                                                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                                                    <span>View Invoice</span>
+                                                </a>
+                                                <button type="button" @click="deleteHistoryItem(item)" title="Delete Invoice Log"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white transition-all cursor-pointer">
+                                                    <span class="material-symbols-outlined text-sm">delete</span>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 </template>
@@ -2080,6 +2086,27 @@
                     }
                 };
 
+                const deleteHistoryItem = async (item) => {
+                    if (!item || !item.invoice_id) return;
+                    if (!confirm(`Are you sure you want to delete invoice #${item.invoice_id} history log?`)) {
+                        return;
+                    }
+                    try {
+                        const res = await fetch(`/api/invoice/history/${encodeURIComponent(item.invoice_id)}`, {
+                            method: 'DELETE'
+                        });
+                        const data = await res.json();
+                        if (data && data.status === 'success') {
+                            fetchInvoiceHistory();
+                        } else {
+                            alert(data?.detail || data?.message || 'Failed to delete invoice log.');
+                        }
+                    } catch (e) {
+                        console.error('Failed to delete history item:', e);
+                        alert('Error deleting history log.');
+                    }
+                };
+
                 const loadCanvasImage = (src) => {
                     return new Promise((resolve) => {
                         if (!src) return resolve(null);
@@ -3465,6 +3492,7 @@
                     fetchInvoiceHistory,
                     debouncedFetchHistory,
                     openR2InvoiceModal,
+                    deleteHistoryItem,
                     uploadInvoiceToR2AndLog,
                     invoiceData,
                     getItemImageUrl,

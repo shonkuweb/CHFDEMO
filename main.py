@@ -3055,6 +3055,32 @@ async def get_invoice_history(search: Optional[str] = None, filter_date: Optiona
         "history": history_items
     }
 
+@app.delete("/api/invoice/history/{invoice_id}")
+@app.api_route("/api/invoice/history/delete/{invoice_id}", methods=["POST", "DELETE"])
+async def delete_invoice_history_item(invoice_id: str):
+    ensure_invoice_history_table()
+    ensure_invoice_payments_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("DELETE FROM invoice_history WHERE invoice_id = ?", (invoice_id,))
+    cur.execute("DELETE FROM invoice_payments WHERE invoice_id = ?", (invoice_id,))
+    conn.commit()
+    conn.close()
+
+    for ext in [".png", ".pdf"]:
+        filepath = os.path.join(INVOICE_DIR, f"{invoice_id}{ext}")
+        if os.path.exists(filepath):
+            try:
+                os.remove(filepath)
+            except Exception:
+                pass
+
+    return {
+        "status": "success",
+        "message": f"Invoice #{invoice_id} deleted successfully."
+    }
+
 # ── WhatsApp Microservice Proxy Route ─────────────────────
 @app.api_route("/api/whatsapp/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def whatsapp_microservice_proxy(path: str, request: Request):
