@@ -9,8 +9,10 @@ __pycache__/
 # macOS
 .DS_Store
 
-# SQLite database — mounted as a Docker volume in production
+# SQLite database & Persistent Data — mounted as a Docker volume in production
 chf_archive.db
+data/
+invoice/
 
 # Media uploads and hardcoded assets (Moved to Cloudflare R2)
 *.png

@@ -71,16 +71,22 @@ SECRET_KEY = os.environ.get("JWT_SECRET", "DEV_Fallback_Secret_2026_!@#")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 1 Day
 
-DB_PATH = os.environ.get("DB_PATH", "chf_archive.db")
-UPLOAD_DIR = os.environ.get("UPLOAD_DIR", os.path.join("assets", "images"))
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_MB", "80")) * 1024 * 1024
+DATA_DIR = os.environ.get("DATA_DIR", "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
-# Mount core assets, uploads directory, and invoice storage directory
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
-if UPLOAD_DIR != os.path.join("assets", "images"):
-    app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
-INVOICE_DIR = "invoice"
+DEFAULT_DB_PATH = os.path.join(DATA_DIR, "chf_archive.db")
+DB_PATH = os.environ.get("DB_PATH", "chf_archive.db")
+
+# Ensure legacy chf_archive.db is preserved and backed up into DATA_DIR if present
+if os.path.exists("chf_archive.db") and DB_PATH != "chf_archive.db" and not os.path.exists(DEFAULT_DB_PATH):
+    try:
+        import shutil
+        shutil.copy2("chf_archive.db", DEFAULT_DB_PATH)
+        print(f"[DATA INIT] Backed up root chf_archive.db to persistent location: {DEFAULT_DB_PATH}")
+    except Exception as e:
+        print(f"[DATA INIT WARN] Could not copy root db: {e}")
+
+INVOICE_DIR = os.environ.get("INVOICE_DIR", "invoice")
 os.makedirs(INVOICE_DIR, exist_ok=True)
 app.mount("/invoice", StaticFiles(directory=INVOICE_DIR), name="invoice")
 
@@ -2923,7 +2929,7 @@ async def get_payment_status(invoice_id: str):
         "updated_at": row["updated_at"]
     }
 
-# ── Invoice History & Cloudflare R2 Upload Routes ─────────────────────
+# ── Invoice History & Local Disk / R2 Storage Routes ──────────────────
 
 class InvoiceLogR2Request(BaseModel):
     invoice_id: str
@@ -2956,28 +2962,27 @@ def create_r2_boto3_client(account_id: str, access_key: str, secret_key: str):
     )
 
 def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
-    r2_account_id = (os.environ.get('R2_ACCOUNT_ID') or 'ce8688bc6c654bcfb99716f7c9373bcd').strip('"').strip()
-    if not r2_account_id or r2_account_id == 'd098a0896ab8f7dc8603ad3a16f592dfe6':
-        r2_account_id = 'ce8688bc6c654bcfb99716f7c9373bcd'
+    r2_key = f"invoice/{filename}"
 
+    # 1. Primary Permanent Local Storage: Save invoice directly to server disk
+    try:
+        os.makedirs(INVOICE_DIR, exist_ok=True)
+        local_filepath = os.path.join(INVOICE_DIR, filename)
+        with open(local_filepath, "wb") as f:
+            f.write(png_bytes)
+        print(f"[INVOICE STORAGE SUCCESS] Invoice saved permanently to local disk: {local_filepath}")
+    except Exception as e:
+        print(f"[INVOICE STORAGE ERROR] Warning saving local invoice copy: {e}")
+
+    # 2. Local URL for fast, zero-error loading in invoice history and client browsers
+    public_url = f"/invoice/{filename}"
+
+    # 3. Optional Non-Blocking Background Upload to Cloudflare R2 if configured
+    r2_account_id = (os.environ.get('R2_ACCOUNT_ID') or 'ce8688bc6c654bcfb99716f7c9373bcd').strip('"').strip()
     r2_access_key = (os.environ.get('R2_ACCESS_KEY_ID') or '').strip('"').strip()
     r2_secret_key = (os.environ.get('R2_SECRET_ACCESS_KEY') or '').strip('"').strip()
     r2_bucket = (os.environ.get('R2_BUCKET_NAME') or 'chf-media').strip('"').strip()
-    r2_public_url = (os.environ.get('R2_PUBLIC_URL') or 'https://media.chfexperience.com').strip('"').strip().rstrip('/')
 
-    r2_key = f"invoice/{filename}"
-
-    # 1. Always write a local backup copy to invoice/ folder so invoice is always saved & accessible
-    try:
-        os.makedirs("invoice", exist_ok=True)
-        local_filepath = os.path.join("invoice", filename)
-        with open(local_filepath, "wb") as f:
-            f.write(png_bytes)
-    except Exception as e:
-        print(f"[INVOICE LOG] Warning writing local copy: {e}")
-
-    # 2. Attempt uploading to Cloudflare R2 bucket
-    r2_uploaded = False
     if all([r2_account_id, r2_access_key, r2_secret_key]):
         try:
             client = r2_client
@@ -2990,29 +2995,9 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
                 Body=png_bytes,
                 ContentType='image/png'
             )
-            r2_uploaded = True
-            print(f"[INVOICE R2 SUCCESS] Uploaded to Cloudflare R2: {r2_key}")
+            print(f"[INVOICE R2 BACKGROUND SUCCESS] Uploaded copy to Cloudflare R2: {r2_key}")
         except Exception as e:
-            print(f"[INVOICE R2 WARN] Standard put_object failed ({e}), re-trying with fresh R2 client...")
-            try:
-                fresh_client = create_r2_boto3_client(r2_account_id, r2_access_key, r2_secret_key)
-                fresh_client.put_object(
-                    Bucket=r2_bucket,
-                    Key=r2_key,
-                    Body=png_bytes,
-                    ContentType='image/png'
-                )
-                r2_uploaded = True
-                print(f"[INVOICE R2 SUCCESS] Retry upload succeeded: {r2_key}")
-            except Exception as e2:
-                print(f"[INVOICE R2 WARNING] Cloudflare R2 Upload failed: {e2}. Falling back to local storage URL.")
-
-    # Ensure verified Cloudflare R2 public URL format: https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/invoice/<filename>.png
-    verified_r2_account_id = "ce8688bc6c654bcfb99716f7c9373bcd"
-    if not r2_public_url or "pub-" in r2_public_url:
-        r2_public_url = "https://media.chfexperience.com"
-
-    public_url = f"{r2_public_url}/{r2_key}"
+            print(f"[INVOICE R2 BACKGROUND WARN] Background R2 upload skipped: {e}")
 
     return r2_key, public_url
 
