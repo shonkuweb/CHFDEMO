@@ -2968,7 +2968,7 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
 
     if r2_public_url:
         public_url = f"{r2_public_url}/{r2_key}"
-    elif r2_account_id and r2_uploaded:
+    elif r2_account_id and r2_uploaded and os.environ.get('USE_R2_DEV_DOMAIN', '').lower() == 'true':
         public_url = f"https://pub-{r2_account_id}.r2.dev/{r2_key}"
     else:
         public_url = f"/invoice/{filename}"
