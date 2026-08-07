@@ -3266,19 +3266,33 @@
                     const itemsToAdd = Object.values(selectedSkuMap.value).filter(Boolean);
                     if (itemsToAdd.length === 0) return;
 
+                    // Remove empty initial placeholder item row if present
+                    if (invoiceData.value.items.length === 1 && !invoiceData.value.items[0].description && (Number(invoiceData.value.items[0].price) || 0) === 0) {
+                        invoiceData.value.items = [];
+                    }
+
                     itemsToAdd.forEach(item => {
                         const isGst = (item.gst_applicable !== undefined && item.gst_applicable !== null) ? Number(item.gst_applicable) : 1;
-                        const existing = invoiceData.value.items.find(i => 
-                            (i.sku && item.sku && i.sku === item.sku) ||
-                            (i.name && item.name && i.name === item.name)
-                        );
+                        const itemSku = (item.sku || '').trim();
+                        const itemName = (item.name || '').trim();
+                        const itemId = item.id !== undefined && item.id !== null ? String(item.id) : null;
+
+                        // Strictly match existing items by unique ID or unique non-empty SKU
+                        const existing = invoiceData.value.items.find(i => {
+                            if (itemId && i.id !== undefined && i.id !== null && String(i.id) === itemId) return true;
+                            if (itemSku && i.sku && i.sku.trim().toLowerCase() === itemSku.toLowerCase()) return true;
+                            return false;
+                        });
+
                         if (existing) {
                             existing.qty = (Number(existing.qty) || 0) + 1;
                         } else {
+                            const itemDesc = (itemName && itemSku) ? `${itemName} (${itemSku})` : (itemName || itemSku || 'Product');
                             invoiceData.value.items.push({
-                                sku: item.sku || '',
-                                name: item.name || '',
-                                description: `${item.name || 'Product'} (${item.sku || 'N/A'})`,
+                                id: item.id || null,
+                                sku: itemSku,
+                                name: itemName,
+                                description: itemDesc,
                                 qty: 1,
                                 price: Number(item.price) || 0,
                                 gst_applicable: isGst,
