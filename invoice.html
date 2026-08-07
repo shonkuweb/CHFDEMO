@@ -730,32 +730,46 @@
                         </div>
                     </div>
 
-                    <!-- Category Filter Pills & Selection Action Bar -->
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                        <div class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar flex-1">
-                            <button type="button" @click="selectedCategoryFilter = ''"
-                                :class="[selectedCategoryFilter === '' ? 'bg-[#C5A073]/20 border-[#C5A073] text-[#C5A073]' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white', 'px-4 py-1.5 border text-xs font-medium rounded-full transition-all whitespace-nowrap']">
-                                All Categories ({{ skus.length }})
+                    <!-- Category Filter Pills -->
+                    <div class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
+                        <button type="button" @click="selectedCategoryFilter = ''"
+                            :class="[selectedCategoryFilter === '' ? 'bg-[#C5A073]/20 border-[#C5A073] text-[#C5A073]' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white', 'px-4 py-1.5 border text-xs font-medium rounded-full transition-all whitespace-nowrap']">
+                            All Categories ({{ skus.length }})
+                        </button>
+                        <button type="button" v-for="cat in categories" :key="cat" @click="selectedCategoryFilter = cat"
+                            :class="[selectedCategoryFilter === cat ? 'bg-[#C5A073]/20 border-[#C5A073] text-[#C5A073]' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white', 'px-4 py-1.5 border text-xs font-medium rounded-full transition-all whitespace-nowrap']">
+                            {{ cat }} ({{ getCategorySkuCount(cat) }})
+                        </button>
+                    </div>
+
+                    <!-- Prominent Bulk Selection Action Toolbar -->
+                    <div class="bg-gradient-to-r from-[#141414] to-[#1a1a1a] border border-[#C5A073]/30 p-3.5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xl">
+                        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+                            <button type="button" @click="toggleSelectAllFilteredSkus" 
+                                class="px-4 py-2 border border-[#C5A073]/40 bg-[#C5A073]/10 hover:bg-[#C5A073]/20 rounded-xl text-xs text-[#C5A073] font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm">
+                                <span class="material-symbols-outlined text-base">{{ isAllFilteredSelected ? 'check_box' : 'check_box_outline_blank' }}</span>
+                                <span>{{ isAllFilteredSelected ? 'Deselect All Products' : 'Select All Products' }}</span>
                             </button>
-                            <button type="button" v-for="cat in categories" :key="cat" @click="selectedCategoryFilter = cat"
-                                :class="[selectedCategoryFilter === cat ? 'bg-[#C5A073]/20 border-[#C5A073] text-[#C5A073]' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white', 'px-4 py-1.5 border text-xs font-medium rounded-full transition-all whitespace-nowrap']">
-                                {{ cat }} ({{ getCategorySkuCount(cat) }})
-                            </button>
+
+                            <span v-if="selectedSkuCount > 0" class="text-xs text-gray-300 font-medium">
+                                <strong class="text-[#C5A073] font-bold text-sm">{{ selectedSkuCount }}</strong> item{{ selectedSkuCount > 1 ? 's' : '' }} selected
+                            </span>
+                            <span v-else class="text-xs text-gray-500 italic">
+                                Select items below or click "Select All Products"
+                            </span>
                         </div>
 
-                        <!-- Multi-select header controls -->
-                        <div class="flex items-center gap-2 shrink-0">
-                            <button type="button" @click="toggleSelectAllFilteredSkus" 
-                                class="px-3.5 py-1.5 border border-white/10 bg-white/5 hover:bg-white/10 rounded-full text-xs text-white font-medium flex items-center gap-1.5 transition-all cursor-pointer">
-                                <span class="material-symbols-outlined text-sm text-[#C5A073]">{{ isAllFilteredSelected ? 'check_box' : 'check_box_outline_blank' }}</span>
-                                <span>{{ isAllFilteredSelected ? 'Deselect All' : 'Select All' }}</span>
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <button v-if="selectedSkuCount > 0" type="button" @click="clearSelectedSkus"
+                                class="px-3 py-2 text-xs text-gray-400 hover:text-white transition-colors cursor-pointer font-medium">
+                                Clear Selection
                             </button>
 
                             <button type="button" @click="addSelectedSkusToBill" :disabled="selectedSkuCount === 0"
-                                :class="selectedSkuCount > 0 ? 'bg-emerald-500 hover:bg-emerald-400 text-black shadow-lg shadow-emerald-500/20 cursor-pointer' : 'bg-white/5 border border-white/10 text-gray-500 cursor-not-allowed'"
-                                class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5">
-                                <span class="material-symbols-outlined text-sm">receipt_long</span>
-                                <span>Add to Bill ({{ selectedSkuCount }})</span>
+                                :class="selectedSkuCount > 0 ? 'bg-emerald-500 hover:bg-emerald-400 text-black shadow-lg shadow-emerald-500/25 cursor-pointer hover:scale-[1.02]' : 'bg-white/5 border border-white/10 text-gray-500 cursor-not-allowed opacity-40'"
+                                class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-lg">receipt_long</span>
+                                <span>Add Selected Products to Billing ({{ selectedSkuCount }})</span>
                             </button>
                         </div>
                     </div>
@@ -3174,24 +3188,30 @@
                 // Multi-select SKU catalog state
                 const selectedSkuMap = ref({});
 
+                const getSkuItemKey = (item) => {
+                    if (!item) return '';
+                    return item.id !== undefined && item.id !== null ? String(item.id) : (item.sku || item.name || '');
+                };
+
                 const selectedSkuCount = computed(() => {
                     return Object.values(selectedSkuMap.value).filter(Boolean).length;
                 });
 
                 const isAllFilteredSelected = computed(() => {
                     if (!filteredSkus.value || filteredSkus.value.length === 0) return false;
-                    return filteredSkus.value.every(item => !!selectedSkuMap.value[item.id || item.sku]);
+                    return filteredSkus.value.every(item => !!selectedSkuMap.value[getSkuItemKey(item)]);
                 });
 
                 const isSkuSelected = (item) => {
                     if (!item) return false;
-                    const key = item.id || item.sku;
+                    const key = getSkuItemKey(item);
                     return !!selectedSkuMap.value[key];
                 };
 
                 const toggleSkuSelection = (item) => {
                     if (!item) return;
-                    const key = item.id || item.sku;
+                    const key = getSkuItemKey(item);
+                    if (!key) return;
                     if (selectedSkuMap.value[key]) {
                         delete selectedSkuMap.value[key];
                     } else {
@@ -3204,13 +3224,13 @@
                     const allSelected = isAllFilteredSelected.value;
                     if (allSelected) {
                         filteredSkus.value.forEach(item => {
-                            const key = item.id || item.sku;
-                            delete selectedSkuMap.value[key];
+                            const key = getSkuItemKey(item);
+                            if (key) delete selectedSkuMap.value[key];
                         });
                     } else {
                         filteredSkus.value.forEach(item => {
-                            const key = item.id || item.sku;
-                            selectedSkuMap.value[key] = item;
+                            const key = getSkuItemKey(item);
+                            if (key) selectedSkuMap.value[key] = item;
                         });
                     }
                 };
@@ -3225,16 +3245,19 @@
 
                     itemsToAdd.forEach(item => {
                         const isGst = (item.gst_applicable !== undefined && item.gst_applicable !== null) ? Number(item.gst_applicable) : 1;
-                        const existing = invoiceData.value.items.find(i => i.sku && item.sku && i.sku === item.sku);
+                        const existing = invoiceData.value.items.find(i => 
+                            (i.sku && item.sku && i.sku === item.sku) ||
+                            (i.name && item.name && i.name === item.name)
+                        );
                         if (existing) {
                             existing.qty = (Number(existing.qty) || 0) + 1;
                         } else {
                             invoiceData.value.items.push({
                                 sku: item.sku || '',
                                 name: item.name || '',
-                                description: `${item.name} (${item.sku})`,
+                                description: `${item.name || 'Product'} (${item.sku || 'N/A'})`,
                                 qty: 1,
-                                price: item.price || 0,
+                                price: Number(item.price) || 0,
                                 gst_applicable: isGst,
                                 image_url: item.image_url || ''
                             });
