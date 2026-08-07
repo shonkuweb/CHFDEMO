@@ -44,13 +44,16 @@ try:
 
     R2_ENABLED = all([R2_ACCOUNT_ID, R2_ACCESS_KEY, R2_SECRET_KEY])
     if R2_ENABLED:
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         r2_client = boto3.client(
             's3',
             endpoint_url=f'https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com',
             aws_access_key_id=R2_ACCESS_KEY,
             aws_secret_access_key=R2_SECRET_KEY,
-            config=Config(signature_version='s3v4'),
-            region_name='auto'
+            config=Config(signature_version='s3v4', s3={'addressing_style': 'path'}),
+            region_name='auto',
+            verify=False
         )
         print(f'[R2] Connected to bucket: {R2_BUCKET}')
     else:
@@ -2899,6 +2902,21 @@ def get_current_ist_string():
     now_ist = datetime.now(ist_offset)
     return now_ist.strftime("%d %b %Y, %I:%M:%S %p IST")
 
+def create_r2_boto3_client(account_id: str, access_key: str, secret_key: str):
+    import boto3
+    from botocore.config import Config
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    return boto3.client(
+        's3',
+        endpoint_url=f'https://{account_id}.r2.cloudflarestorage.com',
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+        config=Config(signature_version='s3v4', s3={'addressing_style': 'path'}),
+        region_name='auto',
+        verify=False
+    )
+
 def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
     r2_account_id = (os.environ.get('R2_ACCOUNT_ID') or '').strip('"').strip()
     r2_access_key = (os.environ.get('R2_ACCESS_KEY_ID') or '').strip('"').strip()
@@ -2907,26 +2925,6 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
     r2_public_url = (os.environ.get('R2_PUBLIC_URL') or '').strip('"').strip().rstrip('/')
 
     r2_key = f"invoice/{filename}"
-
-    # Use existing global r2_client if available, or create client on the fly
-    client = r2_client
-    if not client and all([r2_account_id, r2_access_key, r2_secret_key]):
-        try:
-            import boto3
-            from botocore.config import Config
-            client = boto3.client(
-                's3',
-                endpoint_url=f'https://{r2_account_id}.r2.cloudflarestorage.com',
-                aws_access_key_id=r2_access_key,
-                aws_secret_access_key=r2_secret_key,
-                config=Config(signature_version='s3v4'),
-                region_name='auto'
-            )
-        except Exception as e:
-            print(f"[INVOICE R2 ERROR] Failed to initialize R2 boto3 client: {e}")
-
-    if not client:
-        raise RuntimeError("Cloudflare R2 is not configured. Please set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY in your environment / .env file.")
 
     # Always write a local backup copy to invoice/ folder
     try:
@@ -2937,6 +2935,17 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
     except Exception as e:
         print(f"[INVOICE LOG] Warning writing local copy: {e}")
 
+    # Use existing global r2_client if available, or create client on the fly
+    client = r2_client
+    if not client and all([r2_account_id, r2_access_key, r2_secret_key]):
+        try:
+            client = create_r2_boto3_client(r2_account_id, r2_access_key, r2_secret_key)
+        except Exception as e:
+            print(f"[INVOICE R2 ERROR] Failed to initialize R2 boto3 client: {e}")
+
+    if not client:
+        raise RuntimeError("Cloudflare R2 is not configured. Please set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY in your environment / .env file.")
+
     # Upload directly and permanently to Cloudflare R2 bucket
     try:
         client.put_object(
@@ -2946,8 +2955,18 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
             ContentType='image/png'
         )
     except Exception as e:
-        print(f"[INVOICE R2 ERROR] PutObject to R2 failed for key '{r2_key}': {e}")
-        raise RuntimeError(f"Cloudflare R2 Upload Failed: {e}")
+        print(f"[INVOICE R2 WARN] Standard put_object failed ({e}), re-trying with fresh R2 client...")
+        try:
+            client = create_r2_boto3_client(r2_account_id, r2_access_key, r2_secret_key)
+            client.put_object(
+                Bucket=r2_bucket,
+                Key=r2_key,
+                Body=png_bytes,
+                ContentType='image/png'
+            )
+        except Exception as e2:
+            print(f"[INVOICE R2 ERROR] PutObject to R2 failed for key '{r2_key}': {e2}")
+            raise RuntimeError(f"Cloudflare R2 Upload Failed: {e2}")
 
     if r2_public_url:
         public_url = f"{r2_public_url}/{r2_key}"
