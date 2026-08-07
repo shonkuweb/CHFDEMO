@@ -1691,7 +1691,7 @@
 
                 // Upgraded Studio options & reactivity
                 const barcodeTab = ref('search'); // 'search' | 'custom' | 'batch'
-                const barcodeColumns = ref(4); // 4, 3, 2
+                const barcodeColumns = ref(1); // Default to 1 per row
                 const barcodeSymbology = ref('CODE128');
                 const showPrice = ref(true);
                 const showName = ref(true);
@@ -1936,16 +1936,17 @@
                     
                     const pdfWidth = 210;
                     const pdfHeight = 297;
-                    const cols = Number(barcodeColumns.value) || 4;
-                    const colWidth = cols === 4 ? 48 : (cols === 3 ? 64 : 96);
-                    const rowHeight = cols === 4 ? 38 : (cols === 3 ? 44 : 52);
+                    const cols = Number(barcodeColumns.value) || 1; // Default 1 per row
                     
-                    const marginX = (pdfWidth - (cols * colWidth)) / 2;
-                    const marginY = 12;
-                    const maxRows = Math.floor((pdfHeight - 2 * marginY) / rowHeight);
-                    const pageCapacity = cols * maxRows;
+                    // Column & card dimensions
+                    const colWidth = cols === 1 ? 150 : (cols === 2 ? 92 : (cols === 3 ? 60 : 45));
+                    const cardHeight = cols === 1 ? 56 : (cols === 2 ? 48 : (cols === 3 ? 42 : 36));
+                    const rowGap = cols === 1 ? 7 : 4;
+                    const colGap = cols === 1 ? 0 : 4;
                     
-                    const canvas = document.createElement('canvas');
+                    const marginX = (pdfWidth - (cols * colWidth + (cols - 1) * colGap)) / 2;
+                    const marginY = 14;
+                    const bottomMargin = 14;
                     
                     const flattened = [];
                     barcodeQueue.value.forEach(item => {
@@ -1962,58 +1963,62 @@
 
                     isPrinting.value = true;
                     try {
+                        let currentCol = 0;
+                        let currentY = marginY;
+
                         for (let index = 0; index < flattened.length; index++) {
                             const item = flattened[index];
-                            if (index > 0 && index % pageCapacity === 0) {
-                                doc.addPage();
-                            }
-                            
-                            const pageIndex = index % pageCapacity;
-                            const col = pageIndex % cols;
-                            const row = Math.floor(pageIndex / cols);
-                            
-                            const x = marginX + col * colWidth;
-                            const y = marginY + row * rowHeight;
-                            
-                            // Label boundary box
-                            doc.setDrawColor(210, 210, 210);
-                            doc.setLineWidth(0.2);
-                            doc.roundedRect(x + 1, y + 1, colWidth - 2, rowHeight - 2, 1.5, 1.5, 'S');
 
-                            // 1. Top Brand Header
-                            let topOffset = 1;
+                            // Strict page boundary check: add new page before drawing if card exceeds bottom margin
+                            if (currentCol === 0 && (currentY + cardHeight > pdfHeight - bottomMargin)) {
+                                doc.addPage();
+                                currentY = marginY;
+                            }
+
+                            const x = marginX + currentCol * (colWidth + colGap);
+                            const y = currentY;
+
+                            // 1. Label Outer Border (Card Container)
+                            doc.setDrawColor(200, 200, 200);
+                            doc.setLineWidth(0.3);
+                            doc.setFillColor(255, 255, 255);
+                            doc.roundedRect(x, y, colWidth, cardHeight, 2, 2, 'FD');
+
+                            // 2. Header Banner
+                            let topOffset = 0;
                             if (showHeader.value) {
                                 doc.setFillColor(20, 20, 20);
-                                doc.rect(x + 1, y + 1, colWidth - 2, 4.5, 'F');
-                                doc.setFontSize(cols === 2 ? 7 : 5.5);
+                                doc.roundedRect(x, y, colWidth, 6, 2, 2, 'F');
+                                doc.rect(x, y + 4, colWidth, 2, 'F'); // flatten bottom corners
+                                doc.setFontSize(cols === 1 ? 8 : (cols === 2 ? 7 : 5.5));
                                 doc.setFont('helvetica', 'bold');
                                 doc.setTextColor(197, 160, 115);
                                 doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4.2, { align: 'center' });
-                                topOffset = 5.5;
+                                topOffset = 6;
                             }
 
-                            // 2. Product Name & Price Row
+                            // 3. Product Name & Price Header
                             if (showName.value || showPrice.value) {
-                                doc.setFontSize(cols === 2 ? 9 : 7.5);
+                                doc.setFontSize(cols === 1 ? 11 : (cols === 2 ? 9.5 : 7.5));
                                 doc.setFont('helvetica', 'bold');
                                 doc.setTextColor(20, 20, 20);
 
                                 if (showName.value) {
-                                    const maxChar = cols === 4 ? 18 : (cols === 3 ? 24 : 36);
+                                    const maxChar = cols === 1 ? 40 : (cols === 2 ? 26 : 18);
                                     const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '...' : item.name;
-                                    doc.text(truncatedName, x + 3, y + topOffset + 4.5);
+                                    doc.text(truncatedName, x + 4, y + topOffset + 5.5);
                                 }
 
                                 if (showPrice.value && item.price > 0) {
-                                    doc.setFontSize(cols === 2 ? 9 : 7.5);
+                                    doc.setFontSize(cols === 1 ? 11 : (cols === 2 ? 9.5 : 7.5));
                                     doc.setFont('helvetica', 'bold');
                                     doc.setTextColor(180, 120, 30);
                                     const priceText = `INR ${item.price.toLocaleString('en-IN')}`;
-                                    doc.text(priceText, x + colWidth - 3, y + topOffset + 4.5, { align: 'right' });
+                                    doc.text(priceText, x + colWidth - 4, y + topOffset + 5.5, { align: 'right' });
                                 }
                             }
 
-                            // 3. Generate high-res 2D QR Code graphic carrying Name, Price, and SKU payload
+                            // 4. High-Resolution QR Code Graphic
                             const qrPayload = JSON.stringify({
                                 sku: item.sku,
                                 name: item.name || item.sku,
@@ -2021,20 +2026,27 @@
                             });
                             const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
                             if (qrDataUrl) {
-                                const qrSize = cols === 2 ? 24 : (cols === 3 ? 20 : 16);
+                                const qrSize = cols === 1 ? 30 : (cols === 2 ? 24 : (cols === 3 ? 20 : 16));
                                 const qrX = x + (colWidth - qrSize) / 2;
-                                const qrY = y + topOffset + 5.5;
+                                const qrY = y + topOffset + (cols === 1 ? 7 : 6);
                                 doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
                             }
 
-                            // 4. SKU Code Footer
-                            doc.setFontSize(cols === 2 ? 8 : 7);
+                            // 5. Monospace SKU Code Footer
+                            doc.setFontSize(cols === 1 ? 10 : (cols === 2 ? 8.5 : 7));
                             doc.setFont('courier', 'bold');
                             doc.setTextColor(30, 30, 30);
-                            doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + rowHeight - 2.5, { align: 'center' });
+                            doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + cardHeight - 3.5, { align: 'center' });
+
+                            // Advance position
+                            currentCol++;
+                            if (currentCol >= cols) {
+                                currentCol = 0;
+                                currentY += cardHeight + rowGap;
+                            }
                         }
                         
-                        doc.save(`chf_inventory_qrcodes_${cols}col.pdf`);
+                        doc.save(`chf_sku_qrcodes_1per_row.pdf`);
                     } catch (e) {
                         console.error("Error generating PDF:", e);
                     } finally {
