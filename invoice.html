@@ -3065,12 +3065,15 @@
                         
                         const activeSessionId = data.session_id;
 
+                        let inFlightSetupPoll = false;
                         setupPollInterval = setInterval(async () => {
                             if (setupSessionId.value !== activeSessionId) {
                                 clearInterval(setupPollInterval);
                                 setupPollInterval = null;
                                 return;
                             }
+                            if (inFlightSetupPoll) return;
+                            inFlightSetupPoll = true;
                             try {
                                 const pollRes = await fetch(`/api/scan/auth/poll?session_id=${activeSessionId}`);
                                 const pollData = await pollRes.json();
@@ -3132,14 +3135,17 @@
                                         };
                                     } catch(e) {}
 
-                                    // 2. High-frequency 100ms fallback polling
+                                    // 2. Safe 2-second fallback polling with in-flight lock
                                     if (scanPollInterval) clearInterval(scanPollInterval);
+                                    let inFlightScanPoll = false;
                                     scanPollInterval = setInterval(async () => {
                                         if (setupSessionId.value !== activeSessionId) {
                                             clearInterval(scanPollInterval);
                                             scanPollInterval = null;
                                             return;
                                         }
+                                        if (inFlightScanPoll) return;
+                                        inFlightScanPoll = true;
                                         try {
                                             const scanRes = await fetch(`/api/scan/poll?session_id=${activeSessionId}`);
                                             const scanData = await scanRes.json();
@@ -3157,11 +3163,17 @@
                                             if (scanData.scan) {
                                                 processIncomingScan(scanData.scan);
                                             }
-                                        } catch(e) {}
-                                    }, 100);
+                                        } catch(e) {
+                                        } finally {
+                                            inFlightScanPoll = false;
+                                        }
+                                    }, 2000);
                                 }
-                            } catch (e) { }
-                        }, 1000);
+                            } catch (e) {
+                            } finally {
+                                inFlightSetupPoll = false;
+                            }
+                        }, 1500);
                         
                     } catch (e) {
                         console.error('Failed to init device auth', e);
