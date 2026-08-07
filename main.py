@@ -40,7 +40,7 @@ try:
     R2_ACCESS_KEY   = os.environ.get('R2_ACCESS_KEY_ID')
     R2_SECRET_KEY   = os.environ.get('R2_SECRET_ACCESS_KEY')
     R2_BUCKET       = os.environ.get('R2_BUCKET_NAME', 'chf-media')
-    R2_PUBLIC_URL   = os.environ.get('R2_PUBLIC_URL', '').rstrip('/')
+    R2_PUBLIC_URL   = os.environ.get('R2_PUBLIC_URL', 'https://media.chfexperience.com').rstrip('/')
 
     R2_ENABLED = all([R2_ACCOUNT_ID, R2_ACCESS_KEY, R2_SECRET_KEY])
     if R2_ENABLED:
@@ -2968,8 +2968,8 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
 
     # Ensure verified Cloudflare R2 public URL format: https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/invoice/<filename>.png
     verified_r2_account_id = "ce8688bc6c654bcfb99716f7c9373bcd"
-    if not r2_public_url or "pub-" not in r2_public_url:
-        r2_public_url = f"https://pub-{verified_r2_account_id}.r2.dev"
+    if not r2_public_url or "pub-" in r2_public_url:
+        r2_public_url = "https://media.chfexperience.com"
 
     public_url = f"{r2_public_url}/{r2_key}"
 
