@@ -1817,11 +1817,7 @@
                 const setQrCanvasRef = async (canvasEl, itemData) => {
                     if (!canvasEl || !itemData || !itemData.sku) return;
                     try {
-                        const payload = JSON.stringify({
-                            sku: String(itemData.sku).trim(),
-                            name: String(itemData.name || itemData.sku).trim(),
-                            price: Number(itemData.price) || 0
-                        });
+                        const payload = String(itemData.sku).trim();
                         const dataUrl = await generateQRCodeDataUrl(payload);
                         if (!dataUrl || !canvasEl) return;
                         const img = new Image();
@@ -1902,12 +1898,12 @@
                             document.body.appendChild(container);
                             
                             new QRCode(container, {
-                                text: text,
-                                width: 180,
-                                height: 180,
+                                text: String(text || '').trim(),
+                                width: 250,
+                                height: 250,
                                 colorDark: "#000000",
                                 colorLight: "#ffffff",
-                                correctLevel: QRCode.CorrectLevel.M
+                                correctLevel: QRCode.CorrectLevel.L
                             });
 
                             setTimeout(() => {
@@ -2019,11 +2015,7 @@
                             }
 
                             // 4. High-Resolution QR Code Graphic
-                            const qrPayload = JSON.stringify({
-                                sku: item.sku,
-                                name: item.name || item.sku,
-                                price: Number(item.price) || 0
-                            });
+                            const qrPayload = String(item.sku || '').trim();
                             const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
                             if (qrDataUrl) {
                                 const qrSize = cols === 1 ? 30 : (cols === 2 ? 24 : (cols === 3 ? 20 : 16));
