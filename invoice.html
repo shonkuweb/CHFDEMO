@@ -751,16 +751,21 @@
                         <div class="flex items-center gap-3 w-full sm:w-auto shrink-0 flex-wrap">
                             <!-- Select All Button -->
                             <button type="button" @click="toggleSelectAllFilteredSkus" 
-                                :class="[isAllFilteredSelected ? 'bg-[#C5A073]/25 border-[#C5A073] text-[#C5A073] shadow-md shadow-[#C5A073]/20' : 'bg-white/[0.04] hover:bg-[#C5A073]/15 border-white/20 hover:border-[#C5A073]/50 text-gray-200 hover:text-white', 'px-4 py-2 rounded-xl border text-xs font-semibold flex items-center gap-2.5 transition-all cursor-pointer select-none shrink-0']">
-                                <span class="material-symbols-outlined text-lg" :class="isAllFilteredSelected ? 'text-[#C5A073]' : 'text-gray-400'">
+                                :style="isAllFilteredSelected 
+                                    ? 'background-color: rgba(197, 160, 115, 0.25); border: 1px solid #C5A073; color: #C5A073;' 
+                                    : 'background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); color: #f3f4f6;'"
+                                class="px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all cursor-pointer select-none shrink-0">
+                                <span class="material-symbols-outlined text-lg" :style="{ color: isAllFilteredSelected ? '#C5A073' : '#9ca3af' }">
                                     {{ isAllFilteredSelected ? 'check_box' : 'check_box_outline_blank' }}
                                 </span>
                                 <span>{{ isAllFilteredSelected ? 'Deselect All Products' : 'Select All Products' }}</span>
                             </button>
 
                             <!-- Selection Counter Pill / Prompt -->
-                            <div v-if="selectedSkuCount > 0" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#C5A073]/20 border border-[#C5A073]/50 text-xs text-white font-bold shrink-0 animate-in fade-in duration-200">
-                                <span class="w-5 h-5 rounded-full bg-[#C5A073] text-black font-black text-[11px] flex items-center justify-center shadow-sm">
+                            <div v-if="selectedSkuCount > 0" 
+                                style="background-color: rgba(197, 160, 115, 0.2); border: 1px solid rgba(197, 160, 115, 0.6); color: #ffffff;"
+                                class="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 animate-in fade-in duration-200">
+                                <span class="w-5 h-5 rounded-full font-black text-[11px] flex items-center justify-center shadow-sm" style="background-color: #C5A073; color: #000000;">
                                     {{ selectedSkuCount }}
                                 </span>
                                 <span>Product{{ selectedSkuCount > 1 ? 's' : '' }} Selected</span>
@@ -780,12 +785,14 @@
 
                             <!-- Primary Add to Billing Button -->
                             <button type="button" @click="addSelectedSkusToBill" :disabled="selectedSkuCount === 0"
-                                :class="selectedSkuCount > 0 
-                                    ? 'bg-emerald-500 hover:bg-emerald-400 text-black border-2 border-emerald-300 shadow-[0_0_25px_rgba(16,185,129,0.6)] cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0' 
-                                    : 'bg-[#C5A073]/20 border border-[#C5A073]/50 text-[#C5A073] cursor-not-allowed opacity-80 select-none'"
+                                :style="selectedSkuCount > 0 
+                                    ? 'background-color: #10b981; color: #000000; border: 2px solid #34d399; box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); cursor: pointer;' 
+                                    : 'background-color: rgba(197, 160, 115, 0.15); color: #C5A073; border: 1px solid rgba(197, 160, 115, 0.5); cursor: not-allowed; opacity: 0.8;'"
                                 class="w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 shrink-0">
-                                <span class="material-symbols-outlined text-lg font-black" :class="selectedSkuCount > 0 ? 'text-black' : 'text-[#C5A073]'">receipt_long</span>
-                                <span class="font-extrabold">{{ selectedSkuCount > 0 ? `Add Selected to Billing (${selectedSkuCount})` : 'Add Selected to Billing (0)' }}</span>
+                                <span class="material-symbols-outlined text-lg font-black" :style="{ color: selectedSkuCount > 0 ? '#000000' : '#C5A073' }">receipt_long</span>
+                                <span class="font-extrabold" :style="{ color: selectedSkuCount > 0 ? '#000000' : '#C5A073' }">
+                                    {{ selectedSkuCount > 0 ? `Add Selected to Billing (${selectedSkuCount})` : 'Add Selected to Billing (0)' }}
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -903,9 +910,10 @@
                         </div>
                         <div class="h-4 w-px bg-white/20"></div>
                         <button type="button" @click="addSelectedSkusToBill" 
-                            class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] cursor-pointer transform hover:-translate-y-0.5">
-                            <span class="material-symbols-outlined text-lg">receipt_long</span>
-                            <span>Add to Billing ({{ selectedSkuCount }})</span>
+                            style="background-color: #10b981; color: #000000; border: 2px solid #34d399; box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); cursor: pointer;"
+                            class="flex items-center gap-2 px-5 py-2.5 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all">
+                            <span class="material-symbols-outlined text-lg font-black text-black">receipt_long</span>
+                            <span class="font-extrabold text-black">Add to Billing ({{ selectedSkuCount }})</span>
                         </button>
                         <button type="button" @click="clearSelectedSkus" 
                             class="text-xs text-gray-400 hover:text-white underline px-1 transition-colors cursor-pointer font-medium">
