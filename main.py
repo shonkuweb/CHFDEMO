@@ -2966,12 +2966,12 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
             except Exception as e2:
                 print(f"[INVOICE R2 WARNING] Cloudflare R2 Upload failed: {e2}. Falling back to local storage URL.")
 
-    if r2_public_url:
-        public_url = f"{r2_public_url}/{r2_key}"
-    elif r2_account_id and r2_uploaded and os.environ.get('USE_R2_DEV_DOMAIN', '').lower() == 'true':
-        public_url = f"https://pub-{r2_account_id}.r2.dev/{r2_key}"
-    else:
-        public_url = f"/invoice/{filename}"
+    # Ensure verified Cloudflare R2 public URL format: https://pub-ce8688bc6c654bcfb99716f7c9373bcd.r2.dev/invoice/<filename>.png
+    verified_r2_account_id = "ce8688bc6c654bcfb99716f7c9373bcd"
+    if not r2_public_url or "pub-" not in r2_public_url:
+        r2_public_url = f"https://pub-{verified_r2_account_id}.r2.dev"
+
+    public_url = f"{r2_public_url}/{r2_key}"
 
     return r2_key, public_url
 
