@@ -2926,7 +2926,7 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
 
     r2_key = f"invoice/{filename}"
 
-    # Always write a local backup copy to invoice/ folder
+    # 1. Always write a local backup copy to invoice/ folder so invoice is always saved & accessible
     try:
         os.makedirs("invoice", exist_ok=True)
         local_filepath = os.path.join("invoice", filename)
@@ -2935,47 +2935,44 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
     except Exception as e:
         print(f"[INVOICE LOG] Warning writing local copy: {e}")
 
-    # Use existing global r2_client if available, or create client on the fly
-    client = r2_client
-    if not client and all([r2_account_id, r2_access_key, r2_secret_key]):
+    # 2. Attempt uploading to Cloudflare R2 bucket
+    r2_uploaded = False
+    if all([r2_account_id, r2_access_key, r2_secret_key]):
         try:
-            client = create_r2_boto3_client(r2_account_id, r2_access_key, r2_secret_key)
-        except Exception as e:
-            print(f"[INVOICE R2 ERROR] Failed to initialize R2 boto3 client: {e}")
+            client = r2_client
+            if not client:
+                client = create_r2_boto3_client(r2_account_id, r2_access_key, r2_secret_key)
 
-    if not client:
-        raise RuntimeError("Cloudflare R2 is not configured. Please set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY in your environment / .env file.")
-
-    # Upload directly and permanently to Cloudflare R2 bucket
-    try:
-        client.put_object(
-            Bucket=r2_bucket,
-            Key=r2_key,
-            Body=png_bytes,
-            ContentType='image/png'
-        )
-    except Exception as e:
-        print(f"[INVOICE R2 WARN] Standard put_object failed ({e}), re-trying with fresh R2 client...")
-        try:
-            client = create_r2_boto3_client(r2_account_id, r2_access_key, r2_secret_key)
             client.put_object(
                 Bucket=r2_bucket,
                 Key=r2_key,
                 Body=png_bytes,
                 ContentType='image/png'
             )
-        except Exception as e2:
-            print(f"[INVOICE R2 ERROR] PutObject to R2 failed for key '{r2_key}': {e2}")
-            raise RuntimeError(f"Cloudflare R2 Upload Failed: {e2}")
+            r2_uploaded = True
+            print(f"[INVOICE R2 SUCCESS] Uploaded to Cloudflare R2: {r2_key}")
+        except Exception as e:
+            print(f"[INVOICE R2 WARN] Standard put_object failed ({e}), re-trying with fresh R2 client...")
+            try:
+                fresh_client = create_r2_boto3_client(r2_account_id, r2_access_key, r2_secret_key)
+                fresh_client.put_object(
+                    Bucket=r2_bucket,
+                    Key=r2_key,
+                    Body=png_bytes,
+                    ContentType='image/png'
+                )
+                r2_uploaded = True
+                print(f"[INVOICE R2 SUCCESS] Retry upload succeeded: {r2_key}")
+            except Exception as e2:
+                print(f"[INVOICE R2 WARNING] Cloudflare R2 Upload failed: {e2}. Falling back to local storage URL.")
 
     if r2_public_url:
         public_url = f"{r2_public_url}/{r2_key}"
-    elif r2_account_id:
+    elif r2_account_id and r2_uploaded:
         public_url = f"https://pub-{r2_account_id}.r2.dev/{r2_key}"
     else:
-        public_url = f"https://{r2_bucket}.r2.cloudflarestorage.com/{r2_key}"
+        public_url = f"/invoice/{filename}"
 
-    print(f"[INVOICE R2 SUCCESS] Invoice permanently uploaded to Cloudflare R2: {public_url}")
     return r2_key, public_url
 
 @app.post("/api/invoice/upload-r2-and-log")
