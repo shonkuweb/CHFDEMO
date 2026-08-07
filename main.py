@@ -1754,6 +1754,39 @@ def ensure_invoice_history_table():
     conn.commit()
     conn.close()
 
+def sync_local_invoices_to_r2():
+    try:
+        r2_acc = (os.environ.get('R2_ACCOUNT_ID') or 'ce8688bc6c654bcfb99716f7c9373bcd').strip('"').strip()
+        r2_key_id = (os.environ.get('R2_ACCESS_KEY_ID') or '').strip('"').strip()
+        r2_secret = (os.environ.get('R2_SECRET_ACCESS_KEY') or '').strip('"').strip()
+        r2_bkt = (os.environ.get('R2_BUCKET_NAME') or 'chf-media').strip('"').strip()
+
+        client = r2_client
+        if not client and all([r2_acc, r2_key_id, r2_secret]):
+            client = create_r2_boto3_client(r2_acc, r2_key_id, r2_secret)
+
+        if not client or not os.path.exists("invoice"):
+            return
+
+        for fname in os.listdir("invoice"):
+            if fname.endswith(".png"):
+                fpath = os.path.join("invoice", fname)
+                r2_k = f"invoice/{fname}"
+                try:
+                    with open(fpath, "rb") as f:
+                        data = f.read()
+                    client.put_object(
+                        Bucket=r2_bkt,
+                        Key=r2_k,
+                        Body=data,
+                        ContentType='image/png'
+                    )
+                    print(f"[R2 SYNC] Auto-synced invoice to R2: {r2_k}")
+                except Exception as e:
+                    pass
+    except Exception as e:
+        print(f"[R2 SYNC ERROR] {e}")
+
 @app.on_event("startup")
 def startup_init_sync_state():
     migrate_legacy_site_content_keys()
@@ -1768,6 +1801,11 @@ def startup_init_sync_state():
     refresh_sku_cache()
     migrate_remove_comma_before_and()
     purge_deploy_asset_cache()
+    try:
+        import threading
+        threading.Thread(target=sync_local_invoices_to_r2, daemon=True).start()
+    except Exception as e:
+        pass
 
 # ── Endpoints ───────────────────────────────
 
@@ -2918,11 +2956,14 @@ def create_r2_boto3_client(account_id: str, access_key: str, secret_key: str):
     )
 
 def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
-    r2_account_id = (os.environ.get('R2_ACCOUNT_ID') or '').strip('"').strip()
+    r2_account_id = (os.environ.get('R2_ACCOUNT_ID') or 'ce8688bc6c654bcfb99716f7c9373bcd').strip('"').strip()
+    if not r2_account_id or r2_account_id == 'd098a0896ab8f7dc8603ad3a16f592dfe6':
+        r2_account_id = 'ce8688bc6c654bcfb99716f7c9373bcd'
+
     r2_access_key = (os.environ.get('R2_ACCESS_KEY_ID') or '').strip('"').strip()
     r2_secret_key = (os.environ.get('R2_SECRET_ACCESS_KEY') or '').strip('"').strip()
     r2_bucket = (os.environ.get('R2_BUCKET_NAME') or 'chf-media').strip('"').strip()
-    r2_public_url = (os.environ.get('R2_PUBLIC_URL') or '').strip('"').strip().rstrip('/')
+    r2_public_url = (os.environ.get('R2_PUBLIC_URL') or 'https://media.chfexperience.com').strip('"').strip().rstrip('/')
 
     r2_key = f"invoice/{filename}"
 
