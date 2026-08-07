@@ -2900,29 +2900,21 @@ def get_current_ist_string():
     return now_ist.strftime("%d %b %Y, %I:%M:%S %p IST")
 
 def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
-    r2_account_id = os.environ.get('R2_ACCOUNT_ID', '').strip('"')
-    r2_access_key = os.environ.get('R2_ACCESS_KEY_ID', '').strip('"')
-    r2_secret_key = os.environ.get('R2_SECRET_ACCESS_KEY', '').strip('"')
-    r2_bucket = os.environ.get('R2_BUCKET_NAME', 'chf-media').strip('"')
-    r2_public_url = os.environ.get('R2_PUBLIC_URL', '').strip('"').rstrip('/')
+    r2_account_id = (os.environ.get('R2_ACCOUNT_ID') or '').strip('"').strip()
+    r2_access_key = (os.environ.get('R2_ACCESS_KEY_ID') or '').strip('"').strip()
+    r2_secret_key = (os.environ.get('R2_SECRET_ACCESS_KEY') or '').strip('"').strip()
+    r2_bucket = (os.environ.get('R2_BUCKET_NAME') or 'chf-media').strip('"').strip()
+    r2_public_url = (os.environ.get('R2_PUBLIC_URL') or '').strip('"').strip().rstrip('/')
 
     r2_key = f"invoice/{filename}"
 
-    # Always write copy to local invoice/ folder
-    os.makedirs("invoice", exist_ok=True)
-    local_filepath = os.path.join("invoice", filename)
-    try:
-        with open(local_filepath, "wb") as f:
-            f.write(png_bytes)
-    except Exception as e:
-        print(f"[INVOICE LOG] Warning writing local copy: {e}")
-
-    if r2_account_id and r2_access_key and r2_secret_key and r2_public_url:
+    # Use existing global r2_client if available, or create client on the fly
+    client = r2_client
+    if not client and all([r2_account_id, r2_access_key, r2_secret_key]):
         try:
             import boto3
             from botocore.config import Config
-
-            r2 = boto3.client(
+            client = boto3.client(
                 's3',
                 endpoint_url=f'https://{r2_account_id}.r2.cloudflarestorage.com',
                 aws_access_key_id=r2_access_key,
@@ -2930,20 +2922,42 @@ def upload_png_bytes_to_r2(png_bytes: bytes, filename: str) -> tuple:
                 config=Config(signature_version='s3v4'),
                 region_name='auto'
             )
-            r2.put_object(
-                Bucket=r2_bucket,
-                Key=r2_key,
-                Body=png_bytes,
-                ContentType='image/png'
-            )
-            public_url = f"{r2_public_url}/{r2_key}"
-            return r2_key, public_url
         except Exception as e:
-            print(f"[INVOICE R2] R2 Upload failed ({e}), using local URL fallback.")
+            print(f"[INVOICE R2 ERROR] Failed to initialize R2 boto3 client: {e}")
 
-    # Local fallback URL
-    local_url = f"/invoice/{filename}"
-    return r2_key, local_url
+    if not client:
+        raise RuntimeError("Cloudflare R2 is not configured. Please set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY in your environment / .env file.")
+
+    # Always write a local backup copy to invoice/ folder
+    try:
+        os.makedirs("invoice", exist_ok=True)
+        local_filepath = os.path.join("invoice", filename)
+        with open(local_filepath, "wb") as f:
+            f.write(png_bytes)
+    except Exception as e:
+        print(f"[INVOICE LOG] Warning writing local copy: {e}")
+
+    # Upload directly and permanently to Cloudflare R2 bucket
+    try:
+        client.put_object(
+            Bucket=r2_bucket,
+            Key=r2_key,
+            Body=png_bytes,
+            ContentType='image/png'
+        )
+    except Exception as e:
+        print(f"[INVOICE R2 ERROR] PutObject to R2 failed for key '{r2_key}': {e}")
+        raise RuntimeError(f"Cloudflare R2 Upload Failed: {e}")
+
+    if r2_public_url:
+        public_url = f"{r2_public_url}/{r2_key}"
+    elif r2_account_id:
+        public_url = f"https://pub-{r2_account_id}.r2.dev/{r2_key}"
+    else:
+        public_url = f"https://{r2_bucket}.r2.cloudflarestorage.com/{r2_key}"
+
+    print(f"[INVOICE R2 SUCCESS] Invoice permanently uploaded to Cloudflare R2: {public_url}")
+    return r2_key, public_url
 
 @app.post("/api/invoice/upload-r2-and-log")
 async def upload_invoice_r2_and_log(payload: InvoiceLogR2Request):
@@ -2962,7 +2976,12 @@ async def upload_invoice_r2_and_log(payload: InvoiceLogR2Request):
         raise HTTPException(status_code=400, detail=f"Invalid base64 PNG data: {e}")
 
     filename = f"{invoice_id}.png"
-    r2_key, r2_url = upload_png_bytes_to_r2(png_bytes, filename)
+    try:
+        r2_key, r2_url = upload_png_bytes_to_r2(png_bytes, filename)
+    except Exception as e:
+        print(f"[INVOICE R2 ERROR] Failed to upload invoice to R2: {e}")
+        raise HTTPException(status_code=500, detail=f"R2 Permanent Storage Error: {str(e)}")
+
     ist_timestamp = get_current_ist_string()
     items_str = json.dumps(payload.items or [])
 
