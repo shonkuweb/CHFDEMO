@@ -157,16 +157,39 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(198, 168, 124, 0.6); }
 
         @media print {
-            body { background: white !important; color: black !important; }
-            aside, header:not(.print-header), nav, .no-print, button, input { display: none !important; }
-            #app { display: block !important; padding: 0 !important; }
-            .print-sheet-area {
-                display: grid !important;
-                grid-template-columns: repeat(4, 1fr) !important;
-                gap: 8px !important;
-                width: 100% !important;
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+            html, body {
                 background: white !important;
                 color: black !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            aside, header, nav, button, input, .no-print,
+            .fixed, .ambient-blur, .sidebar-backdrop {
+                display: none !important;
+            }
+            #app {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                background: white !important;
+            }
+            .printable-sheet-container {
+                max-height: none !important;
+                overflow: visible !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
         }
     </style>
@@ -1164,7 +1187,7 @@
                                 </div>
 
                                 <!-- A4 Printable Paper Canvas Wrapper -->
-                                <div class="bg-white rounded-2xl p-5 md:p-6 text-black border border-gray-300 shadow-[0_20px_50px_rgba(0,0,0,0.9)] max-h-[520px] overflow-y-auto custom-scrollbar relative">
+                                <div class="printable-sheet-container bg-white rounded-2xl p-5 md:p-6 text-black border border-gray-300 shadow-[0_20px_50px_rgba(0,0,0,0.9)] max-h-[520px] overflow-y-auto custom-scrollbar relative">
                                     <!-- Decorative A4 Sheet Header Banner -->
                                     <div class="flex justify-between items-center border-b border-dashed border-gray-300 pb-2 mb-4 text-[9px] font-mono text-gray-400 uppercase tracking-wider select-none">
                                         <span>CHF INVENTORY STICKER SHEET — A4 STANDARD ({{ barcodeColumns }} COLUMNS)</span>
@@ -1213,12 +1236,17 @@
                             </div>
                         </div>
 
-                        <!-- Action Toolbar (Print Sheet) -->
-                        <div class="pt-4 border-t border-white/10 flex justify-center">
-                            <button type="button" @click="printBarcodes" :disabled="barcodeQueue.length === 0"
-                                class="w-full max-w-md bg-gradient-to-r from-[#C5A073] via-[#e5c598] to-[#C5A073] text-black hover:brightness-110 py-4 px-8 rounded-2xl text-xs uppercase tracking-widest font-extrabold transition-all shadow-xl shadow-[#C5A073]/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-98">
+                        <!-- Action Toolbar (Print Sheet & Download PDF) -->
+                        <div class="pt-4 border-t border-white/10 flex flex-wrap items-center justify-center gap-3">
+                            <button type="button" @click="printBarcodes" :disabled="barcodeQueue.length === 0 || isPrinting"
+                                class="flex-1 max-w-xs bg-gradient-to-r from-[#C5A073] via-[#e5c598] to-[#C5A073] text-black hover:brightness-110 py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest font-extrabold transition-all shadow-xl shadow-[#C5A073]/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-98">
                                 <span class="material-symbols-outlined text-lg">print</span>
-                                <span>Print Sheet</span>
+                                <span>{{ isPrinting ? 'Preparing Print...' : 'Print Sheet' }}</span>
+                            </button>
+                            <button type="button" @click="downloadPDF" :disabled="barcodeQueue.length === 0 || isPrinting"
+                                class="flex-1 max-w-xs bg-white/10 text-white border border-white/20 hover:bg-white/20 py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest font-extrabold transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 active:scale-98">
+                                <span class="material-symbols-outlined text-lg">download</span>
+                                <span>Download PDF</span>
                             </button>
                         </div>
                     </div>
@@ -1918,10 +1946,6 @@
                     barcodeQueue.value.splice(index, 1);
                 };
 
-                const printBarcodes = () => {
-                    window.print();
-                };
-                
                 const generateQRCodeDataUrl = (text) => {
                     return new Promise((resolve) => {
                         try {
@@ -1957,17 +1981,16 @@
                     });
                 };
 
-                const downloadPDF = async () => {
-                    if (barcodeQueue.value.length === 0) return;
+                const generateStickerSheetPDF = async () => {
+                    if (barcodeQueue.value.length === 0) return null;
                     
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('p', 'mm', 'a4');
                     
                     const pdfWidth = 210;
                     const pdfHeight = 297;
-                    const cols = Number(barcodeColumns.value) || 1; // Default 1 per row
+                    const cols = Number(barcodeColumns.value) || 1;
                     
-                    // Column & card dimensions
                     const colWidth = cols === 1 ? 150 : (cols === 2 ? 92 : (cols === 3 ? 60 : 45));
                     const cardHeight = cols === 1 ? 56 : (cols === 2 ? 48 : (cols === 3 ? 42 : 36));
                     const rowGap = cols === 1 ? 7 : 4;
@@ -1990,91 +2013,143 @@
                         }
                     });
 
-                    isPrinting.value = true;
-                    try {
-                        let currentCol = 0;
-                        let currentY = marginY;
+                    let currentCol = 0;
+                    let currentY = marginY;
 
-                        for (let index = 0; index < flattened.length; index++) {
-                            const item = flattened[index];
+                    for (let index = 0; index < flattened.length; index++) {
+                        const item = flattened[index];
 
-                            // Strict page boundary check: add new page before drawing if card exceeds bottom margin
-                            if (currentCol === 0 && (currentY + cardHeight > pdfHeight - bottomMargin)) {
-                                doc.addPage();
-                                currentY = marginY;
+                        if (currentCol === 0 && (currentY + cardHeight > pdfHeight - bottomMargin)) {
+                            doc.addPage();
+                            currentY = marginY;
+                        }
+
+                        const x = marginX + currentCol * (colWidth + colGap);
+                        const y = currentY;
+
+                        // 1. Label Outer Border
+                        doc.setDrawColor(200, 200, 200);
+                        doc.setLineWidth(0.3);
+                        doc.setFillColor(255, 255, 255);
+                        doc.roundedRect(x, y, colWidth, cardHeight, 2, 2, 'FD');
+
+                        // 2. Header Banner
+                        let topOffset = 0;
+                        if (showHeader.value) {
+                            doc.setFillColor(20, 20, 20);
+                            doc.roundedRect(x, y, colWidth, 6, 2, 2, 'F');
+                            doc.rect(x, y + 4, colWidth, 2, 'F');
+                            doc.setFontSize(cols === 1 ? 8 : (cols === 2 ? 7 : 5.5));
+                            doc.setFont('helvetica', 'bold');
+                            doc.setTextColor(197, 160, 115);
+                            doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4.2, { align: 'center' });
+                            topOffset = 6;
+                        }
+
+                        // 3. Product Name & Price Header
+                        if (showName.value || showPrice.value) {
+                            const headerFontSize = cols === 1 ? 14 : (cols === 2 ? 11.5 : 9);
+                            doc.setFontSize(headerFontSize);
+                            doc.setFont('helvetica', 'bold');
+                            doc.setTextColor(10, 10, 10);
+
+                            if (showName.value) {
+                                const maxChar = cols === 1 ? 30 : (cols === 2 ? 22 : 15);
+                                const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '...' : item.name;
+                                doc.text(truncatedName, x + 4, y + topOffset + (cols === 1 ? 6.5 : 5.5));
                             }
 
-                            const x = marginX + currentCol * (colWidth + colGap);
-                            const y = currentY;
-
-                            // 1. Label Outer Border (Card Container)
-                            doc.setDrawColor(200, 200, 200);
-                            doc.setLineWidth(0.3);
-                            doc.setFillColor(255, 255, 255);
-                            doc.roundedRect(x, y, colWidth, cardHeight, 2, 2, 'FD');
-
-                            // 2. Header Banner
-                            let topOffset = 0;
-                            if (showHeader.value) {
-                                doc.setFillColor(20, 20, 20);
-                                doc.roundedRect(x, y, colWidth, 6, 2, 2, 'F');
-                                doc.rect(x, y + 4, colWidth, 2, 'F'); // flatten bottom corners
-                                doc.setFontSize(cols === 1 ? 8 : (cols === 2 ? 7 : 5.5));
-                                doc.setFont('helvetica', 'bold');
-                                doc.setTextColor(197, 160, 115);
-                                doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4.2, { align: 'center' });
-                                topOffset = 6;
-                            }
-
-                            // 3. Product Name & Price Header
-                            if (showName.value || showPrice.value) {
-                                const headerFontSize = cols === 1 ? 14 : (cols === 2 ? 11.5 : 9);
+                            if (showPrice.value && item.price > 0) {
                                 doc.setFontSize(headerFontSize);
                                 doc.setFont('helvetica', 'bold');
-                                doc.setTextColor(10, 10, 10);
-
-                                if (showName.value) {
-                                    const maxChar = cols === 1 ? 30 : (cols === 2 ? 22 : 15);
-                                    const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '...' : item.name;
-                                    doc.text(truncatedName, x + 4, y + topOffset + (cols === 1 ? 6.5 : 5.5));
-                                }
-
-                                if (showPrice.value && item.price > 0) {
-                                    doc.setFontSize(headerFontSize);
-                                    doc.setFont('helvetica', 'bold');
-                                    doc.setTextColor(180, 120, 30);
-                                    const priceText = `₹${item.price.toLocaleString('en-IN')}`;
-                                    doc.text(priceText, x + colWidth - 4, y + topOffset + (cols === 1 ? 6.5 : 5.5), { align: 'right' });
-                                }
-                            }
-
-                            // 4. High-Resolution QR Code Graphic
-                            const qrPayload = String(item.sku || '').trim();
-                            const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
-                            if (qrDataUrl) {
-                                const qrSize = cols === 1 ? 30 : (cols === 2 ? 24 : (cols === 3 ? 20 : 16));
-                                const qrX = x + (colWidth - qrSize) / 2;
-                                const qrY = y + topOffset + (cols === 1 ? 7 : 6);
-                                doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
-                            }
-
-                            // 5. Monospace SKU Code Footer
-                            doc.setFontSize(cols === 1 ? 10 : (cols === 2 ? 8.5 : 7));
-                            doc.setFont('courier', 'bold');
-                            doc.setTextColor(30, 30, 30);
-                            doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + cardHeight - 3.5, { align: 'center' });
-
-                            // Advance position
-                            currentCol++;
-                            if (currentCol >= cols) {
-                                currentCol = 0;
-                                currentY += cardHeight + rowGap;
+                                doc.setTextColor(180, 120, 30);
+                                const priceText = `₹${item.price.toLocaleString('en-IN')}`;
+                                doc.text(priceText, x + colWidth - 4, y + topOffset + (cols === 1 ? 6.5 : 5.5), { align: 'right' });
                             }
                         }
-                        
-                        doc.save(`chf_sku_qrcodes_1per_row.pdf`);
+
+                        // 4. High-Resolution QR Code Graphic
+                        const qrPayload = String(item.sku || '').trim();
+                        const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                        if (qrDataUrl) {
+                            const qrSize = cols === 1 ? 30 : (cols === 2 ? 24 : (cols === 3 ? 20 : 16));
+                            const qrX = x + (colWidth - qrSize) / 2;
+                            const qrY = y + topOffset + (cols === 1 ? 7 : 6);
+                            doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+                        }
+
+                        // 5. Monospace SKU Code Footer
+                        doc.setFontSize(cols === 1 ? 10 : (cols === 2 ? 8.5 : 7));
+                        doc.setFont('courier', 'bold');
+                        doc.setTextColor(30, 30, 30);
+                        doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + cardHeight - 3.5, { align: 'center' });
+
+                        currentCol++;
+                        if (currentCol >= cols) {
+                            currentCol = 0;
+                            currentY += cardHeight + rowGap;
+                        }
+                    }
+                    return doc;
+                };
+
+                const downloadPDF = async () => {
+                    if (barcodeQueue.value.length === 0) return;
+                    isPrinting.value = true;
+                    try {
+                        const doc = await generateStickerSheetPDF();
+                        if (doc) {
+                            doc.save(`chf_sku_qrcodes_${barcodeColumns.value}_col.pdf`);
+                        }
                     } catch (e) {
                         console.error("Error generating PDF:", e);
+                    } finally {
+                        isPrinting.value = false;
+                    }
+                };
+
+                const printBarcodes = async () => {
+                    if (barcodeQueue.value.length === 0) return;
+                    isPrinting.value = true;
+                    try {
+                        const doc = await generateStickerSheetPDF();
+                        if (!doc) return;
+
+                        const pdfArrayBuffer = doc.output('arraybuffer');
+                        const blob = new Blob([pdfArrayBuffer], { type: 'application/pdf' });
+                        const blobUrl = URL.createObjectURL(blob);
+
+                        const printWindow = window.open(blobUrl, '_blank');
+                        if (printWindow) {
+                            printWindow.focus();
+                            setTimeout(() => {
+                                try { printWindow.print(); } catch(e) {}
+                            }, 500);
+                        } else {
+                            const iframe = document.createElement('iframe');
+                            iframe.style.position = 'fixed';
+                            iframe.style.right = '0';
+                            iframe.style.bottom = '0';
+                            iframe.style.width = '0';
+                            iframe.style.height = '0';
+                            iframe.style.border = '0';
+                            iframe.src = blobUrl;
+                            document.body.appendChild(iframe);
+
+                            iframe.onload = () => {
+                                setTimeout(() => {
+                                    iframe.contentWindow.focus();
+                                    iframe.contentWindow.print();
+                                    setTimeout(() => {
+                                        try { document.body.removeChild(iframe); } catch(e) {}
+                                        URL.revokeObjectURL(blobUrl);
+                                    }, 3000);
+                                }, 300);
+                            };
+                        }
+                    } catch (e) {
+                        console.error("Error printing barcodes:", e);
+                        window.print();
                     } finally {
                         isPrinting.value = false;
                     }
