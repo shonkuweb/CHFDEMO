@@ -1023,17 +1023,25 @@
                             <div class="max-h-48 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                                 <div v-for="item in batchFilteredSkus" :key="item.sku" 
                                     @click="toggleBatchSelection(item.sku)"
-                                    :class="[selectedBatchItems[item.sku] ? 'border-[#C5A073] bg-[#C5A073]/15' : 'border-white/5 bg-white/5', 'p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all']">
+                                    :class="[selectedBatchItems[item.sku] !== undefined ? 'border-[#C5A073] bg-[#C5A073]/15' : 'border-white/5 bg-white/5', 'p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all']">
                                     <div class="flex items-center gap-2.5 min-w-0">
-                                        <input type="checkbox" :checked="!!selectedBatchItems[item.sku]" class="rounded text-[#C5A073] accent-[#C5A073]"/>
+                                        <input type="checkbox" :checked="selectedBatchItems[item.sku] !== undefined" class="rounded text-[#C5A073] accent-[#C5A073] pointer-events-none"/>
                                         <div class="min-w-0">
                                             <p class="text-xs font-bold text-white truncate">{{ item.name }}</p>
                                             <p class="text-[9px] font-mono text-[#C5A073]">{{ item.sku }} • ₹{{ (item.price || 0).toLocaleString('en-IN') }}</p>
                                         </div>
                                     </div>
-                                    <div v-if="selectedBatchItems[item.sku]" @click.stop class="flex items-center gap-1">
+                                    <div v-if="selectedBatchItems[item.sku] !== undefined" @click.stop class="flex items-center gap-1">
                                         <span class="text-[9px] text-gray-400 font-mono">Qty:</span>
-                                        <input type="number" v-model.number="selectedBatchItems[item.sku]" min="1" class="w-12 text-center bg-black border border-white/20 rounded text-xs text-white font-mono py-0.5"/>
+                                        <input type="number" 
+                                            :value="selectedBatchItems[item.sku]" 
+                                            @input="updateBatchItemQty(item.sku, $event.target.value)"
+                                            @blur="handleBatchQtyBlur(item.sku)"
+                                            min="1" 
+                                            @click.stop
+                                            @mousedown.stop
+                                            @keydown.stop
+                                            class="w-14 text-center bg-black border border-white/20 rounded text-xs text-white font-mono py-0.5 outline-none focus:border-[#C5A073]"/>
                                     </div>
                                 </div>
                             </div>
@@ -1724,10 +1732,32 @@
                 });
 
                 const toggleBatchSelection = (sku) => {
-                    if (selectedBatchItems.value[sku]) {
-                        delete selectedBatchItems.value[sku];
+                    if (selectedBatchItems.value[sku] !== undefined) {
+                        const updated = { ...selectedBatchItems.value };
+                        delete updated[sku];
+                        selectedBatchItems.value = updated;
                     } else {
-                        selectedBatchItems.value[sku] = 4;
+                        selectedBatchItems.value = {
+                            ...selectedBatchItems.value,
+                            [sku]: 4
+                        };
+                    }
+                };
+
+                const updateBatchItemQty = (sku, val) => {
+                    selectedBatchItems.value = {
+                        ...selectedBatchItems.value,
+                        [sku]: val
+                    };
+                };
+
+                const handleBatchQtyBlur = (sku) => {
+                    const rawVal = selectedBatchItems.value[sku];
+                    const parsed = parseInt(rawVal, 10);
+                    if (isNaN(parsed) || parsed < 1) {
+                        updateBatchItemQty(sku, 1);
+                    } else {
+                        updateBatchItemQty(sku, parsed);
                     }
                 };
 
@@ -1735,11 +1765,14 @@
                     Object.keys(selectedBatchItems.value).forEach(sku => {
                         const item = skus.value.find(s => s.sku === sku);
                         if (item) {
+                            const rawQty = selectedBatchItems.value[sku];
+                            const parsedQty = parseInt(rawQty, 10);
+                            const qty = !isNaN(parsedQty) && parsedQty > 0 ? parsedQty : 1;
                             barcodeQueue.value.push({
                                 sku: item.sku,
                                 name: item.name,
                                 price: Number(item.price) || 0,
-                                qty: Math.max(1, Number(selectedBatchItems.value[sku]) || 1),
+                                qty: qty,
                                 image_url: item.image_url || ''
                             });
                         }
@@ -3805,6 +3838,8 @@
                     totalPages,
                     batchFilteredSkus,
                     toggleBatchSelection,
+                    updateBatchItemQty,
+                    handleBatchQtyBlur,
                     addBatchToQueue,
                     loadDemoSkus,
                     fillSheetSpace,
