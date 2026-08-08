@@ -1059,9 +1059,9 @@
                                 <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[8px] font-bold tracking-widest text-center py-0.5 rounded-t">
                                     PLANT EXPERIENCE CENTRE
                                 </div>
-                                <div class="w-full flex justify-between items-center text-[10px] font-bold py-1 border-b border-gray-200 gap-1">
-                                    <span v-if="showName" class="truncate text-gray-900 font-sans">{{ barcodeData.name || barcodeData.sku }}</span>
-                                    <span v-if="showPrice && barcodeData.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(barcodeData.price).toLocaleString('en-IN') }}</span>
+                                <div class="w-full flex justify-between items-center text-sm sm:text-base font-black py-1.5 border-b border-gray-200 gap-2">
+                                    <span v-if="showName" class="truncate text-gray-900 font-sans text-sm sm:text-base font-black uppercase tracking-wide">{{ barcodeData.name || barcodeData.sku }}</span>
+                                    <span v-if="showPrice && barcodeData.price" class="text-amber-900 font-mono text-sm sm:text-base font-black shrink-0">₹{{ Number(barcodeData.price).toLocaleString('en-IN') }}</span>
                                 </div>
                                 <div class="w-full my-2 flex items-center justify-center min-h-[90px]">
                                     <canvas :ref="el => setQrCanvasRef(el, barcodeData)" class="max-w-[90px] max-h-[90px] object-contain"></canvas>
@@ -1184,9 +1184,9 @@
                                                 </div>
 
                                                 <!-- Product Name & Price -->
-                                                <div class="w-full flex justify-between items-start text-[9px] font-bold pt-1 pb-1 border-b border-gray-200 gap-1">
-                                                    <span v-if="showName" class="truncate text-gray-900 font-sans" :title="item.name">{{ item.name || item.sku }}</span>
-                                                    <span v-if="showPrice && item.price" class="text-amber-800 font-mono shrink-0">₹{{ Number(item.price).toLocaleString('en-IN') }}</span>
+                                                <div :class="[barcodeColumns === 1 ? 'text-base sm:text-lg py-1.5' : (barcodeColumns === 2 ? 'text-sm sm:text-base py-1' : 'text-xs py-0.5'), 'w-full flex justify-between items-center font-black border-b border-gray-200 gap-2']">
+                                                    <span v-if="showName" class="truncate text-gray-900 font-sans font-black uppercase tracking-wide" :title="item.name">{{ item.name || item.sku }}</span>
+                                                    <span v-if="showPrice && item.price" class="text-amber-900 font-mono font-black shrink-0">₹{{ Number(item.price).toLocaleString('en-IN') }}</span>
                                                 </div>
 
                                                 <!-- QR Code Graphic Canvas -->
@@ -2028,22 +2028,23 @@
 
                             // 3. Product Name & Price Header
                             if (showName.value || showPrice.value) {
-                                doc.setFontSize(cols === 1 ? 11 : (cols === 2 ? 9.5 : 7.5));
+                                const headerFontSize = cols === 1 ? 14 : (cols === 2 ? 11.5 : 9);
+                                doc.setFontSize(headerFontSize);
                                 doc.setFont('helvetica', 'bold');
-                                doc.setTextColor(20, 20, 20);
+                                doc.setTextColor(10, 10, 10);
 
                                 if (showName.value) {
-                                    const maxChar = cols === 1 ? 40 : (cols === 2 ? 26 : 18);
+                                    const maxChar = cols === 1 ? 30 : (cols === 2 ? 22 : 15);
                                     const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '...' : item.name;
-                                    doc.text(truncatedName, x + 4, y + topOffset + 5.5);
+                                    doc.text(truncatedName, x + 4, y + topOffset + (cols === 1 ? 6.5 : 5.5));
                                 }
 
                                 if (showPrice.value && item.price > 0) {
-                                    doc.setFontSize(cols === 1 ? 11 : (cols === 2 ? 9.5 : 7.5));
+                                    doc.setFontSize(headerFontSize);
                                     doc.setFont('helvetica', 'bold');
                                     doc.setTextColor(180, 120, 30);
-                                    const priceText = `INR ${item.price.toLocaleString('en-IN')}`;
-                                    doc.text(priceText, x + colWidth - 4, y + topOffset + 5.5, { align: 'right' });
+                                    const priceText = `₹${item.price.toLocaleString('en-IN')}`;
+                                    doc.text(priceText, x + colWidth - 4, y + topOffset + (cols === 1 ? 6.5 : 5.5), { align: 'right' });
                                 }
                             }
 
