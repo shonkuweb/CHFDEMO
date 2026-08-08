@@ -3065,12 +3065,21 @@ async def get_invoice_history(search: Optional[str] = None, filter_date: Optiona
     rows = cur.fetchall()
     conn.close()
 
-    ist_offset = timezone(timedelta(hours=5, minutes=30))
-    today_ist_prefix = datetime.now(ist_offset).strftime("%d %b %Y")
+    ist_tz = timezone(timedelta(hours=5, minutes=30))
+    now_ist = datetime.now(ist_tz)
+    today_ist_prefix = now_ist.strftime("%d %b %Y")
+    
+    today_start = now_ist.replace(hour=0, minute=0, second=0, microsecond=0)
+    seven_days_ago = today_start - timedelta(days=6)
+    thirty_days_ago = today_start - timedelta(days=29)
 
     history_items = []
     today_revenue = 0.0
     today_count = 0
+    week_revenue = 0.0
+    week_count = 0
+    month_revenue = 0.0
+    month_count = 0
     total_revenue = 0.0
     total_count = len(rows)
 
@@ -3084,13 +3093,53 @@ async def get_invoice_history(search: Optional[str] = None, filter_date: Optiona
         amt = float(item_dict.get("amount", 0.0))
         total_revenue += amt
 
-        ist_date = item_dict.get("created_at_ist", "")
-        is_today = ist_date.startswith(today_ist_prefix)
+        ist_date_str = item_dict.get("created_at_ist", "")
+        row_dt = None
+        if ist_date_str:
+            try:
+                date_part = ist_date_str.split(",")[0].strip()
+                row_dt = datetime.strptime(date_part, "%d %b %Y").replace(tzinfo=ist_tz)
+            except Exception:
+                pass
+        if not row_dt and item_dict.get("created_at"):
+            try:
+                created_raw = str(item_dict.get("created_at")).split(".")[0]
+                dt_utc = datetime.strptime(created_raw, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+                row_dt = dt_utc.astimezone(ist_tz)
+            except Exception:
+                pass
+
+        is_today = ist_date_str.startswith(today_ist_prefix) if ist_date_str else False
+        if not is_today and row_dt:
+            is_today = (row_dt.date() == now_ist.date())
+
+        is_week = False
+        if is_today:
+            is_week = True
+        elif row_dt and row_dt >= seven_days_ago:
+            is_week = True
+
+        is_month = False
+        if is_week:
+            is_month = True
+        elif row_dt and row_dt >= thirty_days_ago:
+            is_month = True
+
         item_dict["is_today"] = is_today
+        item_dict["is_week"] = is_week
+        item_dict["is_month"] = is_month
 
         if is_today:
             today_revenue += amt
             today_count += 1
+
+        if is_week:
+            week_revenue += amt
+            week_count += 1
+
+        if is_month:
+            month_revenue += amt
+            month_count += 1
 
         if search:
             s = search.lower().strip()
@@ -3100,18 +3149,32 @@ async def get_invoice_history(search: Optional[str] = None, filter_date: Optiona
             if s not in c_name and s not in c_phone and s not in c_inv:
                 continue
 
-        if filter_date == "today" and not is_today:
+        f = (filter_date or "all").lower().strip()
+        if f in ("today", "day") and not is_today:
+            continue
+        elif f in ("week", "7days") and not is_week:
+            continue
+        elif f in ("month", "30days") and not is_month:
             continue
 
         history_items.append(item_dict)
+
+    filtered_revenue = sum(float(i.get("amount", 0.0)) for i in history_items)
+    filtered_count = len(history_items)
 
     return {
         "status": "success",
         "metrics": {
             "today_revenue": round(today_revenue, 2),
             "today_count": today_count,
+            "week_revenue": round(week_revenue, 2),
+            "week_count": week_count,
+            "month_revenue": round(month_revenue, 2),
+            "month_count": month_count,
             "total_revenue": round(total_revenue, 2),
-            "total_count": total_count
+            "total_count": total_count,
+            "filtered_revenue": round(filtered_revenue, 2),
+            "filtered_count": filtered_count
         },
         "history": history_items
     }
