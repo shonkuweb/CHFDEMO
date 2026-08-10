@@ -1244,15 +1244,65 @@
                                 </button>
                             </div>
 
-                            <!-- PHOTOREALISTIC A4 STICKER SHEET CANVAS PREVIEW -->
+                            <!-- PHOTOREALISTIC STICKER CANVAS & FORMAT SELECTOR PREVIEW -->
                             <div v-else class="space-y-4 my-4">
+                                <!-- Printer & Label Format Selector Toolbar -->
+                                <div class="bg-black/60 p-3.5 rounded-2xl border border-white/10 space-y-2.5 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-[10px] uppercase tracking-widest text-[#C5A073] font-bold flex items-center gap-1.5">
+                                            <span class="material-symbols-outlined text-sm">print</span> Select Printer & Label Size
+                                        </label>
+                                        <span class="text-[9px] font-mono text-gray-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">
+                                            {{ printFormat === 'thermal_50x100' ? 'Thermal 50×100mm Roll (1 Label / Page)' : (printFormat === 'thermal_100x50' ? 'Thermal 100×50mm Roll (1 Label / Page)' : 'A4 Sticker Sheet (' + barcodeColumns + ' Cols)') }}
+                                        </span>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                        <button type="button" @click="setPrintFormat('thermal_50x100')"
+                                            :class="[printFormat === 'thermal_50x100' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
+                                            <span class="material-symbols-outlined text-sm">label</span>
+                                            <span>Thermal 50×100mm</span>
+                                        </button>
+
+                                        <button type="button" @click="setPrintFormat('thermal_100x50')"
+                                            :class="[printFormat === 'thermal_100x50' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
+                                            <span class="material-symbols-outlined text-sm">label</span>
+                                            <span>Thermal 100×50mm</span>
+                                        </button>
+
+                                        <button type="button" @click="setPrintFormat('a4_1col')"
+                                            :class="[printFormat === 'a4_1col' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
+                                            <span class="material-symbols-outlined text-sm">description</span>
+                                            <span>A4 1 Column</span>
+                                        </button>
+
+                                        <button type="button" @click="setPrintFormat('a4_2col')"
+                                            :class="[printFormat === 'a4_2col' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
+                                            <span class="material-symbols-outlined text-sm">view_column</span>
+                                            <span>A4 2 Columns</span>
+                                        </button>
+
+                                        <button type="button" @click="setPrintFormat('a4_3col')"
+                                            :class="[printFormat === 'a4_3col' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
+                                            <span class="material-symbols-outlined text-sm">view_column</span>
+                                            <span>A4 3 Columns</span>
+                                        </button>
+
+                                        <button type="button" @click="setPrintFormat('a4_4col')"
+                                            :class="[printFormat === 'a4_4col' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
+                                            <span class="material-symbols-outlined text-sm">grid_on</span>
+                                            <span>A4 4 Columns</span>
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <div class="flex items-center justify-between text-xs text-gray-400 px-1">
                                     <span class="flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                                        Previewing <strong>{{ totalQueued }}</strong> total label(s) across <strong>{{ Math.ceil(totalQueued / barcodeColumns) }}</strong> row(s)
+                                        Previewing <strong>{{ totalQueued }}</strong> total label(s)
                                     </span>
                                     <span class="font-mono text-[#C5A073] font-bold bg-[#C5A073]/10 px-2.5 py-0.5 rounded-md border border-[#C5A073]/20 uppercase">
-                                        {{ barcodeColumns }} COLUMNS / ROW
+                                        {{ printFormat.startsWith('thermal') ? (printFormat === 'thermal_50x100' ? 'THERMAL 50×100mm (1 PER PAGE)' : 'THERMAL 100×50mm (1 PER PAGE)') : barcodeColumns + ' COLUMNS / ROW' }}
                                     </span>
                                 </div>
 
@@ -1798,6 +1848,7 @@
                 // Upgraded Studio options & reactivity
                 const barcodeTab = ref('search'); // 'search' | 'custom' | 'batch'
                 const barcodeColumns = ref(1); // Default to 1 per row
+                const printFormat = ref('thermal_50x100'); // Default to 50x100mm Thermal Label Roll
                 const barcodeSymbology = ref('CODE128');
                 const showPrice = ref(true);
                 const showName = ref(true);
@@ -1806,6 +1857,19 @@
                 const batchSearchQuery = ref('');
                 const selectedBatchItems = ref({});
                 const currentPreviewPage = ref(1);
+
+                const setPrintFormat = (fmt) => {
+                    printFormat.value = fmt;
+                    if (fmt === 'thermal_50x100' || fmt === 'thermal_100x50' || fmt === 'a4_1col') {
+                        barcodeColumns.value = 1;
+                    } else if (fmt === 'a4_2col') {
+                        barcodeColumns.value = 2;
+                    } else if (fmt === 'a4_3col') {
+                        barcodeColumns.value = 3;
+                    } else if (fmt === 'a4_4col') {
+                        barcodeColumns.value = 4;
+                    }
+                };
 
                 const itemsPerPage = computed(() => barcodeColumns.value * 11);
                 const totalPages = computed(() => Math.max(1, Math.ceil(totalQueued.value / (itemsPerPage.value || 44))));
@@ -2055,21 +2119,9 @@
                     if (barcodeQueue.value.length === 0) return null;
                     
                     const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF('p', 'mm', 'a4');
+                    const format = printFormat.value || 'thermal_50x100';
                     
-                    const pdfWidth = 210;
-                    const pdfHeight = 297;
-                    const cols = Number(barcodeColumns.value) || 1;
-                    
-                    const colWidth = cols === 1 ? 150 : (cols === 2 ? 92 : (cols === 3 ? 60 : 45));
-                    const cardHeight = cols === 1 ? 56 : (cols === 2 ? 48 : (cols === 3 ? 42 : 36));
-                    const rowGap = cols === 1 ? 7 : 4;
-                    const colGap = cols === 1 ? 0 : 4;
-                    
-                    const marginX = (pdfWidth - (cols * colWidth + (cols - 1) * colGap)) / 2;
-                    const marginY = 14;
-                    const bottomMargin = 14;
-                    
+                    // Flatten queue into individual label items
                     const flattened = [];
                     barcodeQueue.value.forEach(item => {
                         const count = Math.max(1, Number(item.qty) || 1);
@@ -2082,6 +2134,184 @@
                             });
                         }
                     });
+
+                    if (flattened.length === 0) return null;
+
+                    let doc;
+
+                    // -------------------------------------------------------------
+                    // MODE 1: THERMAL ROLL 50mm x 100mm (PORTRAIT - 1 LABEL PER PAGE)
+                    // -------------------------------------------------------------
+                    if (format === 'thermal_50x100') {
+                        // 50mm width x 100mm height
+                        doc = new jsPDF('p', 'mm', [50, 100]);
+                        const marginX = 3.5;
+                        const marginY = 4;
+                        const labelW = 43; // 50 - 7mm margins
+                        const labelH = 92; // 100 - 8mm margins
+
+                        for (let i = 0; i < flattened.length; i++) {
+                            if (i > 0) doc.addPage([50, 100], 'p');
+                            const item = flattened[i];
+                            const x = marginX;
+                            const y = marginY;
+
+                            // 1. Label Outer Rounded Border (Safe Zone)
+                            doc.setDrawColor(200, 200, 200);
+                            doc.setLineWidth(0.3);
+                            doc.setFillColor(255, 255, 255);
+                            doc.roundedRect(x, y, labelW, labelH, 2.5, 2.5, 'FD');
+
+                            // 2. Header Banner
+                            let topOffset = 0;
+                            if (showHeader.value) {
+                                doc.setFillColor(20, 20, 20);
+                                doc.roundedRect(x, y, labelW, 8, 2.5, 2.5, 'F');
+                                doc.rect(x, y + 5, labelW, 3, 'F');
+                                doc.setFontSize(7.5);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(197, 160, 115);
+                                doc.text('PLANT EXPERIENCE CENTRE', x + (labelW / 2), y + 5.2, { align: 'center' });
+                                topOffset = 8;
+                            }
+
+                            // 3. Product Name & Price Header
+                            if (showName.value || showPrice.value) {
+                                doc.setFontSize(9.5);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(10, 10, 10);
+
+                                if (showName.value) {
+                                    const maxChar = 16;
+                                    const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '..' : item.name;
+                                    doc.text(truncatedName, x + 3.5, y + topOffset + 6);
+                                }
+
+                                if (showPrice.value && item.price > 0) {
+                                    doc.setFontSize(9.5);
+                                    doc.setFont('helvetica', 'bold');
+                                    doc.setTextColor(180, 120, 30);
+                                    const priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
+                                    doc.text(priceText, x + labelW - 3.5, y + topOffset + 6, { align: 'right' });
+                                }
+
+                                // Divider Line
+                                doc.setDrawColor(220, 220, 220);
+                                doc.setLineWidth(0.2);
+                                doc.line(x + 3, y + topOffset + 9, x + labelW - 3, y + topOffset + 9);
+                            }
+
+                            // 4. High-Resolution QR Code Graphic (Perfectly Centered Horizontally)
+                            const qrPayload = String(item.sku || '').trim();
+                            const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                            if (qrDataUrl) {
+                                const qrSize = 32; // 32mm x 32mm
+                                const qrX = x + (labelW - qrSize) / 2; // Perfectly centered horizontally inside 43mm label
+                                const qrY = y + topOffset + 14;
+                                doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+                            }
+
+                            // 5. SKU Code Footer (Perfectly Centered Monospace)
+                            doc.setFontSize(9.5);
+                            doc.setFont('courier', 'bold');
+                            doc.setTextColor(20, 20, 20);
+                            doc.text(`SKU: ${item.sku}`, x + (labelW / 2), y + labelH - 5, { align: 'center' });
+                        }
+                        return doc;
+                    }
+
+                    // -------------------------------------------------------------
+                    // MODE 2: THERMAL ROLL 100mm x 50mm (LANDSCAPE - 1 LABEL PER PAGE)
+                    // -------------------------------------------------------------
+                    if (format === 'thermal_100x50') {
+                        // 100mm width x 50mm height
+                        doc = new jsPDF('l', 'mm', [50, 100]);
+                        const marginX = 4;
+                        const marginY = 3.5;
+                        const labelW = 92; // 100 - 8mm margins
+                        const labelH = 43; // 50 - 7mm margins
+
+                        for (let i = 0; i < flattened.length; i++) {
+                            if (i > 0) doc.addPage([100, 50], 'l');
+                            const item = flattened[i];
+                            const x = marginX;
+                            const y = marginY;
+
+                            // 1. Label Outer Border
+                            doc.setDrawColor(200, 200, 200);
+                            doc.setLineWidth(0.3);
+                            doc.setFillColor(255, 255, 255);
+                            doc.roundedRect(x, y, labelW, labelH, 2.5, 2.5, 'FD');
+
+                            // 2. Header Banner
+                            let topOffset = 0;
+                            if (showHeader.value) {
+                                doc.setFillColor(20, 20, 20);
+                                doc.roundedRect(x, y, labelW, 6, 2.5, 2.5, 'F');
+                                doc.rect(x, y + 4, labelW, 2, 'F');
+                                doc.setFontSize(8);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(197, 160, 115);
+                                doc.text('PLANT EXPERIENCE CENTRE', x + (labelW / 2), y + 4.2, { align: 'center' });
+                                topOffset = 6;
+                            }
+
+                            // 3. Product Name & Price Header
+                            if (showName.value || showPrice.value) {
+                                doc.setFontSize(10.5);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(10, 10, 10);
+
+                                if (showName.value) {
+                                    const maxChar = 22;
+                                    const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '..' : item.name;
+                                    doc.text(truncatedName, x + 4, y + topOffset + 5.5);
+                                }
+
+                                if (showPrice.value && item.price > 0) {
+                                    doc.setFontSize(10.5);
+                                    doc.setFont('helvetica', 'bold');
+                                    doc.setTextColor(180, 120, 30);
+                                    const priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
+                                    doc.text(priceText, x + labelW - 4, y + topOffset + 5.5, { align: 'right' });
+                                }
+                            }
+
+                            // 4. High-Resolution QR Code Graphic (Perfectly Centered)
+                            const qrPayload = String(item.sku || '').trim();
+                            const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                            if (qrDataUrl) {
+                                const qrSize = 22; // 22mm x 22mm
+                                const qrX = x + (labelW - qrSize) / 2; // Centered horizontally
+                                const qrY = y + topOffset + 7.5;
+                                doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+                            }
+
+                            // 5. SKU Code Footer (Perfectly Centered)
+                            doc.setFontSize(9);
+                            doc.setFont('courier', 'bold');
+                            doc.setTextColor(20, 20, 20);
+                            doc.text(`SKU: ${item.sku}`, x + (labelW / 2), y + labelH - 3.5, { align: 'center' });
+                        }
+                        return doc;
+                    }
+
+                    // -------------------------------------------------------------
+                    // MODE 3: STANDARD A4 SHEET LAYOUT (1, 2, 3, OR 4 COLUMNS)
+                    // -------------------------------------------------------------
+                    doc = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = 210;
+                    const pdfHeight = 297;
+                    const cols = Number(barcodeColumns.value) || 1;
+                    
+                    const colWidth = cols === 1 ? 150 : (cols === 2 ? 92 : (cols === 3 ? 60 : 45));
+                    const cardHeight = cols === 1 ? 56 : (cols === 2 ? 48 : (cols === 3 ? 42 : 36));
+                    const rowGap = cols === 1 ? 7 : 4;
+                    const colGap = cols === 1 ? 0 : 4;
+                    
+                    const marginX = (pdfWidth - (cols * colWidth + (cols - 1) * colGap)) / 2;
+                    const marginY = 14;
+                    const bottomMargin = 14;
 
                     let currentCol = 0;
                     let currentY = marginY;
@@ -3979,6 +4209,8 @@
                     // Upgraded Studio exports
                     barcodeTab,
                     barcodeColumns,
+                    printFormat,
+                    setPrintFormat,
                     barcodeSymbology,
                     showPrice,
                     showName,
