@@ -1917,7 +1917,7 @@
                 // Upgraded Studio options & reactivity
                 const barcodeTab = ref('search'); // 'search' | 'custom' | 'batch'
                 const barcodeColumns = ref(1); // Default to 1 per row
-                const printFormat = ref('thermal_50x100'); // Default to 50x100mm Thermal Label Roll
+                const printFormat = ref('thermal_100x50'); // Default to 100x50mm Thermal Label Roll
                 const barcodeSymbology = ref('CODE128');
                 const showPrice = ref(true);
                 const showName = ref(true);
@@ -2188,7 +2188,7 @@
                     if (barcodeQueue.value.length === 0) return null;
                     
                     const { jsPDF } = window.jspdf;
-                    const format = printFormat.value || 'thermal_50x100';
+                    const format = printFormat.value || 'thermal_100x50';
                     
                     // Flatten queue into individual label items
                     const flattened = [];
