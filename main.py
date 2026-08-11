@@ -3149,6 +3149,11 @@ async def get_invoice_history(search: Optional[str] = None, filter_date: Optiona
         item_dict["is_week"] = is_week
         item_dict["is_month"] = is_month
 
+        rem_due = float(item_dict.get("remaining_due", 0.0))
+        adv_paid = float(item_dict.get("advance_paid", 0.0))
+        is_advance_paid = (adv_paid > 0 and rem_due > 0)
+        item_dict["payment_category"] = "advance_paid" if is_advance_paid else "full_paid"
+
         if is_today:
             today_revenue += amt
             today_count += 1
@@ -3182,6 +3187,9 @@ async def get_invoice_history(search: Optional[str] = None, filter_date: Optiona
     filtered_revenue = sum(float(i.get("amount", 0.0)) for i in history_items)
     filtered_count = len(history_items)
 
+    full_paid_count = sum(1 for i in history_items if i.get("payment_category") == "full_paid")
+    advance_paid_count = sum(1 for i in history_items if i.get("payment_category") == "advance_paid")
+
     return {
         "status": "success",
         "metrics": {
@@ -3194,10 +3202,36 @@ async def get_invoice_history(search: Optional[str] = None, filter_date: Optiona
             "total_revenue": round(total_revenue, 2),
             "total_count": total_count,
             "filtered_revenue": round(filtered_revenue, 2),
-            "filtered_count": filtered_count
+            "filtered_count": filtered_count,
+            "full_paid_count": full_paid_count,
+            "advance_paid_count": advance_paid_count
         },
         "history": history_items
     }
+
+class SettleDueRequest(BaseModel):
+    payment_ref: Optional[str] = ""
+
+@app.post("/api/invoice/settle-due/{invoice_id}")
+async def settle_invoice_due(invoice_id: str, payload: Optional[SettleDueRequest] = None):
+    ensure_invoice_history_table()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM invoice_history WHERE invoice_id = ?", (invoice_id,))
+    row = cur.fetchone()
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Invoice not found in history")
+    
+    pay_ref = (payload.payment_ref if payload else "") or dict(row).get("payment_ref", "")
+    cur.execute("""
+        UPDATE invoice_history
+        SET remaining_due = 0.0, payment_ref = ?
+        WHERE invoice_id = ?
+    """, (pay_ref, invoice_id))
+    conn.commit()
+    conn.close()
+    return {"status": "success", "invoice_id": invoice_id}
 
 @app.delete("/api/invoice/history/{invoice_id}")
 @app.api_route("/api/invoice/history/delete/{invoice_id}", methods=["POST", "DELETE"])

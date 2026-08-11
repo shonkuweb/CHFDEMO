@@ -665,6 +665,27 @@
                     </div>
                 </div>
 
+                <!-- Category Sub-Tabs (Full Paid vs Advance Paid) -->
+                <div class="flex items-center gap-3 bg-black/40 p-2 rounded-2xl border border-white/10 w-full sm:w-auto">
+                    <button type="button" @click="historyCategoryFilter = 'full_paid'"
+                        :class="[historyCategoryFilter === 'full_paid' ? 'bg-gradient-to-r from-[#C5A073] to-[#b08c62] text-black font-black shadow-lg border-[#C5A073]' : 'text-gray-400 hover:text-white font-semibold hover:bg-white/5 border-transparent', 'px-5 py-2.5 rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center gap-2 border flex-1 sm:flex-none']">
+                        <span class="material-symbols-outlined text-base">check_circle</span>
+                        <span>Full Paid Bills</span>
+                        <span :class="[historyCategoryFilter === 'full_paid' ? 'bg-black/30 text-black font-extrabold' : 'bg-white/10 text-gray-300 font-bold', 'px-2 py-0.5 rounded-full text-[10px] font-mono']">
+                            {{ historyList.filter(i => (i.payment_category === 'full_paid' || !(Number(i.remaining_due) > 0 && Number(i.advance_paid) > 0))).length }}
+                        </span>
+                    </button>
+
+                    <button type="button" @click="historyCategoryFilter = 'advance_paid'"
+                        :class="[historyCategoryFilter === 'advance_paid' ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-black font-black shadow-lg border-amber-400' : 'text-gray-400 hover:text-white font-semibold hover:bg-white/5 border-transparent', 'px-5 py-2.5 rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center gap-2 border flex-1 sm:flex-none']">
+                        <span class="material-symbols-outlined text-base text-black">pending_actions</span>
+                        <span>Advance Paid Bills</span>
+                        <span :class="[historyCategoryFilter === 'advance_paid' ? 'bg-black/30 text-black font-extrabold' : 'bg-amber-500/20 text-amber-300 font-bold', 'px-2 py-0.5 rounded-full text-[10px] font-mono']">
+                            {{ historyList.filter(i => (i.payment_category === 'advance_paid' || (Number(i.remaining_due) > 0 && Number(i.advance_paid) > 0))).length }}
+                        </span>
+                    </button>
+                </div>
+
                 <!-- History Table / Rows of Leads -->
                 <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
                     <div class="overflow-x-auto">
@@ -675,7 +696,7 @@
                                     <th class="py-4 px-5">Customer Name</th>
                                     <th class="py-4 px-5">Phone Number</th>
                                     <th class="py-4 px-5">Products Purchased</th>
-                                    <th class="py-4 px-5 text-right">Total Paid</th>
+                                    <th class="py-4 px-5 text-right">{{ historyCategoryFilter === 'advance_paid' ? 'Payment Breakdown' : 'Total Paid' }}</th>
                                     <th class="py-4 px-5 text-center">Action</th>
                                 </tr>
                             </thead>
@@ -691,22 +712,26 @@
                                     </tr>
                                 </template>
 
-                                <template v-else-if="historyList.length === 0">
+                                <template v-else-if="displayedHistoryList.length === 0">
                                     <tr>
                                         <td colspan="6" class="py-16 text-center text-gray-500">
                                             <div class="flex flex-col items-center justify-center gap-3">
                                                 <div class="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400">
                                                     <span class="material-symbols-outlined text-2xl">folder_off</span>
                                                 </div>
-                                                <p class="font-serif text-lg text-gray-300">No Bills Recorded Yet</p>
-                                                <p class="text-xs text-gray-500 max-w-sm">Bills generated during payments will automatically be stored here with Cloudflare R2 links and exact IST timestamps.</p>
+                                                <p class="font-serif text-lg text-gray-300">
+                                                    {{ historyCategoryFilter === 'advance_paid' ? 'No Advance Paid Bills' : 'No Full Paid Bills Recorded' }}
+                                                </p>
+                                                <p class="text-xs text-gray-500 max-w-sm">
+                                                    {{ historyCategoryFilter === 'advance_paid' ? 'Bills with partial advance payments and pending balance dues will appear here.' : 'Bills paid in full will automatically be listed here.' }}
+                                                </p>
                                             </div>
                                         </td>
                                     </tr>
                                 </template>
 
                                 <template v-else>
-                                    <tr v-for="item in historyList" :key="item.invoice_id" class="hover:bg-white/[0.02] transition-colors group">
+                                    <tr v-for="item in displayedHistoryList" :key="item.invoice_id" class="hover:bg-white/[0.02] transition-colors group">
                                         <!-- Date (IST) -->
                                         <td class="py-4 px-5 whitespace-nowrap">
                                             <div class="flex items-center gap-2">
@@ -757,19 +782,37 @@
                                             </div>
                                         </td>
 
-                                        <!-- Total Paid -->
-                                        <td class="py-4 px-5 text-right whitespace-nowrap font-bold text-sm text-[#C5A073]">
-                                            ₹{{ Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}
+                                        <!-- Total Paid / Payment Breakdown -->
+                                        <td class="py-4 px-5 text-right whitespace-nowrap font-bold text-sm">
+                                            <template v-if="historyCategoryFilter === 'advance_paid' || (Number(item.remaining_due) > 0 && Number(item.advance_paid) > 0)">
+                                                <div class="flex flex-col items-end gap-0.5">
+                                                    <span class="text-emerald-400 text-xs font-semibold">Advance: ₹{{ Number(item.advance_paid || 0).toLocaleString('en-IN') }}</span>
+                                                    <span class="text-amber-400 font-black text-sm">Due: ₹{{ Number(item.remaining_due || 0).toLocaleString('en-IN') }}</span>
+                                                    <span class="text-[10px] text-gray-500 font-normal">Total: ₹{{ Number(item.amount || 0).toLocaleString('en-IN') }}</span>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <span class="text-[#C5A073]">₹{{ Number(item.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                            </template>
                                         </td>
 
-                                        <!-- View & Delete Invoice Buttons -->
+                                        <!-- Action Column Buttons -->
                                         <td class="py-4 px-5 text-center whitespace-nowrap">
                                             <div class="flex items-center justify-center gap-2">
+                                                <!-- Yellow Generate Due Bill Button for Advance Paid Items -->
+                                                <button v-if="historyCategoryFilter === 'advance_paid' || (Number(item.remaining_due) > 0 && Number(item.advance_paid) > 0)"
+                                                    type="button" @click="generateDueBill(item)" title="Generate & Send Due Bill"
+                                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:brightness-110 text-black font-extrabold text-xs transition-all shadow-md cursor-pointer border border-amber-300">
+                                                    <span class="material-symbols-outlined text-sm">payments</span>
+                                                    <span>Generate Due Bill</span>
+                                                </button>
+
                                                 <a :href="item.r2_url || ('/invoice/' + item.invoice_id + '.png')" target="_blank" rel="noopener noreferrer"
                                                     class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C5A073]/20 to-[#b08c62]/20 border border-[#C5A073]/40 text-[#C5A073] hover:bg-[#C5A073] hover:text-black font-semibold text-xs transition-all shadow-md cursor-pointer">
                                                     <span class="material-symbols-outlined text-sm">open_in_new</span>
                                                     <span>View Invoice</span>
                                                 </a>
+
                                                 <button type="button" @click="deleteHistoryItem(item)" title="Delete Invoice Log"
                                                     class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white transition-all cursor-pointer">
                                                     <span class="material-symbols-outlined text-sm">delete</span>
@@ -2733,10 +2776,128 @@
                 });
                 const historySearchQuery = ref('');
                 const historyDateFilter = ref('all');
+                const historyCategoryFilter = ref('full_paid');
                 const loadingHistory = ref(false);
                 const showR2Modal = ref(false);
                 const selectedR2Item = ref(null);
                 let searchDebounceTimer = null;
+
+                const displayedHistoryList = computed(() => {
+                    return (historyList.value || []).filter(item => {
+                        const isAdv = (item.payment_category === 'advance_paid') || (Number(item.remaining_due) > 0 && Number(item.advance_paid) > 0);
+                        if (historyCategoryFilter.value === 'advance_paid') {
+                            return isAdv;
+                        } else {
+                            return !isAdv;
+                        }
+                    });
+                });
+
+                const generateDueBill = async (item) => {
+                    if (!item || !item.invoice_id) return;
+                    const dueAmt = Number(item.remaining_due) || 0;
+                    if (dueAmt <= 0) {
+                        alert('This invoice has no remaining due payment!');
+                        return;
+                    }
+
+                    const invId = item.invoice_id;
+                    const clientName = item.client_name || 'Valued Customer';
+                    const phone = item.phone || '';
+
+                    sendingInvoice.value = true;
+                    sendError.value = '';
+
+                    try {
+                        // 1. Create CCAvenue Payment Link for the remaining due amount
+                        const linkRes = await fetch('/api/payment/create-link', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                invoice_id: invId,
+                                client_name: clientName,
+                                phone: phone,
+                                amount: dueAmt,
+                                notes: `Due Payment for Invoice #${invId}`
+                            })
+                        });
+
+                        const linkData = await safeFetchJson(linkRes);
+                        const paymentLink = linkData.payment_link || '';
+
+                        if (paymentLink) {
+                            currentPaymentLink.value = paymentLink;
+                            currentPaymentStatus.value = linkData.payment_status || 'PENDING';
+                        }
+
+                        // 2. Build WhatsApp Due Payment Message
+                        let message = `🌿 *PLANT EXPERIENCE CENTRE*\n\n`;
+                        message += `*INVOICE #${invId} - DUE PAYMENT*\n`;
+                        message += `Client: ${clientName}\n\n`;
+                        if (item.amount) {
+                            message += `Bill Net Total: ₹${Number(item.amount).toLocaleString('en-IN')}\n`;
+                        }
+                        if (item.advance_paid) {
+                            message += `Advance Paid: -₹${Number(item.advance_paid).toLocaleString('en-IN')}\n`;
+                        }
+                        message += `*Remaining Balance Due:* ₹${dueAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n\n`;
+
+                        if (paymentLink) {
+                            message += `💳 *Pay Due Online (CCAvenue):*\n${paymentLink}\n\n`;
+                        }
+
+                        message += `Thank you for your business! 🌸`;
+
+                        // 3. Send WhatsApp Due Notice Message
+                        let whatsappNotice = null;
+                        if (phone) {
+                            try {
+                                const res = await fetch('/api/whatsapp/send', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        number: phone,
+                                        message: message
+                                    })
+                                });
+                                const data = await safeFetchJson(res);
+                                if (data && data.success) {
+                                    sendSuccess.value = true;
+                                    setTimeout(() => sendSuccess.value = false, 5000);
+                                } else if (data && data.error) {
+                                    whatsappNotice = data.error;
+                                }
+                            } catch (waErr) {
+                                whatsappNotice = waErr.message;
+                            }
+                        }
+
+                        // 4. Open Live CCAvenue Payment Status Pop-up Modal
+                        paymentModalInvoiceId.value = invId;
+                        paymentModalClientName.value = clientName;
+                        paymentModalAmount.value = dueAmt;
+                        paymentModalLink.value = paymentLink;
+                        paymentModalOrderNo.value = (linkData && linkData.order_id) ? linkData.order_id : invId;
+                        paymentModalStatus.value = 'PENDING';
+                        paymentModalRefNo.value = '';
+                        if (paymentAutoCloseTimer.value) {
+                            clearTimeout(paymentAutoCloseTimer.value);
+                            paymentAutoCloseTimer.value = null;
+                        }
+                        showPaymentModal.value = true;
+                        startPaymentPolling(invId);
+
+                        if (whatsappNotice) {
+                            sendError.value = whatsappNotice;
+                        }
+
+                    } catch (e) {
+                        sendError.value = e.message;
+                        alert('Error generating due bill: ' + e.message);
+                    } finally {
+                        sendingInvoice.value = false;
+                    }
+                };
 
                 const fetchInvoiceHistory = async () => {
                     loadingHistory.value = true;
@@ -3485,9 +3646,20 @@
                                 // Prepare PDF Preview for Admin Approval (Do NOT auto-send to WhatsApp)
                                 prepareApprovedPdfPreview(data.ccavenue_ref_no || paymentModalRefNo.value);
 
-                                // Trigger Background R2 Upload & History Logging
+                                // Trigger Background R2 Upload & History Logging & Due Settlement
                                 if (isNewSuccess) {
                                     uploadInvoiceToR2AndLog(invoiceData.value, data.ccavenue_ref_no || paymentModalRefNo.value, totalAmount.value);
+                                    
+                                    // Settle due payment in SQLite DB & auto-transfer to Full Paid tab
+                                    fetch(`/api/invoice/settle-due/${encodeURIComponent(invId)}`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ payment_ref: data.ccavenue_ref_no || paymentModalRefNo.value || '' })
+                                    }).then(() => {
+                                        fetchInvoiceHistory();
+                                    }).catch(err => {
+                                        console.error('Failed to settle due in DB:', err);
+                                    });
                                 }
                             }
                         }
@@ -4478,6 +4650,9 @@
                     historyMetrics,
                     historySearchQuery,
                     historyDateFilter,
+                    historyCategoryFilter,
+                    displayedHistoryList,
+                    generateDueBill,
                     loadingHistory,
                     showR2Modal,
                     selectedR2Item,
