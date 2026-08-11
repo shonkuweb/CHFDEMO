@@ -1753,10 +1753,25 @@ def ensure_invoice_history_table():
             r2_url TEXT DEFAULT '',
             r2_key TEXT DEFAULT '',
             payment_ref TEXT DEFAULT '',
+            discount_type TEXT DEFAULT 'fixed',
+            discount_value REAL DEFAULT 0.0,
+            discount_amount REAL DEFAULT 0.0,
+            advance_paid REAL DEFAULT 0.0,
+            remaining_due REAL DEFAULT 0.0,
             created_at_ist TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    existing_cols = [info[1] for info in cur.execute("PRAGMA table_info(invoice_history)").fetchall()]
+    for col, col_type in [
+        ("discount_type", "TEXT DEFAULT 'fixed'"),
+        ("discount_value", "REAL DEFAULT 0.0"),
+        ("discount_amount", "REAL DEFAULT 0.0"),
+        ("advance_paid", "REAL DEFAULT 0.0"),
+        ("remaining_due", "REAL DEFAULT 0.0")
+    ]:
+        if col not in existing_cols:
+            cur.execute(f"ALTER TABLE invoice_history ADD COLUMN {col} {col_type}")
     conn.commit()
     conn.close()
 
@@ -2940,6 +2955,11 @@ class InvoiceLogR2Request(BaseModel):
     items: Optional[list] = []
     payment_ref: Optional[str] = ""
     order_id: Optional[str] = ""
+    discount_type: Optional[str] = "fixed"
+    discount_value: Optional[float] = 0.0
+    discount_amount: Optional[float] = 0.0
+    advance_paid: Optional[float] = 0.0
+    remaining_due: Optional[float] = 0.0
 
 def get_current_ist_string():
     ist_offset = timezone(timedelta(hours=5, minutes=30))
@@ -3035,14 +3055,14 @@ async def upload_invoice_r2_and_log(payload: InvoiceLogR2Request):
     if existing:
         cur.execute("""
             UPDATE invoice_history
-            SET client_name = ?, phone = ?, amount = ?, items_json = ?, r2_url = ?, r2_key = ?, payment_ref = ?, order_id = ?
+            SET client_name = ?, phone = ?, amount = ?, items_json = ?, r2_url = ?, r2_key = ?, payment_ref = ?, order_id = ?, discount_type = ?, discount_value = ?, discount_amount = ?, advance_paid = ?, remaining_due = ?
             WHERE invoice_id = ?
-        """, (payload.client_name or '', payload.phone or '', payload.amount or 0.0, items_str, r2_url, r2_key, payload.payment_ref or '', payload.order_id or '', invoice_id))
+        """, (payload.client_name or '', payload.phone or '', payload.amount or 0.0, items_str, r2_url, r2_key, payload.payment_ref or '', payload.order_id or '', payload.discount_type or 'fixed', payload.discount_value or 0.0, payload.discount_amount or 0.0, payload.advance_paid or 0.0, payload.remaining_due or 0.0, invoice_id))
     else:
         cur.execute("""
-            INSERT INTO invoice_history (invoice_id, order_id, client_name, phone, amount, items_json, r2_url, r2_key, payment_ref, created_at_ist)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (invoice_id, payload.order_id or '', payload.client_name or '', payload.phone or '', payload.amount or 0.0, items_str, r2_url, r2_key, payload.payment_ref or '', ist_timestamp))
+            INSERT INTO invoice_history (invoice_id, order_id, client_name, phone, amount, items_json, r2_url, r2_key, payment_ref, discount_type, discount_value, discount_amount, advance_paid, remaining_due, created_at_ist)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (invoice_id, payload.order_id or '', payload.client_name or '', payload.phone or '', payload.amount or 0.0, items_str, r2_url, r2_key, payload.payment_ref or '', payload.discount_type or 'fixed', payload.discount_value or 0.0, payload.discount_amount or 0.0, payload.advance_paid or 0.0, payload.remaining_due or 0.0, ist_timestamp))
 
     conn.commit()
     conn.close()

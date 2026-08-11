@@ -332,6 +332,40 @@
                                     </div>
                                 </div>
 
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Discount Option -->
+                                    <div>
+                                        <label class="block text-[11px] uppercase tracking-widest text-[#C5A073] font-extrabold mb-2">Discount Option</label>
+                                        <div class="flex gap-2">
+                                            <div class="relative shrink-0 w-36">
+                                                <select v-model="invoiceData.discountType"
+                                                    class="w-full bg-black/50 border border-white/10 rounded-2xl px-3 py-3.5 text-xs text-white font-medium focus:outline-none focus:border-[#C5A073] transition-all cursor-pointer shadow-inner appearance-none pr-8">
+                                                    <option value="fixed" class="bg-[#121418] text-white">Fixed Amount (₹)</option>
+                                                    <option value="percent" class="bg-[#121418] text-white">% on Total (%)</option>
+                                                </select>
+                                                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">expand_more</span>
+                                            </div>
+                                            <div class="relative flex-1">
+                                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg">local_offer</span>
+                                                <input type="number" v-model.number="invoiceData.discountValue" min="0" step="any"
+                                                    class="w-full bg-black/50 border border-white/10 rounded-2xl pl-10 pr-4 py-3.5 text-sm text-white font-medium focus:outline-none focus:border-[#C5A073] transition-all placeholder:text-gray-600 shadow-inner"
+                                                    :placeholder="invoiceData.discountType === 'percent' ? 'e.g. 10' : 'e.g. 500'">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Advance Payment -->
+                                    <div>
+                                        <label class="block text-[11px] uppercase tracking-widest text-[#C5A073] font-extrabold mb-2">Advance Payment (₹)</label>
+                                        <div class="relative">
+                                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">account_balance_wallet</span>
+                                            <input type="number" v-model.number="invoiceData.advancePayment" min="0" step="any"
+                                                class="w-full bg-black/50 border border-white/10 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-white font-medium focus:outline-none focus:border-[#C5A073] transition-all placeholder:text-gray-600 shadow-inner"
+                                                placeholder="Enter advance amount (₹)">
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10 mt-6">
                                     <div>
                                         <span v-if="sendSuccess" class="text-emerald-400 text-xs font-bold flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-xl">
@@ -487,18 +521,34 @@
                                     <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-emerald-400">percent</span> GST @ 18% (Tax):</span>
                                     <span class="text-emerald-400 font-mono font-bold text-sm">+ ₹{{ gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
                                 </div>
+                                <div v-if="discountAmount > 0" class="flex justify-between items-center text-xs text-amber-400">
+                                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-amber-400">local_offer</span> Discount ({{ invoiceData.discountType === 'percent' ? invoiceData.discountValue + '%' : 'Fixed' }}):</span>
+                                    <span class="font-mono font-bold text-sm">- ₹{{ discountAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                </div>
+                                <div v-if="advancePaid > 0" class="flex justify-between items-center text-xs text-sky-400">
+                                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-sky-400">account_balance_wallet</span> Advance Paid:</span>
+                                    <span class="font-mono font-bold text-sm">- ₹{{ advancePaid.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
+                                </div>
                                 <div class="border-t border-white/10 pt-4 flex items-center justify-between">
                                     <div>
                                         <p class="text-[11px] uppercase tracking-widest text-[#C5A073] font-extrabold flex items-center gap-1.5">
-                                            <span class="material-symbols-outlined text-sm text-[#C5A073]">verified</span> Total Amount
+                                            <span class="material-symbols-outlined text-sm text-[#C5A073]">verified</span>
+                                            {{ advancePaid > 0 ? 'Remaining Due Payment' : 'Total Amount' }}
                                         </p>
-                                        <p class="text-[10px] text-gray-400 font-mono">INR (₹) • Incl. 18% GST</p>
+                                        <p class="text-[10px] text-gray-400 font-mono">
+                                            INR (₹) {{ advancePaid > 0 ? '• Balance Due After Advance' : '• Net Bill Total' }}
+                                        </p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="font-serif text-4xl text-[#C5A073] font-bold tracking-wide shadow-sm">₹{{ totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</p>
+                                        <p class="font-serif text-4xl text-[#C5A073] font-bold tracking-wide shadow-sm">
+                                            ₹{{ (advancePaid > 0 ? remainingDue : netTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}
+                                        </p>
+                                        <p v-if="advancePaid > 0" class="text-[11px] text-gray-400 font-mono mt-0.5">
+                                            (Bill Net Total: ₹{{ netTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }) }})
+                                        </p>
                                     </div>
+                                </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </template>
@@ -1148,19 +1198,28 @@
                         <!-- LIVE SINGLE LABEL REAL-TIME PREVIEW CARD -->
                         <div v-if="barcodeData.sku.trim()" class="space-y-2 pt-2 border-t border-white/5">
                             <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Single Label Real-Time Preview</label>
-                            <div class="bg-white rounded-xl p-3 text-black border border-gray-300 shadow-xl flex flex-col justify-between items-center relative transition-transform">
-                                <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[8px] font-bold tracking-widest text-center py-0.5 rounded-t">
+                            <div class="bg-white rounded-xl text-black border border-gray-300 shadow-xl flex flex-col justify-between items-center relative overflow-hidden transition-transform w-full">
+                                <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[8px] font-bold tracking-widest text-center py-1 rounded-t">
                                     PLANT EXPERIENCE CENTRE
                                 </div>
-                                <div class="w-full flex items-center justify-between text-xs sm:text-sm font-black py-1 border-b border-gray-200 px-1 gap-2 overflow-hidden">
-                                    <span v-if="showName" class="truncate min-w-0 flex-1 text-gray-900 font-sans font-black uppercase tracking-tight">{{ barcodeData.name || barcodeData.sku }}</span>
-                                    <span v-if="showPrice && barcodeData.price" class="text-amber-900 font-mono text-xs sm:text-sm font-black shrink-0 whitespace-nowrap">Rs. {{ Number(barcodeData.price).toLocaleString('en-IN') }}</span>
-                                </div>
-                                <div class="w-full my-2 flex items-center justify-center min-h-[90px]">
-                                    <canvas :ref="el => setQrCanvasRef(el, barcodeData)" class="max-w-[90px] max-h-[90px] object-contain"></canvas>
-                                </div>
-                                <div class="w-full text-center">
-                                    <span class="font-mono text-[10px] font-bold tracking-widest text-gray-800">SKU: {{ barcodeData.sku }}</span>
+                                <div class="w-full grid grid-cols-3 items-center p-2.5 gap-1 overflow-hidden min-h-[90px]">
+                                    <!-- 1st Part (Left): Product Name -->
+                                    <div class="flex items-center justify-start text-left overflow-hidden pr-1">
+                                        <span v-if="showName" class="text-gray-900 font-sans font-black uppercase text-[10px] leading-tight break-words line-clamp-3">
+                                            {{ barcodeData.name || barcodeData.sku }}
+                                        </span>
+                                    </div>
+                                    <!-- 2nd Part (Middle): QR Code Graphic + SKU -->
+                                    <div class="flex flex-col items-center justify-center min-w-0">
+                                        <canvas :ref="el => setQrCanvasRef(el, barcodeData)" class="max-w-[65px] max-h-[65px] object-contain"></canvas>
+                                        <span class="font-mono text-[8px] font-bold tracking-wider text-gray-800 mt-1 whitespace-nowrap">SKU: {{ barcodeData.sku }}</span>
+                                    </div>
+                                    <!-- 3rd Part (Right): Price -->
+                                    <div class="flex items-center justify-end text-right overflow-hidden pl-1">
+                                        <span v-if="showPrice && barcodeData.price" class="text-amber-900 font-mono text-xs font-black leading-none break-words max-w-full">
+                                            Rs. {{ Number(barcodeData.price).toLocaleString('en-IN') }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1319,27 +1378,34 @@
                                         <template v-for="(item, itemIdx) in barcodeQueue" :key="itemIdx">
                                             <!-- Render each barcode instance according to quantity -->
                                             <div v-for="qtyIdx in item.qty" :key="`${itemIdx}-${qtyIdx}`"
-                                                class="bg-white rounded-xl p-2.5 text-black border border-gray-200 shadow-sm flex flex-col justify-between items-center relative group hover:border-[#C5A073] hover:shadow-md transition-all">
+                                                class="bg-white rounded-xl text-black border border-gray-200 shadow-sm flex flex-col justify-between items-center relative group hover:border-[#C5A073] hover:shadow-md transition-all overflow-hidden">
                                                 
                                                 <!-- Header -->
                                                 <div v-if="showHeader" class="w-full bg-black text-[#C5A073] text-[7px] font-bold tracking-widest text-center py-0.5 rounded-t">
                                                     PLANT EXPERIENCE CENTRE
                                                 </div>
 
-                                                <!-- Product Name & Price -->
-                                                <div :class="[barcodeColumns === 1 ? 'text-xs sm:text-sm py-1' : (barcodeColumns === 2 ? 'text-[11px] py-0.5' : 'text-[9px] py-0.5'), 'w-full flex items-center justify-between font-black border-b border-gray-200 px-1 gap-1 overflow-hidden']">
-                                                    <span v-if="showName" class="truncate min-w-0 flex-1 text-gray-900 font-sans font-black uppercase tracking-tight" :title="item.name">{{ item.name || item.sku }}</span>
-                                                    <span v-if="showPrice && item.price" class="text-amber-900 font-mono font-black shrink-0 whitespace-nowrap">Rs. {{ Number(item.price).toLocaleString('en-IN') }}</span>
-                                                </div>
+                                                <!-- 3-Part Body Layout (Product Name Left, QR+SKU Middle, Price Right) -->
+                                                <div class="w-full grid grid-cols-3 items-center p-2 gap-1 overflow-hidden min-h-[75px]">
+                                                    <!-- 1st Part (Left): Product Name -->
+                                                    <div class="flex items-center justify-start text-left overflow-hidden pr-1">
+                                                        <span v-if="showName" class="text-gray-900 font-sans font-black uppercase text-[9px] leading-tight break-words line-clamp-3" :title="item.name">
+                                                            {{ item.name || item.sku }}
+                                                        </span>
+                                                    </div>
 
-                                                <!-- QR Code Graphic Canvas -->
-                                                <div class="w-full my-1.5 flex items-center justify-center min-h-[70px]">
-                                                    <canvas :ref="el => setQrCanvasRef(el, item)" class="max-w-[70px] max-h-[70px] object-contain"></canvas>
-                                                </div>
+                                                    <!-- 2nd Part (Middle): QR Code Graphic + SKU -->
+                                                    <div class="flex flex-col items-center justify-center min-w-0">
+                                                        <canvas :ref="el => setQrCanvasRef(el, item)" class="max-w-[55px] max-h-[55px] object-contain"></canvas>
+                                                        <span class="font-mono text-[7.5px] font-bold tracking-wider text-gray-800 mt-0.5 whitespace-nowrap">SKU: {{ item.sku }}</span>
+                                                    </div>
 
-                                                <!-- SKU String Code Footer -->
-                                                <div class="w-full text-center">
-                                                    <span class="font-mono text-[9px] font-bold tracking-wider text-gray-800">SKU: {{ item.sku }}</span>
+                                                    <!-- 3rd Part (Right): Price -->
+                                                    <div class="flex items-center justify-end text-right overflow-hidden pl-1">
+                                                        <span v-if="showPrice && item.price" class="text-amber-900 font-mono text-[10px] font-black leading-none break-words max-w-full">
+                                                            Rs. {{ Number(item.price).toLocaleString('en-IN') }}
+                                                        </span>
+                                                    </div>
                                                 </div>
 
                                                 <!-- Delete / Adjust Badge on Hover -->
@@ -1827,6 +1893,9 @@
                 const invoiceData = ref({
                     clientName: '',
                     phone: '',
+                    discountType: 'fixed',
+                    discountValue: 0,
+                    advancePayment: 0,
                     items: [],
                     notes: ''
                 });
@@ -2175,24 +2244,30 @@
                                 topOffset = 8;
                             }
 
-                            // 3. Product Name & Price Header
+                            // 3. Product Name & Price Header (Safe text boundary check)
                             if (showName.value || showPrice.value) {
-                                doc.setFontSize(9.5);
+                                doc.setFontSize(9);
                                 doc.setFont('helvetica', 'bold');
-                                doc.setTextColor(10, 10, 10);
 
-                                if (showName.value) {
-                                    const maxChar = 16;
-                                    const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '..' : item.name;
-                                    doc.text(truncatedName, x + 3.5, y + topOffset + 6);
+                                let priceWidth = 0;
+                                if (showPrice.value && item.price > 0) {
+                                    const priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
+                                    doc.setTextColor(180, 120, 30);
+                                    doc.text(priceText, x + labelW - 3.5, y + topOffset + 6, { align: 'right' });
+                                    priceWidth = doc.getTextWidth(priceText);
                                 }
 
-                                if (showPrice.value && item.price > 0) {
-                                    doc.setFontSize(9.5);
-                                    doc.setFont('helvetica', 'bold');
-                                    doc.setTextColor(180, 120, 30);
-                                    const priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
-                                    doc.text(priceText, x + labelW - 3.5, y + topOffset + 6, { align: 'right' });
+                                if (showName.value) {
+                                    doc.setTextColor(10, 10, 10);
+                                    const maxNameW = labelW - priceWidth - 8;
+                                    let truncatedName = item.name || item.sku;
+                                    if (doc.getTextWidth(truncatedName) > maxNameW) {
+                                        while (truncatedName.length > 3 && doc.getTextWidth(truncatedName + '..') > maxNameW) {
+                                            truncatedName = truncatedName.substring(0, truncatedName.length - 1);
+                                        }
+                                        truncatedName += '..';
+                                    }
+                                    doc.text(truncatedName, x + 3.5, y + topOffset + 6);
                                 }
 
                                 // Divider Line
@@ -2226,9 +2301,9 @@
                     if (format === 'thermal_100x50') {
                         // 100mm width x 50mm height
                         doc = new jsPDF('l', 'mm', [50, 100]);
-                        const marginX = 4;
+                        const marginX = 3.5;
                         const marginY = 3.5;
-                        const labelW = 92; // 100 - 8mm margins
+                        const labelW = 93; // 100 - 7mm margins
                         const labelH = 43; // 50 - 7mm margins
 
                         for (let i = 0; i < flattened.length; i++) {
@@ -2247,51 +2322,73 @@
                             let topOffset = 0;
                             if (showHeader.value) {
                                 doc.setFillColor(20, 20, 20);
-                                doc.roundedRect(x, y, labelW, 6, 2.5, 2.5, 'F');
-                                doc.rect(x, y + 4, labelW, 2, 'F');
+                                doc.roundedRect(x, y, labelW, 6.5, 2.5, 2.5, 'F');
+                                doc.rect(x, y + 4.5, labelW, 2, 'F');
                                 doc.setFontSize(8);
                                 doc.setFont('helvetica', 'bold');
                                 doc.setTextColor(197, 160, 115);
-                                doc.text('PLANT EXPERIENCE CENTRE', x + (labelW / 2), y + 4.2, { align: 'center' });
-                                topOffset = 6;
+                                doc.text('PLANT EXPERIENCE CENTRE', x + (labelW / 2), y + 4.5, { align: 'center' });
+                                topOffset = 6.5;
                             }
 
-                            // 3. Product Name & Price Header
-                            if (showName.value || showPrice.value) {
-                                doc.setFontSize(10.5);
+                            // 3-PART EVENLY DISTRIBUTED LAYOUT
+                            const bodyY = y + topOffset;
+                            const bodyH = labelH - topOffset;
+                            const colW = labelW / 3;
+
+                            // 1ST PART: PRODUCT NAME (Left Column - strictly before central boundary)
+                            if (showName.value) {
+                                doc.setFontSize(8.5);
                                 doc.setFont('helvetica', 'bold');
                                 doc.setTextColor(10, 10, 10);
-
-                                if (showName.value) {
-                                    const maxChar = 22;
-                                    const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '..' : item.name;
-                                    doc.text(truncatedName, x + 4, y + topOffset + 5.5);
+                                const leftMargin = x + 3.5;
+                                const maxNameW = colW - 4.5;
+                                let nameLines = doc.splitTextToSize(item.name || item.sku, maxNameW);
+                                if (nameLines.length > 3) {
+                                    nameLines = nameLines.slice(0, 3);
+                                    nameLines[2] = nameLines[2].substring(0, Math.max(0, nameLines[2].length - 2)) + '..';
                                 }
-
-                                if (showPrice.value && item.price > 0) {
-                                    doc.setFontSize(10.5);
-                                    doc.setFont('helvetica', 'bold');
-                                    doc.setTextColor(180, 120, 30);
-                                    const priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
-                                    doc.text(priceText, x + labelW - 4, y + topOffset + 5.5, { align: 'right' });
+                                const lineHeight = 3.8;
+                                const totalH = nameLines.length * lineHeight;
+                                const startNameY = bodyY + (bodyH - totalH) / 2 + 2.8;
+                                for (let l = 0; l < nameLines.length; l++) {
+                                    doc.text(nameLines[l], leftMargin, startNameY + (l * lineHeight));
                                 }
                             }
 
-                            // 4. High-Resolution QR Code Graphic (Perfectly Centered)
+                            // 2ND PART: QR CODE & SKU (Middle Column)
                             const qrPayload = String(item.sku || '').trim();
                             const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                            const centerX = x + (labelW / 2);
                             if (qrDataUrl) {
-                                const qrSize = 22; // 22mm x 22mm
-                                const qrX = x + (labelW - qrSize) / 2; // Centered horizontally
-                                const qrY = y + topOffset + 7.5;
+                                const qrSize = 23; // 23mm x 23mm
+                                const qrX = centerX - (qrSize / 2);
+                                const qrY = bodyY + 2.5;
                                 doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+
+                                // SKU Footer below QR in center
+                                doc.setFontSize(8);
+                                doc.setFont('courier', 'bold');
+                                doc.setTextColor(20, 20, 20);
+                                doc.text(`SKU: ${item.sku}`, centerX, qrY + qrSize + 3.5, { align: 'center' });
+                            } else {
+                                doc.setFontSize(8);
+                                doc.setFont('courier', 'bold');
+                                doc.setTextColor(20, 20, 20);
+                                doc.text(`SKU: ${item.sku}`, centerX, bodyY + (bodyH / 2), { align: 'center' });
                             }
 
-                            // 5. SKU Code Footer (Perfectly Centered)
-                            doc.setFontSize(9);
-                            doc.setFont('courier', 'bold');
-                            doc.setTextColor(20, 20, 20);
-                            doc.text(`SKU: ${item.sku}`, x + (labelW / 2), y + labelH - 3.5, { align: 'center' });
+                            // 3RD PART: PRICE (Right Column - strictly inside outer right border)
+                            if (showPrice.value && item.price > 0) {
+                                doc.setFontSize(9.5);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(180, 120, 30);
+                                const priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
+                                const rightMargin = x + labelW - 4.0; // 4mm inside right border
+                                const maxPriceW = colW - 4.5;
+                                const priceY = bodyY + (bodyH / 2) + 1;
+                                doc.text(priceText, rightMargin, priceY, { align: 'right', maxWidth: maxPriceW });
+                            }
                         }
                         return doc;
                     }
@@ -2337,52 +2434,115 @@
                         let topOffset = 0;
                         if (showHeader.value) {
                             doc.setFillColor(20, 20, 20);
-                            doc.roundedRect(x, y, colWidth, 6, 2, 2, 'F');
-                            doc.rect(x, y + 4, colWidth, 2, 'F');
+                            doc.roundedRect(x, y, colWidth, 5.5, 2, 2, 'F');
+                            doc.rect(x, y + 3.5, colWidth, 2, 'F');
                             doc.setFontSize(cols === 1 ? 8 : (cols === 2 ? 7 : 5.5));
                             doc.setFont('helvetica', 'bold');
                             doc.setTextColor(197, 160, 115);
-                            doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4.2, { align: 'center' });
-                            topOffset = 6;
+                            doc.text('PLANT EXPERIENCE CENTRE', x + (colWidth / 2), y + 4, { align: 'center' });
+                            topOffset = 5.5;
                         }
 
-                        // 3. Product Name & Price Header
-                        if (showName.value || showPrice.value) {
-                            const headerFontSize = cols === 1 ? 11 : (cols === 2 ? 9.5 : (cols === 3 ? 8 : 7));
-                            doc.setFontSize(headerFontSize);
-                            doc.setFont('helvetica', 'bold');
-                            doc.setTextColor(10, 10, 10);
+                        const bodyY = y + topOffset;
+                        const bodyH = cardHeight - topOffset;
 
+                        if (cols <= 3) {
+                            const colW = colWidth / 3;
+
+                            // 1ST PART: Product Name
                             if (showName.value) {
-                                const maxChar = cols === 1 ? 22 : (cols === 2 ? 15 : (cols === 3 ? 10 : 7));
-                                const truncatedName = item.name.length > maxChar ? item.name.substring(0, maxChar - 2) + '..' : item.name;
-                                doc.text(truncatedName, x + 4, y + topOffset + (cols === 1 ? 5.5 : 4.5));
+                                const fontSz = cols === 1 ? 9.5 : (cols === 2 ? 8.5 : 7.5);
+                                doc.setFontSize(fontSz);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(10, 10, 10);
+                                const leftMargin = x + 3;
+                                const maxNameW = colW - 4;
+                                let nameLines = doc.splitTextToSize(item.name || item.sku, maxNameW);
+                                if (nameLines.length > 3) {
+                                    nameLines = nameLines.slice(0, 3);
+                                    nameLines[2] = nameLines[2].substring(0, Math.max(0, nameLines[2].length - 2)) + '..';
+                                }
+                                const lineHeight = fontSz * 0.42;
+                                const totalH = nameLines.length * lineHeight;
+                                const startNameY = bodyY + (bodyH - totalH) / 2 + (fontSz * 0.3);
+                                for (let l = 0; l < nameLines.length; l++) {
+                                    doc.text(nameLines[l], leftMargin, startNameY + (l * lineHeight));
+                                }
                             }
 
+                            // 2ND PART: QR Code & SKU
+                            const qrPayload = String(item.sku || '').trim();
+                            const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                            const centerX = x + (colWidth / 2);
+                            if (qrDataUrl) {
+                                const qrSize = cols === 1 ? 28 : (cols === 2 ? 22 : 18);
+                                const qrX = centerX - (qrSize / 2);
+                                const qrY = bodyY + 2;
+                                doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+
+                                doc.setFontSize(cols === 1 ? 8.5 : (cols === 2 ? 7.5 : 6.5));
+                                doc.setFont('courier', 'bold');
+                                doc.setTextColor(20, 20, 20);
+                                doc.text(`SKU: ${item.sku}`, centerX, qrY + qrSize + 3, { align: 'center' });
+                            }
+
+                            // 3RD PART: Price
                             if (showPrice.value && item.price > 0) {
-                                doc.setFontSize(headerFontSize);
+                                const fontSz = cols === 1 ? 10.5 : (cols === 2 ? 9 : 8);
+                                doc.setFontSize(fontSz);
                                 doc.setFont('helvetica', 'bold');
                                 doc.setTextColor(180, 120, 30);
                                 const priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
-                                doc.text(priceText, x + colWidth - 5, y + topOffset + (cols === 1 ? 5.5 : 4.5), { align: 'right' });
+                                const rightMargin = x + colWidth - 3.5;
+                                const maxPriceW = colW - 4;
+                                const priceY = bodyY + (bodyH / 2) + 1;
+                                doc.text(priceText, rightMargin, priceY, { align: 'right', maxWidth: maxPriceW });
                             }
-                        }
+                        } else {
+                            // 4 COLUMNS (Narrow 45mm cards)
+                            let headerH = 0;
+                            if (showName.value || showPrice.value) {
+                                doc.setFontSize(7);
+                                doc.setFont('helvetica', 'bold');
 
-                        // 4. High-Resolution QR Code Graphic
-                        const qrPayload = String(item.sku || '').trim();
-                        const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
-                        if (qrDataUrl) {
-                            const qrSize = cols === 1 ? 30 : (cols === 2 ? 24 : (cols === 3 ? 20 : 16));
-                            const qrX = x + (colWidth - qrSize) / 2;
-                            const qrY = y + topOffset + (cols === 1 ? 7 : 6);
-                            doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
-                        }
+                                let priceText = '';
+                                let priceWidth = 0;
+                                if (showPrice.value && item.price > 0) {
+                                    priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
+                                    doc.setTextColor(180, 120, 30);
+                                    doc.text(priceText, x + colWidth - 3, y + topOffset + 4.5, { align: 'right' });
+                                    priceWidth = doc.getTextWidth(priceText);
+                                }
 
-                        // 5. Monospace SKU Code Footer
-                        doc.setFontSize(cols === 1 ? 10 : (cols === 2 ? 8.5 : 7));
-                        doc.setFont('courier', 'bold');
-                        doc.setTextColor(30, 30, 30);
-                        doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + cardHeight - 3.5, { align: 'center' });
+                                if (showName.value) {
+                                    doc.setTextColor(10, 10, 10);
+                                    const maxNameWidth = colWidth - priceWidth - 7;
+                                    let truncatedName = item.name || item.sku;
+                                    if (doc.getTextWidth(truncatedName) > maxNameWidth) {
+                                        while (truncatedName.length > 3 && doc.getTextWidth(truncatedName + '..') > maxNameWidth) {
+                                            truncatedName = truncatedName.substring(0, truncatedName.length - 1);
+                                        }
+                                        truncatedName += '..';
+                                    }
+                                    doc.text(truncatedName, x + 3, y + topOffset + 4.5);
+                                }
+                                headerH = 6;
+                            }
+
+                            const qrPayload = String(item.sku || '').trim();
+                            const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                            if (qrDataUrl) {
+                                const qrSize = 16;
+                                const qrX = x + (colWidth - qrSize) / 2;
+                                const qrY = y + topOffset + headerH + 1;
+                                doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+                            }
+
+                            doc.setFontSize(6.5);
+                            doc.setFont('courier', 'bold');
+                            doc.setTextColor(30, 30, 30);
+                            doc.text(`SKU: ${item.sku}`, x + (colWidth / 2), y + cardHeight - 2.5, { align: 'center' });
+                        }
 
                         currentCol++;
                         if (currentCol >= cols) {
@@ -2487,8 +2647,42 @@
                     return Math.round(subtotalGstApplicable.value * 0.18 * 100) / 100;
                 });
 
-                const totalAmount = computed(() => {
+                const grossTotal = computed(() => {
                     return Math.round((subtotal.value + gstAmount.value) * 100) / 100;
+                });
+
+                const discountAmount = computed(() => {
+                    const discType = invoiceData.value.discountType || 'fixed';
+                    const discVal = Math.max(0, Number(invoiceData.value.discountValue) || 0);
+                    if (discVal <= 0) return 0;
+                    let disc = 0;
+                    if (discType === 'percent') {
+                        disc = Math.round((grossTotal.value * discVal / 100) * 100) / 100;
+                    } else {
+                        disc = Math.round(discVal * 100) / 100;
+                    }
+                    return Math.min(disc, grossTotal.value);
+                });
+
+                const netTotal = computed(() => {
+                    return Math.max(0, Math.round((grossTotal.value - discountAmount.value) * 100) / 100);
+                });
+
+                const advancePaid = computed(() => {
+                    const adv = Math.max(0, Number(invoiceData.value.advancePayment) || 0);
+                    return Math.min(adv, netTotal.value);
+                });
+
+                const remainingDue = computed(() => {
+                    return Math.max(0, Math.round((netTotal.value - advancePaid.value) * 100) / 100);
+                });
+
+                const payableAmount = computed(() => {
+                    return advancePaid.value > 0 && remainingDue.value > 0 ? remainingDue.value : netTotal.value;
+                });
+
+                const totalAmount = computed(() => {
+                    return netTotal.value;
                 });
 
                 const currentPaymentLink = ref('');
@@ -2786,8 +2980,73 @@
 
                     const calcSubtotal = calcSubtotalGst + calcSubtotalExempt;
                     const calcGstAmount = Math.round(totalTaxAmount * 100) / 100;
-                    const calcFinalTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
-                    const finalAmount = totalAmt > 0 ? totalAmt : calcFinalTotal;
+                    const calcGrossTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
+
+                    // Discount Calculation
+                    const discType = invData.discountType || 'fixed';
+                    const discVal = Math.max(0, Number(invData.discountValue) || 0);
+                    let calcDiscountAmount = 0;
+                    if (discVal > 0) {
+                        if (discType === 'percent') {
+                            calcDiscountAmount = Math.round((calcGrossTotal * discVal / 100) * 100) / 100;
+                        } else {
+                            calcDiscountAmount = Math.round(discVal * 100) / 100;
+                        }
+                        calcDiscountAmount = Math.min(calcDiscountAmount, calcGrossTotal);
+                    }
+
+                    const calcNetTotal = Math.max(0, Math.round((calcGrossTotal - calcDiscountAmount) * 100) / 100);
+
+                    // Advance Payment Calculation
+                    const calcAdvancePaid = Math.min(Math.max(0, Number(invData.advancePayment) || 0), calcNetTotal);
+                    const calcRemainingDue = Math.max(0, Math.round((calcNetTotal - calcAdvancePaid) * 100) / 100);
+
+                    // Render Discount Row if present
+                    if (calcDiscountAmount > 0) {
+                        ctx.fillStyle = '#FEF3C7';
+                        ctx.fillRect(tableX, currentY, tableW, 45);
+
+                        ctx.strokeStyle = '#FDE68A';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(tableX, currentY + 45);
+                        ctx.lineTo(tableX + tableW, currentY + 45);
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#92400E';
+                        ctx.font = 'bold 16px helvetica, sans-serif';
+                        ctx.textAlign = 'left';
+                        const discLabel = discType === 'percent' ? `Discount Applied (${discVal}%)` : `Discount Applied (Fixed Amount)`;
+                        ctx.fillText(`- ${discLabel}`, 153, currentY + 28);
+
+                        ctx.textAlign = 'right';
+                        ctx.fillText(`- INR ${calcDiscountAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 28);
+
+                        currentY += 45;
+                    }
+
+                    // Render Advance Paid Row if present
+                    if (calcAdvancePaid > 0) {
+                        ctx.fillStyle = '#E0F2FE';
+                        ctx.fillRect(tableX, currentY, tableW, 45);
+
+                        ctx.strokeStyle = '#BAE6FD';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(tableX, currentY + 45);
+                        ctx.lineTo(tableX + tableW, currentY + 45);
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#075985';
+                        ctx.font = 'bold 16px helvetica, sans-serif';
+                        ctx.textAlign = 'left';
+                        ctx.fillText('- Advance Payment Paid', 153, currentY + 28);
+
+                        ctx.textAlign = 'right';
+                        ctx.fillText(`- INR ${calcAdvancePaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 28);
+
+                        currentY += 45;
+                    }
 
                     // Total Footer Row
                     ctx.fillStyle = '#4C762E';
@@ -2796,10 +3055,12 @@
                     ctx.fillStyle = '#FFFFFF';
                     ctx.font = 'bold 18px helvetica, sans-serif';
                     ctx.textAlign = 'left';
-                    ctx.fillText('TOTAL:', 106, currentY + 35);
+                    const footerTitle = calcAdvancePaid > 0 ? 'REMAINING DUE PAYMENT:' : 'TOTAL AMOUNT:';
+                    ctx.fillText(footerTitle, 106, currentY + 35);
 
+                    const finalDisplayAmt = totalAmt > 0 ? totalAmt : (calcAdvancePaid > 0 ? calcRemainingDue : calcNetTotal);
                     ctx.textAlign = 'right';
-                    ctx.fillText(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 35);
+                    ctx.fillText(`INR ${finalDisplayAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 35);
 
                     return canvas.toDataURL('image/png');
                 };
@@ -2820,7 +3081,12 @@
                                 amount: totalAmt || paymentModalAmount.value || 0,
                                 items: invData.items || [],
                                 payment_ref: paymentRef || paymentModalRefNo.value || '',
-                                order_id: paymentModalOrderNo.value || ''
+                                order_id: paymentModalOrderNo.value || '',
+                                discount_type: invData.discountType || 'fixed',
+                                discount_value: Number(invData.discountValue) || 0,
+                                discount_amount: discountAmount.value || 0,
+                                advance_paid: advancePaid.value || 0,
+                                remaining_due: remainingDue.value || 0
                             })
                         });
                         const data = await safeFetchJson(res);
@@ -3024,8 +3290,59 @@
 
                     const calcSubtotal = calcSubtotalGst + calcSubtotalExempt;
                     const calcGstAmount = Math.round(totalTaxAmount * 100) / 100;
-                    const calcFinalTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
-                    const finalAmount = totalAmt > 0 ? totalAmt : calcFinalTotal;
+                    const calcGrossTotal = Math.round((calcSubtotal + calcGstAmount) * 100) / 100;
+
+                    // Discount Calculation
+                    const discType = invData.discountType || 'fixed';
+                    const discVal = Math.max(0, Number(invData.discountValue) || 0);
+                    let calcDiscountAmount = 0;
+                    if (discVal > 0) {
+                        if (discType === 'percent') {
+                            calcDiscountAmount = Math.round((calcGrossTotal * discVal / 100) * 100) / 100;
+                        } else {
+                            calcDiscountAmount = Math.round(discVal * 100) / 100;
+                        }
+                        calcDiscountAmount = Math.min(calcDiscountAmount, calcGrossTotal);
+                    }
+
+                    const calcNetTotal = Math.max(0, Math.round((calcGrossTotal - calcDiscountAmount) * 100) / 100);
+
+                    // Advance Payment Calculation
+                    const calcAdvancePaid = Math.min(Math.max(0, Number(invData.advancePayment) || 0), calcNetTotal);
+                    const calcRemainingDue = Math.max(0, Math.round((calcNetTotal - calcAdvancePaid) * 100) / 100);
+
+                    // Render Discount Row in PDF if applied
+                    if (calcDiscountAmount > 0) {
+                        doc.setFillColor(254, 243, 199);
+                        doc.rect(tableX, currentY, tableW, 7.5, 'F');
+                        doc.setDrawColor(253, 230, 138);
+                        doc.line(tableX, currentY + 7.5, tableX + tableW, currentY + 7.5);
+
+                        doc.setTextColor(146, 64, 14);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(8);
+                        const discLabel = discType === 'percent' ? `Discount Applied (${discVal}%)` : `Discount Applied (Fixed Amount)`;
+                        doc.text(`- ${discLabel}`, 26, currentY + 5);
+
+                        doc.text(`- INR ${calcDiscountAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 5, { align: 'right' });
+                        currentY += 7.5;
+                    }
+
+                    // Render Advance Paid Row in PDF if entered
+                    if (calcAdvancePaid > 0) {
+                        doc.setFillColor(224, 242, 254);
+                        doc.rect(tableX, currentY, tableW, 7.5, 'F');
+                        doc.setDrawColor(186, 230, 253);
+                        doc.line(tableX, currentY + 7.5, tableX + tableW, currentY + 7.5);
+
+                        doc.setTextColor(7, 89, 133);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(8);
+                        doc.text('- Advance Payment Paid', 26, currentY + 5);
+
+                        doc.text(`- INR ${calcAdvancePaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 5, { align: 'right' });
+                        currentY += 7.5;
+                    }
 
                     // TOTAL Table Footer Row (Green Theme Match)
                     doc.setFillColor(76, 118, 46);
@@ -3034,10 +3351,11 @@
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8.5);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('TOTAL:', 18, currentY + 6);
+                    const footerTitle = calcAdvancePaid > 0 ? 'REMAINING DUE PAYMENT:' : 'TOTAL AMOUNT:';
+                    doc.text(footerTitle, 18, currentY + 6);
 
-                    // Total Amount Total (Incl. GST)
-                    doc.text(`INR ${finalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 6, { align: 'right' });
+                    const finalAmountToDisplay = totalAmt > 0 ? totalAmt : (calcAdvancePaid > 0 ? calcRemainingDue : calcNetTotal);
+                    doc.text(`INR ${finalAmountToDisplay.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 6, { align: 'right' });
 
                     return doc.output('datauristring');
                 };
@@ -3193,6 +3511,9 @@
                         number: '',
                         clientName: '',
                         phone: '',
+                        discountType: 'fixed',
+                        discountValue: 0,
+                        advancePayment: 0,
                         notes: '',
                         items: []
                     };
@@ -3336,6 +3657,7 @@
 
                     try {
                         // 1. Generate CCAvenue Payment Link
+                        const amtToCharge = payableAmount.value;
                         const linkRes = await fetch('/api/payment/create-link', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -3343,7 +3665,7 @@
                                 invoice_id: invId,
                                 client_name: invoiceData.value.clientName,
                                 phone: invoiceData.value.phone,
-                                amount: totalAmount.value,
+                                amount: amtToCharge,
                                 notes: invoiceData.value.notes || ''
                             })
                         });
@@ -3364,7 +3686,19 @@
                             message += `- ${item.description} (x${item.qty}) : ₹${(item.qty * item.price).toLocaleString('en-IN')}\n`;
                         });
 
-                        message += `\n*Total Amount:* ₹${totalAmount.value.toLocaleString('en-IN')}\n`;
+                        if (discountAmount.value > 0) {
+                            const discLabel = invoiceData.value.discountType === 'percent'
+                                ? `Discount (${invoiceData.value.discountValue}%):`
+                                : `Discount (Fixed):`;
+                            message += `\n*${discLabel}* -₹${discountAmount.value.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n`;
+                        }
+
+                        message += `\n*Net Bill Amount:* ₹${netTotal.value.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n`;
+
+                        if (advancePaid.value > 0) {
+                            message += `*Advance Paid:* -₹${advancePaid.value.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n`;
+                            message += `*Remaining Due Payment:* ₹${remainingDue.value.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n`;
+                        }
 
                         if (currentPaymentLink.value) {
                             message += `\n💳 *Pay Online (CCAvenue):*\n${currentPaymentLink.value}\n`;
@@ -3402,7 +3736,7 @@
                         // 4. Trigger Live CCAvenue Payment Status Pop-up Modal
                         paymentModalInvoiceId.value = invId;
                         paymentModalClientName.value = invoiceData.value.clientName;
-                        paymentModalAmount.value = totalAmount.value;
+                        paymentModalAmount.value = amtToCharge;
                         paymentModalLink.value = currentPaymentLink.value;
                         paymentModalOrderNo.value = (linkData && linkData.order_id) ? linkData.order_id : invId;
                         paymentModalStatus.value = 'PENDING';
@@ -4160,6 +4494,12 @@
                     subtotalGstExempt,
                     subtotal,
                     gstAmount,
+                    grossTotal,
+                    discountAmount,
+                    netTotal,
+                    advancePaid,
+                    remainingDue,
+                    payableAmount,
                     totalAmount,
                     sendingInvoice,
                     sendSuccess,

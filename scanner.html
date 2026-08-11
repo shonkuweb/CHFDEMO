@@ -394,6 +394,12 @@
             border-color: rgba(248, 113, 113, 0.4);
             color: var(--error);
         }
+        .status-hud.warning {
+            background: rgba(45, 35, 10, 0.95);
+            border-color: rgba(245, 158, 11, 0.5);
+            color: #f59e0b;
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.2);
+        }
 
         /* Scanned Product Sheet Drawer (Bottom of Browser) */
         .mobile-scan-sheet {
@@ -1071,6 +1077,21 @@
                                 } catch (e) {}
                             }
 
+                            // MANDATORY CONSTRAINT: In a scanning session, one unique QR code can only be scanned ONCE by the scanner.
+                            // Pre-check if this QR code or SKU is ALREADY in scannedProductsList for the current session.
+                            const preCheckIndex = scannedProductsList.findIndex(i => 
+                                (i.sku && i.sku.toUpperCase() === realSku.toUpperCase()) ||
+                                (i.rawQr && i.rawQr.toUpperCase() === text.toUpperCase())
+                            );
+                            if (preCheckIndex !== -1) {
+                                const item = scannedProductsList[preCheckIndex];
+                                const displayName = item.name || item.sku;
+                                statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: #f59e0b;">warning</span> <strong>Already Scanned:</strong> ${displayName} (Qty: ${item.qty}). Adjust +/- manually below.`;
+                                statusEl.className = 'status-hud warning';
+                                if (scanSheet) scanSheet.style.display = 'flex';
+                                return;
+                            }
+
                             // 2. Perform database lookup to verify product and fetch full details
                             try {
                                 const lookupRes = await fetch(`/api/skus/lookup/${encodeURIComponent(realSku)}`);
@@ -1093,9 +1114,22 @@
                                 if (!prodName) return;
                             }
 
+                            // Post-check after DB lookup in case DB resolved a canonical SKU already in the session
+                            const postCheckIndex = scannedProductsList.findIndex(i => 
+                                i.sku && i.sku.toUpperCase() === realSku.toUpperCase()
+                            );
+                            if (postCheckIndex !== -1) {
+                                const item = scannedProductsList[postCheckIndex];
+                                const displayName = item.name || item.sku;
+                                statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: #f59e0b;">warning</span> <strong>Already Scanned:</strong> ${displayName} (Qty: ${item.qty}). Adjust +/- manually below.`;
+                                statusEl.className = 'status-hud warning';
+                                if (scanSheet) scanSheet.style.display = 'flex';
+                                return;
+                            }
+
                             if (!prodName) prodName = realSku;
 
-                            // 3. Play sound feedback only for verified real products
+                            // 3. Play sound feedback only for newly scanned products
                             playScanSound();
 
                             const maskBox = document.getElementById('mask-box');
@@ -1108,20 +1142,16 @@
                             statusEl.innerHTML = `<span class="material-symbols-outlined" style="color: var(--success);">check_circle</span> Scanned: <strong>${prodName}${priceTag}</strong>`;
                             statusEl.className = 'status-hud success';
 
-                            // 4. Add item to mobile cart array
-                            const existingIndex = scannedProductsList.findIndex(i => i.sku.toUpperCase() === realSku.toUpperCase());
-                            if (existingIndex !== -1) {
-                                scannedProductsList[existingIndex].qty += 1;
-                            } else {
-                                scannedProductsList.push({
-                                    sku: realSku,
-                                    name: prodName,
-                                    price: prodPrice,
-                                    description: prodDesc,
-                                    image_url: imgUrl,
-                                    qty: 1
-                                });
-                            }
+                            // 4. Add new item to mobile cart array (initial qty = 1)
+                            scannedProductsList.push({
+                                sku: realSku,
+                                rawQr: text,
+                                name: prodName,
+                                price: prodPrice,
+                                description: prodDesc,
+                                image_url: imgUrl,
+                                qty: 1
+                            });
 
                             renderScannedProductsList();
                         }
