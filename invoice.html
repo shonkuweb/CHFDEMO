@@ -2795,6 +2795,7 @@
 
                 const generateDueBill = async (item) => {
                     if (!item || !item.invoice_id) return;
+                    activeDueBillItem.value = item;
                     const dueAmt = Number(item.remaining_due) || 0;
                     if (dueAmt <= 0) {
                         alert('This invoice has no remaining due payment!');
@@ -3038,9 +3039,17 @@
                     ctx.font = 'bold 16px helvetica, sans-serif';
                     ctx.fillText('PAYMENT DETAILS:', 679, startY + 41);
 
+                    // Status Header Badge
                     ctx.fillStyle = '#288C3C';
                     ctx.font = 'bold 19px helvetica, sans-serif';
-                    ctx.fillText('Status: PAID IN FULL', 679, startY + 82);
+                    if (invData.isDueCleared) {
+                        ctx.fillText('Status: PAID IN FULL (DUE CLEARED)', 679, startY + 82);
+                    } else if (calcAdvancePaid > 0 && calcRemainingDue > 0) {
+                        ctx.fillStyle = '#D97706';
+                        ctx.fillText('Status: ADVANCE PAID (BALANCE DUE)', 679, startY + 82);
+                    } else {
+                        ctx.fillText('Status: PAID IN FULL', 679, startY + 82);
+                    }
 
                     ctx.fillStyle = '#505050';
                     ctx.font = '16px helvetica, sans-serif';
@@ -3209,6 +3218,30 @@
                         currentY += 45;
                     }
 
+                    // Render Full Due Payment Cleared Row if due cleared
+                    const dueClearedAmt = Number(invData.dueClearedAmount) || calcRemainingDue || (calcNetTotal - calcAdvancePaid);
+                    if (invData.isDueCleared && dueClearedAmt > 0) {
+                        ctx.fillStyle = '#DCFCE7';
+                        ctx.fillRect(tableX, currentY, tableW, 45);
+
+                        ctx.strokeStyle = '#86EFAC';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(tableX, currentY + 45);
+                        ctx.lineTo(tableX + tableW, currentY + 45);
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#166534';
+                        ctx.font = 'bold 16px helvetica, sans-serif';
+                        ctx.textAlign = 'left';
+                        ctx.fillText('✓ Full Due Payment Cleared', 153, currentY + 28);
+
+                        ctx.textAlign = 'right';
+                        ctx.fillText(`- INR ${dueClearedAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 28);
+
+                        currentY += 45;
+                    }
+
                     // Total Footer Row
                     ctx.fillStyle = '#4C762E';
                     ctx.fillRect(tableX, currentY, tableW, 53);
@@ -3216,12 +3249,14 @@
                     ctx.fillStyle = '#FFFFFF';
                     ctx.font = 'bold 18px helvetica, sans-serif';
                     ctx.textAlign = 'left';
-                    const footerTitle = calcAdvancePaid > 0 ? 'REMAINING DUE PAYMENT:' : 'TOTAL AMOUNT:';
+                    const footerTitle = invData.isDueCleared ? 'TOTAL AMOUNT (PAID IN FULL):' : (calcAdvancePaid > 0 && calcRemainingDue > 0 ? 'REMAINING DUE PAYMENT:' : 'TOTAL AMOUNT:');
                     ctx.fillText(footerTitle, 106, currentY + 35);
 
-                    const finalDisplayAmt = totalAmt > 0 ? totalAmt : (calcAdvancePaid > 0 ? calcRemainingDue : calcNetTotal);
+                    const finalDisplayAmt = invData.isDueCleared ? calcNetTotal : (totalAmt > 0 ? totalAmt : (calcAdvancePaid > 0 ? calcRemainingDue : calcNetTotal));
                     ctx.textAlign = 'right';
                     ctx.fillText(`INR ${finalDisplayAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 1145, currentY + 35);
+
+                    return canvas.toDataURL('image/png');
 
                     return canvas.toDataURL('image/png');
                 };
@@ -3275,13 +3310,32 @@
                     img.src = '/assets/images/chf_letterhead.png';
                 };
 
+                const activeDueBillItem = ref(null);
                 const approvedPdfDataUri = ref('');
                 const sendingApprovedPdf = ref(false);
                 const approvedPdfSentSuccess = ref(false);
                 const approvedPdfSendError = ref('');
 
                 const prepareApprovedPdfPreview = (refNo = '') => {
-                    approvedPdfDataUri.value = generateBrandedInvoicePDF(invoiceData.value, refNo || paymentModalRefNo.value, totalAmount.value);
+                    let invForPdf = invoiceData.value;
+                    let pdfTotal = totalAmount.value;
+                    if (activeDueBillItem.value && activeDueBillItem.value.invoice_id === paymentModalInvoiceId.value) {
+                        const dueItem = activeDueBillItem.value;
+                        invForPdf = {
+                            ...invoiceData.value,
+                            number: paymentModalInvoiceId.value,
+                            clientName: paymentModalClientName.value || dueItem.client_name,
+                            phone: dueItem.phone || invoiceData.value.phone,
+                            items: (dueItem.items && dueItem.items.length > 0) ? dueItem.items : invoiceData.value.items,
+                            discountType: dueItem.discount_type || 'fixed',
+                            discountValue: dueItem.discount_value || 0,
+                            advancePayment: dueItem.advance_paid || 0,
+                            isDueCleared: true,
+                            dueClearedAmount: dueItem.remaining_due || 0
+                        };
+                        pdfTotal = dueItem.amount || pdfTotal;
+                    }
+                    approvedPdfDataUri.value = generateBrandedInvoicePDF(invForPdf, refNo || paymentModalRefNo.value, pdfTotal);
                 };
 
                 const startPaymentPolling = (invId) => {
@@ -3351,8 +3405,16 @@
                     doc.text(`Phone: ${invData.phone || 'N/A'}`, 20, startY + 20);
 
                     doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(40, 140, 60);
-                    doc.text('Status: PAID IN FULL', pageWidth / 2 + 10, startY + 14);
+                    if (invData.isDueCleared) {
+                        doc.setTextColor(40, 140, 60);
+                        doc.text('Status: PAID IN FULL (DUE CLEARED)', pageWidth / 2 + 10, startY + 14);
+                    } else if (calcAdvancePaid > 0 && calcRemainingDue > 0) {
+                        doc.setTextColor(217, 119, 6);
+                        doc.text('Status: ADVANCE PAID (BALANCE DUE)', pageWidth / 2 + 10, startY + 14);
+                    } else {
+                        doc.setTextColor(40, 140, 60);
+                        doc.text('Status: PAID IN FULL', pageWidth / 2 + 10, startY + 14);
+                    }
 
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(80, 80, 80);
@@ -3505,6 +3567,23 @@
                         currentY += 7.5;
                     }
 
+                    // Render Full Due Payment Cleared Row in PDF if due cleared
+                    const dueClearedAmt = Number(invData.dueClearedAmount) || calcRemainingDue || (calcNetTotal - calcAdvancePaid);
+                    if (invData.isDueCleared && dueClearedAmt > 0) {
+                        doc.setFillColor(220, 252, 231);
+                        doc.rect(tableX, currentY, tableW, 7.5, 'F');
+                        doc.setDrawColor(134, 239, 172);
+                        doc.line(tableX, currentY + 7.5, tableX + tableW, currentY + 7.5);
+
+                        doc.setTextColor(22, 101, 52);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(8);
+                        doc.text('✓ Full Due Payment Cleared', 26, currentY + 5);
+
+                        doc.text(`- INR ${dueClearedAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 5, { align: 'right' });
+                        currentY += 7.5;
+                    }
+
                     // TOTAL Table Footer Row (Green Theme Match)
                     doc.setFillColor(76, 118, 46);
                     doc.rect(tableX, currentY, tableW, 9, 'F');
@@ -3512,11 +3591,13 @@
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8.5);
                     doc.setFont('helvetica', 'bold');
-                    const footerTitle = calcAdvancePaid > 0 ? 'REMAINING DUE PAYMENT:' : 'TOTAL AMOUNT:';
+                    const footerTitle = invData.isDueCleared ? 'TOTAL AMOUNT (PAID IN FULL):' : (calcAdvancePaid > 0 && calcRemainingDue > 0 ? 'REMAINING DUE PAYMENT:' : 'TOTAL AMOUNT:');
                     doc.text(footerTitle, 18, currentY + 6);
 
-                    const finalAmountToDisplay = totalAmt > 0 ? totalAmt : (calcAdvancePaid > 0 ? calcRemainingDue : calcNetTotal);
+                    const finalAmountToDisplay = invData.isDueCleared ? calcNetTotal : (totalAmt > 0 ? totalAmt : (calcAdvancePaid > 0 ? calcRemainingDue : calcNetTotal));
                     doc.text(`INR ${finalAmountToDisplay.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 194, currentY + 6, { align: 'right' });
+
+                    return doc.output('datauristring');
 
                     return doc.output('datauristring');
                 };
@@ -3648,7 +3729,26 @@
 
                                 // Trigger Background R2 Upload & History Logging & Due Settlement
                                 if (isNewSuccess) {
-                                    uploadInvoiceToR2AndLog(invoiceData.value, data.ccavenue_ref_no || paymentModalRefNo.value, totalAmount.value);
+                                    let invToLog = invoiceData.value;
+                                    let logTotalAmt = totalAmount.value;
+                                    if (activeDueBillItem.value && activeDueBillItem.value.invoice_id === invId) {
+                                        const dueItem = activeDueBillItem.value;
+                                        invToLog = {
+                                            ...invoiceData.value,
+                                            number: invId,
+                                            clientName: paymentModalClientName.value || dueItem.client_name,
+                                            phone: dueItem.phone || invoiceData.value.phone,
+                                            items: (dueItem.items && dueItem.items.length > 0) ? dueItem.items : invoiceData.value.items,
+                                            discountType: dueItem.discount_type || 'fixed',
+                                            discountValue: dueItem.discount_value || 0,
+                                            advancePayment: dueItem.advance_paid || 0,
+                                            isDueCleared: true,
+                                            dueClearedAmount: dueItem.remaining_due || 0
+                                        };
+                                        logTotalAmt = dueItem.amount || logTotalAmt;
+                                    }
+
+                                    uploadInvoiceToR2AndLog(invToLog, data.ccavenue_ref_no || paymentModalRefNo.value, logTotalAmt);
                                     
                                     // Settle due payment in SQLite DB & auto-transfer to Full Paid tab
                                     fetch(`/api/invoice/settle-due/${encodeURIComponent(invId)}`, {
@@ -3657,6 +3757,7 @@
                                         body: JSON.stringify({ payment_ref: data.ccavenue_ref_no || paymentModalRefNo.value || '' })
                                     }).then(() => {
                                         fetchInvoiceHistory();
+                                        activeDueBillItem.value = null;
                                     }).catch(err => {
                                         console.error('Failed to settle due in DB:', err);
                                     });
