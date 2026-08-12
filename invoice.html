@@ -158,8 +158,8 @@
 
         @media print {
             @page {
-                size: A4 portrait;
-                margin: 10mm;
+                size: auto;
+                margin: 0;
             }
             html, body {
                 background: white !important;
@@ -2439,6 +2439,15 @@
                                 doc.text(priceText, rightMargin, priceY, { align: 'right', maxWidth: maxPriceW });
                             }
                         }
+
+                        // Remove /Rotate 90 tag so PDF opens horizontally as Image 2 in Preview app
+                        for (let p = 1; p <= doc.getNumberOfPages(); p++) {
+                            const info = doc.getPageInfo(p);
+                            if (info && info.pageContext) {
+                                info.pageContext.rotate = 0;
+                            }
+                        }
+
                         return doc;
                     }
 
