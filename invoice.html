@@ -2348,15 +2348,21 @@
                     // MODE 2: THERMAL ROLL 50mm x 25mm (LANDSCAPE 2" x 1" ROLL)
                     // -------------------------------------------------------------
                     if (format === 'thermal_50x25') {
-                        // 50mm width x 25mm height Landscape Page
-                        doc = new jsPDF('l', 'mm', [25, 50]);
+                        // 50mm width x 25mm height Horizontal Landscape Page
+                        doc = new jsPDF('l', 'mm', [50, 25]);
+                        doc.internal.pageSize.width = 50;
+                        doc.internal.pageSize.height = 25;
                         const marginX = 1.5;
                         const marginY = 1.5;
                         const labelW = 47; // 50 - 3mm margins
                         const labelH = 22; // 25 - 3mm margins
 
                         for (let i = 0; i < flattened.length; i++) {
-                            if (i > 0) doc.addPage([25, 50], 'l');
+                            if (i > 0) {
+                                doc.addPage([50, 25], 'l');
+                                doc.internal.pageSize.width = 50;
+                                doc.internal.pageSize.height = 25;
+                            }
                             const item = flattened[i];
                             const x = marginX;
                             const y = marginY;
@@ -2440,11 +2446,18 @@
                             }
                         }
 
-                        // Remove /Rotate 90 tag so PDF opens horizontally as Image 2 in Preview app
+                        // Enforce 50mm Wide x 25mm High Horizontal MediaBox & rotate = 0
+                        const mmToPt = 72 / 25.4;
                         for (let p = 1; p <= doc.getNumberOfPages(); p++) {
                             const info = doc.getPageInfo(p);
                             if (info && info.pageContext) {
                                 info.pageContext.rotate = 0;
+                                info.pageContext.mediaBox = {
+                                    bottomLeftX: 0,
+                                    bottomLeftY: 0,
+                                    topRightX: 50 * mmToPt,
+                                    topRightY: 25 * mmToPt
+                                };
                             }
                         }
 
