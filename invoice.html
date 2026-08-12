@@ -1355,21 +1355,27 @@
                                             <span class="material-symbols-outlined text-sm">print</span> Select Printer & Label Size
                                         </label>
                                         <span class="text-[9px] font-mono text-gray-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">
-                                            {{ printFormat === 'thermal_50x100' ? 'Thermal 50×100mm Roll (1 Label / Page)' : (printFormat === 'thermal_100x50' ? 'Thermal 100×50mm Roll (1 Label / Page)' : 'A4 Sticker Sheet (' + barcodeColumns + ' Cols)') }}
+                                            {{ printFormat === 'thermal_50x25' ? 'Thermal 50×25mm Roll (2"×1")' : (printFormat === 'thermal_100x50' ? 'Thermal 100×50mm Roll (4"×2")' : (printFormat === 'thermal_50x100' ? 'Thermal 50×100mm Roll' : 'A4 Sticker Sheet (' + barcodeColumns + ' Cols)')) }}
                                         </span>
                                     </div>
 
-                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        <button type="button" @click="setPrintFormat('thermal_50x100')"
-                                            :class="[printFormat === 'thermal_50x100' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                        <button type="button" @click="setPrintFormat('thermal_50x25')"
+                                            :class="[printFormat === 'thermal_50x25' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
                                             <span class="material-symbols-outlined text-sm">label</span>
-                                            <span>Thermal 50×100mm</span>
+                                            <span>Thermal 50×25mm (2"×1")</span>
                                         </button>
 
                                         <button type="button" @click="setPrintFormat('thermal_100x50')"
                                             :class="[printFormat === 'thermal_100x50' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
                                             <span class="material-symbols-outlined text-sm">label</span>
                                             <span>Thermal 100×50mm</span>
+                                        </button>
+
+                                        <button type="button" @click="setPrintFormat('thermal_50x100')"
+                                            :class="[printFormat === 'thermal_50x100' ? 'bg-[#C5A073] text-black font-extrabold shadow-md border-[#C5A073]' : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20', 'px-3 py-2 rounded-xl text-xs border transition-all flex items-center justify-center gap-1.5 cursor-pointer']">
+                                            <span class="material-symbols-outlined text-sm">label</span>
+                                            <span>Thermal 50×100mm</span>
                                         </button>
 
                                         <button type="button" @click="setPrintFormat('a4_1col')"
@@ -1960,7 +1966,7 @@
                 // Upgraded Studio options & reactivity
                 const barcodeTab = ref('search'); // 'search' | 'custom' | 'batch'
                 const barcodeColumns = ref(1); // Default to 1 per row
-                const printFormat = ref('thermal_100x50'); // Default to 100x50mm Thermal Label Roll
+                const printFormat = ref('thermal_50x25'); // Default to 50x25mm (2" x 1" Landscape Thermal Roll)
                 const barcodeSymbology = ref('CODE128');
                 const showPrice = ref(true);
                 const showName = ref(true);
@@ -1972,7 +1978,7 @@
 
                 const setPrintFormat = (fmt) => {
                     printFormat.value = fmt;
-                    if (fmt === 'thermal_50x100' || fmt === 'thermal_100x50' || fmt === 'a4_1col') {
+                    if (fmt === 'thermal_50x25' || fmt === 'thermal_50x100' || fmt === 'thermal_100x50' || fmt === 'a4_1col') {
                         barcodeColumns.value = 1;
                     } else if (fmt === 'a4_2col') {
                         barcodeColumns.value = 2;
@@ -2339,7 +2345,105 @@
                     }
 
                     // -------------------------------------------------------------
-                    // MODE 2: THERMAL ROLL 100mm x 50mm (LANDSCAPE - 1 LABEL PER PAGE)
+                    // MODE 2: THERMAL ROLL 50mm x 25mm (LANDSCAPE 2" x 1" ROLL)
+                    // -------------------------------------------------------------
+                    if (format === 'thermal_50x25') {
+                        // 50mm width x 25mm height Landscape Page
+                        doc = new jsPDF('l', 'mm', [25, 50]);
+                        const marginX = 1.5;
+                        const marginY = 1.5;
+                        const labelW = 47; // 50 - 3mm margins
+                        const labelH = 22; // 25 - 3mm margins
+
+                        for (let i = 0; i < flattened.length; i++) {
+                            if (i > 0) doc.addPage([25, 50], 'l');
+                            const item = flattened[i];
+                            const x = marginX;
+                            const y = marginY;
+
+                            // 1. Label Outer Border
+                            doc.setDrawColor(200, 200, 200);
+                            doc.setLineWidth(0.2);
+                            doc.setFillColor(255, 255, 255);
+                            doc.roundedRect(x, y, labelW, labelH, 1.5, 1.5, 'FD');
+
+                            // 2. Header Banner
+                            let topOffset = 0;
+                            if (showHeader.value) {
+                                doc.setFillColor(20, 20, 20);
+                                doc.roundedRect(x, y, labelW, 3.8, 1.5, 1.5, 'F');
+                                doc.rect(x, y + 2.5, labelW, 1.3, 'F');
+                                doc.setFontSize(6);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(197, 160, 115);
+                                doc.text('PLANT EXPERIENCE CENTRE', x + (labelW / 2), y + 2.7, { align: 'center' });
+                                topOffset = 3.8;
+                            }
+
+                            // 3-PART EVENLY DISTRIBUTED HORIZONTAL LAYOUT
+                            const bodyY = y + topOffset;
+                            const bodyH = labelH - topOffset;
+                            const colW = labelW / 3;
+
+                            // Left Column: Product Name
+                            if (showName.value) {
+                                doc.setFontSize(7.5);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(10, 10, 10);
+                                const leftMargin = x + 1.5;
+                                const maxNameW = colW - 1.5;
+                                let nameLines = doc.splitTextToSize((item.name || item.sku).toUpperCase(), maxNameW);
+                                if (nameLines.length > 3) {
+                                    nameLines = nameLines.slice(0, 3);
+                                    nameLines[2] = nameLines[2].substring(0, Math.max(0, nameLines[2].length - 2)) + '..';
+                                }
+                                const lineHeight = 2.8;
+                                const totalH = nameLines.length * lineHeight;
+                                const startNameY = bodyY + (bodyH - totalH) / 2 + 2.0;
+                                for (let l = 0; l < nameLines.length; l++) {
+                                    doc.text(nameLines[l], leftMargin, startNameY + (l * lineHeight));
+                                }
+                            }
+
+                            // Middle Column: QR Code & SKU
+                            const qrPayload = String(item.sku || '').trim();
+                            const qrDataUrl = await generateQRCodeDataUrl(qrPayload);
+                            const centerX = x + (labelW / 2);
+                            if (qrDataUrl) {
+                                const qrSize = 13; // 13mm x 13mm
+                                const qrX = centerX - (qrSize / 2);
+                                const qrY = bodyY + 0.6;
+                                doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+
+                                // SKU Footer below QR in center
+                                doc.setFontSize(5.5);
+                                doc.setFont('courier', 'bold');
+                                doc.setTextColor(20, 20, 20);
+                                doc.text(`SKU: ${item.sku}`, centerX, qrY + qrSize + 2.3, { align: 'center' });
+                            } else {
+                                doc.setFontSize(5.5);
+                                doc.setFont('courier', 'bold');
+                                doc.setTextColor(20, 20, 20);
+                                doc.text(`SKU: ${item.sku}`, centerX, bodyY + (bodyH / 2), { align: 'center' });
+                            }
+
+                            // Right Column: Price
+                            if (showPrice.value && item.price > 0) {
+                                doc.setFontSize(8.5);
+                                doc.setFont('helvetica', 'bold');
+                                doc.setTextColor(180, 120, 30);
+                                const priceText = `Rs. ${item.price.toLocaleString('en-IN')}`;
+                                const rightMargin = x + labelW - 1.5;
+                                const maxPriceW = colW - 1.5;
+                                const priceY = bodyY + (bodyH / 2) + 1.0;
+                                doc.text(priceText, rightMargin, priceY, { align: 'right', maxWidth: maxPriceW });
+                            }
+                        }
+                        return doc;
+                    }
+
+                    // -------------------------------------------------------------
+                    // MODE 3: THERMAL ROLL 100mm x 50mm (LANDSCAPE - 1 LABEL PER PAGE)
                     // -------------------------------------------------------------
                     if (format === 'thermal_100x50') {
                         // 100mm width x 50mm height
