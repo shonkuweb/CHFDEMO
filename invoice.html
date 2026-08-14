@@ -1206,8 +1206,19 @@
                                 <input type="text" v-model="batchSearchQuery" placeholder="Filter batch catalog..."
                                     class="w-full bg-black/60 border border-white/15 focus:border-[#C5A073] rounded-xl py-2 pl-9 pr-3 text-xs text-white outline-none"/>
                             </div>
-                            <div class="max-h-48 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-                                <div v-for="item in batchFilteredSkus" :key="item.sku" 
+                            <div class="flex items-center justify-between text-[10px] text-gray-400 px-0.5">
+                                <span>Showing {{ batchFilteredSkus.length }} of {{ skus.length }} catalog products</span>
+                                <div class="flex items-center gap-2" v-if="batchFilteredSkus.length > 0">
+                                    <button type="button" @click="selectAllBatchItems" class="text-[#C5A073] hover:underline font-semibold cursor-pointer">Select All</button>
+                                    <span class="text-gray-600">•</span>
+                                    <button type="button" @click="clearBatchSelection" class="text-gray-400 hover:text-white hover:underline cursor-pointer">Clear</button>
+                                </div>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                                <div v-if="batchFilteredSkus.length === 0" class="text-center py-6 text-xs text-gray-400 italic">
+                                    No products found in catalog.
+                                </div>
+                                <div v-for="item in batchFilteredSkus" :key="item.sku || item.id" 
                                     @click="toggleBatchSelection(item.sku)"
                                     :class="[selectedBatchItems[item.sku] !== undefined ? 'border-[#C5A073] bg-[#C5A073]/15' : 'border-white/5 bg-white/5', 'p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all']">
                                     <div class="flex items-center gap-2.5 min-w-0">
@@ -1232,7 +1243,7 @@
                                 </div>
                             </div>
                             <button type="button" @click="addBatchToQueue" :disabled="Object.keys(selectedBatchItems).length === 0"
-                                class="w-full bg-[#C5A073] text-black hover:opacity-90 py-2.5 rounded-xl text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-30 flex items-center justify-center gap-1.5">
+                                class="w-full bg-[#C5A073] text-black hover:opacity-90 py-2.5 rounded-xl text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-30 flex items-center justify-center gap-1.5 cursor-pointer">
                                 <span class="material-symbols-outlined text-base">playlist_add</span>
                                 Add Selected ({{ Object.keys(selectedBatchItems).length }}) to Queue
                             </button>
@@ -2003,13 +2014,29 @@
                 });
 
                 const batchFilteredSkus = computed(() => {
-                    if (!batchSearchQuery.value.trim()) return skus.value.slice(0, 12);
-                    const q = batchSearchQuery.value.toLowerCase();
+                    if (!skus.value) return [];
+                    if (!batchSearchQuery.value.trim()) return skus.value;
+                    const q = batchSearchQuery.value.trim().toLowerCase();
                     return skus.value.filter(s =>
                         (s.sku || '').toLowerCase().includes(q) ||
-                        (s.name || '').toLowerCase().includes(q)
+                        (s.name || '').toLowerCase().includes(q) ||
+                        (s.category || '').toLowerCase().includes(q)
                     );
                 });
+
+                const selectAllBatchItems = () => {
+                    const updated = { ...selectedBatchItems.value };
+                    batchFilteredSkus.value.forEach(item => {
+                        if (item.sku && updated[item.sku] === undefined) {
+                            updated[item.sku] = 1;
+                        }
+                    });
+                    selectedBatchItems.value = updated;
+                };
+
+                const clearBatchSelection = () => {
+                    selectedBatchItems.value = {};
+                };
 
                 const toggleBatchSelection = (sku) => {
                     if (selectedBatchItems.value[sku] !== undefined) {
@@ -4963,6 +4990,8 @@
                     currentPreviewPage,
                     totalPages,
                     batchFilteredSkus,
+                    selectAllBatchItems,
+                    clearBatchSelection,
                     toggleBatchSelection,
                     updateBatchItemQty,
                     handleBatchQtyBlur,
