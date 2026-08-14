@@ -1851,8 +1851,10 @@
                                          @dragenter.prevent="isDragging = true"
                                          @dragleave.prevent="isDragging = false"
                                          @drop.prevent="handleImageDrop"
+                                         @paste="handleImagePaste"
+                                         tabindex="0"
                                          :class="[isDragging ? 'border-amber-400 bg-neutral-900' : 'border-neutral-800 bg-black']"
-                                         class="border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-center group cursor-pointer hover:border-neutral-600 transition-all relative aspect-square max-h-[220px] w-full mx-auto overflow-hidden">
+                                         class="border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-center group cursor-pointer hover:border-neutral-600 focus:border-amber-400 focus:outline-none transition-all relative aspect-square max-h-[220px] w-full mx-auto overflow-hidden">
                                         <input type="file" ref="productImageInput" @change="uploadProductImage" accept="image/*" class="hidden" id="modal-sku-image-upload-input"/>
                                         
                                         <!-- Image Preview State -->
@@ -1877,9 +1879,9 @@
                                                     </svg>
                                                 </div>
                                                 <p class="text-white text-xs font-bold uppercase tracking-wide">
-                                                    {{ uploadingProductImage ? 'Uploading Image...' : (isDragging ? 'Drop Image Here' : 'Upload or Drag & Drop') }}
+                                                    {{ uploadingProductImage ? 'Uploading Image...' : (isDragging ? 'Drop Image Here' : 'Upload, Drag & Drop, or Paste') }}
                                                 </p>
-                                                <p class="text-neutral-500 text-[10px] mt-1 uppercase tracking-wider">PNG, JPG, WEBP</p>
+                                                <p class="text-neutral-500 text-[10px] mt-1 uppercase tracking-wider">PNG, JPG, WEBP • <span class="text-amber-400/90 font-medium">Ctrl+V to paste Excel image</span></p>
                                             </label>
                                         </template>
                                     </div>
@@ -4550,6 +4552,90 @@
                     }
                 };
 
+                const extractImageFromClipboard = async (event) => {
+                    const clipboardData = event.clipboardData || window.clipboardData;
+                    if (!clipboardData) return null;
+
+                    // 1. Direct files in clipboard (Excel copied picture object, screenshots, etc.)
+                    if (clipboardData.files && clipboardData.files.length > 0) {
+                        for (let i = 0; i < clipboardData.files.length; i++) {
+                            const file = clipboardData.files[i];
+                            if (file.type && file.type.startsWith('image/')) {
+                                return file;
+                            }
+                        }
+                    }
+
+                    // 2. Clipboard items fallback
+                    if (clipboardData.items && clipboardData.items.length > 0) {
+                        for (let i = 0; i < clipboardData.items.length; i++) {
+                            const item = clipboardData.items[i];
+                            if (item.type && item.type.startsWith('image/')) {
+                                const blob = item.getAsFile();
+                                if (blob) {
+                                    const ext = item.type.split('/')[1] || 'png';
+                                    return new File([blob], `pasted_image_${Date.now()}.${ext}`, { type: item.type });
+                                }
+                            }
+                        }
+                    }
+
+                    // 3. HTML clipboard format (Excel range copy contains HTML with embedded base64 img)
+                    const html = clipboardData.getData('text/html');
+                    if (html && html.includes('<img')) {
+                        try {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const img = doc.querySelector('img');
+                            if (img && img.src) {
+                                const src = img.src;
+                                if (src.startsWith('data:image/')) {
+                                    const res = await fetch(src);
+                                    const blob = await res.blob();
+                                    const mime = blob.type || 'image/png';
+                                    const ext = mime.split('/')[1] || 'png';
+                                    return new File([blob], `pasted_excel_${Date.now()}.${ext}`, { type: mime });
+                                } else if (src.startsWith('http://') || src.startsWith('https://')) {
+                                    const res = await fetch(src);
+                                    const blob = await res.blob();
+                                    const mime = blob.type || 'image/png';
+                                    const ext = mime.split('/')[1] || 'png';
+                                    return new File([blob], `pasted_excel_${Date.now()}.${ext}`, { type: mime });
+                                }
+                            }
+                        } catch (e) {
+                            console.warn('Could not parse pasted HTML image from clipboard:', e);
+                        }
+                    }
+
+                    // 4. Plain text base64 data URI fallback
+                    const text = clipboardData.getData('text/plain');
+                    if (text && text.trim()) {
+                        const trimmed = text.trim();
+                        if (trimmed.startsWith('data:image/')) {
+                            try {
+                                const res = await fetch(trimmed);
+                                const blob = await res.blob();
+                                const mime = blob.type || 'image/png';
+                                const ext = mime.split('/')[1] || 'png';
+                                return new File([blob], `pasted_image_${Date.now()}.${ext}`, { type: mime });
+                            } catch (e) {}
+                        }
+                    }
+
+                    return null;
+                };
+
+                const handleImagePaste = async (event) => {
+                    if (!showAddProductModal.value) return;
+
+                    const extractedFile = await extractImageFromClipboard(event);
+                    if (extractedFile) {
+                        event.preventDefault();
+                        uploadProductImage({ target: { files: [extractedFile] } });
+                    }
+                };
+
                 const compressImageFile = (file, maxWidth = 1000, maxHeight = 1000, quality = 0.82) => {
                     return new Promise((resolve) => {
                         const reader = new FileReader();
@@ -4848,6 +4934,12 @@
                     }
                 };
 
+                const handleGlobalPaste = (event) => {
+                    if (showAddProductModal.value) {
+                        handleImagePaste(event);
+                    }
+                };
+
                 onMounted(() => {
                     loadLetterheadImage();
                     fetchCategories();
@@ -4862,6 +4954,12 @@
                             navigator.sendBeacon('/api/scan/auth/disconnect', blob);
                         }
                     });
+
+                    window.addEventListener('paste', handleGlobalPaste);
+                });
+
+                onUnmounted(() => {
+                    window.removeEventListener('paste', handleGlobalPaste);
                 });
 
                 watch(currentTab, (newTab) => {
@@ -5029,6 +5127,7 @@
                     uploadProductImage,
                     isDragging,
                     handleImageDrop,
+                    handleImagePaste,
                     fetchSkus,
                     resetSkuForm,
                     autoGenerateSkuCode,
