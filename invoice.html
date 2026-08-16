@@ -1037,10 +1037,13 @@
                                     <h3 class="serif-title text-sm text-white group-hover:text-[#C5A073] transition-colors font-medium truncate" :title="item.name">
                                         {{ item.name }}
                                     </h3>
-                                    <p v-if="item.description" class="text-[11px] text-gray-400 line-clamp-2 mt-0.5 min-h-[1.75rem]">
+                                    <div class="font-mono text-[10px] text-[#C5A073] font-semibold tracking-wider mt-0.5 truncate">
+                                        {{ item.sku || ('SKU-' + item.id) }}
+                                    </div>
+                                    <p v-if="item.description" class="text-[11px] text-gray-400 line-clamp-2 mt-1 min-h-[1.5rem]">
                                         {{ item.description }}
                                     </p>
-                                    <p v-else class="text-[11px] text-gray-600 italic mt-0.5 min-h-[1.75rem]">
+                                    <p v-else class="text-[11px] text-gray-600 italic mt-1 min-h-[1.5rem]">
                                         No description
                                     </p>
                                 </div>
