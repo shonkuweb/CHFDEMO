@@ -1455,6 +1455,7 @@ def ensure_sku_catalog_table():
             description TEXT DEFAULT '',
             image_url TEXT DEFAULT '',
             gst_applicable INTEGER DEFAULT 1,
+            index_number INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -1467,6 +1468,32 @@ def ensure_sku_catalog_table():
         cur.execute("ALTER TABLE sku_catalog ADD COLUMN gst_applicable INTEGER DEFAULT 1")
     except Exception:
         pass
+    try:
+        cur.execute("ALTER TABLE sku_catalog ADD COLUMN index_number INTEGER DEFAULT 0")
+    except Exception:
+        pass
+
+    # Ensure all existing products have a positive unique index_number if any are 0, null, or duplicated
+    try:
+        cur.execute("SELECT id, index_number FROM sku_catalog ORDER BY CASE WHEN index_number > 0 THEN index_number ELSE 999999 END ASC, id ASC")
+        rows = cur.fetchall()
+        used_indices = set()
+        next_idx = 1
+        for r in rows:
+            curr = r["index_number"]
+            if not curr or curr <= 0 or curr in used_indices:
+                while next_idx in used_indices:
+                    next_idx += 1
+                cur.execute("UPDATE sku_catalog SET index_number = ? WHERE id = ?", (next_idx, r["id"]))
+                used_indices.add(next_idx)
+                next_idx += 1
+            else:
+                used_indices.add(curr)
+                if curr >= next_idx:
+                    next_idx = curr + 1
+    except Exception as e:
+        print(f"[SKU MIGRATION WARN] {e}")
+
     conn.commit()
     conn.close()
 
@@ -1482,7 +1509,7 @@ def refresh_sku_cache():
         ensure_sku_catalog_table()
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable FROM sku_catalog")
+        cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, index_number FROM sku_catalog")
         rows = cur.fetchall()
         SKU_CACHE = {
             r["sku"].upper(): {
@@ -1490,10 +1517,11 @@ def refresh_sku_cache():
                 "sku": r["sku"],
                 "name": r["name"],
                 "price": r["price"],
-                "category": r["category"],
-                "description": r["description"],
-                "image_url": r.get("image_url", ""),
-                "gst_applicable": r.get("gst_applicable", 1) if r.get("gst_applicable") is not None else 1
+                "category": r["category"] if r["category"] else "",
+                "description": r["description"] if r["description"] else "",
+                "image_url": r["image_url"] if r["image_url"] else "",
+                "gst_applicable": r["gst_applicable"] if r["gst_applicable"] is not None else 1,
+                "index_number": r["index_number"] if r["index_number"] is not None else 0
             } for r in rows
         }
         conn.close()
@@ -2539,13 +2567,14 @@ class SKUPayload(BaseModel):
     description: Optional[str] = ""
     image_url: Optional[str] = ""
     gst_applicable: Optional[int] = 1
+    index_number: Optional[int] = None
 
 @app.get("/api/skus")
 async def list_skus():
     ensure_sku_catalog_table()
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, created_at FROM sku_catalog ORDER BY created_at DESC")
+    cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, index_number, created_at FROM sku_catalog ORDER BY CASE WHEN index_number > 0 THEN index_number ELSE 999999 END ASC, id ASC")
     rows = cur.fetchall()
     conn.close()
     return [dict(r) for r in rows]
@@ -2565,30 +2594,60 @@ async def save_sku(payload: SKUPayload):
         
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # Determine & validate index_number
+    target_index = payload.index_number
+    if target_index is not None and target_index > 0:
+        if payload.id:
+            cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ? AND id != ?", (target_index, payload.id))
+        else:
+            cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ?", (target_index,))
+        conflict = cur.fetchone()
+        if conflict:
+            conn.close()
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Index #{target_index} is already assigned to '{conflict['name']}' ({conflict['sku']}). Different products cannot have the same index number."
+            )
+    else:
+        if payload.id:
+            cur.execute("SELECT index_number FROM sku_catalog WHERE id = ?", (payload.id,))
+            row = cur.fetchone()
+            if row and row["index_number"] and row["index_number"] > 0:
+                target_index = row["index_number"]
+            else:
+                cur.execute("SELECT MAX(index_number) as max_idx FROM sku_catalog")
+                max_r = cur.fetchone()
+                target_index = ((max_r["max_idx"] if max_r and max_r["max_idx"] is not None else 0) or 0) + 1
+        else:
+            cur.execute("SELECT MAX(index_number) as max_idx FROM sku_catalog")
+            max_r = cur.fetchone()
+            target_index = ((max_r["max_idx"] if max_r and max_r["max_idx"] is not None else 0) or 0) + 1
     
     if payload.id:
         cur.execute("""
             UPDATE sku_catalog
-            SET sku = ?, name = ?, price = ?, category = ?, description = ?, image_url = ?, gst_applicable = ?
+            SET sku = ?, name = ?, price = ?, category = ?, description = ?, image_url = ?, gst_applicable = ?, index_number = ?
             WHERE id = ?
-        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val, payload.id))
+        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val, target_index, payload.id))
     else:
         cur.execute("""
-            INSERT INTO sku_catalog (sku, name, price, category, description, image_url, gst_applicable)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO sku_catalog (sku, name, price, category, description, image_url, gst_applicable, index_number)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(sku) DO UPDATE SET
                 name = excluded.name,
                 price = excluded.price,
                 category = excluded.category,
                 description = excluded.description,
                 image_url = excluded.image_url,
-                gst_applicable = excluded.gst_applicable
-        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val))
+                gst_applicable = excluded.gst_applicable,
+                index_number = excluded.index_number
+        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val, target_index))
         
     conn.commit()
     conn.close()
     refresh_sku_cache()
-    return {"status": "success", "sku": clean_sku}
+    return {"status": "success", "sku": clean_sku, "index_number": target_index}
 
 @app.delete("/api/skus/{sku_id}")
 async def delete_sku(sku_id: int):
@@ -2615,16 +2674,17 @@ async def lookup_sku(sku_code: str):
             "category": cached.get("category", ""), 
             "description": cached.get("description", ""), 
             "image_url": cached.get("image_url", ""),
-            "gst_applicable": cached.get("gst_applicable", 1)
+            "gst_applicable": cached.get("gst_applicable", 1),
+            "index_number": cached.get("index_number", 0)
         }
         
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (code_upper,))
+    cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, index_number FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (code_upper,))
     row = cur.fetchone()
     conn.close()
     if not row:
-        return {"found": False, "sku": sku_code, "name": sku_code, "price": 0.0, "description": "", "image_url": "", "gst_applicable": 1}
+        return {"found": False, "sku": sku_code, "name": sku_code, "price": 0.0, "description": "", "image_url": "", "gst_applicable": 1, "index_number": 0}
     d = dict(row)
     return {
         "found": True, 
@@ -2634,7 +2694,8 @@ async def lookup_sku(sku_code: str):
         "category": d.get("category", ""), 
         "description": d.get("description", ""), 
         "image_url": d.get("image_url", ""),
-        "gst_applicable": d.get("gst_applicable", 1)
+        "gst_applicable": d.get("gst_applicable", 1),
+        "index_number": d.get("index_number", 0)
     }
 
 @app.get("/scan")

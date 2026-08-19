@@ -1007,9 +1007,14 @@
                             
                             <!-- Compact Square Image Header -->
                             <div class="w-full aspect-square relative bg-black/60 overflow-hidden flex items-center justify-center border-b border-white/5">
-                                <!-- SKU Badge -->
-                                <div class="absolute top-2 right-2 z-10 font-mono text-[9px] text-[#C5A073] bg-black/80 backdrop-blur-md border border-[#C5A073]/40 px-1.5 py-0.5 rounded font-bold shadow-md">
-                                    {{ item.sku }}
+                                <!-- SKU & Index Position Badges -->
+                                <div class="absolute top-2 right-2 z-10 flex items-center gap-1">
+                                    <span class="font-mono text-[9px] text-black bg-amber-400 font-extrabold px-1.5 py-0.5 rounded shadow-md" title="Card Display Position Index">
+                                        #{{ item.index_number !== undefined && item.index_number !== null && item.index_number > 0 ? item.index_number : '-' }}
+                                    </span>
+                                    <span class="font-mono text-[9px] text-[#C5A073] bg-black/80 backdrop-blur-md border border-[#C5A073]/40 px-1.5 py-0.5 rounded font-bold shadow-md">
+                                        {{ item.sku }}
+                                    </span>
                                 </div>
                                 
                                 <!-- Selection Checkbox & Category Badge Pill -->
@@ -1816,6 +1821,22 @@
                                         </select>
                                         <span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none text-base">expand_more</span>
                                     </div>
+                                </div>
+
+                                <!-- Card Position / Index Number Input -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <label class="block text-[11px] font-bold text-neutral-300 uppercase tracking-wider">
+                                            Product Index Number <span class="text-red-400">*</span>
+                                        </label>
+                                        <span class="text-[10px] text-amber-400 font-mono font-bold tracking-wider">Card Order #</span>
+                                    </div>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400 font-bold text-sm pointer-events-none select-none">#</span>
+                                        <input v-model.number="skuForm.index_number" min="1" step="1" required type="number" placeholder="1"
+                                            class="w-full bg-black border border-neutral-800 text-neutral-100 font-mono text-sm py-3 pl-9 pr-4 rounded-xl focus:ring-1 focus:ring-amber-400 focus:border-amber-400 outline-none transition-all"/>
+                                    </div>
+                                    <p class="text-[10px] text-neutral-500 mt-1">Sets display order in catalog. Different products cannot have the same index number.</p>
                                 </div>
 
                                 <!-- Retail Price -->
@@ -4532,7 +4553,7 @@
                             (s.description && s.description.toLowerCase().includes(q))
                         );
                     }
-                    return result;
+                    return [...result].sort((a, b) => (Number(a.index_number) || 0) - (Number(b.index_number) || 0));
                 });
 
                 const uploadingProductImage = ref(false);
@@ -4543,7 +4564,9 @@
                     price: 0,
                     category: 'Indoor Plant',
                     description: '',
-                    image_url: ''
+                    image_url: '',
+                    gst_applicable: 1,
+                    index_number: 1
                 });
 
                 const isDragging = ref(false);
@@ -4721,6 +4744,20 @@
                     }
                 };
 
+                const getNextAvailableIndex = (excludeId = null) => {
+                    const used = new Set(
+                        skus.value
+                            .filter(s => !excludeId || s.id !== excludeId)
+                            .map(s => Number(s.index_number))
+                            .filter(n => !isNaN(n) && n > 0)
+                    );
+                    let candidate = 1;
+                    while (used.has(candidate)) {
+                        candidate++;
+                    }
+                    return candidate;
+                };
+
                 const resetSkuForm = () => {
                     editingSkuId.value = null;
                     skuForm.value = {
@@ -4730,7 +4767,8 @@
                         category: categories.value[0] || '',
                         description: '',
                         image_url: '',
-                        gst_applicable: 1
+                        gst_applicable: 1,
+                        index_number: getNextAvailableIndex()
                     };
                     skuSaveSuccess.value = false;
                     skuSaveError.value = '';
@@ -4746,6 +4784,7 @@
 
                 const openAddProductModal = () => {
                     resetSkuForm();
+                    skuForm.value.index_number = getNextAvailableIndex();
                     showAddProductModal.value = true;
                 };
 
@@ -4759,6 +4798,24 @@
                         autoGenerateSkuCode();
                     }
                     if (!skuForm.value.name.trim()) return;
+
+                    // Validate Index Number
+                    const targetIndex = Number(skuForm.value.index_number);
+                    if (!targetIndex || isNaN(targetIndex) || targetIndex <= 0) {
+                        skuSaveError.value = 'Please enter a valid positive index number (e.g. 1, 2, 3...) for card position.';
+                        return;
+                    }
+
+                    // Check for duplicate index against other products on frontend
+                    const duplicate = skus.value.find(s => 
+                        Number(s.index_number) === targetIndex && 
+                        (!editingSkuId.value || s.id !== editingSkuId.value)
+                    );
+                    if (duplicate) {
+                        skuSaveError.value = `Index #${targetIndex} is already assigned to "${duplicate.name}" (${duplicate.sku}). Different products cannot have the same index number.`;
+                        return;
+                    }
+
                     savingSku.value = true;
                     skuSaveError.value = '';
                     skuSaveSuccess.value = false;
@@ -4775,7 +4832,8 @@
                                 category: skuForm.value.category,
                                 description: skuForm.value.description,
                                 image_url: skuForm.value.image_url || '',
-                                gst_applicable: gstVal
+                                gst_applicable: gstVal,
+                                index_number: targetIndex
                             })
                         });
                         const data = await res.json();
@@ -4787,7 +4845,7 @@
                             skuSaveSuccess.value = false;
                             showAddProductModal.value = false;
                             resetSkuForm();
-                        }, 1000);
+                        }, 800);
                     } catch (e) {
                         skuSaveError.value = e.message;
                     } finally {
@@ -4805,7 +4863,8 @@
                         category: item.category || (categories.value[0] || ''),
                         description: item.description || '',
                         image_url: item.image_url || '',
-                        gst_applicable: isGst
+                        gst_applicable: isGst,
+                        index_number: (item.index_number !== undefined && item.index_number !== null && Number(item.index_number) > 0) ? Number(item.index_number) : getNextAvailableIndex(item.id)
                     };
                     skuSaveSuccess.value = false;
                     skuSaveError.value = '';
