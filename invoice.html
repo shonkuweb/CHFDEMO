@@ -4301,29 +4301,58 @@
                                         if (item.scan_id) processedScanIds.add(item.scan_id);
 
                                         lastScannedItem.value = item.sku;
-                                        const skuCode = item.sku.trim();
-                                        const itemDesc = item.name && item.name !== item.sku
-                                            ? `${item.name} (${skuCode})`
-                                            : skuCode;
-                                        
-                                        // Check if item already exists in cart
-                                        const existingIndex = invoiceData.value.items.findIndex(
-                                            i => i.description.includes(`(${skuCode})`) || i.description === skuCode || i.description === itemDesc
-                                        );
-                                        
+                                        const skuCode = (item.sku || '').trim();
+                                        const itemName = (item.name || '').trim() || skuCode;
+                                        const itemPrice = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
+                                        const itemQty = Math.max(1, Number(item.qty || item.quantity) || 1);
+                                        const isGst = (item.gst_applicable !== undefined && item.gst_applicable !== null) ? Number(item.gst_applicable) : 1;
+                                        const itemImg = item.image_url || '';
+                                        const itemDesc = (itemName && itemName.toLowerCase() !== skuCode.toLowerCase())
+                                            ? `${itemName} (${skuCode})`
+                                            : itemName;
+
+                                        // Remove empty initial placeholder item row if present
+                                        if (invoiceData.value.items.length === 1 && !invoiceData.value.items[0].description && (Number(invoiceData.value.items[0].price) || 0) === 0) {
+                                            invoiceData.value.items = [];
+                                        }
+
+                                        // Strictly match existing items by exact SKU or exact Description
+                                        const existingIndex = invoiceData.value.items.findIndex(i => {
+                                            if (skuCode && i.sku && i.sku.trim().toUpperCase() === skuCode.toUpperCase()) return true;
+                                            if (skuCode && i.description && (i.description.includes(`(${skuCode})`) || i.description.toUpperCase() === skuCode.toUpperCase())) return true;
+                                            if (itemDesc && i.description && i.description.trim().toLowerCase() === itemDesc.trim().toLowerCase()) return true;
+                                            return false;
+                                        });
+
                                         if (existingIndex !== -1) {
-                                            invoiceData.value.items[existingIndex].qty += 1;
-                                            if (item.price > 0 && (!invoiceData.value.items[existingIndex].price || invoiceData.value.items[existingIndex].price === 0)) {
-                                                invoiceData.value.items[existingIndex].price = item.price;
+                                            const existing = invoiceData.value.items[existingIndex];
+                                            existing.qty = (Number(existing.qty) || 0) + itemQty;
+                                            if (itemPrice > 0 && (!existing.price || existing.price === 0)) {
+                                                existing.price = itemPrice;
+                                            }
+                                            if (!existing.sku && skuCode) {
+                                                existing.sku = skuCode;
+                                            }
+                                            if (!existing.name && itemName) {
+                                                existing.name = itemName;
+                                            }
+                                            if (!existing.image_url && itemImg) {
+                                                existing.image_url = itemImg;
                                             }
                                         } else {
-                                            const isGst = (item.gst_applicable !== undefined && item.gst_applicable !== null) ? Number(item.gst_applicable) : 1;
                                             invoiceData.value.items.push({
+                                                sku: skuCode,
+                                                name: itemName,
                                                 description: itemDesc,
-                                                qty: 1,
-                                                price: item.price || 0,
-                                                gst_applicable: isGst
+                                                qty: itemQty,
+                                                price: itemPrice,
+                                                gst_applicable: isGst,
+                                                image_url: itemImg
                                             });
+                                        }
+
+                                        if (currentTab.value === 'setup') {
+                                            currentTab.value = 'bill';
                                         }
                                     };
                                     
@@ -4335,7 +4364,13 @@
                                         ws.onmessage = (evt) => {
                                             try {
                                                 const scanObj = JSON.parse(evt.data);
-                                                processIncomingScan(scanObj);
+                                                if (Array.isArray(scanObj)) {
+                                                    scanObj.forEach(processIncomingScan);
+                                                } else if (scanObj && scanObj.scans && Array.isArray(scanObj.scans)) {
+                                                    scanObj.scans.forEach(processIncomingScan);
+                                                } else {
+                                                    processIncomingScan(scanObj);
+                                                }
                                             } catch(e) {}
                                         };
                                     } catch(e) {}
@@ -4365,7 +4400,9 @@
                                                 return;
                                             }
                                             
-                                            if (scanData.scan) {
+                                            if (scanData.scans && Array.isArray(scanData.scans)) {
+                                                scanData.scans.forEach(processIncomingScan);
+                                            } else if (scanData.scan) {
                                                 processIncomingScan(scanData.scan);
                                             }
                                         } catch(e) {

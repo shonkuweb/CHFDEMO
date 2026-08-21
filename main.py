@@ -19,7 +19,7 @@ import base64
 from passlib.hash import argon2
 import hashlib
 from jose import jwt, JWTError
-from typing import Optional
+from typing import Optional, List, Dict, Any, Union
 import time
 import socket
 from pydantic import BaseModel
@@ -2298,13 +2298,29 @@ async def admin_get_leads(admin: str = Depends(get_current_admin)):
     conn.close()
     return [{"id": r["id"], "name": r["name"], "email": r["email"], "phone": r["phone"], "details": r["details"], "created_at": r["created_at"], "read": bool(r["read"])} for r in rows]
 
+class ScanItem(BaseModel):
+    sku: Optional[str] = None
+    raw_sku: Optional[str] = None
+    name: Optional[str] = None
+    price: Optional[float] = None
+    qty: Optional[int] = 1
+    quantity: Optional[int] = None
+    image_url: Optional[str] = None
+    gst_applicable: Optional[int] = None
+    category: Optional[str] = None
+
 class ScanPayload(BaseModel):
     session_id: str
     sku: Optional[str] = None
     raw_sku: Optional[str] = None
     name: Optional[str] = None
     price: Optional[float] = None
+    qty: Optional[int] = 1
+    quantity: Optional[int] = None
     image_url: Optional[str] = None
+    gst_applicable: Optional[int] = None
+    category: Optional[str] = None
+    items: Optional[List[ScanItem]] = None
 
     @property
     def get_sku(self) -> str:
@@ -2329,42 +2345,110 @@ async def get_local_ip():
 @app.post("/api/scan/submit")
 async def submit_scan(payload: ScanPayload):
     session_id = payload.session_id.strip()
-    raw_sku = payload.get_sku
-    
-    # 0.001 ms RAM Lookup in SKU_CACHE
-    sku_upper = raw_sku.upper()
-    cached_sku = SKU_CACHE.get(sku_upper)
-    scan_id = uuid.uuid4().hex[:12]
-    
-    if cached_sku:
-        scan_event = {
-            "scan_id": scan_id,
-            "sku": raw_sku,
-            "name": cached_sku["name"] or payload.name or raw_sku,
-            "price": cached_sku["price"] if (cached_sku["price"] and cached_sku["price"] > 0) else (payload.price or 0.0),
-            "category": cached_sku.get("category", ""),
-            "image_url": cached_sku.get("image_url") or payload.image_url or "",
-            "gst_applicable": cached_sku.get("gst_applicable", 1) if cached_sku.get("gst_applicable") is not None else 1,
-            "timestamp": time.time()
-        }
+    if not session_id:
+        raise HTTPException(status_code=400, detail="session_id is required")
+
+    items_to_process: List[ScanItem] = []
+    if payload.items and len(payload.items) > 0:
+        items_to_process = payload.items
     else:
-        scan_event = {
+        raw_sku = payload.get_sku
+        if raw_sku:
+            items_to_process = [ScanItem(
+                sku=payload.sku,
+                raw_sku=payload.raw_sku or payload.sku,
+                name=payload.name,
+                price=payload.price,
+                qty=payload.qty or payload.quantity or 1,
+                image_url=payload.image_url,
+                gst_applicable=payload.gst_applicable,
+                category=payload.category
+            )]
+
+    if not items_to_process:
+        raise HTTPException(status_code=400, detail="No SKU or items provided")
+
+    scan_events = []
+    conn = None
+
+    for item in items_to_process:
+        item_sku = (item.sku or item.raw_sku or "").strip()
+        sku_upper = item_sku.upper()
+        cached_sku = SKU_CACHE.get(sku_upper)
+        
+        # If not cached, attempt DB lookup
+        if not cached_sku and item_sku:
+            try:
+                if not conn:
+                    conn = get_db_connection()
+                cur = conn.cursor()
+                cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, index_number FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (sku_upper,))
+                row = cur.fetchone()
+                if not row:
+                    clean_num = sku_upper.lstrip('#')
+                    if clean_num.isdigit():
+                        cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, index_number FROM sku_catalog WHERE index_number = ?", (int(clean_num),))
+                        row = cur.fetchone()
+                if row:
+                    cached_sku = {
+                        "id": row["id"],
+                        "sku": row["sku"],
+                        "name": row["name"],
+                        "price": row["price"],
+                        "category": row["category"] if row["category"] else "",
+                        "description": row["description"] if row["description"] else "",
+                        "image_url": row["image_url"] if row["image_url"] else "",
+                        "gst_applicable": row["gst_applicable"] if row["gst_applicable"] is not None else 1,
+                        "index_number": row["index_number"] if row["index_number"] is not None else 0
+                    }
+                    SKU_CACHE[sku_upper] = cached_sku
+            except Exception:
+                pass
+
+        scan_id = uuid.uuid4().hex[:12]
+        item_qty = max(1, int(item.qty or item.quantity or 1))
+
+        if cached_sku:
+            resolved_sku = cached_sku["sku"] or item_sku
+            resolved_name = item.name if (item.name and item.name.strip() and item.name.strip() != item_sku) else (cached_sku["name"] or item_sku)
+            resolved_price = item.price if (item.price is not None and item.price > 0) else (cached_sku.get("price") or 0.0)
+            resolved_img = item.image_url if (item.image_url and item.image_url.strip()) else (cached_sku.get("image_url") or "")
+            resolved_gst = item.gst_applicable if item.gst_applicable is not None else (cached_sku.get("gst_applicable") if cached_sku.get("gst_applicable") is not None else 1)
+            resolved_cat = cached_sku.get("category", "")
+        else:
+            resolved_sku = item_sku
+            resolved_name = item.name or item_sku
+            resolved_price = float(item.price or 0.0)
+            resolved_img = item.image_url or ""
+            resolved_gst = int(item.gst_applicable if item.gst_applicable is not None else 1)
+            resolved_cat = item.category or ""
+
+        event = {
             "scan_id": scan_id,
-            "sku": raw_sku,
-            "name": payload.name or raw_sku,
-            "price": payload.price or 0.0,
-            "category": "",
-            "image_url": payload.image_url or "",
-            "gst_applicable": 1,
+            "sku": resolved_sku,
+            "name": resolved_name,
+            "price": resolved_price,
+            "qty": item_qty,
+            "category": resolved_cat,
+            "image_url": resolved_img,
+            "gst_applicable": resolved_gst,
             "timestamp": time.time()
         }
-        
+        scan_events.append(event)
+
+    if conn:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
     # Instant WebSocket Push (<0.01 ms)
     sockets = ACTIVE_WS_SESSIONS.get(session_id, [])
     dead_sockets = []
     for ws in sockets:
         try:
-            await ws.send_json(scan_event)
+            for event in scan_events:
+                await ws.send_json(event)
         except Exception:
             dead_sockets.append(ws)
             
@@ -2375,19 +2459,26 @@ async def submit_scan(payload: ScanPayload):
     # Buffer in RAM for HTTP polling fallback
     if session_id not in ACTIVE_SCANS_BUFFER:
         ACTIVE_SCANS_BUFFER[session_id] = []
-    ACTIVE_SCANS_BUFFER[session_id].append(scan_event)
+    for event in scan_events:
+        ACTIVE_SCANS_BUFFER[session_id].append(event)
     
     # Non-blocking async DB backup log
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("INSERT OR REPLACE INTO mobile_scans (session_id, sku, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)", (session_id, raw_sku))
+        for event in scan_events:
+            cur.execute("INSERT OR REPLACE INTO mobile_scans (session_id, sku, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)", (session_id, event["sku"]))
         conn.commit()
         conn.close()
     except Exception:
         pass
         
-    return {"status": "success", "scan": scan_event}
+    return {
+        "status": "success", 
+        "count": len(scan_events),
+        "scans": scan_events,
+        "scan": scan_events[0] if scan_events else None
+    }
 
 @app.websocket("/ws/scan/{session_id}")
 async def websocket_scan_endpoint(websocket: WebSocket, session_id: str):
@@ -2419,13 +2510,16 @@ async def poll_scan(session_id: str):
     if not auth_row:
         return {"error": "session_disconnected"}
         
-    scan_event = None
+    scans_list = []
     if session_id in ACTIVE_SCANS_BUFFER and ACTIVE_SCANS_BUFFER[session_id]:
-        scan_event = ACTIVE_SCANS_BUFFER[session_id].pop(0)
+        scans_list = list(ACTIVE_SCANS_BUFFER[session_id])
+        ACTIVE_SCANS_BUFFER[session_id] = []
         
+    first_scan = scans_list[0] if scans_list else None
     return {
-        "scan": scan_event,
-        "sku": scan_event["sku"] if scan_event else None
+        "scans": scans_list,
+        "scan": first_scan,
+        "sku": first_scan["sku"] if first_scan else None
     }
 
 import random
@@ -2682,12 +2776,20 @@ async def lookup_sku(sku_code: str):
     cur = conn.cursor()
     cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, index_number FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (code_upper,))
     row = cur.fetchone()
-    conn.close()
+    
     if not row:
+        clean_num = code_upper.lstrip('#')
+        if clean_num.isdigit():
+            cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, index_number FROM sku_catalog WHERE index_number = ?", (int(clean_num),))
+            row = cur.fetchone()
+
+    if not row:
+        conn.close()
         return {"found": False, "sku": sku_code, "name": sku_code, "price": 0.0, "description": "", "image_url": "", "gst_applicable": 1, "index_number": 0}
+        
     d = dict(row)
-    return {
-        "found": True, 
+    cached_val = {
+        "id": d["id"],
         "sku": d["sku"], 
         "name": d["name"], 
         "price": d["price"], 
@@ -2696,6 +2798,13 @@ async def lookup_sku(sku_code: str):
         "image_url": d.get("image_url", ""),
         "gst_applicable": d.get("gst_applicable", 1),
         "index_number": d.get("index_number", 0)
+    }
+    SKU_CACHE[d["sku"].upper()] = cached_val
+    conn.close()
+    
+    return {
+        "found": True, 
+        **cached_val
     }
 
 @app.get("/scan")
