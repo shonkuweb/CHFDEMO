@@ -4565,6 +4565,9 @@
                         const res = await fetch('/api/skus');
                         const data = await res.json();
                         skus.value = Array.isArray(data) ? data : [];
+                        if (typeof editingSkuId !== 'undefined' && !editingSkuId.value) {
+                            skuForm.value.index_number = getNextAvailableIndex();
+                        }
                     } catch (e) {
                         console.error('Failed to fetch SKUs', e);
                     } finally {
@@ -4782,17 +4785,12 @@
                 };
 
                 const getNextAvailableIndex = (excludeId = null) => {
-                    const used = new Set(
-                        skus.value
-                            .filter(s => !excludeId || s.id !== excludeId)
-                            .map(s => Number(s.index_number))
-                            .filter(n => !isNaN(n) && n > 0)
-                    );
-                    let candidate = 1;
-                    while (used.has(candidate)) {
-                        candidate++;
-                    }
-                    return candidate;
+                    const validIndices = (skus.value || [])
+                        .filter(s => !excludeId || s.id !== excludeId)
+                        .map(s => Number(s.index_number))
+                        .filter(n => !isNaN(n) && n > 0);
+                    if (validIndices.length === 0) return 1;
+                    return Math.max(...validIndices) + 1;
                 };
 
                 const resetSkuForm = () => {
@@ -4949,7 +4947,9 @@
                     barcodeQueue.value.push({
                         sku: item.sku,
                         name: item.name,
-                        qty: 1
+                        price: Number(item.price) || 0,
+                        qty: 1,
+                        image_url: item.image_url || ''
                     });
                     currentTab.value = 'barcodes';
                 };
