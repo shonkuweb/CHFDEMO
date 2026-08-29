@@ -2689,11 +2689,19 @@ async def save_sku(payload: SKUPayload):
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # Look up existing product by clean_sku or payload.id
+    existing_by_sku = None
+    if clean_sku:
+        cur.execute("SELECT id, sku, name, price, category, description, image_url, gst_applicable, index_number FROM sku_catalog WHERE UPPER(sku) = UPPER(?)", (clean_sku,))
+        existing_by_sku = cur.fetchone()
+
+    effective_id = payload.id or (existing_by_sku["id"] if existing_by_sku else None)
+
     # Determine & validate index_number
     target_index = payload.index_number
     if target_index is not None and target_index > 0:
-        if payload.id:
-            cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ? AND id != ?", (target_index, payload.id))
+        if effective_id:
+            cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ? AND id != ?", (target_index, effective_id))
         else:
             cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ?", (target_index,))
         conflict = cur.fetchone()
@@ -2704,8 +2712,8 @@ async def save_sku(payload: SKUPayload):
                 detail=f"Index #{target_index} is already assigned to '{conflict['name']}' ({conflict['sku']}). Different products cannot have the same index number."
             )
     else:
-        if payload.id:
-            cur.execute("SELECT index_number FROM sku_catalog WHERE id = ?", (payload.id,))
+        if effective_id:
+            cur.execute("SELECT index_number FROM sku_catalog WHERE id = ?", (effective_id,))
             row = cur.fetchone()
             if row and row["index_number"] and row["index_number"] > 0:
                 target_index = row["index_number"]
@@ -2718,12 +2726,16 @@ async def save_sku(payload: SKUPayload):
             max_r = cur.fetchone()
             target_index = ((max_r["max_idx"] if max_r and max_r["max_idx"] is not None else 0) or 0) + 1
     
-    if payload.id:
+    if effective_id:
+        cat_val = payload.category if (payload.category and payload.category.strip()) else (existing_by_sku["category"] if existing_by_sku and existing_by_sku["category"] else "")
+        desc_val = payload.description if (payload.description and payload.description.strip()) else (existing_by_sku["description"] if existing_by_sku and existing_by_sku["description"] else "")
+        img_val = payload.image_url if (payload.image_url and payload.image_url.strip()) else (existing_by_sku["image_url"] if existing_by_sku and existing_by_sku["image_url"] else "")
+
         cur.execute("""
             UPDATE sku_catalog
             SET sku = ?, name = ?, price = ?, category = ?, description = ?, image_url = ?, gst_applicable = ?, index_number = ?
             WHERE id = ?
-        """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val, target_index, payload.id))
+        """, (clean_sku, clean_name, payload.price, cat_val, desc_val, img_val, gst_val, target_index, effective_id))
     else:
         cur.execute("""
             INSERT INTO sku_catalog (sku, name, price, category, description, image_url, gst_applicable, index_number)
@@ -2731,11 +2743,11 @@ async def save_sku(payload: SKUPayload):
             ON CONFLICT(sku) DO UPDATE SET
                 name = excluded.name,
                 price = excluded.price,
-                category = excluded.category,
-                description = excluded.description,
-                image_url = excluded.image_url,
+                category = CASE WHEN excluded.category != '' THEN excluded.category ELSE sku_catalog.category END,
+                description = CASE WHEN excluded.description != '' THEN excluded.description ELSE sku_catalog.description END,
+                image_url = CASE WHEN excluded.image_url != '' THEN excluded.image_url ELSE sku_catalog.image_url END,
                 gst_applicable = excluded.gst_applicable,
-                index_number = excluded.index_number
+                index_number = CASE WHEN sku_catalog.index_number > 0 THEN sku_catalog.index_number ELSE excluded.index_number END
         """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val, target_index))
         
     conn.commit()

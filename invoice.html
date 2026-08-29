@@ -1988,9 +1988,14 @@
                 
                 // Barcode state & studio logic
                 const barcodeData = ref({
+                    id: null,
                     sku: '',
                     name: '',
                     price: 0,
+                    category: '',
+                    description: '',
+                    gst_applicable: 1,
+                    index_number: null,
                     qty: 1,
                     image_url: ''
                 });
@@ -2102,9 +2107,14 @@
                             const parsedQty = parseInt(rawQty, 10);
                             const qty = !isNaN(parsedQty) && parsedQty > 0 ? parsedQty : 1;
                             barcodeQueue.value.push({
+                                id: item.id || null,
                                 sku: item.sku,
                                 name: item.name,
                                 price: Number(item.price) || 0,
+                                category: item.category || '',
+                                description: item.description || '',
+                                gst_applicable: item.gst_applicable !== undefined ? item.gst_applicable : 1,
+                                index_number: item.index_number,
                                 qty: qty,
                                 image_url: item.image_url || ''
                             });
@@ -2123,9 +2133,14 @@
                     if (skus.value && skus.value.length >= 4) {
                         skus.value.slice(0, 4).forEach((s, idx) => {
                             barcodeQueue.value.push({
+                                id: s.id || null,
                                 sku: s.sku || `SKU-00${idx+1}`,
                                 name: s.name || `Plant Item ${idx+1}`,
                                 price: Number(s.price) || 1250,
+                                category: s.category || '',
+                                description: s.description || '',
+                                gst_applicable: s.gst_applicable !== undefined ? s.gst_applicable : 1,
+                                index_number: s.index_number,
                                 qty: 4,
                                 image_url: s.image_url || ''
                             });
@@ -2147,11 +2162,18 @@
                 };
 
                 const selectSkuForBarcode = (item) => {
-                    barcodeData.value.sku = item.sku;
-                    barcodeData.value.name = item.name;
-                    barcodeData.value.price = item.price || 0;
-                    barcodeData.value.image_url = item.image_url || '';
-                    barcodeData.value.qty = 1;
+                    barcodeData.value = {
+                        id: item.id || null,
+                        sku: item.sku || '',
+                        name: item.name || '',
+                        price: item.price || 0,
+                        category: item.category || '',
+                        description: item.description || '',
+                        gst_applicable: item.gst_applicable !== undefined ? item.gst_applicable : 1,
+                        index_number: item.index_number !== undefined ? item.index_number : null,
+                        qty: 1,
+                        image_url: item.image_url || ''
+                    };
                     barcodeSearchQuery.value = `${item.name} (${item.sku})`;
                     showBarcodeSearchDropdown.value = false;
                 };
@@ -2159,20 +2181,37 @@
                 const selectCustomSkuForBarcode = (customCode) => {
                     const code = (customCode || '').trim().toUpperCase();
                     if (!code) return;
-                    barcodeData.value.sku = code;
-                    barcodeData.value.name = code;
-                    barcodeData.value.price = 0;
-                    barcodeData.value.image_url = '';
-                    barcodeData.value.qty = 1;
+                    const existing = (skus.value || []).find(s => (s.sku || '').toUpperCase() === code);
+                    if (existing) {
+                        selectSkuForBarcode(existing);
+                        return;
+                    }
+                    barcodeData.value = {
+                        id: null,
+                        sku: code,
+                        name: code,
+                        price: 0,
+                        category: categories.value[0] || 'General',
+                        description: '',
+                        gst_applicable: 1,
+                        index_number: null,
+                        qty: 1,
+                        image_url: ''
+                    };
                     barcodeSearchQuery.value = code;
                     showBarcodeSearchDropdown.value = false;
                 };
 
                 const clearSelectedSku = () => {
                     barcodeData.value = {
+                        id: null,
                         sku: '',
                         name: '',
                         price: 0,
+                        category: '',
+                        description: '',
+                        gst_applicable: 1,
+                        index_number: null,
                         qty: 1,
                         image_url: ''
                     };
@@ -2206,45 +2245,48 @@
                 });
 
                 const addToQueue = async () => {
-                    if (!barcodeData.value.sku.trim()) return;
+                    if (!barcodeData.value.sku || !barcodeData.value.sku.trim()) return;
                     
                     const skuCode = barcodeData.value.sku.trim().toUpperCase();
+                    const existingCatalogItem = (skus.value || []).find(s => (s.sku || '').toUpperCase() === skuCode);
+
                     const newItem = {
+                        id: barcodeData.value.id || (existingCatalogItem ? existingCatalogItem.id : null),
                         sku: skuCode,
-                        name: barcodeData.value.name.trim() || skuCode,
-                        price: Number(barcodeData.value.price) || 0,
+                        name: barcodeData.value.name.trim() || (existingCatalogItem ? existingCatalogItem.name : skuCode),
+                        price: (barcodeData.value.price !== undefined && barcodeData.value.price !== null) ? Number(barcodeData.value.price) : (existingCatalogItem ? Number(existingCatalogItem.price) || 0 : 0),
+                        category: barcodeData.value.category || (existingCatalogItem ? existingCatalogItem.category : 'General'),
+                        description: barcodeData.value.description || (existingCatalogItem ? existingCatalogItem.description : ''),
+                        gst_applicable: barcodeData.value.gst_applicable !== undefined ? barcodeData.value.gst_applicable : (existingCatalogItem ? existingCatalogItem.gst_applicable : 1),
+                        index_number: barcodeData.value.index_number !== undefined ? barcodeData.value.index_number : (existingCatalogItem ? existingCatalogItem.index_number : null),
                         qty: Math.max(1, Number(barcodeData.value.qty) || 1),
-                        image_url: barcodeData.value.image_url || ''
+                        image_url: barcodeData.value.image_url || (existingCatalogItem ? existingCatalogItem.image_url : '')
                     };
                     
                     barcodeQueue.value.push(newItem);
                     
-                    // Auto-sync SKU to backend database so mobile scanning /api/skus/lookup immediately finds it!
-                    try {
-                        await fetch('/api/skus', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                sku: newItem.sku,
-                                name: newItem.name,
-                                price: newItem.price,
-                                image_url: newItem.image_url,
-                                category: 'General'
-                            })
-                        });
-                        fetchSkus();
-                    } catch (e) {}
+                    // Only create a new SKU in backend if this is a custom SKU not already in the catalog
+                    if (!existingCatalogItem && !barcodeData.value.id) {
+                        try {
+                            await fetch('/api/skus', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    sku: newItem.sku,
+                                    name: newItem.name,
+                                    price: newItem.price,
+                                    image_url: newItem.image_url,
+                                    category: newItem.category || 'General',
+                                    description: newItem.description || '',
+                                    gst_applicable: newItem.gst_applicable
+                                })
+                            });
+                            fetchSkus();
+                        } catch (e) {}
+                    }
 
                     // Reset form
-                    barcodeData.value = {
-                        sku: '',
-                        name: '',
-                        price: 0,
-                        qty: 1,
-                        image_url: ''
-                    };
-                    barcodeSearchQuery.value = '';
-                    showBarcodeSearchDropdown.value = false;
+                    clearSelectedSku();
                 };
 
                 const removeFromQueue = (index) => {
@@ -4945,9 +4987,14 @@
 
                 const sendSkuToBarcodeQueue = (item) => {
                     barcodeQueue.value.push({
+                        id: item.id || null,
                         sku: item.sku,
                         name: item.name,
                         price: Number(item.price) || 0,
+                        category: item.category || '',
+                        description: item.description || '',
+                        gst_applicable: item.gst_applicable !== undefined ? item.gst_applicable : 1,
+                        index_number: item.index_number,
                         qty: 1,
                         image_url: item.image_url || ''
                     });
