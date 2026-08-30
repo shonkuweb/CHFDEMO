@@ -1155,9 +1155,9 @@
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-400 font-bold">Search Catalog Product</label>
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">search</span>
-                                    <input type="text" v-model="barcodeSearchQuery" @focus="showBarcodeSearchDropdown = true" @keyup.enter="selectCustomSkuForBarcode(barcodeSearchQuery)"
+                                    <input type="text" v-model="barcodeSearchQuery" @focus="showBarcodeSearchDropdown = true" @keyup.enter="handleBarcodeSearchEnter"
                                         class="w-full bg-black/70 border border-white/15 focus:border-[#C5A073] rounded-2xl py-3.5 pl-10 pr-10 text-xs text-white placeholder:text-gray-500 outline-none transition-all focus:ring-2 focus:ring-[#C5A073]/20"
-                                        placeholder="Type to search product name or SKU code..."/>
+                                        placeholder="Type to search product name, SKU, or #position..."/>
                                     <button v-if="barcodeSearchQuery" @click="clearSelectedSku" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
                                         <span class="material-symbols-outlined text-sm">close</span>
                                     </button>
@@ -1165,6 +1165,9 @@
 
                                 <!-- Autocomplete Dropdown -->
                                 <div v-if="showBarcodeSearchDropdown && (filteredBarcodeSkus.length > 0 || barcodeSearchQuery.trim())" class="absolute left-0 right-0 top-full mt-2 bg-[#121212] border border-[#C5A073]/40 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto custom-scrollbar">
+                                    <div v-if="filteredBarcodeSkus.length === 0" class="p-4 text-center text-xs text-gray-400 italic">
+                                        No catalog products found matching "{{ barcodeSearchQuery }}"
+                                    </div>
                                     <div v-for="item in filteredBarcodeSkus" :key="item.id || item.sku" @click="selectSkuForBarcode(item)"
                                         class="p-3 hover:bg-[#C5A073]/15 transition-colors cursor-pointer border-b border-white/5 last:border-0 flex items-center gap-3 group">
                                         <div class="w-10 h-10 rounded-lg bg-black/50 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
@@ -1177,6 +1180,7 @@
                                                 <span class="text-xs font-mono font-bold text-[#C5A073]">₹{{ (item.price || 0).toLocaleString('en-IN') }}</span>
                                             </div>
                                             <div class="flex items-center gap-2 mt-0.5">
+                                                <span v-if="item.index_number" class="font-mono text-[9px] text-amber-400 bg-amber-400/10 border border-amber-400/20 px-1 py-0.2 rounded font-bold">#{{ item.index_number }}</span>
                                                 <span class="font-mono text-[9px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{{ item.sku }}</span>
                                                 <span class="text-[9px] text-gray-500 uppercase tracking-wider">{{ item.category || 'General' }}</span>
                                             </div>
@@ -2035,14 +2039,36 @@
                 const totalPages = computed(() => Math.max(1, Math.ceil(totalQueued.value / (itemsPerPage.value || 44))));
 
                 const filteredBarcodeSkus = computed(() => {
-                    if (!barcodeSearchQuery.value.trim()) return skus.value.slice(0, 8);
-                    const q = barcodeSearchQuery.value.toLowerCase();
-                    return skus.value.filter(s => 
+                    if (!barcodeSearchQuery.value.trim()) return (skus.value || []).slice(0, 8);
+                    const q = barcodeSearchQuery.value.trim().toLowerCase();
+                    return (skus.value || []).filter(s => 
                         (s.sku || '').toLowerCase().includes(q) || 
-                        (s.name || '').toLowerCase().includes(q) ||
-                        (s.category || '').toLowerCase().includes(q)
+                        (s.name || '').toLowerCase().includes(q) || 
+                        (s.category || '').toLowerCase().includes(q) ||
+                        (s.index_number !== undefined && s.index_number !== null && String(s.index_number) === q)
                     ).slice(0, 10);
                 });
+
+                const handleBarcodeSearchEnter = () => {
+                    if (!barcodeSearchQuery.value.trim()) return;
+                    const q = barcodeSearchQuery.value.trim().toLowerCase();
+                    // 1. Look for exact match by SKU code, index number, or exact name
+                    const exactMatch = (skus.value || []).find(s => 
+                        (s.sku || '').toLowerCase() === q ||
+                        (s.index_number !== undefined && s.index_number !== null && String(s.index_number) === q) ||
+                        (s.name || '').toLowerCase() === q
+                    );
+                    if (exactMatch) {
+                        selectSkuForBarcode(exactMatch);
+                        return;
+                    }
+                    // 2. If partial match exists in filtered list, select the first match
+                    if (filteredBarcodeSkus.value.length > 0) {
+                        selectSkuForBarcode(filteredBarcodeSkus.value[0]);
+                        return;
+                    }
+                    // 3. If no catalog products match, do not generate or create a fake/random SKU!
+                };
 
                 const batchFilteredSkus = computed(() => {
                     if (!skus.value) return [];
@@ -2244,7 +2270,7 @@
                     return barcodeQueue.value.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
                 });
 
-                const addToQueue = async () => {
+                const addToQueue = () => {
                     if (!barcodeData.value.sku || !barcodeData.value.sku.trim()) return;
                     
                     const skuCode = barcodeData.value.sku.trim().toUpperCase();
@@ -2264,26 +2290,6 @@
                     };
                     
                     barcodeQueue.value.push(newItem);
-                    
-                    // Only create a new SKU in backend if this is a custom SKU not already in the catalog
-                    if (!existingCatalogItem && !barcodeData.value.id) {
-                        try {
-                            await fetch('/api/skus', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    sku: newItem.sku,
-                                    name: newItem.name,
-                                    price: newItem.price,
-                                    image_url: newItem.image_url,
-                                    category: newItem.category || 'General',
-                                    description: newItem.description || '',
-                                    gst_applicable: newItem.gst_applicable
-                                })
-                            });
-                            fetchSkus();
-                        } catch (e) {}
-                    }
 
                     // Reset form
                     clearSelectedSku();
@@ -5208,6 +5214,7 @@
                     barcodeSearchQuery,
                     showBarcodeSearchDropdown,
                     filteredBarcodeSkus,
+                    handleBarcodeSearchEnter,
                     selectSkuForBarcode,
                     selectCustomSkuForBarcode,
                     clearSelectedSku,
