@@ -1473,24 +1473,44 @@ def ensure_sku_catalog_table():
     except Exception:
         pass
 
-    # Ensure all existing products have a positive unique index_number if any are 0, null, or duplicated
+    # Ensure all existing products have a clean sequential index_number tied to their SKU code CHF-XXXX
     try:
-        cur.execute("SELECT id, index_number FROM sku_catalog ORDER BY CASE WHEN index_number > 0 THEN index_number ELSE 999999 END ASC, id ASC")
+        import re
+        cur.execute("SELECT id, sku, index_number FROM sku_catalog ORDER BY CASE WHEN index_number > 0 THEN index_number ELSE 999999 END ASC, id ASC")
         rows = cur.fetchall()
         used_indices = set()
-        next_idx = 1
+        
+        # 1. First pass: if product already has a valid positive index, record it and standardize SKU if CHF- format
         for r in rows:
-            curr = r["index_number"]
-            if not curr or curr <= 0 or curr in used_indices:
-                while next_idx in used_indices:
-                    next_idx += 1
-                cur.execute("UPDATE sku_catalog SET index_number = ? WHERE id = ?", (next_idx, r["id"]))
-                used_indices.add(next_idx)
-                next_idx += 1
-            else:
-                used_indices.add(curr)
-                if curr >= next_idx:
-                    next_idx = curr + 1
+            curr_idx = r["index_number"]
+            sku_val = (r["sku"] or "").strip().upper()
+            m = re.search(r'(\d+)', sku_val)
+            if curr_idx and curr_idx > 0 and curr_idx not in used_indices:
+                used_indices.add(curr_idx)
+                if not sku_val or sku_val.startswith("CHF-") or sku_val.startswith("SKU-"):
+                    cur.execute("UPDATE sku_catalog SET sku = ? WHERE id = ?", (f"CHF-{curr_idx:04d}", r["id"]))
+            elif m:
+                num = int(m.group(1))
+                if num > 0 and num not in used_indices:
+                    used_indices.add(num)
+                    std_sku = f"CHF-{num:04d}" if (sku_val.startswith("CHF-") or not sku_val or sku_val.startswith("SKU-")) else sku_val
+                    cur.execute("UPDATE sku_catalog SET index_number = ?, sku = ? WHERE id = ?", (num, std_sku, r["id"]))
+
+        # 2. Second pass: fix any remaining 0, null, or duplicate indices sequentially
+        cur.execute("SELECT id, sku, index_number FROM sku_catalog ORDER BY CASE WHEN index_number > 0 THEN index_number ELSE 999999 END ASC, id ASC")
+        rows = cur.fetchall()
+        next_seq = 1
+        for r in rows:
+            curr_idx = r["index_number"]
+            if not curr_idx or curr_idx <= 0:
+                while next_seq in used_indices:
+                    next_seq += 1
+                std_sku = (r["sku"] or "").strip().upper()
+                if not std_sku or std_sku.startswith("CHF-") or std_sku.startswith("SKU-"):
+                    std_sku = f"CHF-{next_seq:04d}"
+                cur.execute("UPDATE sku_catalog SET index_number = ?, sku = ? WHERE id = ?", (next_seq, std_sku, r["id"]))
+                used_indices.add(next_seq)
+                next_seq += 1
     except Exception as e:
         print(f"[SKU MIGRATION WARN] {e}")
 
@@ -2676,18 +2696,50 @@ async def list_skus():
 @app.post("/api/skus")
 async def save_sku(payload: SKUPayload):
     ensure_sku_catalog_table()
+    import re
     clean_name = payload.name.strip()
-    clean_sku = (payload.sku or "").strip().upper()
+    raw_sku = (payload.sku or "").strip().upper()
     gst_val = 1 if payload.gst_applicable is None or payload.gst_applicable == 1 else 0
-    if not clean_sku:
-        prefix = (payload.category or "SKU")[:3].upper()
-        import random
-        clean_sku = f"{prefix}-{random.randint(1000, 9999)}"
     if not clean_name:
         raise HTTPException(status_code=400, detail="Product name is required")
         
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # Extract any number from raw_sku if present (e.g. CHF-0025 -> 25)
+    sku_num = None
+    if raw_sku:
+        m = re.search(r'(\d+)', raw_sku)
+        if m:
+            sku_num = int(m.group(1))
+
+    # 1. Determine target_index
+    target_index = payload.index_number
+    if target_index is None or target_index <= 0:
+        if sku_num is not None and sku_num > 0:
+            target_index = sku_num
+
+    # If updating an existing item without specifying index, keep its existing index
+    if (target_index is None or target_index <= 0) and payload.id:
+        cur.execute("SELECT index_number FROM sku_catalog WHERE id = ?", (payload.id,))
+        row = cur.fetchone()
+        if row and row["index_number"] and row["index_number"] > 0:
+            target_index = row["index_number"]
+
+    # If still no index, compute lowest available sequential gap or next index
+    if target_index is None or target_index <= 0:
+        cur.execute("SELECT index_number FROM sku_catalog WHERE index_number > 0")
+        existing_indices = set(r["index_number"] for r in cur.fetchall())
+        next_i = 1
+        while next_i in existing_indices:
+            next_i += 1
+        target_index = next_i
+
+    # 2. Standardize SKU code format (CHF-XXXX)
+    if not raw_sku or raw_sku.startswith("CHF-") or raw_sku.startswith("SKU-") or raw_sku.isdigit():
+        clean_sku = f"CHF-{target_index:04d}"
+    else:
+        clean_sku = raw_sku
 
     # Look up existing product by clean_sku or payload.id
     existing_by_sku = None
@@ -2697,34 +2749,18 @@ async def save_sku(payload: SKUPayload):
 
     effective_id = payload.id or (existing_by_sku["id"] if existing_by_sku else None)
 
-    # Determine & validate index_number
-    target_index = payload.index_number
-    if target_index is not None and target_index > 0:
-        if effective_id:
-            cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ? AND id != ?", (target_index, effective_id))
-        else:
-            cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ?", (target_index,))
-        conflict = cur.fetchone()
-        if conflict:
-            conn.close()
-            raise HTTPException(
-                status_code=400, 
-                detail=f"Index #{target_index} is already assigned to '{conflict['name']}' ({conflict['sku']}). Different products cannot have the same index number."
-            )
+    # Validate duplicate index
+    if effective_id:
+        cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ? AND id != ?", (target_index, effective_id))
     else:
-        if effective_id:
-            cur.execute("SELECT index_number FROM sku_catalog WHERE id = ?", (effective_id,))
-            row = cur.fetchone()
-            if row and row["index_number"] and row["index_number"] > 0:
-                target_index = row["index_number"]
-            else:
-                cur.execute("SELECT MAX(index_number) as max_idx FROM sku_catalog")
-                max_r = cur.fetchone()
-                target_index = ((max_r["max_idx"] if max_r and max_r["max_idx"] is not None else 0) or 0) + 1
-        else:
-            cur.execute("SELECT MAX(index_number) as max_idx FROM sku_catalog")
-            max_r = cur.fetchone()
-            target_index = ((max_r["max_idx"] if max_r and max_r["max_idx"] is not None else 0) or 0) + 1
+        cur.execute("SELECT id, name, sku FROM sku_catalog WHERE index_number = ?", (target_index,))
+    conflict = cur.fetchone()
+    if conflict:
+        conn.close()
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Index #{target_index} is already assigned to '{conflict['name']}' ({conflict['sku']}). Different products cannot have the same index number."
+        )
     
     if effective_id:
         cat_val = payload.category if (payload.category and payload.category.strip()) else (existing_by_sku["category"] if existing_by_sku and existing_by_sku["category"] else "")
@@ -2747,7 +2783,7 @@ async def save_sku(payload: SKUPayload):
                 description = CASE WHEN excluded.description != '' THEN excluded.description ELSE sku_catalog.description END,
                 image_url = CASE WHEN excluded.image_url != '' THEN excluded.image_url ELSE sku_catalog.image_url END,
                 gst_applicable = excluded.gst_applicable,
-                index_number = CASE WHEN sku_catalog.index_number > 0 THEN sku_catalog.index_number ELSE excluded.index_number END
+                index_number = excluded.index_number
         """, (clean_sku, clean_name, payload.price, payload.category or "", payload.description or "", payload.image_url or "", gst_val, target_index))
         
     conn.commit()
