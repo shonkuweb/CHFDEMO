@@ -233,6 +233,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding-bottom: 50px;
         }
 
         /* Dark vignetted mask box */
@@ -401,6 +402,16 @@
             box-shadow: 0 15px 35px rgba(245, 158, 11, 0.2);
         }
 
+        /* Reposition Status HUD to compact top toast when scanned products are in bottom sheet */
+        body.has-scanned-items .status-hud {
+            bottom: auto;
+            top: calc(env(safe-area-inset-top, 0px) + 72px);
+            font-size: 0.84rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+        }
+
         /* Scanned Product Sheet Drawer (Bottom of Browser) */
         .mobile-scan-sheet {
             position: fixed;
@@ -412,13 +423,14 @@
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
             z-index: 60;
-            padding: 16px 20px calc(env(safe-area-inset-bottom, 0px) + 16px) 20px;
+            padding: 14px 18px calc(env(safe-area-inset-bottom, 0px) + 14px) 18px;
             display: none;
             flex-direction: column;
-            gap: 12px;
-            max-height: 55vh;
+            gap: 10px;
+            max-height: 42vh;
             box-shadow: 0 -15px 40px rgba(0,0,0,0.85);
             animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            touch-action: pan-y;
         }
         @keyframes slideUp {
             from { transform: translateY(100%); }
@@ -449,37 +461,70 @@
             border-radius: 12px;
             font-weight: 700;
         }
+        .sheet-scroll-badge {
+            background: rgba(198, 168, 124, 0.15);
+            border: 1px solid rgba(198, 168, 124, 0.35);
+            color: var(--accent);
+            font-size: 0.68rem;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            letter-spacing: 0.3px;
+        }
 
+        /* Scanned items scrollable viewport - strictly fits 2 products (70px * 2 + 8px gap) */
         .scanned-items-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            max-height: 280px;
+            gap: 8px;
+            max-height: 148px;
             overflow-y: auto;
-            padding-right: 4px;
+            overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
+            padding-right: 4px;
+            scroll-behavior: smooth;
         }
         .scanned-items-list::-webkit-scrollbar {
-            width: 4px;
+            width: 5px;
+        }
+        .scanned-items-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
         }
         .scanned-items-list::-webkit-scrollbar-thumb {
-            background: rgba(198, 168, 124, 0.3);
+            background: var(--accent);
             border-radius: 4px;
+        }
+        .scanned-items-list::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
         }
 
         .scanned-item-card {
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: rgba(30, 30, 30, 0.7);
+            gap: 10px;
+            background: rgba(30, 30, 30, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 12px;
+            border-radius: 14px;
+            padding: 8px 12px;
+            height: 70px;
+            min-height: 70px;
+            max-height: 70px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+        .scanned-item-card:hover {
+            background: rgba(40, 40, 40, 0.85);
+            border-color: rgba(198, 168, 124, 0.3);
         }
         .item-img-box {
-            width: 54px;
-            height: 54px;
-            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
             background: #000;
             border: 1px solid rgba(255,255,255,0.15);
             overflow: hidden;
@@ -496,61 +541,86 @@
         .item-details {
             flex: 1;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
         }
         .item-name {
-            font-size: 0.95rem;
+            font-size: 0.90rem;
             font-weight: 600;
             color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 1.25;
         }
         .item-sku {
-            font-size: 0.75rem;
+            font-size: 0.74rem;
             color: var(--accent);
             font-family: monospace;
             margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+        .item-desc {
+            font-size: 10px;
+            color: var(--gold, #C5A073);
+            font-family: monospace;
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
         }
         .item-url-text {
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: #888;
-            word-break: break-all;
-            margin-top: 3px;
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
         }
 
         /* Quantity controls */
         .qty-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             background: rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 4px 8px;
+            border-radius: 10px;
+            padding: 3px 6px;
+            flex-shrink: 0;
         }
         .qty-btn {
             background: rgba(255,255,255,0.1);
             color: #fff;
             border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            font-size: 1.2rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-size: 1.1rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: all 0.15s ease;
         }
         .qty-btn:active {
             background: var(--accent);
             color: #000;
+            transform: scale(0.92);
         }
         .qty-val {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #fff;
-            min-width: 20px;
+            min-width: 18px;
             text-align: center;
         }
 
@@ -559,10 +629,10 @@
             color: #000;
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
-            padding: 14px;
+            padding: 12px 14px;
             border: none;
-            border-radius: 14px;
-            font-size: 0.95rem;
+            border-radius: 12px;
+            font-size: 0.92rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             cursor: pointer;
@@ -572,6 +642,8 @@
             justify-content: center;
             gap: 8px;
             box-shadow: 0 8px 20px rgba(74, 222, 128, 0.3);
+            flex-shrink: 0;
+            transition: all 0.2s ease;
         }
         .send-billing-btn:active {
             transform: scale(0.98);
@@ -729,6 +801,9 @@
                 <span class="sheet-title">
                     <span>Scanned Products</span>
                     <span class="sheet-badge" id="sheet-item-count">0 ITEMS</span>
+                    <span class="sheet-scroll-badge" id="sheet-scroll-badge" style="display: none;">
+                        <span class="material-symbols-outlined" style="font-size: 13px;">unfold_more</span> Scroll for all
+                    </span>
                 </span>
                 <button type="button" id="clear-sheet-btn" style="background: none; border: none; color: #888; font-size: 0.75rem; cursor: pointer;">Clear All</button>
             </div>
@@ -982,15 +1057,29 @@
                         }
 
                         function renderScannedProductsList() {
+                            const scrollBadge = document.getElementById('sheet-scroll-badge');
                             if (scannedProductsList.length === 0) {
                                 scanSheet.style.display = 'none';
                                 sheetItemCount.innerText = '0 ITEMS';
                                 itemsContainer.innerHTML = '';
+                                if (scrollBadge) scrollBadge.style.display = 'none';
+                                document.body.classList.remove('has-scanned-items');
                                 return;
                             }
 
+                            document.body.classList.add('has-scanned-items');
+
                             const totalItemsCount = scannedProductsList.reduce((acc, item) => acc + item.qty, 0);
                             sheetItemCount.innerText = `${totalItemsCount} ITEM${totalItemsCount > 1 ? 'S' : ''}`;
+
+                            if (scrollBadge) {
+                                if (scannedProductsList.length > 2) {
+                                    scrollBadge.style.display = 'inline-flex';
+                                    scrollBadge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 13px;">unfold_more</span> Scroll for all (${scannedProductsList.length})`;
+                                } else {
+                                    scrollBadge.style.display = 'none';
+                                }
+                            }
 
                             itemsContainer.innerHTML = scannedProductsList.map((item, idx) => `
                                 <div class="scanned-item-card">
@@ -1002,18 +1091,28 @@
                                     <div class="item-details">
                                         <div class="item-name">${item.name}</div>
                                         <div class="item-sku">SKU: ${item.sku} ${item.price ? `• ₹${Number(item.price).toLocaleString('en-IN')}` : ''}</div>
-                                        ${item.description ? `<div style="font-size: 10px; color: var(--gold); font-family: monospace; margin-top: 2px;">${item.description}</div>` : ''}
+                                        ${item.description ? `<div class="item-desc">${item.description}</div>` : ''}
                                         <div class="item-url-text">${item.image_url ? `Image Attached` : 'No Image'}</div>
                                     </div>
                                     <div class="qty-controls">
-                                        <button class="qty-btn" onclick="updateProductQty(${idx}, -1)" type="button">−</button>
+                                        <button class="qty-btn" onclick="updateProductQty(${idx}, -1)" type="button" aria-label="Decrease quantity">−</button>
                                         <span class="qty-val">${item.qty}</span>
-                                        <button class="qty-btn" onclick="updateProductQty(${idx}, 1)" type="button">+</button>
+                                        <button class="qty-btn" onclick="updateProductQty(${idx}, 1)" type="button" aria-label="Increase quantity">+</button>
                                     </div>
                                 </div>
                             `).join('');
 
                             scanSheet.style.display = 'flex';
+
+                            // When more than 2 products, automatically scroll down to the newest item
+                            if (scannedProductsList.length > 2) {
+                                setTimeout(() => {
+                                    itemsContainer.scrollTo({
+                                        top: itemsContainer.scrollHeight,
+                                        behavior: 'smooth'
+                                    });
+                                }, 60);
+                            }
                         }
 
                         window.updateProductQty = updateProductQty;
